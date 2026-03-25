@@ -1,255 +1,259 @@
 /* ================================================================
    B站 AI 收藏夹整理助理 — 完整样式表 v27.0
-   Nebula Flux · 星云流变 · Living Cosmos
-   Violet-Coral 双色系统 · Jewel-Tone Aurora Spectrum
-   Silk Dynamics 4.0 · Nebula Particle Fields
-   Void Butterfly Dark Theme · Multi-Accent Color Themes
-   Ambient Particle System · Morphing Blob BG · Liquid Borders
+   Astral Glasstide · 琉璃星潮 · Liquid Glass Morphism
+   Indigo-Nebula 双色系统 · Bioluminescent Aurora Spectrum
+   Velvet Dynamics 4.0 · Oceanic Starlight Micro-interactions
+   Stellar Abyss Dark Theme · Living Glass Surfaces
+   Multi-Accent Color Themes · Nebula Particle Fields · Liquid Borders
    ================================================================ */
 
 /* === 1. CSS 变量 (双主题系统) === */
 
-/* 亮色主题（默认） — 幻蝶·晨光琉彩 Phantom Iridescence */
+/* 亮色主题（默认） — 星潮·晨曦琉璃 Astral Glasstide */
 :root, [data-theme="light"] {
-  --ai-primary: #7C5CFC;
-  --ai-primary-dark: #5B3FDB;
-  --ai-primary-light: #B4A0FF;
-  --ai-primary-bg: rgba(124, 92, 252, 0.06);
-  --ai-primary-shadow: rgba(124, 92, 252, 0.24);
+  --ai-primary: #7364FF;
+  --ai-primary-dark: #5046E5;
+  --ai-primary-light: #B0A8FF;
+  --ai-primary-bg: rgba(115, 100, 255, 0.06);
+  --ai-primary-shadow: rgba(115, 100, 255, 0.22);
   --ai-success: #10B981;
   --ai-success-dark: #059669;
   --ai-error: #F43F5E;
-  --ai-info: #8B5CF6;
+  --ai-info: #818CF8;
   --ai-warning: #F59E0B;
-  --ai-text: #1B1340;
-  --ai-text-secondary: #3D2F5C;
-  --ai-text-muted: #8B87A6;
-  --ai-text-light: #C4C0D8;
-  --ai-border: #E6E0F6;
-  --ai-border-light: #F2EDF9;
-  --ai-border-lighter: #FAF7FF;
+  --ai-text: #181233;
+  --ai-text-secondary: #38305A;
+  --ai-text-muted: #868199;
+  --ai-text-light: #BEB8D0;
+  --ai-border: #E4DDF5;
+  --ai-border-light: #F0EAFA;
+  --ai-border-lighter: #F9F7FF;
   --ai-bg: #ffffff;
-  --ai-bg-secondary: #FAF7FF;
-  --ai-bg-tertiary: #F2EDF9;
-  --ai-bg-hover: rgba(124, 92, 252, 0.04);
-  --ai-header-gradient: linear-gradient(135deg, #7C5CFC, #FF6B8A);
-  --ai-modal-backdrop: rgba(27, 19, 64, 0.62);
+  --ai-bg-secondary: #F9F7FF;
+  --ai-bg-tertiary: #F0EAFA;
+  --ai-bg-hover: rgba(115, 100, 255, 0.04);
+  --ai-header-gradient: linear-gradient(135deg, #7364FF, #FF6B9D);
+  --ai-modal-backdrop: rgba(24, 18, 51, 0.58);
   --ai-input-bg: #fff;
-  --ai-card-shadow: 0 1px 3px rgba(27, 19, 64, 0.04), 0 4px 14px rgba(27, 19, 64, 0.03);
-  --ai-vid-odd-bg: rgba(27, 19, 64, 0.012);
-  --ai-vid-hover-bg: rgba(124, 92, 252, 0.05);
-  --ai-cat-detail-bg: #FAF7FF;
-  --ai-separator: #E6E0F6;
-  --ai-glow-color: rgba(124, 92, 252, 0.07);
+  --ai-card-shadow: 0 1px 3px rgba(24, 18, 51, 0.04), 0 4px 14px rgba(24, 18, 51, 0.03);
+  --ai-vid-odd-bg: rgba(24, 18, 51, 0.012);
+  --ai-vid-hover-bg: rgba(115, 100, 255, 0.05);
+  --ai-cat-detail-bg: #F9F7FF;
+  --ai-separator: #E4DDF5;
+  --ai-glow-color: rgba(115, 100, 255, 0.07);
   --ai-badge-new-bg: #F43F5E;
   --ai-badge-existing-bg: #10B981;
-  --ai-scrollbar: #C4C0D8;
-  --ai-scrollbar-hover: #8B87A6;
-  --ai-btn-tool-bg: #F2EDF9;
-  --ai-btn-cancel-hover-bg: #E6E0F6;
+  --ai-scrollbar: #BEB8D0;
+  --ai-scrollbar-hover: #868199;
+  --ai-btn-tool-bg: #F0EAFA;
+  --ai-btn-cancel-hover-bg: #E4DDF5;
   --ai-log-success: #10B981;
-  --ai-glass-bg: rgba(255, 255, 255, 0.72);
-  --ai-glass-border: rgba(255, 255, 255, 0.58);
-  --ai-glass-blur: 52px;
-  /* 极光色谱 — Phantom Iridescence 八色蛋白石系统 */
-  --ai-aurora-1: #7C5CFC;
-  --ai-aurora-2: #FF6B8A;
-  --ai-aurora-3: #A855F7;
-  --ai-aurora-4: #06B6D4;
-  --ai-aurora-5: #10B981;
-  --ai-aurora-6: #D946EF;
-  --ai-aurora-7: #F59E0B;
-  --ai-aurora-8: #FB7185;
-  /* 琉光光晕系统 — 多层虹彩色散 */
-  --ai-neon-glow: 0 0 20px rgba(124, 92, 252, 0.30),
-                  0 0 40px rgba(255, 107, 138, 0.16),
-                  0 0 60px rgba(168, 85, 247, 0.08),
-                  0 0 80px rgba(6, 182, 212, 0.04);
-  --ai-float-gradient: linear-gradient(135deg, #7C5CFC 0%, #A855F7 14%, #D946EF 28%, #FF6B8A 42%, #F59E0B 56%, #06B6D4 70%, #10B981 84%, #7C5CFC 100%);
-  --ai-card-hover-glow: 0 8px 44px rgba(124, 92, 252, 0.18);
+  --ai-glass-bg: rgba(255, 255, 255, 0.76);
+  --ai-glass-border: rgba(255, 255, 255, 0.64);
+  --ai-glass-blur: 60px;
+  /* 极光色谱 — Astral Glasstide 八色星潮生物荧光系统 */
+  --ai-aurora-1: #7364FF;
+  --ai-aurora-2: #FF6B9D;
+  --ai-aurora-3: #9B59F6;
+  --ai-aurora-4: #00D4AA;
+  --ai-aurora-5: #20E3B2;
+  --ai-aurora-6: #E056CF;
+  --ai-aurora-7: #FFB347;
+  --ai-aurora-8: #FF85A2;
+  /* 星潮光晕系统 — 多层生物荧光色散 */
+  --ai-neon-glow: 0 0 18px rgba(115, 100, 255, 0.28),
+                  0 0 36px rgba(255, 107, 157, 0.14),
+                  0 0 56px rgba(155, 89, 246, 0.07),
+                  0 0 78px rgba(0, 212, 170, 0.035);
+  --ai-float-gradient: linear-gradient(135deg, #7364FF 0%, #9B59F6 14%, #E056CF 28%, #FF6B9D 42%, #FFB347 56%, #00D4AA 70%, #20E3B2 84%, #7364FF 100%);
+  --ai-card-hover-glow: 0 8px 44px rgba(115, 100, 255, 0.16);
   --ai-toast-success: linear-gradient(135deg, #059669 0%, #10B981 50%, #34D399 100%);
   --ai-toast-error: linear-gradient(135deg, #E11D48 0%, #F43F5E 50%, #FB7185 100%);
-  --ai-toast-info: linear-gradient(135deg, #5B3FDB 0%, #8B5CF6 50%, #B4A0FF 100%);
+  --ai-toast-info: linear-gradient(135deg, #5046E5 0%, #818CF8 50%, #B0A8FF 100%);
   --ai-toast-warning: linear-gradient(135deg, #D97706 0%, #F59E0B 50%, #FBBF24 100%);
-  /* 动画曲线 — Silk Dynamics 3.0 运动系统 */
-  --ai-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --ai-spring-gentle: cubic-bezier(0.22, 1.08, 0.44, 1);
-  --ai-spring-bouncy: cubic-bezier(0.175, 0.885, 0.32, 1.2);
-  --ai-spring-snappy: cubic-bezier(0.18, 1.32, 0.48, 1);
-  --ai-spring-momentum: cubic-bezier(0.28, 1.68, 0.48, 1);
-  --ai-spring-rubber: cubic-bezier(0.35, 2.1, 0.55, 1);
-  --ai-spring-silk: cubic-bezier(0.22, 1.14, 0.38, 1);
-  --ai-ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ai-ease-out-back: cubic-bezier(0.34, 1.3, 0.64, 1);
-  --ai-ease-elastic: cubic-bezier(0.64, -0.5, 0.265, 1.55);
-  --ai-ease-smooth: cubic-bezier(0.4, 0, 0, 1);
+  /* 动画曲线 — Velvet Dynamics 4.0 运动系统 */
+  --ai-spring: cubic-bezier(0.32, 1.48, 0.62, 1);
+  --ai-spring-gentle: cubic-bezier(0.20, 1.04, 0.42, 1);
+  --ai-spring-bouncy: cubic-bezier(0.165, 0.84, 0.28, 1.18);
+  --ai-spring-snappy: cubic-bezier(0.16, 1.24, 0.45, 1);
+  --ai-spring-momentum: cubic-bezier(0.25, 1.56, 0.46, 1);
+  --ai-spring-rubber: cubic-bezier(0.32, 1.86, 0.52, 1);
+  --ai-spring-silk: cubic-bezier(0.20, 1.10, 0.36, 1);
+  --ai-ease-out-expo: cubic-bezier(0.14, 1, 0.28, 1);
+  --ai-ease-out-back: cubic-bezier(0.32, 1.26, 0.62, 1);
+  --ai-ease-elastic: cubic-bezier(0.60, -0.4, 0.24, 1.48);
+  --ai-ease-smooth: cubic-bezier(0.38, 0, 0, 1);
   --ai-ease-decel: cubic-bezier(0, 0.55, 0.45, 1);
-  --ai-ease-fluid: cubic-bezier(0.25, 0.8, 0.25, 1);
+  --ai-ease-fluid: cubic-bezier(0.22, 0.78, 0.22, 1);
   --ai-ease-apple: cubic-bezier(0.25, 0.1, 0.25, 1);
-  --ai-ease-ios: cubic-bezier(0.22, 1, 0.36, 1);
-  --ai-ease-magnetic: cubic-bezier(0.2, 0.9, 0.3, 1.1);
-  --ai-ease-silk: cubic-bezier(0.16, 0.88, 0.22, 1);
-  --ai-ease-celestial: cubic-bezier(0.19, 1.14, 0.28, 1);
-  --ai-ease-butterfly: cubic-bezier(0.15, 0.96, 0.24, 1.04);
-  --ai-ease-gravity: cubic-bezier(0.32, 0, 0.07, 1);
-  /* 多层网格渐变 — 蛋白石虹彩环境光 */
-  --ai-mesh-gradient: radial-gradient(ellipse at 10% 90%, rgba(124, 92, 252, 0.07) 0%, transparent 50%),
-                       radial-gradient(ellipse at 90% 10%, rgba(255, 107, 138, 0.055) 0%, transparent 50%),
-                       radial-gradient(ellipse at 40% 40%, rgba(6, 182, 212, 0.04) 0%, transparent 55%),
-                       radial-gradient(ellipse at 75% 75%, rgba(16, 185, 129, 0.03) 0%, transparent 45%),
-                       radial-gradient(ellipse at 20% 20%, rgba(217, 70, 239, 0.035) 0%, transparent 50%),
-                       radial-gradient(ellipse at 60% 10%, rgba(245, 158, 11, 0.018) 0%, transparent 40%);
-  --ai-noise-opacity: 0.014;
+  --ai-ease-ios: cubic-bezier(0.20, 0.98, 0.28, 1);
+  --ai-ease-magnetic: cubic-bezier(0.18, 0.88, 0.28, 1.08);
+  --ai-ease-silk: cubic-bezier(0.14, 0.86, 0.20, 1);
+  --ai-ease-celestial: cubic-bezier(0.17, 1.10, 0.26, 1);
+  --ai-ease-butterfly: cubic-bezier(0.13, 0.94, 0.22, 1.03);
+  --ai-ease-gravity: cubic-bezier(0.30, 0, 0.06, 1);
+  /* Velvet 4.0 新增曲线 */
+  --ai-ease-tide: cubic-bezier(0.10, 0.82, 0.18, 1.02);
+  --ai-ease-wave: cubic-bezier(0.36, 0, 0.04, 1);
+  --ai-spring-oceanic: cubic-bezier(0.18, 1.16, 0.34, 1.02);
+  /* 多层网格渐变 — 星潮生物荧光环境光 */
+  --ai-mesh-gradient: radial-gradient(ellipse at 10% 90%, rgba(115, 100, 255, 0.065) 0%, transparent 50%),
+                       radial-gradient(ellipse at 90% 10%, rgba(255, 107, 157, 0.05) 0%, transparent 50%),
+                       radial-gradient(ellipse at 40% 40%, rgba(0, 212, 170, 0.038) 0%, transparent 55%),
+                       radial-gradient(ellipse at 75% 75%, rgba(32, 227, 178, 0.028) 0%, transparent 45%),
+                       radial-gradient(ellipse at 20% 20%, rgba(224, 86, 207, 0.032) 0%, transparent 50%),
+                       radial-gradient(ellipse at 60% 10%, rgba(255, 179, 71, 0.016) 0%, transparent 40%);
+  --ai-noise-opacity: 0.012;
   /* 3D 深度系统 */
-  --ai-perspective: 1400px;
-  --ai-tilt-amount: 1.5deg;
-  /* 虹彩折射边框 — 幻蝶棱镜 */
-  --ai-chromatic-border: linear-gradient(135deg, rgba(124,92,252,0.34), rgba(255,107,138,0.30), rgba(6,182,212,0.28), rgba(16,185,129,0.30), rgba(217,70,239,0.32));
+  --ai-perspective: 1600px;
+  --ai-tilt-amount: 1.2deg;
+  /* 星潮折射边框 — 琉璃棱镜 */
+  --ai-chromatic-border: linear-gradient(135deg, rgba(115,100,255,0.32), rgba(255,107,157,0.28), rgba(0,212,170,0.26), rgba(32,227,178,0.28), rgba(224,86,207,0.30));
   /* 悬浮光晕尺寸 */
   --ai-glow-size: 200px;
   /* 交互反馈色 */
-  --ai-interaction-glow: rgba(124, 92, 252, 0.10);
+  --ai-interaction-glow: rgba(115, 100, 255, 0.10);
 }
 
-/* 暗色主题 — 虚空蝶影 · Void Butterfly */
+/* 暗色主题 — 星渊深潮 · Stellar Abyss */
 [data-theme="dark"] {
-  --ai-primary: #B4A0FF;
-  --ai-primary-dark: #7C5CFC;
-  --ai-primary-light: #D4CAFF;
-  --ai-primary-bg: rgba(124, 92, 252, 0.12);
-  --ai-primary-shadow: rgba(124, 92, 252, 0.28);
+  --ai-primary: #B0A8FF;
+  --ai-primary-dark: #7364FF;
+  --ai-primary-light: #D0CAFF;
+  --ai-primary-bg: rgba(115, 100, 255, 0.12);
+  --ai-primary-shadow: rgba(115, 100, 255, 0.26);
   --ai-success: #34D399;
   --ai-success-dark: #10B981;
   --ai-error: #FB7185;
-  --ai-info: #B4A0FF;
+  --ai-info: #B0A8FF;
   --ai-warning: #FBBF24;
-  --ai-text: #F2EDF9;
-  --ai-text-secondary: #A49EBC;
-  --ai-text-muted: #6D668C;
-  --ai-text-light: #4C4566;
-  --ai-border: #251E3E;
-  --ai-border-light: #201938;
-  --ai-border-lighter: #16102C;
-  --ai-bg: #080618;
-  --ai-bg-secondary: #110D22;
-  --ai-bg-tertiary: #1C1636;
-  --ai-bg-hover: rgba(124, 92, 252, 0.08);
-  --ai-header-gradient: linear-gradient(135deg, #5B3FDB, #A855F7);
-  --ai-modal-backdrop: rgba(8, 6, 24, 0.92);
-  --ai-input-bg: #110D22;
-  --ai-card-shadow: 0 4px 28px rgba(0, 0, 0, 0.7);
+  --ai-text: #F0EAFA;
+  --ai-text-secondary: #A09ABC;
+  --ai-text-muted: #6A6488;
+  --ai-text-light: #484262;
+  --ai-border: #231C3C;
+  --ai-border-light: #1E1836;
+  --ai-border-lighter: #14102A;
+  --ai-bg: #06061A;
+  --ai-bg-secondary: #0E0C22;
+  --ai-bg-tertiary: #1A1534;
+  --ai-bg-hover: rgba(115, 100, 255, 0.08);
+  --ai-header-gradient: linear-gradient(135deg, #5046E5, #9B59F6);
+  --ai-modal-backdrop: rgba(6, 6, 26, 0.94);
+  --ai-input-bg: #0E0C22;
+  --ai-card-shadow: 0 4px 28px rgba(0, 0, 0, 0.72);
   --ai-vid-odd-bg: rgba(255, 255, 255, 0.015);
-  --ai-vid-hover-bg: rgba(124, 92, 252, 0.08);
-  --ai-cat-detail-bg: #110D22;
-  --ai-separator: #251E3E;
-  --ai-glow-color: rgba(124, 92, 252, 0.09);
+  --ai-vid-hover-bg: rgba(115, 100, 255, 0.08);
+  --ai-cat-detail-bg: #0E0C22;
+  --ai-separator: #231C3C;
+  --ai-glow-color: rgba(115, 100, 255, 0.09);
   --ai-badge-new-bg: #F43F5E;
   --ai-badge-existing-bg: #10B981;
-  --ai-scrollbar: #251E3E;
-  --ai-scrollbar-hover: #3E3564;
-  --ai-btn-tool-bg: #1C1636;
-  --ai-btn-cancel-hover-bg: #3E3564;
+  --ai-scrollbar: #231C3C;
+  --ai-scrollbar-hover: #3C3560;
+  --ai-btn-tool-bg: #1A1534;
+  --ai-btn-cancel-hover-bg: #3C3560;
   --ai-log-success: #34D399;
-  --ai-glass-bg: rgba(8, 6, 24, 0.92);
+  --ai-glass-bg: rgba(6, 6, 26, 0.93);
   --ai-glass-border: rgba(255, 255, 255, 0.06);
-  --ai-glass-blur: 56px;
-  --ai-aurora-1: #9B8AFF;
-  --ai-aurora-2: #FB7185;
+  --ai-glass-blur: 64px;
+  --ai-aurora-1: #9B8EFF;
+  --ai-aurora-2: #FF85A2;
   --ai-aurora-3: #C084FC;
-  --ai-aurora-4: #22D3EE;
+  --ai-aurora-4: #2EE8C0;
   --ai-aurora-5: #34D399;
   --ai-aurora-6: #E879F9;
-  --ai-aurora-7: #FBBF24;
-  --ai-aurora-8: #FF6B8A;
-  --ai-neon-glow: 0 0 24px rgba(124, 92, 252, 0.38),
-                  0 0 48px rgba(255, 107, 138, 0.20),
-                  0 0 72px rgba(168, 85, 247, 0.10),
-                  0 0 96px rgba(6, 182, 212, 0.05);
-  --ai-float-gradient: linear-gradient(135deg, #9B8AFF, #E879F9, #C084FC, #22D3EE, #34D399, #FB7185);
-  --ai-card-hover-glow: 0 8px 60px rgba(124, 92, 252, 0.16);
+  --ai-aurora-7: #FFCB6B;
+  --ai-aurora-8: #FF6B9D;
+  --ai-neon-glow: 0 0 22px rgba(115, 100, 255, 0.36),
+                  0 0 44px rgba(255, 133, 162, 0.18),
+                  0 0 68px rgba(155, 89, 246, 0.09),
+                  0 0 92px rgba(0, 212, 170, 0.045);
+  --ai-float-gradient: linear-gradient(135deg, #9B8EFF, #E879F9, #C084FC, #2EE8C0, #34D399, #FF85A2);
+  --ai-card-hover-glow: 0 8px 56px rgba(115, 100, 255, 0.14);
   --ai-toast-success: linear-gradient(135deg, #059669, #10B981, #34D399);
   --ai-toast-error: linear-gradient(135deg, #E11D48, #F43F5E, #FB7185);
-  --ai-toast-info: linear-gradient(135deg, #5B3FDB, #8B5CF6, #B4A0FF);
+  --ai-toast-info: linear-gradient(135deg, #5046E5, #818CF8, #B0A8FF);
   --ai-toast-warning: linear-gradient(135deg, #D97706, #F59E0B, #FBBF24);
-  --ai-mesh-gradient: radial-gradient(ellipse at 10% 90%, rgba(124, 92, 252, 0.09) 0%, transparent 50%),
-                       radial-gradient(ellipse at 90% 10%, rgba(255, 107, 138, 0.07) 0%, transparent 50%),
-                       radial-gradient(ellipse at 40% 40%, rgba(6, 182, 212, 0.05) 0%, transparent 55%),
-                       radial-gradient(ellipse at 75% 75%, rgba(16, 185, 129, 0.035) 0%, transparent 45%),
-                       radial-gradient(ellipse at 20% 20%, rgba(217, 70, 239, 0.04) 0%, transparent 50%),
-                       radial-gradient(ellipse at 65% 85%, rgba(245, 158, 11, 0.025) 0%, transparent 40%);
-  --ai-noise-opacity: 0.024;
-  --ai-chromatic-border: linear-gradient(135deg, rgba(124,92,252,0.32), rgba(255,107,138,0.28), rgba(6,182,212,0.26), rgba(16,185,129,0.30), rgba(217,70,239,0.30));
-  --ai-glow-size: 240px;
-  --ai-interaction-glow: rgba(124, 92, 252, 0.18);
+  --ai-mesh-gradient: radial-gradient(ellipse at 10% 90%, rgba(115, 100, 255, 0.085) 0%, transparent 50%),
+                       radial-gradient(ellipse at 90% 10%, rgba(255, 133, 162, 0.065) 0%, transparent 50%),
+                       radial-gradient(ellipse at 40% 40%, rgba(0, 212, 170, 0.048) 0%, transparent 55%),
+                       radial-gradient(ellipse at 75% 75%, rgba(32, 227, 178, 0.032) 0%, transparent 45%),
+                       radial-gradient(ellipse at 20% 20%, rgba(224, 86, 207, 0.038) 0%, transparent 50%),
+                       radial-gradient(ellipse at 65% 85%, rgba(255, 179, 71, 0.022) 0%, transparent 40%);
+  --ai-noise-opacity: 0.022;
+  --ai-chromatic-border: linear-gradient(135deg, rgba(115,100,255,0.30), rgba(255,107,157,0.26), rgba(0,212,170,0.24), rgba(32,227,178,0.28), rgba(224,86,207,0.28));
+  --ai-glow-size: 260px;
+  --ai-interaction-glow: rgba(115, 100, 255, 0.16);
 }
 
 /* 自动跟随系统主题 */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --ai-primary: #B4A0FF;
-    --ai-primary-dark: #7C5CFC;
-    --ai-primary-light: #D4CAFF;
-    --ai-primary-bg: rgba(124, 92, 252, 0.12);
-    --ai-primary-shadow: rgba(124, 92, 252, 0.28);
+    --ai-primary: #B0A8FF;
+    --ai-primary-dark: #7364FF;
+    --ai-primary-light: #D0CAFF;
+    --ai-primary-bg: rgba(115, 100, 255, 0.12);
+    --ai-primary-shadow: rgba(115, 100, 255, 0.26);
     --ai-success: #34D399;
     --ai-success-dark: #10B981;
     --ai-error: #FB7185;
-    --ai-info: #B4A0FF;
+    --ai-info: #B0A8FF;
     --ai-warning: #FBBF24;
-    --ai-text: #F2EDF9;
-    --ai-text-secondary: #A49EBC;
-    --ai-text-muted: #6D668C;
-    --ai-text-light: #4C4566;
-    --ai-border: #251E3E;
-    --ai-border-light: #201938;
-    --ai-border-lighter: #16102C;
-    --ai-bg: #080618;
-    --ai-bg-secondary: #110D22;
-    --ai-bg-tertiary: #1C1636;
-    --ai-bg-hover: rgba(124, 92, 252, 0.08);
-    --ai-header-gradient: linear-gradient(135deg, #5B3FDB, #A855F7);
-    --ai-modal-backdrop: rgba(8, 6, 24, 0.92);
-    --ai-input-bg: #110D22;
-    --ai-card-shadow: 0 4px 28px rgba(0, 0, 0, 0.7);
+    --ai-text: #F0EAFA;
+    --ai-text-secondary: #A09ABC;
+    --ai-text-muted: #6A6488;
+    --ai-text-light: #484262;
+    --ai-border: #231C3C;
+    --ai-border-light: #1E1836;
+    --ai-border-lighter: #14102A;
+    --ai-bg: #06061A;
+    --ai-bg-secondary: #0E0C22;
+    --ai-bg-tertiary: #1A1534;
+    --ai-bg-hover: rgba(115, 100, 255, 0.08);
+    --ai-header-gradient: linear-gradient(135deg, #5046E5, #9B59F6);
+    --ai-modal-backdrop: rgba(6, 6, 26, 0.94);
+    --ai-input-bg: #0E0C22;
+    --ai-card-shadow: 0 4px 28px rgba(0, 0, 0, 0.72);
     --ai-vid-odd-bg: rgba(255, 255, 255, 0.015);
-    --ai-vid-hover-bg: rgba(124, 92, 252, 0.08);
-    --ai-cat-detail-bg: #110D22;
-    --ai-separator: #251E3E;
-    --ai-glow-color: rgba(124, 92, 252, 0.09);
+    --ai-vid-hover-bg: rgba(115, 100, 255, 0.08);
+    --ai-cat-detail-bg: #0E0C22;
+    --ai-separator: #231C3C;
+    --ai-glow-color: rgba(115, 100, 255, 0.09);
     --ai-badge-new-bg: #F43F5E;
     --ai-badge-existing-bg: #10B981;
-    --ai-scrollbar: #251E3E;
-    --ai-scrollbar-hover: #3E3564;
-    --ai-btn-tool-bg: #1C1636;
-    --ai-btn-cancel-hover-bg: #3E3564;
+    --ai-scrollbar: #231C3C;
+    --ai-scrollbar-hover: #3C3560;
+    --ai-btn-tool-bg: #1A1534;
+    --ai-btn-cancel-hover-bg: #3C3560;
     --ai-log-success: #34D399;
-    --ai-glass-bg: rgba(8, 6, 24, 0.92);
+    --ai-glass-bg: rgba(6, 6, 26, 0.93);
     --ai-glass-border: rgba(255, 255, 255, 0.06);
-    --ai-glass-blur: 56px;
-    --ai-aurora-1: #9B8AFF;
-    --ai-aurora-2: #FB7185;
+    --ai-glass-blur: 64px;
+    --ai-aurora-1: #9B8EFF;
+    --ai-aurora-2: #FF85A2;
     --ai-aurora-3: #C084FC;
-    --ai-aurora-4: #22D3EE;
+    --ai-aurora-4: #2EE8C0;
     --ai-aurora-5: #34D399;
     --ai-aurora-6: #E879F9;
-    --ai-aurora-7: #FBBF24;
-    --ai-aurora-8: #FF6B8A;
-    --ai-neon-glow: 0 0 24px rgba(124, 92, 252, 0.38),
-                    0 0 48px rgba(255, 107, 138, 0.20),
-                    0 0 72px rgba(168, 85, 247, 0.10),
-                    0 0 96px rgba(6, 182, 212, 0.05);
-    --ai-float-gradient: linear-gradient(135deg, #9B8AFF, #E879F9, #C084FC, #22D3EE, #34D399, #FB7185);
-    --ai-card-hover-glow: 0 8px 60px rgba(124, 92, 252, 0.16);
-    --ai-mesh-gradient: radial-gradient(ellipse at 10% 90%, rgba(124, 92, 252, 0.09) 0%, transparent 50%),
-                         radial-gradient(ellipse at 90% 10%, rgba(255, 107, 138, 0.07) 0%, transparent 50%),
-                         radial-gradient(ellipse at 40% 40%, rgba(6, 182, 212, 0.05) 0%, transparent 55%),
-                         radial-gradient(ellipse at 75% 75%, rgba(16, 185, 129, 0.035) 0%, transparent 45%),
-                         radial-gradient(ellipse at 20% 20%, rgba(217, 70, 239, 0.04) 0%, transparent 50%),
-                         radial-gradient(ellipse at 65% 85%, rgba(245, 158, 11, 0.025) 0%, transparent 40%);
-    --ai-noise-opacity: 0.024;
-    --ai-chromatic-border: linear-gradient(135deg, rgba(124,92,252,0.32), rgba(255,107,138,0.28), rgba(6,182,212,0.26), rgba(16,185,129,0.30), rgba(217,70,239,0.30));
-    --ai-glow-size: 240px;
-    --ai-interaction-glow: rgba(124, 92, 252, 0.18);
+    --ai-aurora-7: #FFCB6B;
+    --ai-aurora-8: #FF6B9D;
+    --ai-neon-glow: 0 0 22px rgba(115, 100, 255, 0.36),
+                    0 0 44px rgba(255, 133, 162, 0.18),
+                    0 0 68px rgba(155, 89, 246, 0.09),
+                    0 0 92px rgba(0, 212, 170, 0.045);
+    --ai-float-gradient: linear-gradient(135deg, #9B8EFF, #E879F9, #C084FC, #2EE8C0, #34D399, #FF85A2);
+    --ai-card-hover-glow: 0 8px 56px rgba(115, 100, 255, 0.14);
+    --ai-mesh-gradient: radial-gradient(ellipse at 10% 90%, rgba(115, 100, 255, 0.085) 0%, transparent 50%),
+                         radial-gradient(ellipse at 90% 10%, rgba(255, 133, 162, 0.065) 0%, transparent 50%),
+                         radial-gradient(ellipse at 40% 40%, rgba(0, 212, 170, 0.048) 0%, transparent 55%),
+                         radial-gradient(ellipse at 75% 75%, rgba(32, 227, 178, 0.032) 0%, transparent 45%),
+                         radial-gradient(ellipse at 20% 20%, rgba(224, 86, 207, 0.038) 0%, transparent 50%),
+                         radial-gradient(ellipse at 65% 85%, rgba(255, 179, 71, 0.022) 0%, transparent 40%);
+    --ai-noise-opacity: 0.022;
+    --ai-chromatic-border: linear-gradient(135deg, rgba(115,100,255,0.30), rgba(255,107,157,0.26), rgba(0,212,170,0.24), rgba(32,227,178,0.28), rgba(224,86,207,0.28));
+    --ai-glow-size: 260px;
+    --ai-interaction-glow: rgba(115, 100, 255, 0.16);
   }
 }
 
@@ -333,15 +337,15 @@
   box-sizing: border-box;
 }
 
-/* === 3. 悬浮按钮 — 棱光轨道环 + 液态形变 + 磁力悬浮 === */
+/* === 3. 悬浮按钮 — 星潮轨道环 + 液态琉璃形变 + 磁力悬浮 === */
 #ai-float-btn {
   position: fixed;
   bottom: 30px;
   left: 30px;
   z-index: var(--ai-z-float);
   background: var(--ai-float-gradient);
-  background-size: 600% 600%;
-  animation: ai-float-gradient-shift 14s ease-in-out infinite, ai-float-levitate 8s ease-in-out infinite, ai-float-morph 14s ease-in-out infinite;
+  background-size: 700% 700%;
+  animation: ai-float-gradient-shift 16s ease-in-out infinite, ai-float-levitate 10s ease-in-out infinite, ai-float-morph 18s ease-in-out infinite;
   color: white;
   width: 58px;
   height: 58px;
@@ -351,8 +355,8 @@
   justify-content: center;
   cursor: pointer;
   box-shadow: var(--ai-neon-glow);
-  transition: transform 0.65s var(--ai-spring), box-shadow 0.5s var(--ai-ease-smooth), border-color 0.4s ease, border-radius 0.9s var(--ai-ease-fluid);
-  border: 2.5px solid rgba(255, 255, 255, 0.30);
+  transition: transform 0.7s var(--ai-spring-silk), box-shadow 0.55s var(--ai-ease-wave), border-color 0.45s ease, border-radius 1.1s var(--ai-ease-fluid);
+  border: 2.5px solid rgba(255, 255, 255, 0.28);
 }
 
 /* 外层棱光轨道环 — 色散旋转 + 呼吸扩展 */
@@ -399,14 +403,14 @@
 }
 
 #ai-float-btn:hover {
-  transform: scale(1.18) translateY(-10px) rotate(-6deg);
-  border-radius: 32% 68% 54% 46% / 40% 46% 54% 60%;
-  box-shadow: 0 0 32px rgba(124, 92, 252, 0.50),
-              0 0 64px rgba(255, 107, 138, 0.26),
-              0 0 96px rgba(168, 85, 247, 0.12),
-              0 22px 52px rgba(27, 19, 64, 0.20);
-  border-color: rgba(255, 255, 255, 0.60);
-  animation: ai-float-gradient-shift 14s ease-in-out infinite;
+  transform: scale(1.16) translateY(-12px) rotate(-4deg);
+  border-radius: 36% 64% 52% 48% / 42% 48% 52% 58%;
+  box-shadow: 0 0 28px rgba(115, 100, 255, 0.48),
+              0 0 56px rgba(255, 107, 157, 0.24),
+              0 0 84px rgba(155, 89, 246, 0.11),
+              0 24px 56px rgba(24, 18, 51, 0.22);
+  border-color: rgba(255, 255, 255, 0.55);
+  animation: ai-float-gradient-shift 16s ease-in-out infinite;
 }
 
 #ai-float-btn:active {
@@ -426,7 +430,7 @@
   transform: rotate(-18deg) scale(1.14);
 }
 
-/* === 4. 主面板 — 棱光结晶 + 3D 深度 + 活体表面 + 色散边缘 === */
+/* === 4. 主面板 — 琉璃星潮结晶 + 3D 深度 + 活体玻璃表面 + 星光边缘 === */
 #ai-sort-wrapper {
   position: fixed;
   bottom: 30px;
@@ -438,21 +442,22 @@
   flex-direction: column;
   background: var(--ai-glass-bg);
   background-image: var(--ai-mesh-gradient);
-  backdrop-filter: blur(var(--ai-glass-blur)) saturate(2.0) brightness(1.03);
-  -webkit-backdrop-filter: blur(var(--ai-glass-blur)) saturate(2.0) brightness(1.03);
-  box-shadow: 0 28px 72px rgba(0, 0, 0, 0.12),
-              0 12px 32px rgba(0, 0, 0, 0.08),
+  backdrop-filter: blur(var(--ai-glass-blur)) saturate(1.9) brightness(1.04);
+  -webkit-backdrop-filter: blur(var(--ai-glass-blur)) saturate(1.9) brightness(1.04);
+  box-shadow: 0 28px 72px rgba(0, 0, 0, 0.11),
+              0 12px 32px rgba(0, 0, 0, 0.07),
               0 0 0 1px var(--ai-glass-border),
-              0 0 80px rgba(124, 92, 252, 0.025),
-              inset 0 1px 0 rgba(255,255,255,0.24),
+              0 0 90px rgba(115, 100, 255, 0.022),
+              0 0 60px rgba(0, 212, 170, 0.012),
+              inset 0 1px 0 rgba(255,255,255,0.26),
               inset 0 -1px 0 rgba(0,0,0,0.02);
   border-radius: 28px;
   border: 1px solid var(--ai-glass-border);
   overflow: hidden;
   max-height: 85vh;
-  animation: ai-panel-in 0.65s var(--ai-ease-celestial);
+  animation: ai-panel-in 0.7s var(--ai-ease-celestial);
   transform-style: preserve-3d;
-  perspective: var(--ai-perspective, 1400px);
+  perspective: var(--ai-perspective, 1600px);
 }
 
 #ai-sort-wrapper [data-lucide] {
@@ -472,13 +477,13 @@
   border-bottom-right-radius: 28px;
 }
 
-/* === 5. 标题栏 — 天璇棱光 + 色散折射 + 磨砂层叠 === */
+/* === 5. 标题栏 — 星潮极光 + 液态折射 + 磨砂层叠 === */
 .ai-header {
   background: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-6), var(--ai-aurora-2), var(--ai-aurora-8), var(--ai-aurora-3), var(--ai-aurora-5), var(--ai-aurora-4), var(--ai-aurora-6));
-  background-size: 800% 800%;
-  animation: ai-aurora-flow 20s ease-in-out infinite;
+  background-size: 900% 900%;
+  animation: ai-aurora-flow 24s ease-in-out infinite;
   color: #fff;
-  padding: 17px 18px;
+  padding: 18px 18px;
   font-weight: 600;
   font-size: 14px;
   display: flex;
@@ -486,31 +491,31 @@
   align-items: center;
   position: relative;
   overflow: hidden;
-  letter-spacing: 0.35px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+  letter-spacing: 0.4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-/* 多层光泽纹理 — 棱光深度感 */
+/* 多层光泽纹理 — 琉璃深度感 */
 .ai-header::before {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(135deg, transparent 5%, rgba(255,255,255,0.14) 24%, transparent 44%, rgba(255,255,255,0.08) 64%, transparent),
-    radial-gradient(ellipse at 10% 50%, rgba(255,255,255,0.18) 0%, transparent 55%),
-    radial-gradient(ellipse at 90% 30%, rgba(255,255,255,0.12) 0%, transparent 45%),
-    radial-gradient(ellipse at 50% 90%, rgba(255,255,255,0.06) 0%, transparent 50%);
+    linear-gradient(135deg, transparent 5%, rgba(255,255,255,0.12) 22%, transparent 42%, rgba(255,255,255,0.07) 62%, transparent),
+    radial-gradient(ellipse at 10% 50%, rgba(255,255,255,0.16) 0%, transparent 55%),
+    radial-gradient(ellipse at 90% 30%, rgba(255,255,255,0.10) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 90%, rgba(255,255,255,0.05) 0%, transparent 50%);
   pointer-events: none;
 }
 
-/* 流光扫过 — 棱镜虹彩色散 */
+/* 流光扫过 — 星潮虹彩色散 */
 .ai-header::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(105deg, transparent 18%, rgba(255,255,255,0.06) 36%, rgba(255,255,255,0.18) 44%, rgba(255,255,255,0.32) 50%, rgba(255,255,255,0.18) 56%, rgba(255,255,255,0.06) 64%, transparent 82%);
-  background-size: 340% 100%;
-  animation: ai-shimmer 7s ease-in-out infinite;
+  background: linear-gradient(105deg, transparent 16%, rgba(255,255,255,0.05) 34%, rgba(255,255,255,0.16) 43%, rgba(255,255,255,0.30) 50%, rgba(255,255,255,0.16) 57%, rgba(255,255,255,0.05) 66%, transparent 84%);
+  background-size: 360% 100%;
+  animation: ai-shimmer 8s ease-in-out infinite;
   pointer-events: none;
 }
 
@@ -616,10 +621,10 @@
 }
 
 .ai-group-header:hover {
-  background: linear-gradient(135deg, var(--ai-primary-bg), rgba(255, 107, 138, 0.05));
+  background: linear-gradient(135deg, var(--ai-primary-bg), rgba(255, 107, 157, 0.05));
   color: var(--ai-primary);
   padding-left: 14px;
-  box-shadow: inset 0 0 0 1px rgba(124, 92, 252, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(115, 100, 255, 0.08);
 }
 
 .ai-group-icon {
@@ -672,7 +677,7 @@
 
 .ai-input:focus-visible {
   border-color: var(--ai-primary);
-  box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.12), 0 2px 8px rgba(124, 92, 252, 0.06);
+  box-shadow: 0 0 0 3px rgba(115, 100, 255, 0.12), 0 2px 8px rgba(115, 100, 255, 0.06);
 }
 
 .ai-input::placeholder {
@@ -686,7 +691,7 @@
 }
 
 .ai-input[type="number"]:focus-visible {
-  box-shadow: inset 0 1px 3px rgba(124, 92, 252, 0.08), 0 0 0 3px rgba(124, 92, 252, 0.12);
+  box-shadow: inset 0 1px 3px rgba(115, 100, 255, 0.08), 0 0 0 3px rgba(115, 100, 255, 0.12);
 }
 
 .ai-select {
@@ -703,12 +708,12 @@
 
 .ai-select:hover {
   border-color: var(--ai-primary-light);
-  box-shadow: 0 0 0 2px rgba(124, 92, 252, 0.06);
+  box-shadow: 0 0 0 2px rgba(115, 100, 255, 0.06);
 }
 
 .ai-select:focus-visible {
   border-color: var(--ai-primary);
-  box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.12);
+  box-shadow: 0 0 0 3px rgba(115, 100, 255, 0.12);
 }
 
 .ai-label {
@@ -736,7 +741,7 @@
 
 #ai-model-trigger:hover {
   border-color: var(--ai-primary);
-  box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.1);
+  box-shadow: 0 0 0 3px rgba(115, 100, 255, 0.1);
 }
 
 /* 模型下拉面板 (#72,73) */
@@ -774,7 +779,7 @@
 
 #ai-custom-prompt:focus {
   border-color: var(--ai-primary);
-  box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.1);
+  box-shadow: 0 0 0 3px rgba(115, 100, 255, 0.1);
   height: 80px;
 }
 
@@ -849,9 +854,9 @@
 }
 
 .ai-btn-primary:hover {
-  box-shadow: 0 14px 36px rgba(124, 92, 252, 0.32),
-              0 6px 18px rgba(255, 107, 138, 0.18),
-              0 0 48px rgba(124, 92, 252, 0.08),
+  box-shadow: 0 14px 36px rgba(115, 100, 255, 0.32),
+              0 6px 18px rgba(255, 107, 157, 0.18),
+              0 0 48px rgba(115, 100, 255, 0.08),
               inset 0 1px 0 rgba(255,255,255,0.28);
   transform: translateY(-3px) scale(1.03);
 }
@@ -887,7 +892,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(124, 92, 252, 0.06), rgba(6, 182, 212, 0.05));
+  background: linear-gradient(135deg, rgba(115, 100, 255, 0.06), rgba(0, 212, 170, 0.05));
   opacity: 0;
   transition: opacity 0.45s ease;
   border-radius: inherit;
@@ -899,7 +904,7 @@
 
 .ai-btn-tool:hover {
   transform: translateY(-3px) scale(1.045);
-  box-shadow: 0 10px 28px rgba(124, 92, 252, 0.12), 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 10px 28px rgba(115, 100, 255, 0.12), 0 4px 12px rgba(0,0,0,0.05);
   border-color: var(--ai-primary-light);
   color: var(--ai-primary);
 }
@@ -919,7 +924,7 @@
 /* 小图标按钮 (#36) */
 #ai-goto-api:hover, #ai-set-eye:hover, #ai-fetch-models:hover, #ai-verify-model:hover {
   transform: translateY(-2px);
-  box-shadow: 0 3px 10px rgba(124, 92, 252, 0.2);
+  box-shadow: 0 3px 10px rgba(115, 100, 255, 0.2);
 }
 
 /* 筛选按钮 — 胶囊态 + 弹性选中 + 光晕 */
@@ -940,7 +945,7 @@
   color: var(--ai-primary);
   background: var(--ai-primary-bg);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(124, 92, 252, 0.08);
+  box-shadow: 0 4px 12px rgba(115, 100, 255, 0.08);
 }
 
 .ai-filter-btn.active {
@@ -1139,7 +1144,7 @@
   box-shadow: 0 48px 120px rgba(0, 0, 0, 0.22),
               0 20px 48px rgba(0, 0, 0, 0.12),
               0 0 0 1px var(--ai-glass-border),
-              0 0 90px rgba(124, 92, 252, 0.03),
+              0 0 90px rgba(115, 100, 255, 0.03),
               inset 0 1px 0 rgba(255,255,255,0.24),
               inset 0 -1px 0 rgba(0,0,0,0.03);
   border: 1px solid var(--ai-glass-border);
@@ -1320,7 +1325,7 @@
   background: var(--ai-bg-hover);
   border-left-width: 4px;
   padding-left: 19px;
-  box-shadow: inset 0 0 44px var(--ai-glow-color), 0 3px 14px rgba(124, 92, 252, 0.05);
+  box-shadow: inset 0 0 44px var(--ai-glow-color), 0 3px 14px rgba(115, 100, 255, 0.05);
   transform: translateX(3px);
 }
 
@@ -1547,55 +1552,62 @@
 
 /* === 16. 动画关键帧 — Fluid Dynamics 2.0 + 棱光曲线 + 有机动效 === */
 
-/* 悬浮按钮 — 蝶翼飘浮 + 琉光呼吸（Butterfly 轨迹） */
+/* 悬浮按钮 — 星潮飘浮 + 琉璃呼吸（Oceanic Drift 轨迹） */
 @keyframes ai-float-levitate {
   0%, 100% {
     box-shadow: var(--ai-neon-glow);
     transform: translateY(0) rotate(0deg) scale(1);
   }
-  8% {
-    transform: translateY(-1.5px) rotate(0.5deg) scale(1.005);
+  6% {
+    transform: translateY(-1px) rotate(0.3deg) scale(1.003);
   }
-  18% {
-    box-shadow: 0 0 28px rgba(124, 92, 252, 0.42),
-                0 0 56px rgba(255, 107, 138, 0.20),
-                0 0 84px rgba(6, 182, 212, 0.08);
-    transform: translateY(-7px) rotate(-0.8deg) scale(1.015);
+  15% {
+    box-shadow: 0 0 24px rgba(115, 100, 255, 0.38),
+                0 0 48px rgba(255, 107, 157, 0.18),
+                0 0 72px rgba(0, 212, 170, 0.07);
+    transform: translateY(-6px) rotate(-0.6deg) scale(1.012);
   }
-  30% {
-    transform: translateY(-3px) rotate(0.4deg) scale(0.998);
+  26% {
+    transform: translateY(-2.5px) rotate(0.3deg) scale(0.999);
   }
-  42% {
-    transform: translateY(-5px) rotate(-0.3deg) scale(1.008);
+  38% {
+    transform: translateY(-4.5px) rotate(-0.2deg) scale(1.006);
   }
-  55% {
+  50% {
     box-shadow: var(--ai-neon-glow);
-    transform: translateY(-2px) rotate(0.2deg) scale(1.002);
+    transform: translateY(-1.5px) rotate(0.15deg) scale(1.001);
   }
-  68% {
-    transform: translateY(-4px) rotate(-0.15deg) scale(0.997);
+  62% {
+    transform: translateY(-3.5px) rotate(-0.1deg) scale(0.998);
   }
-  80% {
-    transform: translateY(-1.5px) rotate(0.08deg) scale(1.003);
+  74% {
+    box-shadow: 0 0 22px rgba(115, 100, 255, 0.34),
+                0 0 44px rgba(224, 86, 207, 0.15),
+                0 0 66px rgba(0, 212, 170, 0.06);
+    transform: translateY(-5px) rotate(0.08deg) scale(1.008);
   }
-  92% {
-    transform: translateY(-0.5px) rotate(-0.03deg) scale(1);
+  86% {
+    transform: translateY(-1px) rotate(-0.04deg) scale(1.002);
+  }
+  94% {
+    transform: translateY(-0.3px) rotate(0.01deg) scale(1);
   }
 }
 
-/* 蝶翼形变 — 有机琉光呼吸（幻蝶翼展形态） */
+/* 琉璃形变 — 有机星潮呼吸（液态玻璃形态） */
 @keyframes ai-float-morph {
   0%, 100% { border-radius: 50%; }
-  6% { border-radius: 44% 56% 52% 48% / 56% 44% 52% 48%; }
-  14% { border-radius: 54% 46% 56% 44% / 44% 56% 44% 56%; }
-  23% { border-radius: 56% 44% 46% 54% / 54% 46% 56% 44%; }
-  33% { border-radius: 42% 58% 55% 45% / 58% 42% 45% 55%; }
-  43% { border-radius: 55% 45% 42% 58% / 45% 55% 58% 42%; }
-  53% { border-radius: 45% 55% 58% 42% / 55% 45% 42% 58%; }
-  63% { border-radius: 58% 42% 45% 55% / 42% 58% 55% 45%; }
-  74% { border-radius: 48% 52% 53% 47% / 52% 48% 47% 53%; }
-  85% { border-radius: 51% 49% 49% 51% / 49% 51% 51% 49%; }
-  94% { border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%; }
+  5% { border-radius: 46% 54% 51% 49% / 54% 46% 51% 49%; }
+  12% { border-radius: 52% 48% 54% 46% / 46% 54% 46% 54%; }
+  20% { border-radius: 54% 46% 48% 52% / 52% 48% 54% 46%; }
+  29% { border-radius: 44% 56% 53% 47% / 56% 44% 47% 53%; }
+  38% { border-radius: 53% 47% 44% 56% / 47% 53% 56% 44%; }
+  48% { border-radius: 47% 53% 56% 44% / 53% 47% 44% 56%; }
+  58% { border-radius: 56% 44% 47% 53% / 44% 56% 53% 47%; }
+  68% { border-radius: 50% 50% 52% 48% / 48% 52% 50% 50%; }
+  78% { border-radius: 48% 52% 50% 50% / 52% 48% 50% 50%; }
+  88% { border-radius: 50% 50% 51% 49% / 50% 50% 49% 51%; }
+  95% { border-radius: 50%; }
 }
 
 /* 棱光轨道环呼吸 */
@@ -1618,23 +1630,25 @@
   100% { transform: rotate(360deg); }
 }
 
-/* 幻蝶琉光 — Silk Dynamics 蝶翼 Lissajous 虹彩路径 */
+/* 琉璃星潮 — Velvet Dynamics 4.0 Oceanic Lissajous 星潮路径 */
 @keyframes ai-aurora-flow {
   0% { background-position: 0% 50%; }
-  5% { background-position: 4% 82%; }
-  11% { background-position: 14% 95%; }
-  17% { background-position: 30% 80%; }
-  23% { background-position: 48% 60%; }
-  30% { background-position: 62% 42%; }
-  37% { background-position: 78% 28%; }
-  44% { background-position: 90% 18%; }
-  51% { background-position: 96% 12%; }
-  58% { background-position: 92% 28%; }
-  65% { background-position: 78% 45%; }
-  72% { background-position: 60% 58%; }
-  79% { background-position: 42% 68%; }
-  86% { background-position: 25% 60%; }
-  93% { background-position: 12% 48%; }
+  4% { background-position: 3% 74%; }
+  9% { background-position: 10% 90%; }
+  15% { background-position: 24% 82%; }
+  21% { background-position: 40% 66%; }
+  27% { background-position: 54% 48%; }
+  33% { background-position: 68% 34%; }
+  40% { background-position: 80% 22%; }
+  47% { background-position: 88% 16%; }
+  53% { background-position: 92% 24%; }
+  59% { background-position: 86% 38%; }
+  65% { background-position: 74% 50%; }
+  71% { background-position: 58% 62%; }
+  77% { background-position: 44% 72%; }
+  83% { background-position: 30% 76%; }
+  89% { background-position: 18% 66%; }
+  95% { background-position: 8% 56%; }
   100% { background-position: 0% 50%; }
 }
 
@@ -1649,17 +1663,19 @@
   100% { background-position: 400% 50%; }
 }
 
-/* 模态框弹入 — Silk Dynamics 蝶翼绽放动力学（10阶衰减 + 虹彩绽放） */
+/* 模态框弹入 — Velvet Dynamics 4.0 星潮绽放动力学（12阶丝滑衰减） */
 @keyframes ai-modal-enter {
-  0% { transform: scale(0.72) translateY(44px) rotate(-0.8deg); opacity: 0; filter: blur(14px) brightness(1.12) saturate(0.6); }
-  10% { transform: scale(1.07) translateY(-12px) rotate(0.4deg); opacity: 1; filter: blur(0.5px) brightness(1.03) saturate(1.1); }
-  20% { transform: scale(0.978) translateY(5px) rotate(-0.15deg); filter: blur(0) brightness(1.01) saturate(1); }
-  30% { transform: scale(1.015) translateY(-3px) rotate(0.08deg); filter: brightness(1); }
-  40% { transform: scale(0.994) translateY(1.5px) rotate(-0.04deg); }
-  50% { transform: scale(1.006) translateY(-0.8px) rotate(0.02deg); }
-  60% { transform: scale(0.998) translateY(0.3px) rotate(-0.01deg); }
-  72% { transform: scale(1.002) translateY(-0.1px) rotate(0.004deg); }
-  84% { transform: scale(0.9995) translateY(0.03px) rotate(0deg); }
+  0% { transform: scale(0.78) translateY(40px) rotate(-0.5deg); opacity: 0; filter: blur(16px) brightness(1.08) saturate(0.65); }
+  8% { transform: scale(1.04) translateY(-10px) rotate(0.25deg); opacity: 1; filter: blur(0.4px) brightness(1.02) saturate(1.08); }
+  16% { transform: scale(0.985) translateY(4px) rotate(-0.1deg); filter: blur(0) brightness(1.01) saturate(1); }
+  24% { transform: scale(1.012) translateY(-2.5px) rotate(0.05deg); filter: brightness(1); }
+  32% { transform: scale(0.996) translateY(1.2px) rotate(-0.025deg); }
+  40% { transform: scale(1.005) translateY(-0.6px) rotate(0.012deg); }
+  50% { transform: scale(0.999) translateY(0.25px) rotate(-0.006deg); }
+  60% { transform: scale(1.002) translateY(-0.1px) rotate(0.003deg); }
+  72% { transform: scale(0.9998) translateY(0.04px) rotate(-0.001deg); }
+  84% { transform: scale(1.0002) translateY(-0.01px) rotate(0deg); }
+  92% { transform: scale(1) translateY(0.003px); }
   100% { transform: scale(1) translateY(0) rotate(0deg); opacity: 1; filter: blur(0) brightness(1) saturate(1); }
 }
 
@@ -1681,20 +1697,20 @@
 
 @keyframes ai-breathe {
   0%, 100% { box-shadow: 0 4px 14px var(--ai-primary-shadow); }
-  50% { box-shadow: 0 4px 28px rgba(124, 92, 252, 0.45); }
+  50% { box-shadow: 0 4px 28px rgba(115, 100, 255, 0.45); }
 }
 
-/* 面板弹入 — Silk Dynamics 蝶翼弹簧展开 */
+/* 面板弹入 — Velvet Dynamics 4.0 星潮弹簧展开 */
 @keyframes ai-panel-in {
-  0% { transform: translateY(52px) scale(0.84) rotate(-0.5deg); opacity: 0; filter: blur(12px) brightness(1.10) saturate(0.7); }
-  12% { transform: translateY(-10px) scale(1.03) rotate(0.2deg); opacity: 1; filter: blur(0.3px) brightness(1.02) saturate(1.05); }
-  24% { transform: translateY(5px) scale(0.99) rotate(-0.08deg); filter: blur(0) brightness(1); }
-  36% { transform: translateY(-2.5px) scale(1.008) rotate(0.04deg); }
-  46% { transform: translateY(1px) scale(0.996) rotate(-0.015deg); }
-  56% { transform: translateY(-0.5px) scale(1.003) rotate(0.008deg); }
-  66% { transform: translateY(0.15px) scale(0.999) rotate(-0.003deg); }
-  78% { transform: translateY(-0.04px) scale(1.001) rotate(0deg); }
-  90% { transform: translateY(0.01px) scale(0.9998); }
+  0% { transform: translateY(48px) scale(0.86) rotate(-0.35deg); opacity: 0; filter: blur(14px) brightness(1.06) saturate(0.72); }
+  10% { transform: translateY(-8px) scale(1.025) rotate(0.15deg); opacity: 1; filter: blur(0.2px) brightness(1.015) saturate(1.04); }
+  20% { transform: translateY(4px) scale(0.992) rotate(-0.06deg); filter: blur(0) brightness(1); }
+  30% { transform: translateY(-2px) scale(1.006) rotate(0.03deg); }
+  40% { transform: translateY(0.8px) scale(0.997) rotate(-0.012deg); }
+  50% { transform: translateY(-0.4px) scale(1.002) rotate(0.006deg); }
+  62% { transform: translateY(0.12px) scale(0.9995) rotate(-0.002deg); }
+  74% { transform: translateY(-0.04px) scale(1.0008) rotate(0.001deg); }
+  86% { transform: translateY(0.01px) scale(0.9999) rotate(0deg); }
   100% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; filter: blur(0) brightness(1) saturate(1); }
 }
 
@@ -1803,8 +1819,8 @@
 
 /* 工具按钮运行中呼吸 — 更柔和 */
 @keyframes ai-tool-running-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(124, 92, 252, 0); border-color: var(--ai-primary); }
-  50% { box-shadow: 0 0 0 5px rgba(124, 92, 252, 0.1); border-color: var(--ai-primary-light); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(115, 100, 255, 0); border-color: var(--ai-primary); }
+  50% { box-shadow: 0 0 0 5px rgba(115, 100, 255, 0.1); border-color: var(--ai-primary-light); }
 }
 
 @keyframes ai-shake {
@@ -1839,16 +1855,16 @@
   50% { box-shadow: inset 0 0 28px rgba(255,255,255,0.1); }
 }
 
-/* 标题图标灵动浮动 — Celestial 棱光轨迹 */
+/* 标题图标灵动浮动 — 星潮呼吸轨迹 */
 @keyframes ai-icon-float {
   0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
-  10% { transform: translateY(-2.5px) rotate(8deg) scale(1.04); }
-  24% { transform: translateY(-0.5px) rotate(3deg) scale(1.01); }
-  38% { transform: translateY(1.5px) rotate(-4deg) scale(0.98); }
-  52% { transform: translateY(2px) rotate(-7deg) scale(1.01); }
-  66% { transform: translateY(0.5px) rotate(-2deg) scale(1.02); }
-  80% { transform: translateY(-0.5px) rotate(2deg) scale(1); }
-  92% { transform: translateY(0.2px) rotate(0.5deg) scale(1); }
+  8% { transform: translateY(-2px) rotate(6deg) scale(1.03); }
+  20% { transform: translateY(-0.5px) rotate(2deg) scale(1.01); }
+  34% { transform: translateY(1px) rotate(-3deg) scale(0.99); }
+  48% { transform: translateY(1.5px) rotate(-5deg) scale(1.01); }
+  62% { transform: translateY(0.3px) rotate(-1.5deg) scale(1.015); }
+  76% { transform: translateY(-0.5px) rotate(1.5deg) scale(1); }
+  90% { transform: translateY(0.1px) rotate(0.3deg) scale(1); }
 }
 
 /* checkbox 弹跳 — 更Q弹 */
@@ -1869,8 +1885,8 @@
 
 /* 输入框聚焦光环呼吸 */
 @keyframes ai-focus-glow {
-  0%, 100% { box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.1), 0 0 12px rgba(124, 92, 252, 0.04); }
-  50% { box-shadow: 0 0 0 4px rgba(124, 92, 252, 0.14), 0 0 20px rgba(124, 92, 252, 0.06); }
+  0%, 100% { box-shadow: 0 0 0 3px rgba(115, 100, 255, 0.1), 0 0 12px rgba(115, 100, 255, 0.04); }
+  50% { box-shadow: 0 0 0 4px rgba(115, 100, 255, 0.14), 0 0 20px rgba(115, 100, 255, 0.06); }
 }
 
 /* === 17. 滚动条美化 — 渐变滚动条 === */
@@ -2144,7 +2160,7 @@
   font-family: var(--ai-font);
   box-shadow: 0 18px 52px rgba(0, 0, 0, 0.20),
               0 7px 20px rgba(0, 0, 0, 0.10),
-              0 0 60px rgba(124, 92, 252, 0.04),
+              0 0 60px rgba(115, 100, 255, 0.04),
               inset 0 1px 0 rgba(255,255,255,0.24);
   backdrop-filter: blur(36px) saturate(1.9);
   -webkit-backdrop-filter: blur(36px) saturate(1.9);
@@ -2198,14 +2214,14 @@
 }
 
 @keyframes ai-toast-in {
-  0% { transform: translateX(160%) scale(0.55) rotate(4deg); opacity: 0; filter: blur(10px) saturate(0.5); }
-  14% { transform: translateX(-8%) scale(1.06) rotate(-0.5deg); opacity: 1; filter: blur(0) saturate(1.1); }
-  26% { transform: translateX(4%) scale(0.978) rotate(0.2deg); filter: saturate(1); }
-  38% { transform: translateX(-1.5%) scale(1.01) rotate(-0.08deg); }
-  50% { transform: translateX(0.6%) scale(0.996) rotate(0.03deg); }
-  62% { transform: translateX(-0.2%) scale(1.002) rotate(-0.01deg); }
-  76% { transform: translateX(0.05%) scale(0.9996) rotate(0deg); }
-  88% { transform: translateX(-0.01%) scale(1.0001); }
+  0% { transform: translateX(140%) scale(0.6) rotate(3deg); opacity: 0; filter: blur(12px) saturate(0.55); }
+  12% { transform: translateX(-6%) scale(1.04) rotate(-0.35deg); opacity: 1; filter: blur(0) saturate(1.08); }
+  22% { transform: translateX(3%) scale(0.982) rotate(0.15deg); filter: saturate(1); }
+  32% { transform: translateX(-1.2%) scale(1.008) rotate(-0.06deg); }
+  42% { transform: translateX(0.5%) scale(0.997) rotate(0.025deg); }
+  54% { transform: translateX(-0.15%) scale(1.002) rotate(-0.008deg); }
+  66% { transform: translateX(0.04%) scale(0.9998) rotate(0.002deg); }
+  80% { transform: translateX(-0.01%) scale(1.0001) rotate(0deg); }
   100% { transform: translateX(0) scale(1) rotate(0deg); opacity: 1; }
 }
 
@@ -2328,7 +2344,7 @@
 /* === 31. 增强的输入框聚焦效果 === */
 .ai-input:focus-visible, .ai-select:focus-visible {
   border-color: var(--ai-primary);
-  box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.12), 0 0 16px rgba(124, 92, 252, 0.06);
+  box-shadow: 0 0 0 3px rgba(115, 100, 255, 0.12), 0 0 16px rgba(115, 100, 255, 0.06);
   background: var(--ai-input-bg);
 }
 
@@ -2480,7 +2496,7 @@
 }
 
 .ai-theme-toggle:hover {
-  box-shadow: 0 0 12px rgba(124, 92, 252, 0.2);
+  box-shadow: 0 0 12px rgba(115, 100, 255, 0.2);
 }
 
 .ai-theme-toggle::after {
@@ -2625,7 +2641,7 @@
   border-image: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-2)) 1;
   border-image-slice: 1;
   border-radius: var(--ai-radius-sm);
-  box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.12), 0 0 18px rgba(124, 92, 252, 0.06);
+  box-shadow: 0 0 0 3px rgba(115, 100, 255, 0.12), 0 0 18px rgba(115, 100, 255, 0.06);
   background: var(--ai-input-bg);
   animation: ai-focus-glow 2.5s ease-in-out infinite;
 }
@@ -2705,7 +2721,7 @@
 }
 
 .ai-theme-toggle:hover {
-  box-shadow: 0 0 14px rgba(124, 92, 252, 0.22);
+  box-shadow: 0 0 14px rgba(115, 100, 255, 0.22);
 }
 
 .ai-theme-toggle::after {
@@ -2713,7 +2729,7 @@
 }
 
 [data-theme="dark"] .ai-theme-toggle:hover::after {
-  box-shadow: 0 1px 6px rgba(0,0,0,0.3), 0 0 8px rgba(124, 92, 252, 0.2);
+  box-shadow: 0 1px 6px rgba(0,0,0,0.3), 0 0 8px rgba(115, 100, 255, 0.2);
 }
 
 /* === 64. Confetti 增强 — 更丰富的 3D 翻飞 === */
@@ -2745,62 +2761,62 @@
     transform: scale(1);
   }
   50% {
-    box-shadow: 0 0 34px rgba(124, 92, 252, 0.52),
-                0 0 64px rgba(255, 107, 138, 0.26),
-                0 0 94px rgba(168, 85, 247, 0.14);
+    box-shadow: 0 0 34px rgba(115, 100, 255, 0.52),
+                0 0 64px rgba(255, 107, 157, 0.26),
+                0 0 94px rgba(155, 89, 246, 0.14);
     transform: scale(1.08);
   }
 }
 
-/* === 67. 暗色主题面板增强 — 虚空蝶影 2.0 + 虹彩折射边缘 === */
+/* === 67. 暗色主题面板增强 — 星渊深潮 2.0 + 星光折射边缘 === */
 [data-theme="dark"] #ai-sort-wrapper {
-  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.58),
-              0 12px 36px rgba(0, 0, 0, 0.40),
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.60),
+              0 12px 36px rgba(0, 0, 0, 0.42),
               0 0 0 1px rgba(255, 255, 255, 0.04),
-              0 0 110px rgba(124, 92, 252, 0.05),
-              0 0 70px rgba(255, 107, 138, 0.025),
-              0 0 45px rgba(6, 182, 212, 0.018),
+              0 0 120px rgba(115, 100, 255, 0.045),
+              0 0 80px rgba(0, 212, 170, 0.02),
+              0 0 50px rgba(255, 107, 157, 0.015),
               inset 0 1px 0 rgba(255,255,255,0.07),
-              inset 0 -1px 0 rgba(0,0,0,0.3);
+              inset 0 -1px 0 rgba(0,0,0,0.32);
 }
 
 [data-theme="dark"] .ai-modal {
-  box-shadow: 0 52px 140px rgba(0, 0, 0, 0.68),
-              0 22px 52px rgba(0, 0, 0, 0.48),
+  box-shadow: 0 52px 140px rgba(0, 0, 0, 0.70),
+              0 22px 52px rgba(0, 0, 0, 0.50),
               0 0 0 1px rgba(255, 255, 255, 0.04),
-              0 0 130px rgba(124, 92, 252, 0.055),
-              0 0 90px rgba(255, 107, 138, 0.03),
+              0 0 140px rgba(115, 100, 255, 0.05),
+              0 0 100px rgba(0, 212, 170, 0.02),
               inset 0 1px 0 rgba(255,255,255,0.07);
 }
 
-/* 暗色下按钮增强 — 深层琉光辉光 */
+/* 暗色下按钮增强 — 深层星潮辉光 */
 [data-theme="dark"] .ai-btn-tool:hover {
-  box-shadow: 0 10px 36px rgba(124, 92, 252, 0.20), 0 4px 14px rgba(0,0,0,0.38);
+  box-shadow: 0 10px 36px rgba(115, 100, 255, 0.18), 0 4px 14px rgba(0,0,0,0.40);
 }
 
 [data-theme="dark"] .ai-btn-primary:hover {
-  box-shadow: 0 16px 44px rgba(124, 92, 252, 0.36),
-              0 7px 20px rgba(255, 107, 138, 0.22),
+  box-shadow: 0 16px 44px rgba(115, 100, 255, 0.34),
+              0 7px 20px rgba(255, 107, 157, 0.20),
               inset 0 1px 0 rgba(255,255,255,0.22);
 }
 
-/* 暗色主题虚空蝶影环境光 */
+/* 暗色主题星渊深潮环境光 */
 [data-theme="dark"] .ai-cat-row:hover {
-  box-shadow: inset 0 0 48px rgba(124, 92, 252, 0.07),
-              0 3px 14px rgba(0, 0, 0, 0.24);
+  box-shadow: inset 0 0 48px rgba(115, 100, 255, 0.06),
+              0 3px 14px rgba(0, 0, 0, 0.26);
 }
 
 [data-theme="dark"] .ai-toast {
-  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.40),
-              0 8px 22px rgba(0, 0, 0, 0.25),
-              0 0 40px rgba(124, 92, 252, 0.04),
+  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.44),
+              0 8px 22px rgba(0, 0, 0, 0.28),
+              0 0 44px rgba(115, 100, 255, 0.04),
               inset 0 1px 0 rgba(255,255,255,0.18);
 }
 
 /* === 68. 增强聚焦光环呼吸 === */
 @keyframes ai-focus-glow {
-  0%, 100% { box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.1), 0 0 14px rgba(124, 92, 252, 0.04); }
-  50% { box-shadow: 0 0 0 4px rgba(124, 92, 252, 0.15), 0 0 22px rgba(124, 92, 252, 0.07); }
+  0%, 100% { box-shadow: 0 0 0 3px rgba(115, 100, 255, 0.1), 0 0 14px rgba(115, 100, 255, 0.04); }
+  50% { box-shadow: 0 0 0 4px rgba(115, 100, 255, 0.15), 0 0 22px rgba(115, 100, 255, 0.07); }
 }
 
 /* === 69. 分类行选中勾选增强 === */
@@ -2818,7 +2834,7 @@
 /* === 71. 滚动条轨道渐变 === */
 #ai-sort-wrapper ::-webkit-scrollbar-track,
 .ai-modal ::-webkit-scrollbar-track {
-  background: linear-gradient(180deg, transparent, rgba(124, 92, 252, 0.02), transparent);
+  background: linear-gradient(180deg, transparent, rgba(115, 100, 255, 0.02), transparent);
 }
 
 /* === 72. 增强的标签 hover 下划线 — 渐变色 === */
@@ -2878,7 +2894,7 @@
 
 .ai-vid-title a:hover {
   color: var(--ai-primary);
-  text-shadow: 0 0 20px rgba(124, 92, 252, 0.08);
+  text-shadow: 0 0 20px rgba(115, 100, 255, 0.08);
 }
 
 /* === 77. 分组图标悬浮旋转 === */
@@ -2918,15 +2934,15 @@
   border-radius: 50%;
   transform: scale(0.92);
   opacity: 0.7;
-  box-shadow: 0 0 12px rgba(124, 92, 252, 0.2);
+  box-shadow: 0 0 12px rgba(115, 100, 255, 0.2);
 }
 
 /* === 82. 暗色下的输入框微妙内发光 === */
 [data-theme="dark"] .ai-input:focus-visible,
 [data-theme="dark"] .ai-select:focus-visible {
-  box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.15),
-              0 0 24px rgba(124, 92, 252, 0.07),
-              inset 0 0 14px rgba(124, 92, 252, 0.035);
+  box-shadow: 0 0 0 3px rgba(115, 100, 255, 0.15),
+              0 0 24px rgba(115, 100, 255, 0.07),
+              inset 0 0 14px rgba(115, 100, 255, 0.035);
 }
 
 /* === 83. 日志条目类型左边框增强 === */
@@ -2963,10 +2979,10 @@
   -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 16px), transparent 100%);
 }
 
-/* === 86. 暗色主题下的 header 琉光增强 — 虚空蝶影色 === */
+/* === 86. 暗色主题下的 header 增强 — 星渊深潮色 === */
 [data-theme="dark"] .ai-header {
-  background: linear-gradient(135deg, #4338CA, #7C3AED, #5B3FDB, #A855F7, #7C5CFC, #D946EF, #5B3FDB);
-  background-size: 800% 800%;
+  background: linear-gradient(135deg, #3730A3, #7364FF, #5046E5, #9B59F6, #7364FF, #E056CF, #5046E5);
+  background-size: 900% 900%;
 }
 
 /* === 87. 按钮按下时的内凹效果 === */
@@ -2997,7 +3013,7 @@
 
 /* === 90. 暗色下的按钮 hover 星光 === */
 [data-theme="dark"] .ai-btn-tool:hover::before {
-  background: linear-gradient(135deg, rgba(124, 92, 252, 0.08), rgba(6, 182, 212, 0.06));
+  background: linear-gradient(135deg, rgba(115, 100, 255, 0.08), rgba(0, 212, 170, 0.06));
 }
 
 /* === 91. 全局过渡性能 — 精确的 will-change 管理 === */
@@ -3015,12 +3031,12 @@
   will-change: transform, box-shadow;
 }
 
-/* === 92. 暗色主题面板底部虚空辉光 + 顶部折射 === */
+/* === 92. 暗色主题面板底部星渊辉光 + 顶部折射 === */
 [data-theme="dark"] #ai-sort-wrapper {
   background-image: var(--ai-mesh-gradient),
-                    radial-gradient(ellipse at 50% 100%, rgba(124, 92, 252, 0.05) 0%, transparent 55%),
-                    radial-gradient(ellipse at 50% 0%, rgba(255, 107, 138, 0.025) 0%, transparent 40%),
-                    radial-gradient(ellipse at 30% 50%, rgba(6, 182, 212, 0.015) 0%, transparent 50%);
+                    radial-gradient(ellipse at 50% 100%, rgba(115, 100, 255, 0.05) 0%, transparent 55%),
+                    radial-gradient(ellipse at 50% 0%, rgba(255, 107, 157, 0.025) 0%, transparent 40%),
+                    radial-gradient(ellipse at 30% 50%, rgba(0, 212, 170, 0.015) 0%, transparent 50%);
 }
 
 /* === 93. 分类列表弹入优化 — 更丝滑 === */
@@ -3044,7 +3060,7 @@
 
 /* === 95. Hover 状态下的键盘提示高亮 === */
 .ai-btn:hover .ai-kbd {
-  background: rgba(124, 92, 252, 0.08);
+  background: rgba(115, 100, 255, 0.08);
   border-color: var(--ai-primary-light);
   color: var(--ai-primary);
 }
@@ -3144,7 +3160,7 @@
 
 /* === 105. 新增：暗色主题全局增强 — 色彩环境光 === */
 [data-theme="dark"] .ai-btn-tool::before {
-  background: linear-gradient(135deg, rgba(124, 92, 252, 0.08), rgba(6, 182, 212, 0.06));
+  background: linear-gradient(135deg, rgba(115, 100, 255, 0.08), rgba(0, 212, 170, 0.06));
 }
 
 [data-theme="dark"] .ai-cat-row::before {
@@ -3153,7 +3169,7 @@
 
 /* === 106. 新增：进度条活跃态呼吸光晕 === */
 #ai-progress-bar:not([style*="width: 0"]):not(.complete) {
-  box-shadow: 0 0 12px rgba(124, 92, 252, 0.2), 0 0 24px rgba(255, 107, 138, 0.1);
+  box-shadow: 0 0 12px rgba(115, 100, 255, 0.2), 0 0 24px rgba(255, 107, 157, 0.1);
 }
 
 /* === 107. 新增：面板滚动时顶部阴影提示 === */
@@ -3203,7 +3219,7 @@
 }
 
 #ai-sort-wrapper:hover {
-  border-color: rgba(124, 92, 252, 0.15);
+  border-color: rgba(115, 100, 255, 0.15);
 }
 
 /* === 112. 分类行悬浮时的柔和弹性 === */
@@ -3232,7 +3248,7 @@
 
 /* === 116. 视频封面加载闪光增强 === */
 .ai-vid-cover-empty {
-  background: linear-gradient(110deg, var(--ai-border-lighter) 28%, rgba(124, 92, 252, 0.06) 50%, var(--ai-border-lighter) 72%);
+  background: linear-gradient(110deg, var(--ai-border-lighter) 28%, rgba(115, 100, 255, 0.06) 50%, var(--ai-border-lighter) 72%);
   background-size: 200% 100%;
 }
 
@@ -3251,19 +3267,19 @@
   pointer-events: none;
 }
 
-/* === 118. 暗色主题悬浮按钮增强 — 虚空蝶翼琉光 === */
+/* === 118. 暗色主题悬浮按钮增强 — 星渊深潮琉璃光 === */
 [data-theme="dark"] #ai-float-btn {
-  box-shadow: 0 0 26px rgba(124, 92, 252, 0.40),
-              0 0 52px rgba(255, 107, 138, 0.20),
-              0 0 78px rgba(168, 85, 247, 0.10),
-              0 0 104px rgba(6, 182, 212, 0.05);
+  box-shadow: 0 0 24px rgba(115, 100, 255, 0.38),
+              0 0 48px rgba(255, 133, 162, 0.18),
+              0 0 72px rgba(155, 89, 246, 0.09),
+              0 0 96px rgba(0, 212, 170, 0.045);
 }
 
 [data-theme="dark"] #ai-float-btn:hover {
-  box-shadow: 0 0 36px rgba(124, 92, 252, 0.56),
-              0 0 72px rgba(255, 107, 138, 0.30),
-              0 0 108px rgba(168, 85, 247, 0.14),
-              0 24px 64px rgba(8, 6, 24, 0.28);
+  box-shadow: 0 0 34px rgba(115, 100, 255, 0.54),
+              0 0 68px rgba(255, 133, 162, 0.28),
+              0 0 100px rgba(155, 89, 246, 0.13),
+              0 24px 64px rgba(6, 6, 26, 0.30);
 }
 
 /* === 119. 进度条液态流光增强 === */
@@ -3275,7 +3291,7 @@
 
 /* === 120. 全局选中文本增强 — 极光选择 === */
 #ai-sort-wrapper ::selection, .ai-modal ::selection {
-  background: rgba(124, 92, 252, 0.15);
+  background: rgba(115, 100, 255, 0.15);
   color: var(--ai-primary-dark);
 }
 
@@ -3294,7 +3310,7 @@
   background: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-6), var(--ai-aurora-2), var(--ai-aurora-8), var(--ai-aurora-3), var(--ai-aurora-5), var(--ai-aurora-4), var(--ai-aurora-6));
 }
 
-/* === 124. Celestial Prism v25.0 — 新增棱光扩散动画 === */
+/* === 124. Astral Glasstide v27.0 — 新增星潮扩散动画 === */
 @keyframes ai-prism-expand {
   0% { transform: scale(0.95) rotate(-1deg); opacity: 0; filter: blur(6px) saturate(0.5); }
   40% { transform: scale(1.02) rotate(0.3deg); opacity: 1; filter: blur(0) saturate(1.1); }
@@ -3315,7 +3331,7 @@
 /* === 127. 新增：滚动条悬浮光晕 === */
 #ai-sort-wrapper ::-webkit-scrollbar-thumb:hover,
 .ai-modal ::-webkit-scrollbar-thumb:hover {
-  box-shadow: 0 0 8px rgba(124, 92, 252, 0.2);
+  box-shadow: 0 0 8px rgba(115, 100, 255, 0.2);
 }
 
 /* === 128. 新增：面板悬浮时外层散射光 === */
@@ -3323,8 +3339,8 @@
   box-shadow: 0 30px 76px rgba(0, 0, 0, 0.13),
               0 14px 34px rgba(0, 0, 0, 0.08),
               0 0 0 1px var(--ai-glass-border),
-              0 0 100px rgba(124, 92, 252, 0.04),
-              0 0 60px rgba(255, 107, 138, 0.02),
+              0 0 100px rgba(115, 100, 255, 0.04),
+              0 0 60px rgba(255, 107, 157, 0.02),
               inset 0 1px 0 rgba(255,255,255,0.26),
               inset 0 -1px 0 rgba(0,0,0,0.02);
 }
@@ -3344,7 +3360,7 @@
 
 /* === 131. 新增：Category row 棱光扫过效果增强 === */
 .ai-cat-row::after {
-  background: linear-gradient(90deg, transparent, rgba(124, 92, 252, 0.08), rgba(255, 107, 138, 0.04), transparent);
+  background: linear-gradient(90deg, transparent, rgba(115, 100, 255, 0.08), rgba(255, 107, 157, 0.04), transparent);
 }
 
 /* === 132. 新增：视频列表打开时的棱光淡入 === */
@@ -3357,9 +3373,9 @@
   box-shadow: 0 32px 84px rgba(0, 0, 0, 0.58),
               0 14px 38px rgba(0, 0, 0, 0.40),
               0 0 0 1px rgba(255, 255, 255, 0.05),
-              0 0 120px rgba(124, 92, 252, 0.06),
-              0 0 70px rgba(255, 107, 138, 0.03),
-              0 0 50px rgba(6, 182, 212, 0.02),
+              0 0 120px rgba(115, 100, 255, 0.06),
+              0 0 70px rgba(255, 107, 157, 0.03),
+              0 0 50px rgba(0, 212, 170, 0.02),
               inset 0 1px 0 rgba(255,255,255,0.08),
               inset 0 -1px 0 rgba(0,0,0,0.3);
 }
@@ -3369,7 +3385,7 @@
   content: '';
   position: absolute;
   inset: -1px;
-  background: linear-gradient(135deg, rgba(124, 92, 252, 0.2), rgba(255, 107, 138, 0.15), rgba(6, 182, 212, 0.1));
+  background: linear-gradient(135deg, rgba(115, 100, 255, 0.2), rgba(255, 107, 157, 0.15), rgba(0, 212, 170, 0.1));
   border-radius: inherit;
   animation: ai-prism-pulse 2s ease-in-out infinite;
   pointer-events: none;
@@ -3409,212 +3425,212 @@
   filter: blur(0.3px);
 }
 
-/* === 137. Phantom Iridescence v26.0 — 蝶翼虹光悬浮效果 === */
+/* === 137. Astral Glasstide v27.0 — 星潮虹光悬浮效果 === */
 #ai-float-btn {
-  transition: transform 0.7s var(--ai-spring-silk), box-shadow 0.55s var(--ai-ease-smooth), border-color 0.4s ease, border-radius 1s var(--ai-ease-fluid);
+  transition: transform 0.7s var(--ai-spring-silk), box-shadow 0.6s var(--ai-ease-wave), border-color 0.45s ease, border-radius 1.1s var(--ai-ease-fluid);
 }
 
-/* === 138. 蝶翼按钮 — 增强的虹彩轨道环 === */
+/* === 138. 星潮按钮 — 增强的生物荧光轨道环 === */
 #ai-float-btn::before {
   background: conic-gradient(from 0deg, var(--ai-aurora-1), var(--ai-aurora-8), var(--ai-aurora-6), var(--ai-aurora-3), var(--ai-aurora-5), var(--ai-aurora-4), var(--ai-aurora-7), var(--ai-aurora-2), var(--ai-aurora-1));
-  animation: ai-rotate-gradient 7s linear infinite, ai-orbital-breathe 3.5s ease-in-out infinite;
+  animation: ai-rotate-gradient 8s linear infinite, ai-orbital-breathe 4s ease-in-out infinite;
 }
 
-/* === 139. 蝶翼反光 — 鳞粉微光层 === */
+/* === 139. 星潮反光 — 生物荧光微光层 === */
 #ai-float-btn::after {
   background: var(--ai-float-gradient);
-  background-size: 700% 700%;
-  filter: blur(30px);
-  opacity: 0.30;
+  background-size: 800% 800%;
+  filter: blur(32px);
+  opacity: 0.28;
 }
 
 #ai-float-btn:hover::after {
-  opacity: 0.70;
-  transform: scale(1.5);
-  filter: blur(34px);
+  opacity: 0.68;
+  transform: scale(1.45);
+  filter: blur(36px);
 }
 
-/* === 140. 面板呼吸边框 — 虹彩蝶翼脉动 === */
+/* === 140. 面板呼吸边框 — 星潮琉璃脉动 === */
 #ai-sort-wrapper {
-  transition: border-color 0.7s var(--ai-ease-butterfly), box-shadow 0.7s var(--ai-ease-butterfly);
+  transition: border-color 0.7s var(--ai-ease-tide), box-shadow 0.7s var(--ai-ease-tide);
 }
 
 #ai-sort-wrapper:hover {
-  border-color: rgba(124, 92, 252, 0.18);
+  border-color: rgba(115, 100, 255, 0.16);
 }
 
-/* === 141. 增强的面板悬浮外光 — 幻蝶琉光散射 === */
+/* === 141. 增强的面板悬浮外光 — 琉璃星潮散射 === */
 #ai-sort-wrapper:hover {
-  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.14),
-              0 14px 36px rgba(0, 0, 0, 0.09),
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.13),
+              0 14px 36px rgba(0, 0, 0, 0.08),
               0 0 0 1px var(--ai-glass-border),
-              0 0 110px rgba(124, 92, 252, 0.045),
-              0 0 70px rgba(255, 107, 138, 0.022),
-              0 0 50px rgba(6, 182, 212, 0.015),
-              inset 0 1px 0 rgba(255,255,255,0.28),
+              0 0 110px rgba(115, 100, 255, 0.04),
+              0 0 70px rgba(0, 212, 170, 0.018),
+              0 0 50px rgba(255, 107, 157, 0.014),
+              inset 0 1px 0 rgba(255,255,255,0.30),
               inset 0 -1px 0 rgba(0,0,0,0.02);
 }
 
-/* === 142. 暗色悬浮面板 — 蝶翼深渊光 === */
+/* === 142. 暗色悬浮面板 — 星渊深潮光 === */
 [data-theme="dark"] #ai-sort-wrapper:hover {
-  box-shadow: 0 34px 88px rgba(0, 0, 0, 0.60),
-              0 16px 40px rgba(0, 0, 0, 0.42),
+  box-shadow: 0 34px 88px rgba(0, 0, 0, 0.62),
+              0 16px 40px rgba(0, 0, 0, 0.44),
               0 0 0 1px rgba(255, 255, 255, 0.06),
-              0 0 130px rgba(124, 92, 252, 0.07),
-              0 0 80px rgba(255, 107, 138, 0.035),
-              0 0 55px rgba(6, 182, 212, 0.025),
+              0 0 140px rgba(115, 100, 255, 0.065),
+              0 0 90px rgba(0, 212, 170, 0.028),
+              0 0 60px rgba(255, 133, 162, 0.02),
               inset 0 1px 0 rgba(255,255,255,0.09),
-              inset 0 -1px 0 rgba(0,0,0,0.32);
+              inset 0 -1px 0 rgba(0,0,0,0.34);
 }
 
-/* === 143. 蝶翼展开 — 分组展开时的虹光扫过 === */
+/* === 143. 星潮展开 — 分组展开时的液态琉璃扫过 === */
 .ai-group-body {
-  animation: ai-butterfly-unfold 0.45s var(--ai-ease-butterfly);
+  animation: ai-glasstide-unfold 0.45s var(--ai-ease-tide);
 }
 
-@keyframes ai-butterfly-unfold {
-  0% { opacity: 0; transform: translateY(-10px) scale(0.97) rotateX(2deg); filter: blur(2px); }
-  40% { opacity: 1; transform: translateY(1px) scale(1.005) rotateX(0deg); filter: blur(0); }
-  70% { transform: translateY(-0.3px) scale(0.999); }
+@keyframes ai-glasstide-unfold {
+  0% { opacity: 0; transform: translateY(-8px) scale(0.975) rotateX(1.5deg); filter: blur(2px); }
+  35% { opacity: 1; transform: translateY(0.8px) scale(1.004) rotateX(0deg); filter: blur(0); }
+  60% { transform: translateY(-0.2px) scale(0.999); }
   100% { opacity: 1; transform: translateY(0) scale(1) rotateX(0deg); filter: blur(0); }
 }
 
-/* === 144. 幻蝶琉光 — 虹彩涟漪按钮效果 === */
+/* === 144. 琉璃星潮 — 虹彩涟漪按钮效果 === */
 .ai-btn-primary::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(124, 92, 252, 0.15), rgba(255, 107, 138, 0.10), rgba(6, 182, 212, 0.08));
+  background: linear-gradient(135deg, rgba(115, 100, 255, 0.14), rgba(255, 107, 157, 0.09), rgba(0, 212, 170, 0.07));
   border-radius: inherit;
   opacity: 0;
-  transition: opacity 0.4s var(--ai-ease-smooth);
+  transition: opacity 0.4s var(--ai-ease-wave);
   pointer-events: none;
 }
 
 .ai-btn-primary:hover::before {
   opacity: 1;
-  animation: ai-iridescent-pulse 2.5s ease-in-out infinite;
+  animation: ai-glasstide-pulse 3s ease-in-out infinite;
 }
 
-@keyframes ai-iridescent-pulse {
+@keyframes ai-glasstide-pulse {
   0%, 100% { opacity: 0; filter: hue-rotate(0deg); }
-  50% { opacity: 1; filter: hue-rotate(30deg); }
+  50% { opacity: 1; filter: hue-rotate(25deg); }
 }
 
-/* === 145. 分类行虹彩扫光 — 蝶翼鳞粉效果 === */
+/* === 145. 分类行虹彩扫光 — 星潮荧光效果 === */
 .ai-cat-row::after {
-  background: linear-gradient(90deg, transparent, rgba(124, 92, 252, 0.09), rgba(255, 107, 138, 0.05), rgba(6, 182, 212, 0.04), transparent);
+  background: linear-gradient(90deg, transparent, rgba(115, 100, 255, 0.08), rgba(255, 107, 157, 0.04), rgba(0, 212, 170, 0.035), transparent);
 }
 
-/* === 146. 暗色主题面板环境光增强 — 虚空蝶影 === */
+/* === 146. 暗色主题面板环境光增强 — 星渊深潮 === */
 [data-theme="dark"] #ai-sort-wrapper {
   background-image: var(--ai-mesh-gradient),
-                    radial-gradient(ellipse at 50% 100%, rgba(124, 92, 252, 0.06) 0%, transparent 55%),
-                    radial-gradient(ellipse at 50% 0%, rgba(255, 107, 138, 0.03) 0%, transparent 40%),
-                    radial-gradient(ellipse at 30% 50%, rgba(6, 182, 212, 0.018) 0%, transparent 50%);
+                    radial-gradient(ellipse at 50% 100%, rgba(115, 100, 255, 0.055) 0%, transparent 55%),
+                    radial-gradient(ellipse at 50% 0%, rgba(255, 133, 162, 0.025) 0%, transparent 40%),
+                    radial-gradient(ellipse at 30% 50%, rgba(0, 212, 170, 0.016) 0%, transparent 50%);
 }
 
-/* === 147. 增强的 Toast 鳞粉光泽 === */
+/* === 147. 增强的 Toast 星潮光泽 === */
 .ai-toast::before {
-  background: linear-gradient(135deg, rgba(255,255,255,0.14) 0%, transparent 45%, rgba(255,255,255,0.06) 100%);
+  background: linear-gradient(135deg, rgba(255,255,255,0.13) 0%, transparent 45%, rgba(255,255,255,0.05) 100%);
 }
 
-/* === 148. 暗色 Toast 蝶翼辉光 === */
+/* === 148. 暗色 Toast 星渊辉光 === */
 [data-theme="dark"] .ai-toast {
-  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.44),
-              0 9px 24px rgba(0, 0, 0, 0.28),
-              0 0 44px rgba(124, 92, 252, 0.05),
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.46),
+              0 9px 24px rgba(0, 0, 0, 0.30),
+              0 0 48px rgba(115, 100, 255, 0.045),
               inset 0 1px 0 rgba(255,255,255,0.20);
 }
 
-/* === 149. 暗色按钮鳞粉光泽 === */
+/* === 149. 暗色按钮星潮光泽 === */
 [data-theme="dark"] .ai-btn-tool::before {
-  background: linear-gradient(135deg, rgba(124, 92, 252, 0.09), rgba(6, 182, 212, 0.07));
+  background: linear-gradient(135deg, rgba(115, 100, 255, 0.08), rgba(0, 212, 170, 0.06));
 }
 
 [data-theme="dark"] .ai-btn-tool:hover::before {
-  background: linear-gradient(135deg, rgba(124, 92, 252, 0.12), rgba(6, 182, 212, 0.09));
+  background: linear-gradient(135deg, rgba(115, 100, 255, 0.11), rgba(0, 212, 170, 0.08));
 }
 
-/* === 150. 暗色分类行虹彩条 === */
+/* === 150. 暗色分类行星潮虹彩条 === */
 [data-theme="dark"] .ai-cat-row::before {
   background: linear-gradient(180deg, var(--ai-aurora-1), var(--ai-aurora-6), var(--ai-aurora-4));
 }
 
-/* === 151. 暗色悬浮按钮轨道环增强 — 蝶翼鳞粉 === */
+/* === 151. 暗色悬浮按钮轨道环增强 — 星潮荧光 === */
 [data-theme="dark"] #ai-float-btn::before {
-  opacity: 0.48;
-  filter: blur(2.8px);
+  opacity: 0.46;
+  filter: blur(2.6px);
 }
 
-/* === 152. 确认按钮增强 — 宝石琉光 === */
+/* === 152. 确认按钮增强 — 宝石琉璃 === */
 .ai-modal-btn-confirm {
   background: linear-gradient(135deg, #059669, #10B981, #34D399, #10B981, #059669) !important;
   background-size: 500% 500%;
 }
 
 .ai-modal-btn-confirm:hover {
-  box-shadow: 0 12px 32px rgba(5, 150, 105, 0.38),
+  box-shadow: 0 12px 32px rgba(5, 150, 105, 0.36),
               inset 0 1px 0 rgba(255,255,255,0.20);
-  transform: translateY(-2px) scale(1.02);
+  transform: translateY(-2px) scale(1.018);
 }
 
-/* === 153. 视频封面 3D 蝶翼微倾斜增强 === */
+/* === 153. 视频封面 3D 星潮微倾斜增强 === */
 .ai-vid-rich:hover .ai-vid-cover {
-  transform: scale(1.12) translateY(-2px) perspective(200px) rotateY(-3deg);
-  box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+  transform: scale(1.10) translateY(-2px) perspective(200px) rotateY(-2.5deg);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.16);
 }
 
-/* === 154. 全局选中文本 — 蝶翼琉彩选择 === */
+/* === 154. 全局选中文本 — 星潮琉璃选择 === */
 #ai-sort-wrapper ::selection, .ai-modal ::selection {
-  background: rgba(124, 92, 252, 0.16);
+  background: rgba(115, 100, 255, 0.15);
   color: var(--ai-primary-dark);
 }
 
-/* === 155. Ambient Glow 蝶翼增强 — 更宽广的光追跟随 === */
+/* === 155. Ambient Glow 星潮增强 — 更宽广的光追跟随 === */
 .ai-ambient-glow-orb {
-  width: 240px;
-  height: 240px;
-  background: radial-gradient(circle, rgba(124, 92, 252, 0.22) 0%, rgba(255, 107, 138, 0.06) 40%, transparent 70%);
-  filter: blur(44px);
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, rgba(115, 100, 255, 0.20) 0%, rgba(0, 212, 170, 0.06) 35%, rgba(255, 107, 157, 0.04) 55%, transparent 70%);
+  filter: blur(48px);
 }
 
 #ai-sort-wrapper:hover .ai-ambient-glow-orb {
-  opacity: 0.65;
+  opacity: 0.6;
 }
 
-/* === 156. 进度条活跃态 — 蝶翼虹彩光晕 === */
+/* === 156. 进度条活跃态 — 星潮虹彩光晕 === */
 #ai-progress-bar:not([style*="width: 0"]):not(.complete) {
-  box-shadow: 0 0 14px rgba(124, 92, 252, 0.22), 0 0 28px rgba(255, 107, 138, 0.12);
+  box-shadow: 0 0 14px rgba(115, 100, 255, 0.20), 0 0 28px rgba(0, 212, 170, 0.10);
 }
 
-/* === 157. 输入框聚焦 — 蝶翼虹彩边框 === */
+/* === 157. 输入框聚焦 — 星潮虹彩边框 === */
 .ai-input:focus-visible, .ai-select:focus-visible {
   border-image: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-2), var(--ai-aurora-4)) 1;
   border-image-slice: 1;
-  box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.13), 0 0 20px rgba(124, 92, 252, 0.07);
+  box-shadow: 0 0 0 3px rgba(115, 100, 255, 0.12), 0 0 20px rgba(115, 100, 255, 0.06);
   animation: ai-focus-glow 2.5s ease-in-out infinite;
 }
 
-/* === 158. 焦点光环呼吸 — 蝶翼节奏 === */
+/* === 158. 焦点光环呼吸 — 星潮节奏 === */
 @keyframes ai-focus-glow {
-  0%, 100% { box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.11), 0 0 16px rgba(124, 92, 252, 0.05); }
-  50% { box-shadow: 0 0 0 4.5px rgba(124, 92, 252, 0.16), 0 0 24px rgba(124, 92, 252, 0.08); }
+  0%, 100% { box-shadow: 0 0 0 3px rgba(115, 100, 255, 0.10), 0 0 16px rgba(115, 100, 255, 0.04); }
+  50% { box-shadow: 0 0 0 4px rgba(115, 100, 255, 0.15), 0 0 24px rgba(115, 100, 255, 0.07); }
 }
 
-/* === 159. 标签下划线 — 虹彩渐变 === */
+/* === 159. 标签下划线 — 星潮虹彩渐变 === */
 .ai-label::after {
   background: linear-gradient(90deg, var(--ai-aurora-1), var(--ai-aurora-2), var(--ai-aurora-4));
 }
 
-/* === 160. 滚动条虹彩渐变 === */
+/* === 160. 滚动条星潮虹彩渐变 === */
 #ai-sort-wrapper ::-webkit-scrollbar-thumb,
 .ai-modal ::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, var(--ai-primary-light), var(--ai-aurora-2), var(--ai-aurora-4), var(--ai-primary)) !important;
 }
 
 /* ================================================================
-   Nebula Flux v27.0 — 星云流变 新增特性
+   Astral Glasstide v27.0 — 琉璃星潮 扩展特性（色彩主题·粒子场·液态边框）
    ================================================================ */
 
 /* === 161. 色彩主题系统 — 可切换强调色 === */
@@ -3974,7 +3990,7 @@
   border: 1.5px solid rgba(255, 255, 255, 0.6);
 }
 
-.ai-accent-dot[data-accent="default"] { background: linear-gradient(135deg, #7C5CFC, #FF6B8A); }
+.ai-accent-dot[data-accent="default"] { background: linear-gradient(135deg, #7364FF, #FF6B9D); }
 .ai-accent-dot[data-accent="sakura"] { background: linear-gradient(135deg, #F472B6, #FB923C); }
 .ai-accent-dot[data-accent="ocean"] { background: linear-gradient(135deg, #38BDF8, #34D399); }
 .ai-accent-dot[data-accent="emerald"] { background: linear-gradient(135deg, #34D399, #FBBF24); }
@@ -4163,10 +4179,10 @@
     box-shadow: var(--ai-neon-glow);
   }
   50% {
-    box-shadow: 0 0 28px rgba(124, 92, 252, 0.40),
-                0 0 56px rgba(255, 107, 138, 0.22),
-                0 0 84px rgba(168, 85, 247, 0.12),
-                0 0 112px rgba(6, 182, 212, 0.06);
+    box-shadow: 0 0 28px rgba(115, 100, 255, 0.38),
+                0 0 56px rgba(255, 107, 157, 0.20),
+                0 0 84px rgba(155, 89, 246, 0.10),
+                0 0 112px rgba(0, 212, 170, 0.05);
   }
 }
 
@@ -4248,4 +4264,45 @@
   .ai-group-header::after {
     animation: none !important;
   }
+
+/* ================================================================
+   Astral Glasstide v27.0 — 星潮新增特性
+   ================================================================ */
+
+/* === 181. Astral Glasstide v27.0 — 星潮涟漪点击效果 === */
+@keyframes ai-tide-ripple {
+  0% { transform: scale(0); opacity: 0.6; }
+  40% { opacity: 0.3; }
+  100% { transform: scale(3); opacity: 0; }
+}
+
+/* === 182. 星潮液态分隔线 — 动态渐变分隔 === */
+.ai-cat-row {
+  border-bottom: 1px solid transparent;
+  border-image: linear-gradient(90deg, transparent 5%, var(--ai-border-lighter) 30%, var(--ai-border-lighter) 70%, transparent 95%) 1;
+}
+
+/* === 183. 面板星潮呼吸背景 === */
+@keyframes ai-mesh-breathe {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
+}
+
+.ai-panel-content {
+  animation: ai-mesh-breathe 8s ease-in-out infinite;
+}
+
+/* === 184. 暗色主题星渊微光边缘 === */
+[data-theme="dark"] .ai-modal {
+  border: 1px solid rgba(115, 100, 255, 0.08);
+}
+
+/* === 185. 星潮按钮悬浮磁力吸附感 === */
+.ai-btn-tool:hover {
+  transition: all 0.5s var(--ai-spring-oceanic) !important;
+}
+
+/* === 186. 进度条完成时星潮庆祝效果 === */
+#ai-progress-bar.complete {
+  box-shadow: 0 0 20px rgba(32, 227, 178, 0.30), 0 0 40px rgba(115, 100, 255, 0.15);
 }
