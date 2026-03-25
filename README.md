@@ -7,6 +7,8 @@
 
 
  **[Github源](https://raw.githubusercontent.com/madoka-chann/Bilibili-AI-Favorites-Organizer/refs/heads/main/bilibili-favorites-ai-organizer.user.js)**
+
+ 
  **[Github国内加速源](https://ghfast.top/https://raw.githubusercontent.com/madoka-chann/Bilibili-AI-Favorites-Organizer/main/bilibili-favorites-ai-organizer.user.js)**
 
 ## 功能特性
@@ -60,6 +62,7 @@
 在浏览器中安装任一用户脚本管理器：
 
 - [Tampermonkey](https://www.tampermonkey.net/)
+
 - [Violentmonkey](https://violentmonkey.github.io/)
 
 
