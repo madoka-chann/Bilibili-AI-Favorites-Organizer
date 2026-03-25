@@ -661,6 +661,52 @@
   margin-left: auto;
 }
 
+/* === 7.5. 行为选项卡片 === */
+.ai-behavior-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ai-behavior-option {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: var(--ai-radius-sm);
+  background: var(--ai-bg-secondary);
+  border: 1px solid var(--ai-border-lighter);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.25s var(--ai-ease-ios);
+  user-select: none;
+}
+
+.ai-behavior-option:hover {
+  background: var(--ai-primary-bg);
+  border-color: var(--ai-primary-light);
+  box-shadow: 0 2px 8px rgba(115, 100, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.ai-behavior-option input[type="checkbox"] {
+  accent-color: var(--ai-primary);
+  width: 14px;
+  height: 14px;
+  margin: 0;
+}
+
+.ai-behavior-option input[type="checkbox"]:checked + span {
+  color: var(--ai-primary-dark);
+  font-weight: 500;
+}
+
+/* 自定义主题色圆点 */
+.ai-accent-dot[data-accent="custom"] {
+  background: conic-gradient(#f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00) !important;
+  border: 1.5px solid rgba(255,255,255,0.5);
+}
+
 /* === 8. 输入/选择控件 — 柔和聚焦 + 呼吸光环 === */
 .ai-input {
   padding: 7px 10px;

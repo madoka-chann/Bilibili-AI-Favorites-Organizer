@@ -268,6 +268,9 @@
             animEnabled: GM_getValue('bfao_animEnabled', true),
             // 增量整理：仅处理上次整理后新增的视频
             incrementalMode: GM_getValue('bfao_incrementalMode', false),
+            // 批量休息防风控
+            batchRestInterval: GM_getValue('bfao_batchRestInterval', 100),
+            batchRestMinutes: GM_getValue('bfao_batchRestMinutes', 1),
             // 定时自动整理
             autoOrganizeEnabled: GM_getValue('bfao_autoOrganizeEnabled', false),
             autoOrganizeInterval: GM_getValue('bfao_autoOrganizeInterval', 60) // 分钟
@@ -280,6 +283,7 @@
             'limitEnabled','limitCount','fetchDelay','writeDelay','moveChunkSize','skipDeadVideos',
             'lastPrompt','adaptiveRate','notifyOnComplete',
             'multiFolderEnabled','animEnabled','incrementalMode',
+            'batchRestInterval','batchRestMinutes',
             'autoOrganizeEnabled','autoOrganizeInterval'];
         keys.forEach(k => { if (s[k] !== undefined) GM_setValue('bfao_' + k, s[k]); });
         // 按服务商保存 API Key，切换服务商时可自动恢复
@@ -897,29 +901,38 @@
         return sleep(Math.max(100, Math.round(actual)));
     }
 
-    // 连续抓取页数计数器（跨收藏夹累计）
+    // 连续抓取计数器（跨收藏夹累计）— 可配置休息间隔
     let _continuousFetchPages = 0;
-    const BATCH_PAGE_LIMIT_MIN = 20;
-    const BATCH_PAGE_LIMIT_MAX = 25;
-    const BATCH_PAUSE_MIN = 10000; // 10秒
-    const BATCH_PAUSE_MAX = 15000; // 15秒
-    let _batchPageThreshold = BATCH_PAGE_LIMIT_MIN + Math.floor(Math.random() * (BATCH_PAGE_LIMIT_MAX - BATCH_PAGE_LIMIT_MIN + 1));
+    let _batchPageThreshold = 0;
 
-    // 每次抓取一页后调用，达到阈值时暂停 10-15 秒
+    function _calcBatchThreshold() {
+        const s = loadSettings();
+        const base = Math.max(10, s.batchRestInterval || 100);
+        // ±15% 随机扰动
+        const jitter = Math.floor(base * 0.15);
+        return base - jitter + Math.floor(Math.random() * (jitter * 2 + 1));
+    }
+
+    // 每次抓取一页后调用，达到阈值时暂停 N 分钟（±30% 随机扰动）
     async function checkBatchPause() {
         _continuousFetchPages++;
         if (_continuousFetchPages >= _batchPageThreshold) {
-            const pauseMs = BATCH_PAUSE_MIN + Math.floor(Math.random() * (BATCH_PAUSE_MAX - BATCH_PAUSE_MIN + 1));
-            logStatus(`⏸️ 已连续抓取 ${_continuousFetchPages} 页，暂停 ${(pauseMs / 1000).toFixed(0)} 秒防风控...`);
+            const s = loadSettings();
+            const baseMin = Math.max(0.5, s.batchRestMinutes || 1);
+            const baseMs = baseMin * 60000;
+            const jitter = baseMs * 0.3;
+            const pauseMs = Math.round(baseMs + (Math.random() * 2 - 1) * jitter);
+            const pauseSec = (pauseMs / 1000).toFixed(0);
+            logStatus(`⏸️ 已连续抓取 ${_continuousFetchPages} 次，休息 ${pauseSec} 秒防风控...`);
             await sleep(pauseMs);
             _continuousFetchPages = 0;
-            _batchPageThreshold = BATCH_PAGE_LIMIT_MIN + Math.floor(Math.random() * (BATCH_PAGE_LIMIT_MAX - BATCH_PAGE_LIMIT_MIN + 1));
+            _batchPageThreshold = _calcBatchThreshold();
         }
     }
 
     function resetBatchPauseCounter() {
         _continuousFetchPages = 0;
-        _batchPageThreshold = BATCH_PAGE_LIMIT_MIN + Math.floor(Math.random() * (BATCH_PAGE_LIMIT_MAX - BATCH_PAGE_LIMIT_MIN + 1));
+        _batchPageThreshold = _calcBatchThreshold();
     }
 
     // ================= 全局视频缓存 =================
@@ -3968,6 +3981,7 @@ ${topUps.length > 0 ? `<div class="section">
                                     <input id="ai-set-model" type="hidden" value="${settings.modelName}">
                                     <button id="ai-fetch-models" class="ai-btn" style="padding:4px 6px;" title="获取可用模型列表"><i data-lucide="refresh-cw" style="width:13px;height:13px;"></i></button>
                                     <button id="ai-verify-model" class="ai-btn" style="padding:4px 6px;" title="验证模型可用性"><i data-lucide="check-circle" style="width:13px;height:13px;"></i></button>
+                                    <button id="ai-tool-bench" class="ai-btn" style="padding:4px 6px;" title="AI模型性能测试"><i data-lucide="gauge" style="width:13px;height:13px;"></i></button>
                                 </div>
                                 <div id="ai-model-dropdown" style="display:none;position:absolute;left:0;right:0;top:100%;margin-top:4px;border:1px solid var(--ai-primary);border-radius:6px;background:var(--ai-bg);overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.15);z-index:10;">
                                     <div style="display:flex;border-bottom:1px solid #eee;">
@@ -4017,6 +4031,26 @@ ${topUps.length > 0 ? `<div class="section">
                                 <input id="ai-set-move-chunk" class="ai-input" type="number" value="${settings.moveChunkSize}" min="1" max="100" step="1" style="width:100%;">
                             </div>
                         </div>
+                        <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;font-size:12px;">
+                            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;white-space:nowrap;">
+                                <input id="ai-set-limit-enabled" type="checkbox" style="accent-color:var(--ai-primary);" ${settings.limitEnabled ? 'checked' : ''}> 限制本次处理
+                            </label>
+                            <select id="ai-set-limit-count" class="ai-select" style="padding:4px 6px;${settings.limitEnabled ? '' : 'opacity:0.5;'}">
+                                ${[50,100,200,500,1000,2000].map(n => `<option value="${n}" ${n === settings.limitCount ? 'selected' : ''}>${n} 个</option>`).join('')}
+                            </select>
+                            <span style="font-size:10px;color:#999;">不勾选=全部</span>
+                        </div>
+                        <div style="display:flex;gap:8px;align-items:center;margin-bottom:4px;font-size:12px;">
+                            <span style="white-space:nowrap;">每</span>
+                            <select id="ai-set-batch-rest-interval" class="ai-select" style="padding:4px 6px;">
+                                ${[50,80,100,150,200,300].map(n => `<option value="${n}" ${n === (settings.batchRestInterval || 100) ? 'selected' : ''}>${n} 次</option>`).join('')}
+                            </select>
+                            <span style="white-space:nowrap;">休息</span>
+                            <select id="ai-set-batch-rest-minutes" class="ai-select" style="padding:4px 6px;">
+                                ${[0.5,1,1.5,2,3,5].map(n => `<option value="${n}" ${n === (settings.batchRestMinutes || 1) ? 'selected' : ''}>${n} 分钟</option>`).join('')}
+                            </select>
+                            <span style="font-size:10px;color:#999;">±30%扰动</span>
+                        </div>
                     </div>
 
                     <!-- 分组3: 行为 (默认折叠) -->
@@ -4026,39 +4060,26 @@ ${topUps.length > 0 ? `<div class="section">
                         <i data-lucide="chevron-right" style="width:14px;height:14px;color:#ccc;transition:transform 0.3s;"></i>
                     </div>
                     <div class="ai-group-body" id="ai-group-3" style="display:none;">
-                        <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;font-size:12px;">
-                            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;white-space:nowrap;">
-                                <input id="ai-set-limit-enabled" type="checkbox" ${settings.limitEnabled ? 'checked' : ''}> 限制本次处理
+                        <div class="ai-behavior-grid">
+                            <label class="ai-behavior-option" title="跳过已失效/被删除的视频">
+                                <input id="ai-set-skipdead" type="checkbox" ${settings.skipDeadVideos ? 'checked' : ''}> <span>跳过失效视频</span>
                             </label>
-                            <select id="ai-set-limit-count" class="ai-select" style="padding:4px 6px;${settings.limitEnabled ? '' : 'opacity:0.5;'}">
-                                ${[50,100,200,500,1000,2000].map(n => `<option value="${n}" ${n === settings.limitCount ? 'selected' : ''}>${n} 个</option>`).join('')}
-                            </select>
-                            <span style="font-size:10px;color:#999;">不勾选=全部</span>
-                        </div>
-                        <div style="display:flex;gap:12px;margin-bottom:8px;font-size:12px;flex-wrap:wrap;">
-                            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;">
-                                <input id="ai-set-skipdead" type="checkbox" ${settings.skipDeadVideos ? 'checked' : ''}> 跳过失效视频
+                            <label class="ai-behavior-option" title="根据B站API限流响应自动调整请求速度">
+                                <input id="ai-set-adaptive" type="checkbox" ${settings.adaptiveRate ? 'checked' : ''}> <span>自适应限速</span>
                             </label>
-                        </div>
-                        <div style="display:flex;gap:12px;margin-bottom:8px;font-size:12px;flex-wrap:wrap;">
-                            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;" title="根据B站API限流响应自动调整请求速度">
-                                <input id="ai-set-adaptive" type="checkbox" ${settings.adaptiveRate ? 'checked' : ''}> 自适应限速
+                            <label class="ai-behavior-option" title="操作完成后发送浏览器通知（需要授权）">
+                                <input id="ai-set-notify" type="checkbox" ${settings.notifyOnComplete ? 'checked' : ''}> <span>完成通知</span>
+                            </label>
+                            <label class="ai-behavior-option" title="整理多个收藏夹中的视频（开始时选择作用域）">
+                                <input id="ai-set-multifolder" type="checkbox" ${settings.multiFolderEnabled ? 'checked' : ''}> <span>跨收藏夹</span>
+                            </label>
+                            <label class="ai-behavior-option" title="仅处理上次整理后新增的视频，跳过已整理过的内容">
+                                <input id="ai-set-incremental" type="checkbox" ${settings.incrementalMode ? 'checked' : ''}> <span>增量整理</span>
                             </label>
                         </div>
-                        <div style="display:flex;gap:12px;margin-bottom:8px;font-size:12px;flex-wrap:wrap;">
-                            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;" title="操作完成后发送浏览器通知（需要授权）">
-                                <input id="ai-set-notify" type="checkbox" ${settings.notifyOnComplete ? 'checked' : ''}> 完成通知
-                            </label>
-                            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;" title="整理多个收藏夹中的视频（开始时选择作用域）">
-                                <input id="ai-set-multifolder" type="checkbox" ${settings.multiFolderEnabled ? 'checked' : ''}> 跨收藏夹
-                            </label>
-                            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;" title="仅处理上次整理后新增的视频，跳过已整理过的内容">
-                                <input id="ai-set-incremental" type="checkbox" ${settings.incrementalMode ? 'checked' : ''}> 增量整理
-                            </label>
-                        </div>
-                        <div style="display:flex;gap:12px;margin-bottom:8px;font-size:12px;flex-wrap:wrap;align-items:center;">
-                            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;" title="定时自动运行增量整理（需要页面保持打开）">
-                                <input id="ai-set-auto-organize" type="checkbox" ${settings.autoOrganizeEnabled ? 'checked' : ''}> 定时整理
+                        <div style="display:flex;gap:8px;align-items:center;margin-top:8px;font-size:12px;flex-wrap:wrap;">
+                            <label class="ai-behavior-option" style="margin:0;" title="定时自动运行增量整理（需要页面保持打开）">
+                                <input id="ai-set-auto-organize" type="checkbox" ${settings.autoOrganizeEnabled ? 'checked' : ''}> <span>定时整理</span>
                             </label>
                             <div style="display:flex;align-items:center;gap:4px;">
                                 <span style="font-size:11px;color:var(--ai-text-muted);">间隔</span>
@@ -4071,7 +4092,7 @@ ${topUps.length > 0 ? `<div class="section">
                                 </select>
                             </div>
                         </div>
-                        <div id="ai-auto-organize-status" style="font-size:10px;color:var(--ai-text-muted);display:${settings.autoOrganizeEnabled ? 'block' : 'none'};margin-bottom:4px;">⏰ 定时整理已启用，将自动使用增量模式</div>
+                        <div id="ai-auto-organize-status" style="font-size:10px;color:var(--ai-text-muted);display:${settings.autoOrganizeEnabled ? 'block' : 'none'};margin-top:4px;">⏰ 定时整理已启用，将自动使用增量模式</div>
                     </div>
 
                     <!-- 分组4: 动画效果 (默认折叠) -->
@@ -4119,7 +4140,6 @@ ${topUps.length > 0 ? `<div class="section">
                     </div>
                     <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
                         <button id="ai-tool-backup" class="ai-btn ai-btn-tool" style="flex:1;padding:7px;min-width:55px;" title="备份/下载收藏夹结构"><i data-lucide="download" style="width:12px;height:12px;"></i> 备份</button>
-                        <button id="ai-tool-bench" class="ai-btn ai-btn-tool" style="flex:1;padding:7px;min-width:65px;" title="AI模型性能测试"><i data-lucide="gauge" style="width:12px;height:12px;"></i> 测试AI</button>
                         <button id="ai-tool-stats" class="ai-btn ai-btn-tool" style="flex:1;padding:7px;min-width:55px;" title="收藏夹数据统计"><i data-lucide="bar-chart-3" style="width:12px;height:12px;"></i> 统计</button>
                     </div>
                     <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
@@ -4256,11 +4276,58 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'amber', label: '琥珀橙' },
                 { id: 'crimson', label: '深红' },
                 { id: 'cyber', label: '赛博霓虹' },
-                { id: 'moonlight', label: '月光银' }
+                { id: 'moonlight', label: '月光银' },
+                { id: 'custom', label: '自定义' }
             ];
 
+            // 颜色工具函数
+            function hexToHsl(hex) {
+                let r = parseInt(hex.slice(1,3),16)/255, g = parseInt(hex.slice(3,5),16)/255, b = parseInt(hex.slice(5,7),16)/255;
+                const max = Math.max(r,g,b), min = Math.min(r,g,b), d = max - min;
+                let h = 0, s = 0, l = (max+min)/2;
+                if (d !== 0) { s = l > 0.5 ? d/(2-max-min) : d/(max+min); h = max===r ? ((g-b)/d+(g<b?6:0))*60 : max===g ? ((b-r)/d+2)*60 : ((r-g)/d+4)*60; }
+                return [Math.round(h), Math.round(s*100), Math.round(l*100)];
+            }
+            function hslToHex(h,s,l) {
+                h = ((h%360)+360)%360; s /= 100; l /= 100;
+                const a = s * Math.min(l, 1-l);
+                const f = n => { const k = (n+h/30)%12; return Math.round(255*(l - a*Math.max(Math.min(k-3, 9-k, 1), -1))); };
+                return '#' + [f(0),f(8),f(4)].map(v => v.toString(16).padStart(2,'0')).join('');
+            }
+
+            function applyCustomAccent(hex) {
+                const [h,s,l] = hexToHsl(hex);
+                const root = document.documentElement;
+                root.setAttribute('data-accent', 'custom');
+                const vars = {
+                    '--ai-primary': hex,
+                    '--ai-primary-dark': hslToHex(h, Math.min(100,s+10), Math.max(0,l-18)),
+                    '--ai-primary-light': hslToHex(h, Math.min(100,s-5), Math.min(100,l+28)),
+                    '--ai-primary-bg': `hsla(${h},${s}%,${l}%,0.06)`,
+                    '--ai-primary-shadow': `hsla(${h},${s}%,${l}%,0.22)`,
+                    '--ai-aurora-1': hex,
+                    '--ai-aurora-2': hslToHex((h+25)%360, s, l),
+                    '--ai-aurora-3': hslToHex((h+50)%360, Math.min(100,s-10), Math.min(100,l+10)),
+                    '--ai-aurora-4': hslToHex((h-25+360)%360, s, l),
+                    '--ai-aurora-5': hslToHex((h+15)%360, Math.min(100,s+15), Math.max(0,l-8)),
+                    '--ai-aurora-6': hslToHex((h+40)%360, Math.min(100,s-5), Math.min(100,l+15)),
+                    '--ai-aurora-7': hslToHex((h-15+360)%360, Math.min(100,s+5), l),
+                    '--ai-aurora-8': hslToHex((h+60)%360, Math.min(100,s-15), Math.min(100,l+20)),
+                    '--ai-header-gradient': `linear-gradient(135deg, ${hex}, ${hslToHex((h+30)%360,s,l)}, ${hex})`,
+                    '--ai-float-gradient': `linear-gradient(135deg, ${hex}, ${hslToHex((h+25)%360,s,l)}, ${hslToHex((h-20+360)%360,s,Math.min(100,l+10))}, ${hex})`,
+                    '--ai-neon-glow': `0 0 18px hsla(${h},${s}%,${l}%,0.28), 0 0 36px hsla(${h},${s}%,${l}%,0.14)`,
+                    '--ai-glow-color': `hsla(${h},${s}%,${l}%,0.07)`,
+                    '--ai-scrollbar': hslToHex(h, Math.max(0,s-30), Math.min(100,l+25)),
+                    '--ai-scrollbar-hover': hslToHex(h, Math.max(0,s-15), l)
+                };
+                Object.entries(vars).forEach(([k,v]) => root.style.setProperty(k, v));
+            }
+
             const savedAccent = GM_getValue('bfao_accent', 'default');
-            if (savedAccent !== 'default') {
+            const savedCustomColor = GM_getValue('bfao_customAccentColor', '#7364FF');
+            if (savedAccent === 'custom') {
+                applyCustomAccent(savedCustomColor);
+            } else if (savedAccent !== 'default') {
                 document.documentElement.setAttribute('data-accent', savedAccent);
             }
 
@@ -4277,6 +4344,15 @@ ${topUps.length > 0 ? `<div class="section">
             const dotsRow = document.createElement('div');
             dotsRow.className = 'ai-accent-picker';
 
+            // 自定义颜色选择器
+            const colorRow = document.createElement('div');
+            colorRow.style.cssText = 'display:none;margin-top:8px;';
+            const colorInput = document.createElement('input');
+            colorInput.type = 'color';
+            colorInput.value = savedCustomColor;
+            colorInput.style.cssText = 'width:100%;height:28px;border:none;border-radius:6px;cursor:pointer;padding:0;background:none;';
+            colorRow.appendChild(colorInput);
+
             accents.forEach(a => {
                 const dot = document.createElement('div');
                 dot.className = 'ai-accent-dot' + (savedAccent === a.id ? ' active' : '');
@@ -4285,16 +4361,36 @@ ${topUps.length > 0 ? `<div class="section">
                 dot.onclick = () => {
                     dotsRow.querySelectorAll('.ai-accent-dot').forEach(d => d.classList.remove('active'));
                     dot.classList.add('active');
-                    if (a.id === 'default') {
-                        document.documentElement.removeAttribute('data-accent');
+                    if (a.id === 'custom') {
+                        colorRow.style.display = 'block';
+                        applyCustomAccent(colorInput.value);
+                        GM_setValue('bfao_customAccentColor', colorInput.value);
                     } else {
-                        document.documentElement.setAttribute('data-accent', a.id);
+                        colorRow.style.display = 'none';
+                        // 清除自定义 CSS 变量
+                        const root = document.documentElement;
+                        ['--ai-primary','--ai-primary-dark','--ai-primary-light','--ai-primary-bg','--ai-primary-shadow',
+                         '--ai-aurora-1','--ai-aurora-2','--ai-aurora-3','--ai-aurora-4','--ai-aurora-5','--ai-aurora-6','--ai-aurora-7','--ai-aurora-8',
+                         '--ai-header-gradient','--ai-float-gradient','--ai-neon-glow','--ai-glow-color','--ai-scrollbar','--ai-scrollbar-hover'
+                        ].forEach(v => root.style.removeProperty(v));
+                        if (a.id === 'default') {
+                            root.removeAttribute('data-accent');
+                        } else {
+                            root.setAttribute('data-accent', a.id);
+                        }
                     }
                     GM_setValue('bfao_accent', a.id);
                 };
                 dotsRow.appendChild(dot);
             });
             picker.appendChild(dotsRow);
+
+            colorInput.addEventListener('input', () => {
+                applyCustomAccent(colorInput.value);
+                GM_setValue('bfao_customAccentColor', colorInput.value);
+            });
+            picker.appendChild(colorRow);
+            if (savedAccent === 'custom') colorRow.style.display = 'block';
 
             // 挂载到 header actions
             const accentBtn = document.getElementById('ai-accent-toggle');
@@ -4611,6 +4707,21 @@ ${topUps.length > 0 ? `<div class="section">
             });
         })();
 
+        // 面板位置边界钳制：防止面板超出视口
+        function clampPanelPosition() {
+            requestAnimationFrame(() => {
+                const pw = panel.offsetWidth, ph = panel.offsetHeight;
+                if (!pw || !ph) return;
+                let left = parseInt(panel.style.left) || 30;
+                let bottom = parseInt(panel.style.bottom) || 30;
+                left = Math.max(0, Math.min(window.innerWidth - pw, left));
+                bottom = Math.max(0, Math.min(window.innerHeight - ph, bottom));
+                panel.style.left = left + 'px';
+                panel.style.bottom = bottom + 'px';
+            });
+        }
+        window.addEventListener('resize', debounce(clampPanelPosition, 200));
+
         // 悬浮按钮拖拽支持（区分拖拽和点击）
         let _dragState = { dragging: false, startX: 0, startY: 0, startLeft: 0, startBottom: 0, moved: false };
         // 恢复保存的位置
@@ -4696,6 +4807,7 @@ ${topUps.length > 0 ? `<div class="section">
             if (!_panelDrag.dragging) return;
             _panelDrag.dragging = false;
             panelHeader.style.cursor = 'grab';
+            clampPanelPosition();
             // 同步浮动按钮位置
             const pos = { left: parseInt(panel.style.left), bottom: parseInt(panel.style.bottom) };
             GM_setValue('bfao_floatBtnPos', pos);
@@ -4728,6 +4840,7 @@ ${topUps.length > 0 ? `<div class="section">
             // 强制 reflow 后触发丝绒弹簧入场动画
             void panel.offsetHeight;
             panel.style.animation = 'ai-velvet-spring-in 0.55s cubic-bezier(0.20, 1.10, 0.36, 1)';
+            clampPanelPosition();
         };
 
         document.getElementById('ai-close-btn').onclick = () => {
@@ -5565,12 +5678,19 @@ ${topUps.length > 0 ? `<div class="section">
             const dropdown = document.getElementById('ai-model-dropdown');
             const trigger = document.getElementById('ai-model-trigger');
             const arrow = trigger.querySelector('[data-lucide]');
+            // 切换父容器 overflow 防止下拉被裁剪
+            const settingsArea = document.getElementById('ai-settings-area');
+            const panelContent = panel.querySelector('.ai-panel-content');
             if (show && document.getElementById('ai-model-select').options.length > 0) {
                 dropdown.style.display = 'block';
                 if (arrow) { arrow.setAttribute('data-lucide', 'chevron-up'); }
+                if (settingsArea) settingsArea.style.overflow = 'visible';
+                if (panelContent) panelContent.style.overflow = 'visible';
             } else {
                 dropdown.style.display = 'none';
                 if (arrow) { arrow.setAttribute('data-lucide', 'chevron-down'); }
+                if (settingsArea) settingsArea.style.overflow = '';
+                if (panelContent) panelContent.style.overflow = '';
             }
             if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [trigger] });
         }
@@ -5810,6 +5930,8 @@ ${topUps.length > 0 ? `<div class="section">
                 multiFolderEnabled: document.getElementById('ai-set-multifolder').checked,
                 animEnabled: document.getElementById('ai-set-anim-enabled').checked,
                 incrementalMode: document.getElementById('ai-set-incremental').checked,
+                batchRestInterval: parseInt(document.getElementById('ai-set-batch-rest-interval').value) || 100,
+                batchRestMinutes: parseFloat(document.getElementById('ai-set-batch-rest-minutes').value) || 1,
                 autoOrganizeEnabled: document.getElementById('ai-set-auto-organize').checked,
                 autoOrganizeInterval: parseInt(document.getElementById('ai-set-auto-interval').value) || 60
             });
@@ -5836,7 +5958,8 @@ ${topUps.length > 0 ? `<div class="section">
         // number/text 输入框：input 事件防抖保存
         ['ai-set-base-url', 'ai-set-concurrency', 'ai-set-limit-count',
          'ai-set-write-delay', 'ai-set-move-chunk', 'ai-set-speed-custom',
-         'ai-set-chunk-custom', 'ai-set-auto-interval'].forEach(id => {
+         'ai-set-chunk-custom', 'ai-set-auto-interval',
+         'ai-set-batch-rest-interval', 'ai-set-batch-rest-minutes'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.addEventListener('input', debouncedAutoSave);
         });
