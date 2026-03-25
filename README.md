@@ -5,6 +5,7 @@
 
 ### 安装&更新
 
+更新如有请点击重新安装
 
  **[Github源](https://raw.githubusercontent.com/madoka-chann/Bilibili-AI-Favorites-Organizer/refs/heads/main/bilibili-favorites-ai-organizer.user.js)**
 
