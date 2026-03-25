@@ -1,82 +1,83 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v25.0
-   Celestial Prism · 天璇棱光 · Prismatic Glass Morphism
-   Electric Indigo + Rose Quartz 双色系统 · Opalescent Spectrum
-   Fluid Dynamics 2.0 · Magnetic Momentum Micro-interactions
-   Void Nebula Dark Theme · Living Crystalline Surfaces
+   B站 AI 收藏夹整理助理 — 完整样式表 v26.0
+   Phantom Iridescence · 幻蝶琉光 · Opal Morphism
+   Violet-Coral 双色系统 · Jewel-Tone Aurora Spectrum
+   Silk Dynamics 3.0 · Butterfly-Wing Micro-interactions
+   Void Butterfly Dark Theme · Iridescent Living Surfaces
    ================================================================ */
 
 /* === 1. CSS 变量 (双主题系统) === */
 
-/* 亮色主题（默认） — 天璇·晨曦棱光 Celestial Prism */
+/* 亮色主题（默认） — 幻蝶·晨光琉彩 Phantom Iridescence */
 :root, [data-theme="light"] {
-  --ai-primary: #6C63FF;
-  --ai-primary-dark: #5046E5;
-  --ai-primary-light: #A5A0FF;
-  --ai-primary-bg: rgba(108, 99, 255, 0.06);
-  --ai-primary-shadow: rgba(108, 99, 255, 0.24);
-  --ai-success: #22d3a7;
-  --ai-success-dark: #0ea584;
-  --ai-error: #f06292;
-  --ai-info: #7c6eff;
-  --ai-warning: #ffb020;
-  --ai-text: #1a1333;
-  --ai-text-secondary: #3b2e5a;
-  --ai-text-muted: #8e8ba3;
-  --ai-text-light: #c5c2d6;
-  --ai-border: #e8e4f4;
-  --ai-border-light: #f3f0fa;
-  --ai-border-lighter: #faf8ff;
+  --ai-primary: #7C5CFC;
+  --ai-primary-dark: #5B3FDB;
+  --ai-primary-light: #B4A0FF;
+  --ai-primary-bg: rgba(124, 92, 252, 0.06);
+  --ai-primary-shadow: rgba(124, 92, 252, 0.24);
+  --ai-success: #10B981;
+  --ai-success-dark: #059669;
+  --ai-error: #F43F5E;
+  --ai-info: #8B5CF6;
+  --ai-warning: #F59E0B;
+  --ai-text: #1B1340;
+  --ai-text-secondary: #3D2F5C;
+  --ai-text-muted: #8B87A6;
+  --ai-text-light: #C4C0D8;
+  --ai-border: #E6E0F6;
+  --ai-border-light: #F2EDF9;
+  --ai-border-lighter: #FAF7FF;
   --ai-bg: #ffffff;
-  --ai-bg-secondary: #faf8ff;
-  --ai-bg-tertiary: #f3f0fa;
-  --ai-bg-hover: rgba(108, 99, 255, 0.04);
-  --ai-header-gradient: linear-gradient(135deg, #6C63FF, #E879A8);
-  --ai-modal-backdrop: rgba(26, 19, 51, 0.58);
+  --ai-bg-secondary: #FAF7FF;
+  --ai-bg-tertiary: #F2EDF9;
+  --ai-bg-hover: rgba(124, 92, 252, 0.04);
+  --ai-header-gradient: linear-gradient(135deg, #7C5CFC, #FF6B8A);
+  --ai-modal-backdrop: rgba(27, 19, 64, 0.62);
   --ai-input-bg: #fff;
-  --ai-card-shadow: 0 1px 3px rgba(26, 19, 51, 0.04), 0 4px 14px rgba(26, 19, 51, 0.03);
-  --ai-vid-odd-bg: rgba(26, 19, 51, 0.012);
-  --ai-vid-hover-bg: rgba(108, 99, 255, 0.05);
-  --ai-cat-detail-bg: #faf8ff;
-  --ai-separator: #e8e4f4;
-  --ai-glow-color: rgba(108, 99, 255, 0.07);
-  --ai-badge-new-bg: #f06292;
-  --ai-badge-existing-bg: #22d3a7;
-  --ai-scrollbar: #c5c2d6;
-  --ai-scrollbar-hover: #8e8ba3;
-  --ai-btn-tool-bg: #f3f0fa;
-  --ai-btn-cancel-hover-bg: #e8e4f4;
-  --ai-log-success: #22d3a7;
-  --ai-glass-bg: rgba(255, 255, 255, 0.68);
-  --ai-glass-border: rgba(255, 255, 255, 0.55);
-  --ai-glass-blur: 48px;
-  /* 极光色谱 — Celestial Prism 八色棱光系统 */
-  --ai-aurora-1: #6C63FF;
-  --ai-aurora-2: #E879A8;
-  --ai-aurora-3: #8B5CF6;
-  --ai-aurora-4: #38BDF8;
-  --ai-aurora-5: #22D3A7;
-  --ai-aurora-6: #C084FC;
-  --ai-aurora-7: #FB923C;
-  --ai-aurora-8: #F472B6;
-  /* 棱光光晕系统 — 多层色散 */
-  --ai-neon-glow: 0 0 18px rgba(108, 99, 255, 0.28),
-                  0 0 36px rgba(232, 121, 168, 0.15),
-                  0 0 54px rgba(139, 92, 246, 0.07),
-                  0 0 72px rgba(56, 189, 248, 0.04);
-  --ai-float-gradient: linear-gradient(135deg, #6C63FF 0%, #8B5CF6 18%, #C084FC 32%, #E879A8 48%, #FB923C 64%, #38BDF8 80%, #22D3A7 100%);
-  --ai-card-hover-glow: 0 8px 40px rgba(108, 99, 255, 0.16);
-  --ai-toast-success: linear-gradient(135deg, #0ea584 0%, #22d3a7 50%, #6ee7c0 100%);
-  --ai-toast-error: linear-gradient(135deg, #dc2660 0%, #f06292 50%, #f8a4c0 100%);
-  --ai-toast-info: linear-gradient(135deg, #5046E5 0%, #7c6eff 50%, #a5a0ff 100%);
-  --ai-toast-warning: linear-gradient(135deg, #e69500 0%, #ffb020 50%, #ffe08a 100%);
-  /* 动画曲线 — Fluid Dynamics 2.0 运动系统 */
+  --ai-card-shadow: 0 1px 3px rgba(27, 19, 64, 0.04), 0 4px 14px rgba(27, 19, 64, 0.03);
+  --ai-vid-odd-bg: rgba(27, 19, 64, 0.012);
+  --ai-vid-hover-bg: rgba(124, 92, 252, 0.05);
+  --ai-cat-detail-bg: #FAF7FF;
+  --ai-separator: #E6E0F6;
+  --ai-glow-color: rgba(124, 92, 252, 0.07);
+  --ai-badge-new-bg: #F43F5E;
+  --ai-badge-existing-bg: #10B981;
+  --ai-scrollbar: #C4C0D8;
+  --ai-scrollbar-hover: #8B87A6;
+  --ai-btn-tool-bg: #F2EDF9;
+  --ai-btn-cancel-hover-bg: #E6E0F6;
+  --ai-log-success: #10B981;
+  --ai-glass-bg: rgba(255, 255, 255, 0.72);
+  --ai-glass-border: rgba(255, 255, 255, 0.58);
+  --ai-glass-blur: 52px;
+  /* 极光色谱 — Phantom Iridescence 八色蛋白石系统 */
+  --ai-aurora-1: #7C5CFC;
+  --ai-aurora-2: #FF6B8A;
+  --ai-aurora-3: #A855F7;
+  --ai-aurora-4: #06B6D4;
+  --ai-aurora-5: #10B981;
+  --ai-aurora-6: #D946EF;
+  --ai-aurora-7: #F59E0B;
+  --ai-aurora-8: #FB7185;
+  /* 琉光光晕系统 — 多层虹彩色散 */
+  --ai-neon-glow: 0 0 20px rgba(124, 92, 252, 0.30),
+                  0 0 40px rgba(255, 107, 138, 0.16),
+                  0 0 60px rgba(168, 85, 247, 0.08),
+                  0 0 80px rgba(6, 182, 212, 0.04);
+  --ai-float-gradient: linear-gradient(135deg, #7C5CFC 0%, #A855F7 14%, #D946EF 28%, #FF6B8A 42%, #F59E0B 56%, #06B6D4 70%, #10B981 84%, #7C5CFC 100%);
+  --ai-card-hover-glow: 0 8px 44px rgba(124, 92, 252, 0.18);
+  --ai-toast-success: linear-gradient(135deg, #059669 0%, #10B981 50%, #34D399 100%);
+  --ai-toast-error: linear-gradient(135deg, #E11D48 0%, #F43F5E 50%, #FB7185 100%);
+  --ai-toast-info: linear-gradient(135deg, #5B3FDB 0%, #8B5CF6 50%, #B4A0FF 100%);
+  --ai-toast-warning: linear-gradient(135deg, #D97706 0%, #F59E0B 50%, #FBBF24 100%);
+  /* 动画曲线 — Silk Dynamics 3.0 运动系统 */
   --ai-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ai-spring-gentle: cubic-bezier(0.22, 1.08, 0.44, 1);
   --ai-spring-bouncy: cubic-bezier(0.175, 0.885, 0.32, 1.2);
   --ai-spring-snappy: cubic-bezier(0.18, 1.32, 0.48, 1);
   --ai-spring-momentum: cubic-bezier(0.28, 1.68, 0.48, 1);
   --ai-spring-rubber: cubic-bezier(0.35, 2.1, 0.55, 1);
+  --ai-spring-silk: cubic-bezier(0.22, 1.14, 0.38, 1);
   --ai-ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ai-ease-out-back: cubic-bezier(0.34, 1.3, 0.64, 1);
   --ai-ease-elastic: cubic-bezier(0.64, -0.5, 0.265, 1.55);
@@ -88,164 +89,166 @@
   --ai-ease-magnetic: cubic-bezier(0.2, 0.9, 0.3, 1.1);
   --ai-ease-silk: cubic-bezier(0.16, 0.88, 0.22, 1);
   --ai-ease-celestial: cubic-bezier(0.19, 1.14, 0.28, 1);
-  /* 多层网格渐变 — 棱光环境光 */
-  --ai-mesh-gradient: radial-gradient(ellipse at 10% 90%, rgba(108, 99, 255, 0.06) 0%, transparent 50%),
-                       radial-gradient(ellipse at 90% 10%, rgba(232, 121, 168, 0.05) 0%, transparent 50%),
-                       radial-gradient(ellipse at 40% 40%, rgba(56, 189, 248, 0.035) 0%, transparent 55%),
-                       radial-gradient(ellipse at 75% 75%, rgba(34, 211, 167, 0.025) 0%, transparent 45%),
-                       radial-gradient(ellipse at 20% 20%, rgba(192, 132, 252, 0.03) 0%, transparent 50%),
-                       radial-gradient(ellipse at 60% 10%, rgba(251, 146, 60, 0.015) 0%, transparent 40%);
-  --ai-noise-opacity: 0.015;
+  --ai-ease-butterfly: cubic-bezier(0.15, 0.96, 0.24, 1.04);
+  --ai-ease-gravity: cubic-bezier(0.32, 0, 0.07, 1);
+  /* 多层网格渐变 — 蛋白石虹彩环境光 */
+  --ai-mesh-gradient: radial-gradient(ellipse at 10% 90%, rgba(124, 92, 252, 0.07) 0%, transparent 50%),
+                       radial-gradient(ellipse at 90% 10%, rgba(255, 107, 138, 0.055) 0%, transparent 50%),
+                       radial-gradient(ellipse at 40% 40%, rgba(6, 182, 212, 0.04) 0%, transparent 55%),
+                       radial-gradient(ellipse at 75% 75%, rgba(16, 185, 129, 0.03) 0%, transparent 45%),
+                       radial-gradient(ellipse at 20% 20%, rgba(217, 70, 239, 0.035) 0%, transparent 50%),
+                       radial-gradient(ellipse at 60% 10%, rgba(245, 158, 11, 0.018) 0%, transparent 40%);
+  --ai-noise-opacity: 0.014;
   /* 3D 深度系统 */
   --ai-perspective: 1400px;
   --ai-tilt-amount: 1.5deg;
-  /* 棱光折射边框 — 天璇棱镜 */
-  --ai-chromatic-border: linear-gradient(135deg, rgba(108,99,255,0.32), rgba(232,121,168,0.28), rgba(56,189,248,0.26), rgba(34,211,167,0.28), rgba(192,132,252,0.30));
+  /* 虹彩折射边框 — 幻蝶棱镜 */
+  --ai-chromatic-border: linear-gradient(135deg, rgba(124,92,252,0.34), rgba(255,107,138,0.30), rgba(6,182,212,0.28), rgba(16,185,129,0.30), rgba(217,70,239,0.32));
   /* 悬浮光晕尺寸 */
   --ai-glow-size: 200px;
   /* 交互反馈色 */
-  --ai-interaction-glow: rgba(108, 99, 255, 0.10);
+  --ai-interaction-glow: rgba(124, 92, 252, 0.10);
 }
 
-/* 暗色主题 — 虚空星云 · Void Nebula */
+/* 暗色主题 — 虚空蝶影 · Void Butterfly */
 [data-theme="dark"] {
-  --ai-primary: #a5a0ff;
-  --ai-primary-dark: #6C63FF;
-  --ai-primary-light: #cac6ff;
-  --ai-primary-bg: rgba(108, 99, 255, 0.12);
-  --ai-primary-shadow: rgba(108, 99, 255, 0.26);
-  --ai-success: #6ee7c0;
-  --ai-success-dark: #22d3a7;
-  --ai-error: #f8a4c0;
-  --ai-info: #a5a0ff;
-  --ai-warning: #ffe08a;
-  --ai-text: #f0edf9;
-  --ai-text-secondary: #a09cb8;
-  --ai-text-muted: #6b6589;
-  --ai-text-light: #4a4462;
-  --ai-border: #231d3a;
-  --ai-border-light: #1e1835;
-  --ai-border-lighter: #140f28;
-  --ai-bg: #0a0718;
-  --ai-bg-secondary: #120e24;
-  --ai-bg-tertiary: #1e1835;
-  --ai-bg-hover: rgba(108, 99, 255, 0.08);
-  --ai-header-gradient: linear-gradient(135deg, #5046E5, #9333EA);
-  --ai-modal-backdrop: rgba(10, 7, 24, 0.90);
-  --ai-input-bg: #120e24;
+  --ai-primary: #B4A0FF;
+  --ai-primary-dark: #7C5CFC;
+  --ai-primary-light: #D4CAFF;
+  --ai-primary-bg: rgba(124, 92, 252, 0.12);
+  --ai-primary-shadow: rgba(124, 92, 252, 0.28);
+  --ai-success: #34D399;
+  --ai-success-dark: #10B981;
+  --ai-error: #FB7185;
+  --ai-info: #B4A0FF;
+  --ai-warning: #FBBF24;
+  --ai-text: #F2EDF9;
+  --ai-text-secondary: #A49EBC;
+  --ai-text-muted: #6D668C;
+  --ai-text-light: #4C4566;
+  --ai-border: #251E3E;
+  --ai-border-light: #201938;
+  --ai-border-lighter: #16102C;
+  --ai-bg: #080618;
+  --ai-bg-secondary: #110D22;
+  --ai-bg-tertiary: #1C1636;
+  --ai-bg-hover: rgba(124, 92, 252, 0.08);
+  --ai-header-gradient: linear-gradient(135deg, #5B3FDB, #A855F7);
+  --ai-modal-backdrop: rgba(8, 6, 24, 0.92);
+  --ai-input-bg: #110D22;
   --ai-card-shadow: 0 4px 28px rgba(0, 0, 0, 0.7);
   --ai-vid-odd-bg: rgba(255, 255, 255, 0.015);
-  --ai-vid-hover-bg: rgba(108, 99, 255, 0.08);
-  --ai-cat-detail-bg: #120e24;
-  --ai-separator: #231d3a;
-  --ai-glow-color: rgba(108, 99, 255, 0.08);
-  --ai-badge-new-bg: #f06292;
-  --ai-badge-existing-bg: #22d3a7;
-  --ai-scrollbar: #231d3a;
-  --ai-scrollbar-hover: #3b3460;
-  --ai-btn-tool-bg: #1e1835;
-  --ai-btn-cancel-hover-bg: #3b3460;
-  --ai-log-success: #6ee7c0;
-  --ai-glass-bg: rgba(10, 7, 24, 0.90);
+  --ai-vid-hover-bg: rgba(124, 92, 252, 0.08);
+  --ai-cat-detail-bg: #110D22;
+  --ai-separator: #251E3E;
+  --ai-glow-color: rgba(124, 92, 252, 0.09);
+  --ai-badge-new-bg: #F43F5E;
+  --ai-badge-existing-bg: #10B981;
+  --ai-scrollbar: #251E3E;
+  --ai-scrollbar-hover: #3E3564;
+  --ai-btn-tool-bg: #1C1636;
+  --ai-btn-cancel-hover-bg: #3E3564;
+  --ai-log-success: #34D399;
+  --ai-glass-bg: rgba(8, 6, 24, 0.92);
   --ai-glass-border: rgba(255, 255, 255, 0.06);
-  --ai-glass-blur: 52px;
-  --ai-aurora-1: #818cf8;
-  --ai-aurora-2: #F472B6;
-  --ai-aurora-3: #a78bfa;
-  --ai-aurora-4: #38BDF8;
-  --ai-aurora-5: #6ee7c0;
-  --ai-aurora-6: #C084FC;
-  --ai-aurora-7: #FB923C;
-  --ai-aurora-8: #E879A8;
-  --ai-neon-glow: 0 0 22px rgba(108, 99, 255, 0.34),
-                  0 0 44px rgba(232, 121, 168, 0.18),
-                  0 0 66px rgba(139, 92, 246, 0.09),
-                  0 0 88px rgba(56, 189, 248, 0.04);
-  --ai-float-gradient: linear-gradient(135deg, #818cf8, #C084FC, #a78bfa, #38BDF8, #6ee7c0, #F472B6);
-  --ai-card-hover-glow: 0 8px 56px rgba(108, 99, 255, 0.14);
-  --ai-toast-success: linear-gradient(135deg, #0ea584, #22d3a7, #6ee7c0);
-  --ai-toast-error: linear-gradient(135deg, #dc2660, #f06292, #f8a4c0);
-  --ai-toast-info: linear-gradient(135deg, #5046E5, #7c6eff, #a5a0ff);
-  --ai-toast-warning: linear-gradient(135deg, #e69500, #ffb020, #ffe08a);
-  --ai-mesh-gradient: radial-gradient(ellipse at 10% 90%, rgba(108, 99, 255, 0.08) 0%, transparent 50%),
-                       radial-gradient(ellipse at 90% 10%, rgba(232, 121, 168, 0.06) 0%, transparent 50%),
-                       radial-gradient(ellipse at 40% 40%, rgba(56, 189, 248, 0.045) 0%, transparent 55%),
-                       radial-gradient(ellipse at 75% 75%, rgba(34, 211, 167, 0.03) 0%, transparent 45%),
-                       radial-gradient(ellipse at 20% 20%, rgba(192, 132, 252, 0.035) 0%, transparent 50%),
-                       radial-gradient(ellipse at 65% 85%, rgba(251, 146, 60, 0.02) 0%, transparent 40%);
-  --ai-noise-opacity: 0.022;
-  --ai-chromatic-border: linear-gradient(135deg, rgba(108,99,255,0.30), rgba(232,121,168,0.25), rgba(56,189,248,0.25), rgba(34,211,167,0.28), rgba(192,132,252,0.28));
-  --ai-glow-size: 220px;
-  --ai-interaction-glow: rgba(108, 99, 255, 0.16);
+  --ai-glass-blur: 56px;
+  --ai-aurora-1: #9B8AFF;
+  --ai-aurora-2: #FB7185;
+  --ai-aurora-3: #C084FC;
+  --ai-aurora-4: #22D3EE;
+  --ai-aurora-5: #34D399;
+  --ai-aurora-6: #E879F9;
+  --ai-aurora-7: #FBBF24;
+  --ai-aurora-8: #FF6B8A;
+  --ai-neon-glow: 0 0 24px rgba(124, 92, 252, 0.38),
+                  0 0 48px rgba(255, 107, 138, 0.20),
+                  0 0 72px rgba(168, 85, 247, 0.10),
+                  0 0 96px rgba(6, 182, 212, 0.05);
+  --ai-float-gradient: linear-gradient(135deg, #9B8AFF, #E879F9, #C084FC, #22D3EE, #34D399, #FB7185);
+  --ai-card-hover-glow: 0 8px 60px rgba(124, 92, 252, 0.16);
+  --ai-toast-success: linear-gradient(135deg, #059669, #10B981, #34D399);
+  --ai-toast-error: linear-gradient(135deg, #E11D48, #F43F5E, #FB7185);
+  --ai-toast-info: linear-gradient(135deg, #5B3FDB, #8B5CF6, #B4A0FF);
+  --ai-toast-warning: linear-gradient(135deg, #D97706, #F59E0B, #FBBF24);
+  --ai-mesh-gradient: radial-gradient(ellipse at 10% 90%, rgba(124, 92, 252, 0.09) 0%, transparent 50%),
+                       radial-gradient(ellipse at 90% 10%, rgba(255, 107, 138, 0.07) 0%, transparent 50%),
+                       radial-gradient(ellipse at 40% 40%, rgba(6, 182, 212, 0.05) 0%, transparent 55%),
+                       radial-gradient(ellipse at 75% 75%, rgba(16, 185, 129, 0.035) 0%, transparent 45%),
+                       radial-gradient(ellipse at 20% 20%, rgba(217, 70, 239, 0.04) 0%, transparent 50%),
+                       radial-gradient(ellipse at 65% 85%, rgba(245, 158, 11, 0.025) 0%, transparent 40%);
+  --ai-noise-opacity: 0.024;
+  --ai-chromatic-border: linear-gradient(135deg, rgba(124,92,252,0.32), rgba(255,107,138,0.28), rgba(6,182,212,0.26), rgba(16,185,129,0.30), rgba(217,70,239,0.30));
+  --ai-glow-size: 240px;
+  --ai-interaction-glow: rgba(124, 92, 252, 0.18);
 }
 
 /* 自动跟随系统主题 */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --ai-primary: #a5a0ff;
-    --ai-primary-dark: #6C63FF;
-    --ai-primary-light: #cac6ff;
-    --ai-primary-bg: rgba(108, 99, 255, 0.12);
-    --ai-primary-shadow: rgba(108, 99, 255, 0.26);
-    --ai-success: #6ee7c0;
-    --ai-success-dark: #22d3a7;
-    --ai-error: #f8a4c0;
-    --ai-info: #a5a0ff;
-    --ai-warning: #ffe08a;
-    --ai-text: #f0edf9;
-    --ai-text-secondary: #a09cb8;
-    --ai-text-muted: #6b6589;
-    --ai-text-light: #4a4462;
-    --ai-border: #231d3a;
-    --ai-border-light: #1e1835;
-    --ai-border-lighter: #140f28;
-    --ai-bg: #0a0718;
-    --ai-bg-secondary: #120e24;
-    --ai-bg-tertiary: #1e1835;
-    --ai-bg-hover: rgba(108, 99, 255, 0.08);
-    --ai-header-gradient: linear-gradient(135deg, #5046E5, #9333EA);
-    --ai-modal-backdrop: rgba(10, 7, 24, 0.90);
-    --ai-input-bg: #120e24;
+    --ai-primary: #B4A0FF;
+    --ai-primary-dark: #7C5CFC;
+    --ai-primary-light: #D4CAFF;
+    --ai-primary-bg: rgba(124, 92, 252, 0.12);
+    --ai-primary-shadow: rgba(124, 92, 252, 0.28);
+    --ai-success: #34D399;
+    --ai-success-dark: #10B981;
+    --ai-error: #FB7185;
+    --ai-info: #B4A0FF;
+    --ai-warning: #FBBF24;
+    --ai-text: #F2EDF9;
+    --ai-text-secondary: #A49EBC;
+    --ai-text-muted: #6D668C;
+    --ai-text-light: #4C4566;
+    --ai-border: #251E3E;
+    --ai-border-light: #201938;
+    --ai-border-lighter: #16102C;
+    --ai-bg: #080618;
+    --ai-bg-secondary: #110D22;
+    --ai-bg-tertiary: #1C1636;
+    --ai-bg-hover: rgba(124, 92, 252, 0.08);
+    --ai-header-gradient: linear-gradient(135deg, #5B3FDB, #A855F7);
+    --ai-modal-backdrop: rgba(8, 6, 24, 0.92);
+    --ai-input-bg: #110D22;
     --ai-card-shadow: 0 4px 28px rgba(0, 0, 0, 0.7);
     --ai-vid-odd-bg: rgba(255, 255, 255, 0.015);
-    --ai-vid-hover-bg: rgba(108, 99, 255, 0.08);
-    --ai-cat-detail-bg: #120e24;
-    --ai-separator: #231d3a;
-    --ai-glow-color: rgba(108, 99, 255, 0.08);
-    --ai-badge-new-bg: #f06292;
-    --ai-badge-existing-bg: #22d3a7;
-    --ai-scrollbar: #231d3a;
-    --ai-scrollbar-hover: #3b3460;
-    --ai-btn-tool-bg: #1e1835;
-    --ai-btn-cancel-hover-bg: #3b3460;
-    --ai-log-success: #6ee7c0;
-    --ai-glass-bg: rgba(10, 7, 24, 0.90);
+    --ai-vid-hover-bg: rgba(124, 92, 252, 0.08);
+    --ai-cat-detail-bg: #110D22;
+    --ai-separator: #251E3E;
+    --ai-glow-color: rgba(124, 92, 252, 0.09);
+    --ai-badge-new-bg: #F43F5E;
+    --ai-badge-existing-bg: #10B981;
+    --ai-scrollbar: #251E3E;
+    --ai-scrollbar-hover: #3E3564;
+    --ai-btn-tool-bg: #1C1636;
+    --ai-btn-cancel-hover-bg: #3E3564;
+    --ai-log-success: #34D399;
+    --ai-glass-bg: rgba(8, 6, 24, 0.92);
     --ai-glass-border: rgba(255, 255, 255, 0.06);
-    --ai-glass-blur: 52px;
-    --ai-aurora-1: #818cf8;
-    --ai-aurora-2: #F472B6;
-    --ai-aurora-3: #a78bfa;
-    --ai-aurora-4: #38BDF8;
-    --ai-aurora-5: #6ee7c0;
-    --ai-aurora-6: #C084FC;
-    --ai-aurora-7: #FB923C;
-    --ai-aurora-8: #E879A8;
-    --ai-neon-glow: 0 0 22px rgba(108, 99, 255, 0.34),
-                    0 0 44px rgba(232, 121, 168, 0.18),
-                    0 0 66px rgba(139, 92, 246, 0.09),
-                    0 0 88px rgba(56, 189, 248, 0.04);
-    --ai-float-gradient: linear-gradient(135deg, #818cf8, #C084FC, #a78bfa, #38BDF8, #6ee7c0, #F472B6);
-    --ai-card-hover-glow: 0 8px 56px rgba(108, 99, 255, 0.14);
-    --ai-mesh-gradient: radial-gradient(ellipse at 10% 90%, rgba(108, 99, 255, 0.08) 0%, transparent 50%),
-                         radial-gradient(ellipse at 90% 10%, rgba(232, 121, 168, 0.06) 0%, transparent 50%),
-                         radial-gradient(ellipse at 40% 40%, rgba(56, 189, 248, 0.045) 0%, transparent 55%),
-                         radial-gradient(ellipse at 75% 75%, rgba(34, 211, 167, 0.03) 0%, transparent 45%),
-                         radial-gradient(ellipse at 20% 20%, rgba(192, 132, 252, 0.035) 0%, transparent 50%),
-                         radial-gradient(ellipse at 65% 85%, rgba(251, 146, 60, 0.02) 0%, transparent 40%);
-    --ai-noise-opacity: 0.022;
-    --ai-chromatic-border: linear-gradient(135deg, rgba(108,99,255,0.30), rgba(232,121,168,0.25), rgba(56,189,248,0.25), rgba(34,211,167,0.28), rgba(192,132,252,0.28));
-    --ai-glow-size: 220px;
-    --ai-interaction-glow: rgba(108, 99, 255, 0.16);
+    --ai-glass-blur: 56px;
+    --ai-aurora-1: #9B8AFF;
+    --ai-aurora-2: #FB7185;
+    --ai-aurora-3: #C084FC;
+    --ai-aurora-4: #22D3EE;
+    --ai-aurora-5: #34D399;
+    --ai-aurora-6: #E879F9;
+    --ai-aurora-7: #FBBF24;
+    --ai-aurora-8: #FF6B8A;
+    --ai-neon-glow: 0 0 24px rgba(124, 92, 252, 0.38),
+                    0 0 48px rgba(255, 107, 138, 0.20),
+                    0 0 72px rgba(168, 85, 247, 0.10),
+                    0 0 96px rgba(6, 182, 212, 0.05);
+    --ai-float-gradient: linear-gradient(135deg, #9B8AFF, #E879F9, #C084FC, #22D3EE, #34D399, #FB7185);
+    --ai-card-hover-glow: 0 8px 60px rgba(124, 92, 252, 0.16);
+    --ai-mesh-gradient: radial-gradient(ellipse at 10% 90%, rgba(124, 92, 252, 0.09) 0%, transparent 50%),
+                         radial-gradient(ellipse at 90% 10%, rgba(255, 107, 138, 0.07) 0%, transparent 50%),
+                         radial-gradient(ellipse at 40% 40%, rgba(6, 182, 212, 0.05) 0%, transparent 55%),
+                         radial-gradient(ellipse at 75% 75%, rgba(16, 185, 129, 0.035) 0%, transparent 45%),
+                         radial-gradient(ellipse at 20% 20%, rgba(217, 70, 239, 0.04) 0%, transparent 50%),
+                         radial-gradient(ellipse at 65% 85%, rgba(245, 158, 11, 0.025) 0%, transparent 40%);
+    --ai-noise-opacity: 0.024;
+    --ai-chromatic-border: linear-gradient(135deg, rgba(124,92,252,0.32), rgba(255,107,138,0.28), rgba(6,182,212,0.26), rgba(16,185,129,0.30), rgba(217,70,239,0.30));
+    --ai-glow-size: 240px;
+    --ai-interaction-glow: rgba(124, 92, 252, 0.18);
   }
 }
 
@@ -395,13 +398,13 @@
 }
 
 #ai-float-btn:hover {
-  transform: scale(1.16) translateY(-8px) rotate(-4deg);
-  border-radius: 34% 66% 56% 44% / 42% 44% 56% 58%;
-  box-shadow: 0 0 28px rgba(108, 99, 255, 0.45),
-              0 0 56px rgba(232, 121, 168, 0.22),
-              0 0 84px rgba(139, 92, 246, 0.10),
-              0 20px 48px rgba(26, 19, 51, 0.18);
-  border-color: rgba(255, 255, 255, 0.55);
+  transform: scale(1.18) translateY(-10px) rotate(-6deg);
+  border-radius: 32% 68% 54% 46% / 40% 46% 54% 60%;
+  box-shadow: 0 0 32px rgba(124, 92, 252, 0.50),
+              0 0 64px rgba(255, 107, 138, 0.26),
+              0 0 96px rgba(168, 85, 247, 0.12),
+              0 22px 52px rgba(27, 19, 64, 0.20);
+  border-color: rgba(255, 255, 255, 0.60);
   animation: ai-float-gradient-shift 14s ease-in-out infinite;
 }
 
@@ -439,7 +442,7 @@
   box-shadow: 0 28px 72px rgba(0, 0, 0, 0.12),
               0 12px 32px rgba(0, 0, 0, 0.08),
               0 0 0 1px var(--ai-glass-border),
-              0 0 80px rgba(108, 99, 255, 0.025),
+              0 0 80px rgba(124, 92, 252, 0.025),
               inset 0 1px 0 rgba(255,255,255,0.24),
               inset 0 -1px 0 rgba(0,0,0,0.02);
   border-radius: 28px;
@@ -612,10 +615,10 @@
 }
 
 .ai-group-header:hover {
-  background: linear-gradient(135deg, var(--ai-primary-bg), rgba(232, 121, 168, 0.05));
+  background: linear-gradient(135deg, var(--ai-primary-bg), rgba(255, 107, 138, 0.05));
   color: var(--ai-primary);
   padding-left: 14px;
-  box-shadow: inset 0 0 0 1px rgba(108, 99, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(124, 92, 252, 0.08);
 }
 
 .ai-group-icon {
@@ -668,7 +671,7 @@
 
 .ai-input:focus-visible {
   border-color: var(--ai-primary);
-  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.12), 0 2px 8px rgba(108, 99, 255, 0.06);
+  box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.12), 0 2px 8px rgba(124, 92, 252, 0.06);
 }
 
 .ai-input::placeholder {
@@ -682,7 +685,7 @@
 }
 
 .ai-input[type="number"]:focus-visible {
-  box-shadow: inset 0 1px 3px rgba(108, 99, 255, 0.08), 0 0 0 3px rgba(108, 99, 255, 0.12);
+  box-shadow: inset 0 1px 3px rgba(124, 92, 252, 0.08), 0 0 0 3px rgba(124, 92, 252, 0.12);
 }
 
 .ai-select {
@@ -699,12 +702,12 @@
 
 .ai-select:hover {
   border-color: var(--ai-primary-light);
-  box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.06);
+  box-shadow: 0 0 0 2px rgba(124, 92, 252, 0.06);
 }
 
 .ai-select:focus-visible {
   border-color: var(--ai-primary);
-  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.12);
+  box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.12);
 }
 
 .ai-label {
@@ -732,7 +735,7 @@
 
 #ai-model-trigger:hover {
   border-color: var(--ai-primary);
-  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.1);
 }
 
 /* 模型下拉面板 (#72,73) */
@@ -770,7 +773,7 @@
 
 #ai-custom-prompt:focus {
   border-color: var(--ai-primary);
-  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.1);
   height: 80px;
 }
 
@@ -845,9 +848,9 @@
 }
 
 .ai-btn-primary:hover {
-  box-shadow: 0 14px 36px rgba(108, 99, 255, 0.32),
-              0 6px 18px rgba(232, 121, 168, 0.18),
-              0 0 48px rgba(108, 99, 255, 0.08),
+  box-shadow: 0 14px 36px rgba(124, 92, 252, 0.32),
+              0 6px 18px rgba(255, 107, 138, 0.18),
+              0 0 48px rgba(124, 92, 252, 0.08),
               inset 0 1px 0 rgba(255,255,255,0.28);
   transform: translateY(-3px) scale(1.03);
 }
@@ -883,7 +886,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(108, 99, 255, 0.06), rgba(56, 189, 248, 0.05));
+  background: linear-gradient(135deg, rgba(124, 92, 252, 0.06), rgba(6, 182, 212, 0.05));
   opacity: 0;
   transition: opacity 0.45s ease;
   border-radius: inherit;
@@ -895,7 +898,7 @@
 
 .ai-btn-tool:hover {
   transform: translateY(-3px) scale(1.045);
-  box-shadow: 0 10px 28px rgba(108, 99, 255, 0.12), 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 10px 28px rgba(124, 92, 252, 0.12), 0 4px 12px rgba(0,0,0,0.05);
   border-color: var(--ai-primary-light);
   color: var(--ai-primary);
 }
@@ -915,7 +918,7 @@
 /* 小图标按钮 (#36) */
 #ai-goto-api:hover, #ai-set-eye:hover, #ai-fetch-models:hover, #ai-verify-model:hover {
   transform: translateY(-2px);
-  box-shadow: 0 3px 10px rgba(108, 99, 255, 0.2);
+  box-shadow: 0 3px 10px rgba(124, 92, 252, 0.2);
 }
 
 /* 筛选按钮 — 胶囊态 + 弹性选中 + 光晕 */
@@ -936,7 +939,7 @@
   color: var(--ai-primary);
   background: var(--ai-primary-bg);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.08);
+  box-shadow: 0 4px 12px rgba(124, 92, 252, 0.08);
 }
 
 .ai-filter-btn.active {
@@ -962,7 +965,7 @@
 }
 
 #ai-clean-confirm:hover {
-  box-shadow: 0 4px 12px rgba(240, 98, 146, 0.3);
+  box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3);
   transform: translateY(-1px);
 }
 
@@ -1135,7 +1138,7 @@
   box-shadow: 0 48px 120px rgba(0, 0, 0, 0.22),
               0 20px 48px rgba(0, 0, 0, 0.12),
               0 0 0 1px var(--ai-glass-border),
-              0 0 90px rgba(108, 99, 255, 0.03),
+              0 0 90px rgba(124, 92, 252, 0.03),
               inset 0 1px 0 rgba(255,255,255,0.24),
               inset 0 -1px 0 rgba(0,0,0,0.03);
   border: 1px solid var(--ai-glass-border);
@@ -1248,7 +1251,7 @@
 }
 
 .ai-modal-btn-confirm {
-  background: linear-gradient(135deg, #0ea584, #22d3a7, #4adeab, #22d3a7, #0ea584) !important;
+  background: linear-gradient(135deg, #059669, #10B981, #34D399, #10B981, #059669) !important;
   background-size: 500% 500%;
   animation: ai-btn-gradient-shift 7s ease-in-out infinite;
   color: #fff;
@@ -1274,7 +1277,7 @@
 }
 
 .ai-modal-btn-confirm:hover {
-  box-shadow: 0 10px 28px rgba(14, 165, 132, 0.35);
+  box-shadow: 0 10px 28px rgba(5, 150, 105, 0.38);
   transform: translateY(-2px) scale(1.015);
 }
 
@@ -1316,7 +1319,7 @@
   background: var(--ai-bg-hover);
   border-left-width: 4px;
   padding-left: 19px;
-  box-shadow: inset 0 0 44px var(--ai-glow-color), 0 3px 14px rgba(108, 99, 255, 0.05);
+  box-shadow: inset 0 0 44px var(--ai-glow-color), 0 3px 14px rgba(124, 92, 252, 0.05);
   transform: translateX(3px);
 }
 
@@ -1366,11 +1369,11 @@
 .ai-cat-badge {
   font-size: 10px;
   color: #fff;
-  background: linear-gradient(135deg, #f06292, #E879A8, #F472B6);
+  background: linear-gradient(135deg, #F43F5E, #FB7185, #FF6B8A);
   padding: 2px 12px;
   border-radius: 10px;
   transition: all 0.4s var(--ai-spring);
-  box-shadow: 0 2px 12px rgba(240, 98, 146, 0.30);
+  box-shadow: 0 2px 12px rgba(244, 63, 94, 0.32);
   font-weight: 600;
   letter-spacing: 0.3px;
 }
@@ -1378,11 +1381,11 @@
 .ai-cat-existing {
   font-size: 10px;
   color: #fff;
-  background: linear-gradient(135deg, #22d3a7, #4adeab, #6ee7c0);
+  background: linear-gradient(135deg, #059669, #10B981, #34D399);
   padding: 2px 12px;
   border-radius: 10px;
   transition: all 0.4s var(--ai-spring);
-  box-shadow: 0 2px 12px rgba(34, 211, 167, 0.30);
+  box-shadow: 0 2px 12px rgba(16, 185, 129, 0.32);
   font-weight: 600;
   letter-spacing: 0.3px;
 }
@@ -1543,50 +1546,55 @@
 
 /* === 16. 动画关键帧 — Fluid Dynamics 2.0 + 棱光曲线 + 有机动效 === */
 
-/* 悬浮按钮 — 磁力悬浮 + 棱光呼吸（Celestial 轨迹） */
+/* 悬浮按钮 — 蝶翼飘浮 + 琉光呼吸（Butterfly 轨迹） */
 @keyframes ai-float-levitate {
   0%, 100% {
     box-shadow: var(--ai-neon-glow);
-    transform: translateY(0) rotate(0deg);
+    transform: translateY(0) rotate(0deg) scale(1);
   }
   8% {
-    transform: translateY(-1px) rotate(0.4deg);
+    transform: translateY(-1.5px) rotate(0.5deg) scale(1.005);
   }
-  22% {
-    box-shadow: 0 0 26px rgba(108, 99, 255, 0.38),
-                0 0 52px rgba(232, 121, 168, 0.18),
-                0 0 78px rgba(56, 189, 248, 0.07);
-    transform: translateY(-6px) rotate(-0.6deg);
+  18% {
+    box-shadow: 0 0 28px rgba(124, 92, 252, 0.42),
+                0 0 56px rgba(255, 107, 138, 0.20),
+                0 0 84px rgba(6, 182, 212, 0.08);
+    transform: translateY(-7px) rotate(-0.8deg) scale(1.015);
   }
-  36% {
-    transform: translateY(-3px) rotate(0.3deg);
+  30% {
+    transform: translateY(-3px) rotate(0.4deg) scale(0.998);
   }
-  50% {
-    transform: translateY(-4.5px) rotate(-0.2deg);
+  42% {
+    transform: translateY(-5px) rotate(-0.3deg) scale(1.008);
   }
-  64% {
-    transform: translateY(-2px) rotate(0.15deg);
+  55% {
+    box-shadow: var(--ai-neon-glow);
+    transform: translateY(-2px) rotate(0.2deg) scale(1.002);
   }
-  78% {
-    transform: translateY(-3.5px) rotate(-0.1deg);
+  68% {
+    transform: translateY(-4px) rotate(-0.15deg) scale(0.997);
   }
-  90% {
-    transform: translateY(-1px) rotate(0.05deg);
+  80% {
+    transform: translateY(-1.5px) rotate(0.08deg) scale(1.003);
+  }
+  92% {
+    transform: translateY(-0.5px) rotate(-0.03deg) scale(1);
   }
 }
 
-/* 液态形变 — 有机流体呼吸（天体水滴形态） */
+/* 蝶翼形变 — 有机琉光呼吸（幻蝶翼展形态） */
 @keyframes ai-float-morph {
   0%, 100% { border-radius: 50%; }
-  7% { border-radius: 46% 54% 50% 50% / 54% 46% 54% 46%; }
-  16% { border-radius: 52% 48% 54% 46% / 46% 54% 46% 54%; }
-  26% { border-radius: 54% 46% 48% 52% / 52% 48% 54% 46%; }
-  37% { border-radius: 45% 55% 53% 47% / 55% 45% 47% 53%; }
-  48% { border-radius: 53% 47% 45% 55% / 47% 53% 55% 45%; }
-  59% { border-radius: 47% 53% 55% 45% / 53% 47% 45% 55%; }
-  70% { border-radius: 55% 45% 47% 53% / 45% 55% 53% 47%; }
-  82% { border-radius: 49% 51% 52% 48% / 51% 49% 48% 52%; }
-  92% { border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%; }
+  6% { border-radius: 44% 56% 52% 48% / 56% 44% 52% 48%; }
+  14% { border-radius: 54% 46% 56% 44% / 44% 56% 44% 56%; }
+  23% { border-radius: 56% 44% 46% 54% / 54% 46% 56% 44%; }
+  33% { border-radius: 42% 58% 55% 45% / 58% 42% 45% 55%; }
+  43% { border-radius: 55% 45% 42% 58% / 45% 55% 58% 42%; }
+  53% { border-radius: 45% 55% 58% 42% / 55% 45% 42% 58%; }
+  63% { border-radius: 58% 42% 45% 55% / 42% 58% 55% 45%; }
+  74% { border-radius: 48% 52% 53% 47% / 52% 48% 47% 53%; }
+  85% { border-radius: 51% 49% 49% 51% / 49% 51% 51% 49%; }
+  94% { border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%; }
 }
 
 /* 棱光轨道环呼吸 */
@@ -1609,21 +1617,23 @@
   100% { transform: rotate(360deg); }
 }
 
-/* 天璇棱光 — Fluid Dynamics Lissajous 棱光路径 */
+/* 幻蝶琉光 — Silk Dynamics 蝶翼 Lissajous 虹彩路径 */
 @keyframes ai-aurora-flow {
   0% { background-position: 0% 50%; }
-  6% { background-position: 6% 78%; }
-  13% { background-position: 18% 90%; }
-  20% { background-position: 35% 72%; }
-  28% { background-position: 52% 55%; }
-  36% { background-position: 68% 38%; }
-  44% { background-position: 82% 25%; }
-  52% { background-position: 92% 15%; }
-  60% { background-position: 95% 30%; }
-  68% { background-position: 80% 48%; }
-  76% { background-position: 58% 62%; }
-  84% { background-position: 35% 55%; }
-  92% { background-position: 15% 42%; }
+  5% { background-position: 4% 82%; }
+  11% { background-position: 14% 95%; }
+  17% { background-position: 30% 80%; }
+  23% { background-position: 48% 60%; }
+  30% { background-position: 62% 42%; }
+  37% { background-position: 78% 28%; }
+  44% { background-position: 90% 18%; }
+  51% { background-position: 96% 12%; }
+  58% { background-position: 92% 28%; }
+  65% { background-position: 78% 45%; }
+  72% { background-position: 60% 58%; }
+  79% { background-position: 42% 68%; }
+  86% { background-position: 25% 60%; }
+  93% { background-position: 12% 48%; }
   100% { background-position: 0% 50%; }
 }
 
@@ -1638,17 +1648,18 @@
   100% { background-position: 400% 50%; }
 }
 
-/* 模态框弹入 — Fluid Dynamics 弹簧动力学（8阶衰减 + 棱光绽放） */
+/* 模态框弹入 — Silk Dynamics 蝶翼绽放动力学（10阶衰减 + 虹彩绽放） */
 @keyframes ai-modal-enter {
-  0% { transform: scale(0.75) translateY(40px) rotate(-0.6deg); opacity: 0; filter: blur(12px) brightness(1.1); }
-  12% { transform: scale(1.06) translateY(-10px) rotate(0.3deg); opacity: 1; filter: blur(0.4px) brightness(1.02); }
-  24% { transform: scale(0.982) translateY(4px) rotate(-0.12deg); filter: blur(0) brightness(1); }
-  36% { transform: scale(1.012) translateY(-2px) rotate(0.06deg); }
-  46% { transform: scale(0.996) translateY(1px) rotate(-0.03deg); }
-  56% { transform: scale(1.004) translateY(-0.4px) rotate(0.015deg); }
-  68% { transform: scale(0.999) translateY(0.15px) rotate(-0.005deg); }
-  80% { transform: scale(1.001) translateY(-0.04px) rotate(0deg); }
-  100% { transform: scale(1) translateY(0) rotate(0deg); opacity: 1; filter: blur(0) brightness(1); }
+  0% { transform: scale(0.72) translateY(44px) rotate(-0.8deg); opacity: 0; filter: blur(14px) brightness(1.12) saturate(0.6); }
+  10% { transform: scale(1.07) translateY(-12px) rotate(0.4deg); opacity: 1; filter: blur(0.5px) brightness(1.03) saturate(1.1); }
+  20% { transform: scale(0.978) translateY(5px) rotate(-0.15deg); filter: blur(0) brightness(1.01) saturate(1); }
+  30% { transform: scale(1.015) translateY(-3px) rotate(0.08deg); filter: brightness(1); }
+  40% { transform: scale(0.994) translateY(1.5px) rotate(-0.04deg); }
+  50% { transform: scale(1.006) translateY(-0.8px) rotate(0.02deg); }
+  60% { transform: scale(0.998) translateY(0.3px) rotate(-0.01deg); }
+  72% { transform: scale(1.002) translateY(-0.1px) rotate(0.004deg); }
+  84% { transform: scale(0.9995) translateY(0.03px) rotate(0deg); }
+  100% { transform: scale(1) translateY(0) rotate(0deg); opacity: 1; filter: blur(0) brightness(1) saturate(1); }
 }
 
 @keyframes ai-modal-exit {
@@ -1669,20 +1680,21 @@
 
 @keyframes ai-breathe {
   0%, 100% { box-shadow: 0 4px 14px var(--ai-primary-shadow); }
-  50% { box-shadow: 0 4px 28px rgba(108, 99, 255, 0.45); }
+  50% { box-shadow: 0 4px 28px rgba(124, 92, 252, 0.45); }
 }
 
-/* 面板弹入 — Fluid Dynamics 棱光弹簧衰减 */
+/* 面板弹入 — Silk Dynamics 蝶翼弹簧展开 */
 @keyframes ai-panel-in {
-  0% { transform: translateY(48px) scale(0.86) rotate(-0.4deg); opacity: 0; filter: blur(10px) brightness(1.08); }
-  14% { transform: translateY(-8px) scale(1.025) rotate(0.15deg); opacity: 1; filter: blur(0.3px) brightness(1.01); }
-  28% { transform: translateY(4px) scale(0.992) rotate(-0.06deg); filter: blur(0) brightness(1); }
-  40% { transform: translateY(-2px) scale(1.006) rotate(0.03deg); }
-  52% { transform: translateY(0.8px) scale(0.997) rotate(-0.01deg); }
-  64% { transform: translateY(-0.3px) scale(1.002) rotate(0.005deg); }
-  76% { transform: translateY(0.08px) scale(0.9996) rotate(0deg); }
-  88% { transform: translateY(-0.02px) scale(1.0002); }
-  100% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; filter: blur(0) brightness(1); }
+  0% { transform: translateY(52px) scale(0.84) rotate(-0.5deg); opacity: 0; filter: blur(12px) brightness(1.10) saturate(0.7); }
+  12% { transform: translateY(-10px) scale(1.03) rotate(0.2deg); opacity: 1; filter: blur(0.3px) brightness(1.02) saturate(1.05); }
+  24% { transform: translateY(5px) scale(0.99) rotate(-0.08deg); filter: blur(0) brightness(1); }
+  36% { transform: translateY(-2.5px) scale(1.008) rotate(0.04deg); }
+  46% { transform: translateY(1px) scale(0.996) rotate(-0.015deg); }
+  56% { transform: translateY(-0.5px) scale(1.003) rotate(0.008deg); }
+  66% { transform: translateY(0.15px) scale(0.999) rotate(-0.003deg); }
+  78% { transform: translateY(-0.04px) scale(1.001) rotate(0deg); }
+  90% { transform: translateY(0.01px) scale(0.9998); }
+  100% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; filter: blur(0) brightness(1) saturate(1); }
 }
 
 @keyframes ai-fade-in {
@@ -1790,8 +1802,8 @@
 
 /* 工具按钮运行中呼吸 — 更柔和 */
 @keyframes ai-tool-running-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(108, 99, 255, 0); border-color: var(--ai-primary); }
-  50% { box-shadow: 0 0 0 5px rgba(108, 99, 255, 0.1); border-color: var(--ai-primary-light); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(124, 92, 252, 0); border-color: var(--ai-primary); }
+  50% { box-shadow: 0 0 0 5px rgba(124, 92, 252, 0.1); border-color: var(--ai-primary-light); }
 }
 
 @keyframes ai-shake {
@@ -1849,15 +1861,15 @@
 
 /* 完成时的庆祝脉冲 */
 @keyframes ai-complete-burst {
-  0% { box-shadow: 0 0 0 0 rgba(14, 165, 132, 0.4); }
-  50% { box-shadow: 0 0 0 12px rgba(14, 165, 132, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(14, 165, 132, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+  50% { box-shadow: 0 0 0 14px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
 }
 
 /* 输入框聚焦光环呼吸 */
 @keyframes ai-focus-glow {
-  0%, 100% { box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1), 0 0 12px rgba(108, 99, 255, 0.04); }
-  50% { box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.14), 0 0 20px rgba(108, 99, 255, 0.06); }
+  0%, 100% { box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.1), 0 0 12px rgba(124, 92, 252, 0.04); }
+  50% { box-shadow: 0 0 0 4px rgba(124, 92, 252, 0.14), 0 0 20px rgba(124, 92, 252, 0.06); }
 }
 
 /* === 17. 滚动条美化 — 渐变滚动条 === */
@@ -2131,7 +2143,7 @@
   font-family: var(--ai-font);
   box-shadow: 0 18px 52px rgba(0, 0, 0, 0.20),
               0 7px 20px rgba(0, 0, 0, 0.10),
-              0 0 60px rgba(108, 99, 255, 0.04),
+              0 0 60px rgba(124, 92, 252, 0.04),
               inset 0 1px 0 rgba(255,255,255,0.24);
   backdrop-filter: blur(36px) saturate(1.9);
   -webkit-backdrop-filter: blur(36px) saturate(1.9);
@@ -2185,13 +2197,14 @@
 }
 
 @keyframes ai-toast-in {
-  0% { transform: translateX(150%) scale(0.6) rotate(3deg); opacity: 0; filter: blur(8px); }
-  16% { transform: translateX(-6%) scale(1.05) rotate(-0.4deg); opacity: 1; filter: blur(0); }
-  30% { transform: translateX(3%) scale(0.982) rotate(0.15deg); }
-  44% { transform: translateX(-1%) scale(1.008) rotate(-0.05deg); }
-  58% { transform: translateX(0.4%) scale(0.997) rotate(0.02deg); }
-  72% { transform: translateX(-0.1%) scale(1.001) rotate(0deg); }
-  86% { transform: translateX(0.02%) scale(0.9998); }
+  0% { transform: translateX(160%) scale(0.55) rotate(4deg); opacity: 0; filter: blur(10px) saturate(0.5); }
+  14% { transform: translateX(-8%) scale(1.06) rotate(-0.5deg); opacity: 1; filter: blur(0) saturate(1.1); }
+  26% { transform: translateX(4%) scale(0.978) rotate(0.2deg); filter: saturate(1); }
+  38% { transform: translateX(-1.5%) scale(1.01) rotate(-0.08deg); }
+  50% { transform: translateX(0.6%) scale(0.996) rotate(0.03deg); }
+  62% { transform: translateX(-0.2%) scale(1.002) rotate(-0.01deg); }
+  76% { transform: translateX(0.05%) scale(0.9996) rotate(0deg); }
+  88% { transform: translateX(-0.01%) scale(1.0001); }
   100% { transform: translateX(0) scale(1) rotate(0deg); opacity: 1; }
 }
 
@@ -2314,7 +2327,7 @@
 /* === 31. 增强的输入框聚焦效果 === */
 .ai-input:focus-visible, .ai-select:focus-visible {
   border-color: var(--ai-primary);
-  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.12), 0 0 16px rgba(108, 99, 255, 0.06);
+  box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.12), 0 0 16px rgba(124, 92, 252, 0.06);
   background: var(--ai-input-bg);
 }
 
@@ -2375,18 +2388,18 @@
 
 /* === 35. 低置信度高亮 === */
 .ai-vid-lowconf-highlight {
-  background: rgba(240, 98, 146, 0.06) !important;
+  background: rgba(244, 63, 94, 0.06) !important;
   border-left: 3px solid var(--ai-error);
   padding-left: 8px;
   transition: background 0.3s ease;
 }
 
 .ai-vid-lowconf-highlight:hover {
-  background: rgba(240, 98, 146, 0.1) !important;
+  background: rgba(244, 63, 94, 0.1) !important;
 }
 
 [data-theme="dark"] .ai-vid-lowconf-highlight {
-  background: rgba(240, 98, 146, 0.12) !important;
+  background: rgba(244, 63, 94, 0.12) !important;
 }
 
 /* === 36. Checkbox 微交互 === */
@@ -2466,7 +2479,7 @@
 }
 
 .ai-theme-toggle:hover {
-  box-shadow: 0 0 12px rgba(108, 99, 255, 0.2);
+  box-shadow: 0 0 12px rgba(124, 92, 252, 0.2);
 }
 
 .ai-theme-toggle::after {
@@ -2611,7 +2624,7 @@
   border-image: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-2)) 1;
   border-image-slice: 1;
   border-radius: var(--ai-radius-sm);
-  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.12), 0 0 18px rgba(108, 99, 255, 0.06);
+  box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.12), 0 0 18px rgba(124, 92, 252, 0.06);
   background: var(--ai-input-bg);
   animation: ai-focus-glow 2.5s ease-in-out infinite;
 }
@@ -2661,7 +2674,7 @@
 }
 
 .ai-modal-btn-confirm:hover {
-  box-shadow: 0 10px 28px rgba(14, 165, 132, 0.35),
+  box-shadow: 0 10px 28px rgba(5, 150, 105, 0.35),
               inset 0 1px 0 rgba(255,255,255,0.18);
   transform: translateY(-2px) scale(1.015);
 }
@@ -2691,7 +2704,7 @@
 }
 
 .ai-theme-toggle:hover {
-  box-shadow: 0 0 14px rgba(108, 99, 255, 0.22);
+  box-shadow: 0 0 14px rgba(124, 92, 252, 0.22);
 }
 
 .ai-theme-toggle::after {
@@ -2699,7 +2712,7 @@
 }
 
 [data-theme="dark"] .ai-theme-toggle:hover::after {
-  box-shadow: 0 1px 6px rgba(0,0,0,0.3), 0 0 8px rgba(108, 99, 255, 0.2);
+  box-shadow: 0 1px 6px rgba(0,0,0,0.3), 0 0 8px rgba(124, 92, 252, 0.2);
 }
 
 /* === 64. Confetti 增强 — 更丰富的 3D 翻飞 === */
@@ -2731,62 +2744,62 @@
     transform: scale(1);
   }
   50% {
-    box-shadow: 0 0 30px rgba(108, 99, 255, 0.48),
-                0 0 58px rgba(232, 121, 168, 0.24),
-                0 0 86px rgba(139, 92, 246, 0.12);
-    transform: scale(1.07);
+    box-shadow: 0 0 34px rgba(124, 92, 252, 0.52),
+                0 0 64px rgba(255, 107, 138, 0.26),
+                0 0 94px rgba(168, 85, 247, 0.14);
+    transform: scale(1.08);
   }
 }
 
-/* === 67. 暗色主题面板增强 — 虚空星云 2.0 + 色散折射边缘 === */
+/* === 67. 暗色主题面板增强 — 虚空蝶影 2.0 + 虹彩折射边缘 === */
 [data-theme="dark"] #ai-sort-wrapper {
-  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.55),
-              0 12px 36px rgba(0, 0, 0, 0.38),
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.58),
+              0 12px 36px rgba(0, 0, 0, 0.40),
               0 0 0 1px rgba(255, 255, 255, 0.04),
-              0 0 100px rgba(108, 99, 255, 0.045),
-              0 0 60px rgba(232, 121, 168, 0.02),
-              0 0 40px rgba(56, 189, 248, 0.015),
+              0 0 110px rgba(124, 92, 252, 0.05),
+              0 0 70px rgba(255, 107, 138, 0.025),
+              0 0 45px rgba(6, 182, 212, 0.018),
               inset 0 1px 0 rgba(255,255,255,0.07),
               inset 0 -1px 0 rgba(0,0,0,0.3);
 }
 
 [data-theme="dark"] .ai-modal {
-  box-shadow: 0 52px 140px rgba(0, 0, 0, 0.65),
-              0 22px 52px rgba(0, 0, 0, 0.45),
+  box-shadow: 0 52px 140px rgba(0, 0, 0, 0.68),
+              0 22px 52px rgba(0, 0, 0, 0.48),
               0 0 0 1px rgba(255, 255, 255, 0.04),
-              0 0 120px rgba(108, 99, 255, 0.05),
-              0 0 80px rgba(232, 121, 168, 0.025),
+              0 0 130px rgba(124, 92, 252, 0.055),
+              0 0 90px rgba(255, 107, 138, 0.03),
               inset 0 1px 0 rgba(255,255,255,0.07);
 }
 
-/* 暗色下按钮增强 — 深层棱光辉光 */
+/* 暗色下按钮增强 — 深层琉光辉光 */
 [data-theme="dark"] .ai-btn-tool:hover {
-  box-shadow: 0 10px 36px rgba(108, 99, 255, 0.18), 0 4px 14px rgba(0,0,0,0.35);
+  box-shadow: 0 10px 36px rgba(124, 92, 252, 0.20), 0 4px 14px rgba(0,0,0,0.38);
 }
 
 [data-theme="dark"] .ai-btn-primary:hover {
-  box-shadow: 0 16px 44px rgba(108, 99, 255, 0.34),
-              0 7px 20px rgba(232, 121, 168, 0.20),
+  box-shadow: 0 16px 44px rgba(124, 92, 252, 0.36),
+              0 7px 20px rgba(255, 107, 138, 0.22),
               inset 0 1px 0 rgba(255,255,255,0.22);
 }
 
-/* 暗色主题虚空环境光 */
+/* 暗色主题虚空蝶影环境光 */
 [data-theme="dark"] .ai-cat-row:hover {
-  box-shadow: inset 0 0 44px rgba(108, 99, 255, 0.06),
-              0 3px 14px rgba(0, 0, 0, 0.22);
+  box-shadow: inset 0 0 48px rgba(124, 92, 252, 0.07),
+              0 3px 14px rgba(0, 0, 0, 0.24);
 }
 
 [data-theme="dark"] .ai-toast {
   box-shadow: 0 20px 56px rgba(0, 0, 0, 0.40),
               0 8px 22px rgba(0, 0, 0, 0.25),
-              0 0 40px rgba(108, 99, 255, 0.04),
+              0 0 40px rgba(124, 92, 252, 0.04),
               inset 0 1px 0 rgba(255,255,255,0.18);
 }
 
 /* === 68. 增强聚焦光环呼吸 === */
 @keyframes ai-focus-glow {
-  0%, 100% { box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1), 0 0 14px rgba(108, 99, 255, 0.04); }
-  50% { box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.15), 0 0 22px rgba(108, 99, 255, 0.07); }
+  0%, 100% { box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.1), 0 0 14px rgba(124, 92, 252, 0.04); }
+  50% { box-shadow: 0 0 0 4px rgba(124, 92, 252, 0.15), 0 0 22px rgba(124, 92, 252, 0.07); }
 }
 
 /* === 69. 分类行选中勾选增强 === */
@@ -2804,7 +2817,7 @@
 /* === 71. 滚动条轨道渐变 === */
 #ai-sort-wrapper ::-webkit-scrollbar-track,
 .ai-modal ::-webkit-scrollbar-track {
-  background: linear-gradient(180deg, transparent, rgba(108, 99, 255, 0.02), transparent);
+  background: linear-gradient(180deg, transparent, rgba(124, 92, 252, 0.02), transparent);
 }
 
 /* === 72. 增强的标签 hover 下划线 — 渐变色 === */
@@ -2864,7 +2877,7 @@
 
 .ai-vid-title a:hover {
   color: var(--ai-primary);
-  text-shadow: 0 0 20px rgba(108, 99, 255, 0.08);
+  text-shadow: 0 0 20px rgba(124, 92, 252, 0.08);
 }
 
 /* === 77. 分组图标悬浮旋转 === */
@@ -2904,15 +2917,15 @@
   border-radius: 50%;
   transform: scale(0.92);
   opacity: 0.7;
-  box-shadow: 0 0 12px rgba(108, 99, 255, 0.2);
+  box-shadow: 0 0 12px rgba(124, 92, 252, 0.2);
 }
 
 /* === 82. 暗色下的输入框微妙内发光 === */
 [data-theme="dark"] .ai-input:focus-visible,
 [data-theme="dark"] .ai-select:focus-visible {
-  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15),
-              0 0 24px rgba(108, 99, 255, 0.07),
-              inset 0 0 14px rgba(108, 99, 255, 0.035);
+  box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.15),
+              0 0 24px rgba(124, 92, 252, 0.07),
+              inset 0 0 14px rgba(124, 92, 252, 0.035);
 }
 
 /* === 83. 日志条目类型左边框增强 === */
@@ -2949,9 +2962,9 @@
   -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 16px), transparent 100%);
 }
 
-/* === 86. 暗色主题下的 header 棱光增强 — 虚空星云色 === */
+/* === 86. 暗色主题下的 header 琉光增强 — 虚空蝶影色 === */
 [data-theme="dark"] .ai-header {
-  background: linear-gradient(135deg, #4338CA, #7C3AED, #5046E5, #9333EA, #6C63FF, #C084FC, #5046E5);
+  background: linear-gradient(135deg, #4338CA, #7C3AED, #5B3FDB, #A855F7, #7C5CFC, #D946EF, #5B3FDB);
   background-size: 800% 800%;
 }
 
@@ -2983,7 +2996,7 @@
 
 /* === 90. 暗色下的按钮 hover 星光 === */
 [data-theme="dark"] .ai-btn-tool:hover::before {
-  background: linear-gradient(135deg, rgba(108, 99, 255, 0.08), rgba(56, 189, 248, 0.06));
+  background: linear-gradient(135deg, rgba(124, 92, 252, 0.08), rgba(6, 182, 212, 0.06));
 }
 
 /* === 91. 全局过渡性能 — 精确的 will-change 管理 === */
@@ -3004,9 +3017,9 @@
 /* === 92. 暗色主题面板底部虚空辉光 + 顶部折射 === */
 [data-theme="dark"] #ai-sort-wrapper {
   background-image: var(--ai-mesh-gradient),
-                    radial-gradient(ellipse at 50% 100%, rgba(108, 99, 255, 0.05) 0%, transparent 55%),
-                    radial-gradient(ellipse at 50% 0%, rgba(232, 121, 168, 0.025) 0%, transparent 40%),
-                    radial-gradient(ellipse at 30% 50%, rgba(56, 189, 248, 0.015) 0%, transparent 50%);
+                    radial-gradient(ellipse at 50% 100%, rgba(124, 92, 252, 0.05) 0%, transparent 55%),
+                    radial-gradient(ellipse at 50% 0%, rgba(255, 107, 138, 0.025) 0%, transparent 40%),
+                    radial-gradient(ellipse at 30% 50%, rgba(6, 182, 212, 0.015) 0%, transparent 50%);
 }
 
 /* === 93. 分类列表弹入优化 — 更丝滑 === */
@@ -3030,7 +3043,7 @@
 
 /* === 95. Hover 状态下的键盘提示高亮 === */
 .ai-btn:hover .ai-kbd {
-  background: rgba(108, 99, 255, 0.08);
+  background: rgba(124, 92, 252, 0.08);
   border-color: var(--ai-primary-light);
   color: var(--ai-primary);
 }
@@ -3130,7 +3143,7 @@
 
 /* === 105. 新增：暗色主题全局增强 — 色彩环境光 === */
 [data-theme="dark"] .ai-btn-tool::before {
-  background: linear-gradient(135deg, rgba(108, 99, 255, 0.08), rgba(56, 189, 248, 0.06));
+  background: linear-gradient(135deg, rgba(124, 92, 252, 0.08), rgba(6, 182, 212, 0.06));
 }
 
 [data-theme="dark"] .ai-cat-row::before {
@@ -3139,7 +3152,7 @@
 
 /* === 106. 新增：进度条活跃态呼吸光晕 === */
 #ai-progress-bar:not([style*="width: 0"]):not(.complete) {
-  box-shadow: 0 0 12px rgba(108, 99, 255, 0.2), 0 0 24px rgba(232, 121, 168, 0.1);
+  box-shadow: 0 0 12px rgba(124, 92, 252, 0.2), 0 0 24px rgba(255, 107, 138, 0.1);
 }
 
 /* === 107. 新增：面板滚动时顶部阴影提示 === */
@@ -3189,7 +3202,7 @@
 }
 
 #ai-sort-wrapper:hover {
-  border-color: rgba(108, 99, 255, 0.15);
+  border-color: rgba(124, 92, 252, 0.15);
 }
 
 /* === 112. 分类行悬浮时的柔和弹性 === */
@@ -3211,14 +3224,14 @@
 
 /* === 115. 增强的模态框关闭按钮 — 磁性弹回 === */
 .ai-modal-close:hover {
-  background: rgba(240, 98, 146, 0.35);
+  background: rgba(244, 63, 94, 0.35);
   transform: rotate(90deg) scale(1.1);
   transition: all 0.35s var(--ai-spring);
 }
 
 /* === 116. 视频封面加载闪光增强 === */
 .ai-vid-cover-empty {
-  background: linear-gradient(110deg, var(--ai-border-lighter) 28%, rgba(108, 99, 255, 0.06) 50%, var(--ai-border-lighter) 72%);
+  background: linear-gradient(110deg, var(--ai-border-lighter) 28%, rgba(124, 92, 252, 0.06) 50%, var(--ai-border-lighter) 72%);
   background-size: 200% 100%;
 }
 
@@ -3237,19 +3250,19 @@
   pointer-events: none;
 }
 
-/* === 118. 暗色主题悬浮按钮增强 — 虚空棱光 === */
+/* === 118. 暗色主题悬浮按钮增强 — 虚空蝶翼琉光 === */
 [data-theme="dark"] #ai-float-btn {
-  box-shadow: 0 0 24px rgba(108, 99, 255, 0.36),
-              0 0 48px rgba(232, 121, 168, 0.18),
-              0 0 72px rgba(139, 92, 246, 0.08),
-              0 0 96px rgba(56, 189, 248, 0.04);
+  box-shadow: 0 0 26px rgba(124, 92, 252, 0.40),
+              0 0 52px rgba(255, 107, 138, 0.20),
+              0 0 78px rgba(168, 85, 247, 0.10),
+              0 0 104px rgba(6, 182, 212, 0.05);
 }
 
 [data-theme="dark"] #ai-float-btn:hover {
-  box-shadow: 0 0 32px rgba(108, 99, 255, 0.52),
-              0 0 64px rgba(232, 121, 168, 0.28),
-              0 0 96px rgba(139, 92, 246, 0.12),
-              0 22px 60px rgba(10, 7, 24, 0.25);
+  box-shadow: 0 0 36px rgba(124, 92, 252, 0.56),
+              0 0 72px rgba(255, 107, 138, 0.30),
+              0 0 108px rgba(168, 85, 247, 0.14),
+              0 24px 64px rgba(8, 6, 24, 0.28);
 }
 
 /* === 119. 进度条液态流光增强 === */
@@ -3261,7 +3274,7 @@
 
 /* === 120. 全局选中文本增强 — 极光选择 === */
 #ai-sort-wrapper ::selection, .ai-modal ::selection {
-  background: rgba(108, 99, 255, 0.15);
+  background: rgba(124, 92, 252, 0.15);
   color: var(--ai-primary-dark);
 }
 
@@ -3301,7 +3314,7 @@
 /* === 127. 新增：滚动条悬浮光晕 === */
 #ai-sort-wrapper ::-webkit-scrollbar-thumb:hover,
 .ai-modal ::-webkit-scrollbar-thumb:hover {
-  box-shadow: 0 0 8px rgba(108, 99, 255, 0.2);
+  box-shadow: 0 0 8px rgba(124, 92, 252, 0.2);
 }
 
 /* === 128. 新增：面板悬浮时外层散射光 === */
@@ -3309,8 +3322,8 @@
   box-shadow: 0 30px 76px rgba(0, 0, 0, 0.13),
               0 14px 34px rgba(0, 0, 0, 0.08),
               0 0 0 1px var(--ai-glass-border),
-              0 0 100px rgba(108, 99, 255, 0.04),
-              0 0 60px rgba(232, 121, 168, 0.02),
+              0 0 100px rgba(124, 92, 252, 0.04),
+              0 0 60px rgba(255, 107, 138, 0.02),
               inset 0 1px 0 rgba(255,255,255,0.26),
               inset 0 -1px 0 rgba(0,0,0,0.02);
 }
@@ -3330,7 +3343,7 @@
 
 /* === 131. 新增：Category row 棱光扫过效果增强 === */
 .ai-cat-row::after {
-  background: linear-gradient(90deg, transparent, rgba(108, 99, 255, 0.08), rgba(232, 121, 168, 0.04), transparent);
+  background: linear-gradient(90deg, transparent, rgba(124, 92, 252, 0.08), rgba(255, 107, 138, 0.04), transparent);
 }
 
 /* === 132. 新增：视频列表打开时的棱光淡入 === */
@@ -3343,9 +3356,9 @@
   box-shadow: 0 32px 84px rgba(0, 0, 0, 0.58),
               0 14px 38px rgba(0, 0, 0, 0.40),
               0 0 0 1px rgba(255, 255, 255, 0.05),
-              0 0 120px rgba(108, 99, 255, 0.06),
-              0 0 70px rgba(232, 121, 168, 0.03),
-              0 0 50px rgba(56, 189, 248, 0.02),
+              0 0 120px rgba(124, 92, 252, 0.06),
+              0 0 70px rgba(255, 107, 138, 0.03),
+              0 0 50px rgba(6, 182, 212, 0.02),
               inset 0 1px 0 rgba(255,255,255,0.08),
               inset 0 -1px 0 rgba(0,0,0,0.3);
 }
@@ -3355,7 +3368,7 @@
   content: '';
   position: absolute;
   inset: -1px;
-  background: linear-gradient(135deg, rgba(108, 99, 255, 0.2), rgba(232, 121, 168, 0.15), rgba(56, 189, 248, 0.1));
+  background: linear-gradient(135deg, rgba(124, 92, 252, 0.2), rgba(255, 107, 138, 0.15), rgba(6, 182, 212, 0.1));
   border-radius: inherit;
   animation: ai-prism-pulse 2s ease-in-out infinite;
   pointer-events: none;
@@ -3375,7 +3388,7 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: radial-gradient(circle at 40% 40%, #FFB020, #FB923C);
+  background: radial-gradient(circle at 40% 40%, #F59E0B, #F97316);
   opacity: 0.8;
   transition: opacity 0.4s, transform 0.5s var(--ai-spring);
   z-index: 0;
@@ -3387,10 +3400,214 @@
   transform: translateX(16px) scale(0.5);
 }
 
-/* === 136. 新增：暗色模态框棱光边缘 === */
+/* === 136. 新增：暗色模态框虹彩边缘 === */
 [data-theme="dark"] .ai-modal::after {
   height: 2px;
   background: var(--ai-chromatic-border);
   opacity: 0.8;
   filter: blur(0.3px);
+}
+
+/* === 137. Phantom Iridescence v26.0 — 蝶翼虹光悬浮效果 === */
+#ai-float-btn {
+  transition: transform 0.7s var(--ai-spring-silk), box-shadow 0.55s var(--ai-ease-smooth), border-color 0.4s ease, border-radius 1s var(--ai-ease-fluid);
+}
+
+/* === 138. 蝶翼按钮 — 增强的虹彩轨道环 === */
+#ai-float-btn::before {
+  background: conic-gradient(from 0deg, var(--ai-aurora-1), var(--ai-aurora-8), var(--ai-aurora-6), var(--ai-aurora-3), var(--ai-aurora-5), var(--ai-aurora-4), var(--ai-aurora-7), var(--ai-aurora-2), var(--ai-aurora-1));
+  animation: ai-rotate-gradient 7s linear infinite, ai-orbital-breathe 3.5s ease-in-out infinite;
+}
+
+/* === 139. 蝶翼反光 — 鳞粉微光层 === */
+#ai-float-btn::after {
+  background: var(--ai-float-gradient);
+  background-size: 700% 700%;
+  filter: blur(30px);
+  opacity: 0.30;
+}
+
+#ai-float-btn:hover::after {
+  opacity: 0.70;
+  transform: scale(1.5);
+  filter: blur(34px);
+}
+
+/* === 140. 面板呼吸边框 — 虹彩蝶翼脉动 === */
+#ai-sort-wrapper {
+  transition: border-color 0.7s var(--ai-ease-butterfly), box-shadow 0.7s var(--ai-ease-butterfly);
+}
+
+#ai-sort-wrapper:hover {
+  border-color: rgba(124, 92, 252, 0.18);
+}
+
+/* === 141. 增强的面板悬浮外光 — 幻蝶琉光散射 === */
+#ai-sort-wrapper:hover {
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.14),
+              0 14px 36px rgba(0, 0, 0, 0.09),
+              0 0 0 1px var(--ai-glass-border),
+              0 0 110px rgba(124, 92, 252, 0.045),
+              0 0 70px rgba(255, 107, 138, 0.022),
+              0 0 50px rgba(6, 182, 212, 0.015),
+              inset 0 1px 0 rgba(255,255,255,0.28),
+              inset 0 -1px 0 rgba(0,0,0,0.02);
+}
+
+/* === 142. 暗色悬浮面板 — 蝶翼深渊光 === */
+[data-theme="dark"] #ai-sort-wrapper:hover {
+  box-shadow: 0 34px 88px rgba(0, 0, 0, 0.60),
+              0 16px 40px rgba(0, 0, 0, 0.42),
+              0 0 0 1px rgba(255, 255, 255, 0.06),
+              0 0 130px rgba(124, 92, 252, 0.07),
+              0 0 80px rgba(255, 107, 138, 0.035),
+              0 0 55px rgba(6, 182, 212, 0.025),
+              inset 0 1px 0 rgba(255,255,255,0.09),
+              inset 0 -1px 0 rgba(0,0,0,0.32);
+}
+
+/* === 143. 蝶翼展开 — 分组展开时的虹光扫过 === */
+.ai-group-body {
+  animation: ai-butterfly-unfold 0.45s var(--ai-ease-butterfly);
+}
+
+@keyframes ai-butterfly-unfold {
+  0% { opacity: 0; transform: translateY(-10px) scale(0.97) rotateX(2deg); filter: blur(2px); }
+  40% { opacity: 1; transform: translateY(1px) scale(1.005) rotateX(0deg); filter: blur(0); }
+  70% { transform: translateY(-0.3px) scale(0.999); }
+  100% { opacity: 1; transform: translateY(0) scale(1) rotateX(0deg); filter: blur(0); }
+}
+
+/* === 144. 幻蝶琉光 — 虹彩涟漪按钮效果 === */
+.ai-btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(124, 92, 252, 0.15), rgba(255, 107, 138, 0.10), rgba(6, 182, 212, 0.08));
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.4s var(--ai-ease-smooth);
+  pointer-events: none;
+}
+
+.ai-btn-primary:hover::before {
+  opacity: 1;
+  animation: ai-iridescent-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes ai-iridescent-pulse {
+  0%, 100% { opacity: 0; filter: hue-rotate(0deg); }
+  50% { opacity: 1; filter: hue-rotate(30deg); }
+}
+
+/* === 145. 分类行虹彩扫光 — 蝶翼鳞粉效果 === */
+.ai-cat-row::after {
+  background: linear-gradient(90deg, transparent, rgba(124, 92, 252, 0.09), rgba(255, 107, 138, 0.05), rgba(6, 182, 212, 0.04), transparent);
+}
+
+/* === 146. 暗色主题面板环境光增强 — 虚空蝶影 === */
+[data-theme="dark"] #ai-sort-wrapper {
+  background-image: var(--ai-mesh-gradient),
+                    radial-gradient(ellipse at 50% 100%, rgba(124, 92, 252, 0.06) 0%, transparent 55%),
+                    radial-gradient(ellipse at 50% 0%, rgba(255, 107, 138, 0.03) 0%, transparent 40%),
+                    radial-gradient(ellipse at 30% 50%, rgba(6, 182, 212, 0.018) 0%, transparent 50%);
+}
+
+/* === 147. 增强的 Toast 鳞粉光泽 === */
+.ai-toast::before {
+  background: linear-gradient(135deg, rgba(255,255,255,0.14) 0%, transparent 45%, rgba(255,255,255,0.06) 100%);
+}
+
+/* === 148. 暗色 Toast 蝶翼辉光 === */
+[data-theme="dark"] .ai-toast {
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.44),
+              0 9px 24px rgba(0, 0, 0, 0.28),
+              0 0 44px rgba(124, 92, 252, 0.05),
+              inset 0 1px 0 rgba(255,255,255,0.20);
+}
+
+/* === 149. 暗色按钮鳞粉光泽 === */
+[data-theme="dark"] .ai-btn-tool::before {
+  background: linear-gradient(135deg, rgba(124, 92, 252, 0.09), rgba(6, 182, 212, 0.07));
+}
+
+[data-theme="dark"] .ai-btn-tool:hover::before {
+  background: linear-gradient(135deg, rgba(124, 92, 252, 0.12), rgba(6, 182, 212, 0.09));
+}
+
+/* === 150. 暗色分类行虹彩条 === */
+[data-theme="dark"] .ai-cat-row::before {
+  background: linear-gradient(180deg, var(--ai-aurora-1), var(--ai-aurora-6), var(--ai-aurora-4));
+}
+
+/* === 151. 暗色悬浮按钮轨道环增强 — 蝶翼鳞粉 === */
+[data-theme="dark"] #ai-float-btn::before {
+  opacity: 0.48;
+  filter: blur(2.8px);
+}
+
+/* === 152. 确认按钮增强 — 宝石琉光 === */
+.ai-modal-btn-confirm {
+  background: linear-gradient(135deg, #059669, #10B981, #34D399, #10B981, #059669) !important;
+  background-size: 500% 500%;
+}
+
+.ai-modal-btn-confirm:hover {
+  box-shadow: 0 12px 32px rgba(5, 150, 105, 0.38),
+              inset 0 1px 0 rgba(255,255,255,0.20);
+  transform: translateY(-2px) scale(1.02);
+}
+
+/* === 153. 视频封面 3D 蝶翼微倾斜增强 === */
+.ai-vid-rich:hover .ai-vid-cover {
+  transform: scale(1.12) translateY(-2px) perspective(200px) rotateY(-3deg);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+}
+
+/* === 154. 全局选中文本 — 蝶翼琉彩选择 === */
+#ai-sort-wrapper ::selection, .ai-modal ::selection {
+  background: rgba(124, 92, 252, 0.16);
+  color: var(--ai-primary-dark);
+}
+
+/* === 155. Ambient Glow 蝶翼增强 — 更宽广的光追跟随 === */
+.ai-ambient-glow-orb {
+  width: 240px;
+  height: 240px;
+  background: radial-gradient(circle, rgba(124, 92, 252, 0.22) 0%, rgba(255, 107, 138, 0.06) 40%, transparent 70%);
+  filter: blur(44px);
+}
+
+#ai-sort-wrapper:hover .ai-ambient-glow-orb {
+  opacity: 0.65;
+}
+
+/* === 156. 进度条活跃态 — 蝶翼虹彩光晕 === */
+#ai-progress-bar:not([style*="width: 0"]):not(.complete) {
+  box-shadow: 0 0 14px rgba(124, 92, 252, 0.22), 0 0 28px rgba(255, 107, 138, 0.12);
+}
+
+/* === 157. 输入框聚焦 — 蝶翼虹彩边框 === */
+.ai-input:focus-visible, .ai-select:focus-visible {
+  border-image: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-2), var(--ai-aurora-4)) 1;
+  border-image-slice: 1;
+  box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.13), 0 0 20px rgba(124, 92, 252, 0.07);
+  animation: ai-focus-glow 2.5s ease-in-out infinite;
+}
+
+/* === 158. 焦点光环呼吸 — 蝶翼节奏 === */
+@keyframes ai-focus-glow {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.11), 0 0 16px rgba(124, 92, 252, 0.05); }
+  50% { box-shadow: 0 0 0 4.5px rgba(124, 92, 252, 0.16), 0 0 24px rgba(124, 92, 252, 0.08); }
+}
+
+/* === 159. 标签下划线 — 虹彩渐变 === */
+.ai-label::after {
+  background: linear-gradient(90deg, var(--ai-aurora-1), var(--ai-aurora-2), var(--ai-aurora-4));
+}
+
+/* === 160. 滚动条虹彩渐变 === */
+#ai-sort-wrapper ::-webkit-scrollbar-thumb,
+.ai-modal ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--ai-primary-light), var(--ai-aurora-2), var(--ai-aurora-4), var(--ai-primary)) !important;
 }
