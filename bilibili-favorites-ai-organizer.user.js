@@ -4368,8 +4368,12 @@ ${topUps.length > 0 ? `<div class="section">
                 floatBtn.style.display = 'none';
                 floatBtn.style.transform = '';
                 floatBtn.style.opacity = '';
+                panel.style.animation = 'none';
                 panel.style.display = 'flex';
+                panel.style.opacity = '1';
                 panel.classList.remove('ai-panel-closing');
+                // 强制 reflow 后重新触发入场动画
+                void panel.offsetHeight;
                 panel.style.animation = 'ai-panel-in 0.6s cubic-bezier(0.22, 1.1, 0.46, 1)';
             }, 190);
         };
@@ -4378,6 +4382,7 @@ ${topUps.length > 0 ? `<div class="section">
             panel.classList.add('ai-panel-closing');
             setTimeout(() => {
                 panel.style.display = 'none';
+                panel.style.animation = 'none';
                 panel.classList.remove('ai-panel-closing');
                 floatBtn.style.display = 'flex';
                 floatBtn.style.animation = 'ai-scale-in 0.4s cubic-bezier(0.22, 1.1, 0.46, 1)';
