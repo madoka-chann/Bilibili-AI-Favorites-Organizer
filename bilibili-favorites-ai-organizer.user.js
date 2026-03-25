@@ -956,6 +956,72 @@
         }
     }
 
+    // 增量协调缓存与 API 数据，避免全量抓取
+    // 返回 { videos, newCount, removedCount } 或 null（无缓存需全量）
+    async function reconcileCache(folderId, currentMediaCount, abortSignal = null) {
+        const cached = getCachedFolder(folderId);
+        if (!cached || !cached.videos || cached.videos.length === 0) {
+            return null; // 无缓存，调用方需全量抓取
+        }
+
+        const diff = currentMediaCount - cached.media_count;
+
+        if (diff === 0) {
+            // media_count 没变，直接用缓存
+            return { videos: cached.videos, newCount: 0, removedCount: 0 };
+        }
+
+        if (diff < 0) {
+            // media_count 减少（用户删了视频），直接用缓存，接受微小偏差
+            // 后续操作（移动/统计）会自然忽略已不存在的视频
+            return { videos: cached.videos, newCount: 0, removedCount: -diff };
+        }
+
+        // diff > 0: media_count 增加，从第1页开始增量扫描找出新增视频
+        // B站 API 按 fav_time 降序（最新收藏的在前面），新视频集中在前几页
+        const cachedIdSet = new Set(cached.videos.map(v => v.id));
+        const newVideos = [];
+        let pn = 1;
+        let foundAll = false;
+
+        while (!foundAll) {
+            if (state.cancelRequested) break;
+            try {
+                const res = await lightFetchJson(
+                    `https://api.bilibili.com/x/v3/fav/resource/list?media_id=${folderId}&pn=${pn}&ps=40&platform=web`,
+                    3, abortSignal
+                );
+                if (res.code !== 0) break;
+                const medias = (res.data && res.data.medias) || [];
+
+                let hitCachedVideo = false;
+                for (const v of medias) {
+                    if (cachedIdSet.has(v.id)) {
+                        hitCachedVideo = true;
+                    } else {
+                        newVideos.push(v);
+                        if (newVideos.length >= diff) { foundAll = true; break; }
+                    }
+                }
+
+                // 如果整页都是缓存中已有的视频，且还没找够新视频，说明新视频散布在各页
+                // 但如果已经命中缓存视频且后续页不太可能有新视频了，提前停止
+                if (!res.data.has_more || medias.length === 0) break;
+                pn++;
+                await humanDelay(getAdaptiveFetchDelay());
+                await checkBatchPause();
+            } catch (e) {
+                break; // 出错就停，用已找到的部分
+            }
+        }
+
+        // 新视频放在前面（按 fav_time 降序），与缓存合并
+        const mergedVideos = [...newVideos, ...cached.videos];
+        // 更新缓存
+        updateCachedFolder(folderId, cached.title, currentMediaCount, mergedVideos);
+        return { videos: mergedVideos, newCount: newVideos.length, removedCount: 0 };
+    }
+
     // 安全的 B站 API 请求：处理 412 限流、非 JSON 响应，自动重试，含超时保护
     // 增强：全局冷却 + 指数退避 + 动态读取自适应延迟
     async function safeFetchJson(url, maxRetries = 4, externalSignal = null) {
@@ -1358,11 +1424,13 @@
             const totalPages = Math.ceil((folder.media_count || 0) / 40) || 1;
             const folderData = { id: folder.id, title: folder.title, media_count: folder.media_count, videos: [] };
 
-            // 检查全局缓存：media_count 没变则直接使用缓存
-            const cached = getCachedFolder(folder.id);
-            if (cached && cached.media_count === folder.media_count && cached.videos && cached.videos.length > 0) {
-                if (!silent) logStatus(`⚡ 备份 [${i + 1}/${allFolders.length}] ${folder.title} (使用缓存，${cached.videos.length} 个视频)`);
-                cached.videos.forEach(v => {
+            // 尝试使用缓存（支持增量协调）
+            const reconciled = await reconcileCache(folder.id, folder.media_count, abortSignal);
+            if (reconciled) {
+                const label = reconciled.newCount > 0 ? `缓存+${reconciled.newCount}新增` :
+                              reconciled.removedCount > 0 ? `缓存，约${reconciled.removedCount}个已删除` : '使用缓存';
+                if (!silent) logStatus(`⚡ 备份 [${i + 1}/${allFolders.length}] ${folder.title} (${label}，${reconciled.videos.length} 个视频)`);
+                reconciled.videos.forEach(v => {
                     folderData.videos.push({ id: v.id, type: v.type, title: v.title, bvid: v.bvid || '' });
                 });
                 backup.folders.push(folderData);
@@ -2837,10 +2905,6 @@ ${topUps.length > 0 ? `<div class="section">
                     return true;
                 };
 
-                // 尝试使用全局缓存
-                const cached = getCachedFolder(currentMediaId);
-                let usedCache = false;
-
                 // 先获取第1页以得到 media_count
                 let firstRes;
                 try {
@@ -2853,16 +2917,21 @@ ${topUps.length > 0 ? `<div class="section">
                     totalInAllFolders += totalInFolder;
                 }
 
-                // 全局缓存命中：media_count 一致，直接使用缓存数据
-                if (cached && cached.media_count === totalInFolder && cached.videos && cached.videos.length > 0) {
-                    logStatus(`⚡ 使用缓存: ${folderTitleMap[currentMediaId] || currentMediaId} (${cached.videos.length} 个视频)`);
-                    for (const v of cached.videos) {
+                // 尝试增量协调缓存
+                const reconciled = await reconcileCache(currentMediaId, totalInFolder);
+                let usedCache = false;
+
+                if (reconciled) {
+                    const label = reconciled.newCount > 0 ? `缓存+${reconciled.newCount}新增` :
+                                  reconciled.removedCount > 0 ? `缓存，约${reconciled.removedCount}个已删除` : '使用缓存';
+                    logStatus(`⚡ ${label}: ${folderTitleMap[currentMediaId] || currentMediaId} (${reconciled.videos.length} 个视频)`);
+                    for (const v of reconciled.videos) {
                         if (!processVideo(v)) break;
                     }
                     usedCache = true;
                 }
 
-                // 无缓存或数据有变化：正常抓取
+                // 无缓存：正常全量抓取
                 if (!usedCache) {
                     logStatus(`📊 收藏夹共 ${totalInFolder} 个视频${limitEnabled ? `，本次处理前 ${Math.min(limitCount, totalInFolder)} 个` : ''}`);
                     const fetchedVideosForCache = [];
@@ -4565,14 +4634,12 @@ ${topUps.length > 0 ? `<div class="section">
                     const cached = folderStatsCache[fid];
                     if (forceFullScan || !cached) {
                         foldersFullScan.push(f);
-                    } else if (cached.media_count === f.media_count) {
+                    } else if (cached.media_count >= f.media_count) {
+                        // media_count 没变或减少（删除了视频），使用已有统计缓存
                         skippedCount++;
-                    } else if (f.media_count > cached.media_count) {
-                        // 新增了视频，只需增量抓取
-                        foldersIncremental.push({ folder: f, diff: f.media_count - cached.media_count });
                     } else {
-                        // media_count 减少了（删除/移走了视频），需要全量重扫
-                        foldersFullScan.push(f);
+                        // media_count 增加，只需增量抓取新增部分
+                        foldersIncremental.push({ folder: f, diff: f.media_count - cached.media_count });
                     }
                 }
 
@@ -4643,11 +4710,12 @@ ${topUps.length > 0 ? `<div class="section">
 
                     const folderStats = { media_count: f.media_count, dead: 0, upCounter: {}, duration: { short: 0, medium: 0, long: 0 } };
 
-                    // 优先使用全局视频缓存
-                    const globalCached = getCachedFolder(f.id);
-                    if (globalCached && globalCached.media_count === f.media_count && globalCached.videos && globalCached.videos.length > 0) {
-                        logStatus(`⚡ 统计 [${workDone}/${totalWork}] ${f.title} (使用缓存)`);
-                        globalCached.videos.forEach(v => statVideo(v, folderStats));
+                    // 优先使用缓存（支持增量协调）
+                    const reconciled = await reconcileCache(f.id, f.media_count);
+                    if (reconciled) {
+                        const label = reconciled.newCount > 0 ? `缓存+${reconciled.newCount}新增` : '使用缓存';
+                        logStatus(`⚡ 统计 [${workDone}/${totalWork}] ${f.title} (${label})`);
+                        reconciled.videos.forEach(v => statVideo(v, folderStats));
                     } else {
                         logStatus(`📊 全扫 [${workDone}/${totalWork}] ${f.title}...`);
                         const fetchedVideos = [];
@@ -5417,19 +5485,25 @@ ${topUps.length > 0 ? `<div class="section">
             for (const folder of allFolders) {
                 if (state.isRunning) { console.log('[AI整理] 🔄 后台缓存：有任务运行中，暂停'); break; }
 
-                const cached = getCachedFolder(folder.id);
-                if (cached && cached.media_count === folder.media_count && cached.videos && cached.videos.length > 0) {
-                    skipped++;
+                // 尝试增量协调
+                const reconciled = await reconcileCache(folder.id, folder.media_count);
+                if (reconciled) {
+                    if (reconciled.newCount > 0) {
+                        console.log(`[AI整理] 🔄 后台缓存: ${folder.title} 增量更新 +${reconciled.newCount}`);
+                        updated++;
+                    } else {
+                        skipped++;
+                    }
                     continue;
                 }
 
-                // 需要抓取（新增或变化）
+                // 无缓存，全量抓取
                 console.log(`[AI整理] 🔄 后台缓存: ${folder.title} (${folder.media_count} 个视频)...`);
                 const videos = [];
                 let pn = 1;
                 try {
                     while (true) {
-                        if (state.isRunning) break; // 有前台任务时让路
+                        if (state.isRunning) break;
                         const res = await lightFetchJson(`https://api.bilibili.com/x/v3/fav/resource/list?media_id=${folder.id}&pn=${pn}&ps=40&platform=web`);
                         if (res.code !== 0) break;
                         const medias = (res.data && res.data.medias) || [];
