@@ -51,7 +51,7 @@
             #ai-float-btn [data-lucide]{width:24px;height:24px;}
             #ai-sort-wrapper{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-panel);width:min(400px,calc(100vw - 60px));flex-direction:column;background:var(--ai-bg,#fff);color:var(--ai-text,#181233);box-shadow:0 24px 68px rgba(0,0,0,0.11),0 10px 28px rgba(0,0,0,0.07);border-radius:28px;overflow:hidden;max-height:85vh;font-family:var(--ai-font);}
             #ai-sort-wrapper [data-lucide]{width:16px;height:16px;stroke-width:2;vertical-align:middle;display:inline-block;}
-            .ai-panel-content{background:var(--ai-bg)!important;padding:0;overflow-y:auto;overflow-x:hidden;max-height:calc(85vh - 46px);border-bottom-left-radius:26px;border-bottom-right-radius:26px;}
+            .ai-panel-content{background:var(--ai-bg)!important;padding:0;overflow:hidden;border-bottom-left-radius:26px;border-bottom-right-radius:26px;}
             .ai-header{background:linear-gradient(135deg,#7364FF,#E056CF,#FF6B9D,#00D4AA,#9B59F6,#20E3B2,#E056CF);background-size:900% 900%;color:#fff;padding:16px 18px;font-weight:600;font-size:14px;display:flex;justify-content:space-between;align-items:center;position:relative;overflow:hidden;}
             .ai-header-title{display:flex;align-items:center;gap:7px;}
             .ai-header-actions{display:flex;gap:8px;align-items:center;position:relative;z-index:1;}
@@ -4358,26 +4358,72 @@ ${topUps.length > 0 ? `<div class="section">
             }
         });
 
-        // 事件绑定（仅在没有拖拽时触发点击）— 丝滑过渡
+        // 面板顶栏拖拽支持
+        const panelHeader = panel.querySelector('.ai-header');
+        panelHeader.style.cursor = 'grab';
+        let _panelDrag = { dragging: false, startX: 0, startY: 0, startLeft: 0, startBottom: 0 };
+
+        panelHeader.addEventListener('mousedown', (e) => {
+            // 不拦截按钮点击
+            if (e.target.closest('.ai-header-btn')) return;
+            if (e.button !== 0) return;
+            _panelDrag = {
+                dragging: true,
+                startX: e.clientX,
+                startY: e.clientY,
+                startLeft: parseInt(panel.style.left) || 30,
+                startBottom: parseInt(panel.style.bottom) || 30
+            };
+            panelHeader.style.cursor = 'grabbing';
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!_panelDrag.dragging) return;
+            const dx = e.clientX - _panelDrag.startX;
+            const dy = _panelDrag.startY - e.clientY;
+            const panelW = panel.offsetWidth;
+            const panelH = panel.offsetHeight;
+            const newLeft = Math.max(0, Math.min(window.innerWidth - panelW, _panelDrag.startLeft + dx));
+            const newBottom = Math.max(0, Math.min(window.innerHeight - panelH, _panelDrag.startBottom + dy));
+            panel.style.left = newLeft + 'px';
+            panel.style.bottom = newBottom + 'px';
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (!_panelDrag.dragging) return;
+            _panelDrag.dragging = false;
+            panelHeader.style.cursor = 'grab';
+            // 同步浮动按钮位置
+            const pos = { left: parseInt(panel.style.left), bottom: parseInt(panel.style.bottom) };
+            GM_setValue('bfao_floatBtnPos', pos);
+            floatBtn.style.left = pos.left + 'px';
+            floatBtn.style.bottom = pos.bottom + 'px';
+        });
+
+        // 事件绑定（仅在没有拖拽时触发点击）— 无延迟丝滑过渡
         floatBtn.onclick = (e) => {
             if (_dragState.moved) { _dragState.moved = false; return; }
-            floatBtn.style.transition = 'transform 0.3s cubic-bezier(0.22, 1.1, 0.46, 1), opacity 0.22s ease';
+            // 按钮淡出（不阻塞面板弹出）
+            floatBtn.style.transition = 'transform 0.25s cubic-bezier(0.22, 1.1, 0.46, 1), opacity 0.18s ease';
             floatBtn.style.transform = 'scale(0.75)';
             floatBtn.style.opacity = '0';
-            setTimeout(() => {
+            floatBtn.addEventListener('transitionend', function hide() {
+                floatBtn.removeEventListener('transitionend', hide);
                 floatBtn.style.display = 'none';
                 floatBtn.style.transform = '';
                 floatBtn.style.opacity = '';
-                panel.classList.remove('ai-panel-closing');
-                panel.style.display = 'flex';
-                panel.style.opacity = '1';
-                panel.style.transform = 'none';
-                panel.style.filter = 'none';
-                panel.style.animation = 'none';
-                // 强制 reflow 后触发入场动画
-                void panel.offsetHeight;
-                panel.style.animation = 'ai-panel-in 0.6s cubic-bezier(0.22, 1.1, 0.46, 1)';
-            }, 190);
+            });
+            // 面板立即弹出，与按钮淡出同步
+            panel.classList.remove('ai-panel-closing');
+            panel.style.animation = 'none';
+            panel.style.display = 'flex';
+            panel.style.opacity = '1';
+            panel.style.transform = 'none';
+            panel.style.filter = 'none';
+            // 强制 reflow 后触发入场动画
+            void panel.offsetHeight;
+            panel.style.animation = 'ai-panel-in 0.5s cubic-bezier(0.22, 1.1, 0.46, 1)';
         };
 
         document.getElementById('ai-close-btn').onclick = () => {
