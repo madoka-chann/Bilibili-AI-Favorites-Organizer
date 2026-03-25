@@ -240,10 +240,13 @@
     ];
 
     function loadSettings() {
+        const provider = GM_getValue('bfao_provider', 'gemini');
+        // 优先使用按服务商保存的 API Key，兼容旧版全局 key
+        const apiKey = GM_getValue('bfao_apiKey_' + provider, '') || GM_getValue('bfao_apiKey', '');
         return {
-            provider: GM_getValue('bfao_provider', 'gemini'),
+            provider: provider,
             customBaseUrl: GM_getValue('bfao_customBaseUrl', ''),
-            apiKey: GM_getValue('bfao_apiKey', ''),
+            apiKey: apiKey,
             modelName: GM_getValue('bfao_modelName', 'gemini-2.5-flash'),
             aiChunkSize: GM_getValue('bfao_aiChunkSize', 50),
             aiConcurrency: GM_getValue('bfao_aiConcurrency', 2),
@@ -277,6 +280,8 @@
             'multiFolderEnabled','animEnabled','incrementalMode',
             'autoOrganizeEnabled','autoOrganizeInterval'];
         keys.forEach(k => { if (s[k] !== undefined) GM_setValue('bfao_' + k, s[k]); });
+        // 按服务商保存 API Key，切换服务商时可自动恢复
+        if (s.provider && s.apiKey !== undefined) GM_setValue('bfao_apiKey_' + s.provider, s.apiKey);
     }
 
     // ================= 多提供商 API 适配层 =================
@@ -4723,8 +4728,18 @@ ${topUps.length > 0 ? `<div class="section">
         }
 
         document.getElementById('ai-set-provider').onchange = function() {
+            // 保存当前服务商的 API Key
+            const prevProvider = GM_getValue('bfao_provider', 'gemini');
+            const prevKey = document.getElementById('ai-set-apikey').value.trim();
+            if (prevProvider) GM_setValue('bfao_apiKey_' + prevProvider, prevKey);
+
             const config = AI_PROVIDERS[this.value];
             if (config) setModelValue(config.defaultModel);
+
+            // 恢复目标服务商的 API Key
+            const savedKey = GM_getValue('bfao_apiKey_' + this.value, '');
+            document.getElementById('ai-set-apikey').value = savedKey;
+
             // 切换时加载缓存但不展开
             const cached = GM_getValue('bfao_cachedModels_' + this.value, null);
             if (cached && cached.length > 0) { loadModelOptions(cached); }
