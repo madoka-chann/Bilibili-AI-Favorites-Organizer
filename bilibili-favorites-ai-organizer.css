@@ -1,76 +1,79 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v22.0
-   极致视觉体验 · 3D Depth System · Chromatic Glass Morphism
-   Premium Rose-Gold + Arctic Blue 双色系统
-   Apple-class Spring Physics · Orbital Micro-interactions
-   Nebula Dark Theme · Living Surfaces · Momentum Animations
+   B站 AI 收藏夹整理助理 — 完整样式表 v23.0
+   Sakura Mist · 樱雾流光 · Ethereal Glass Morphism
+   Warm Coral + Deep Violet 双色系统 · Holographic Accents
+   iOS 18 Fluid Dynamics · Magnetic Micro-interactions
+   Nebula Depth 2.0 Dark Theme · Living Crystalline Surfaces
    ================================================================ */
 
 /* === 1. CSS 变量 (双主题系统) === */
 
-/* 亮色主题（默认） — 琉璃·暮光玫瑰 */
+/* 亮色主题（默认） — 樱雾·晨曦珊瑚 Sakura Mist */
 :root, [data-theme="light"] {
-  --ai-primary: #e06898;
-  --ai-primary-dark: #cf4a80;
-  --ai-primary-light: #f2a5c4;
-  --ai-primary-bg: rgba(224, 104, 152, 0.06);
-  --ai-primary-shadow: rgba(224, 104, 152, 0.2);
+  --ai-primary: #e0628e;
+  --ai-primary-dark: #d14578;
+  --ai-primary-light: #f4a3be;
+  --ai-primary-bg: rgba(224, 98, 142, 0.06);
+  --ai-primary-shadow: rgba(224, 98, 142, 0.22);
   --ai-success: #10b981;
   --ai-success-dark: #059669;
   --ai-error: #f43f5e;
-  --ai-info: #6366f1;
+  --ai-info: #7c6df6;
   --ai-warning: #f59e0b;
-  --ai-text: #0f172a;
-  --ai-text-secondary: #334155;
-  --ai-text-muted: #94a3b8;
-  --ai-text-light: #cbd5e1;
-  --ai-border: #e2e8f0;
-  --ai-border-light: #f1f5f9;
-  --ai-border-lighter: #f8fafc;
+  --ai-text: #0c1220;
+  --ai-text-secondary: #2d3a4e;
+  --ai-text-muted: #8694a8;
+  --ai-text-light: #c1cad6;
+  --ai-border: #dfe5ed;
+  --ai-border-light: #eef2f7;
+  --ai-border-lighter: #f6f8fb;
   --ai-bg: #ffffff;
-  --ai-bg-secondary: #f8fafc;
-  --ai-bg-tertiary: #f1f5f9;
-  --ai-bg-hover: rgba(224, 104, 152, 0.04);
-  --ai-header-gradient: linear-gradient(135deg, #e06898, #a78bfa);
-  --ai-modal-backdrop: rgba(2, 6, 23, 0.48);
+  --ai-bg-secondary: #f7f9fc;
+  --ai-bg-tertiary: #eef2f7;
+  --ai-bg-hover: rgba(224, 98, 142, 0.04);
+  --ai-header-gradient: linear-gradient(135deg, #e0628e, #9f7aea);
+  --ai-modal-backdrop: rgba(6, 10, 28, 0.52);
   --ai-input-bg: #fff;
-  --ai-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03);
-  --ai-vid-odd-bg: rgba(0, 0, 0, 0.012);
-  --ai-vid-hover-bg: rgba(99, 102, 241, 0.04);
-  --ai-cat-detail-bg: #f8fafc;
-  --ai-separator: #e2e8f0;
-  --ai-glow-color: rgba(224, 104, 152, 0.06);
+  --ai-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 14px rgba(0, 0, 0, 0.03);
+  --ai-vid-odd-bg: rgba(0, 0, 0, 0.014);
+  --ai-vid-hover-bg: rgba(124, 109, 246, 0.045);
+  --ai-cat-detail-bg: #f7f9fc;
+  --ai-separator: #dfe5ed;
+  --ai-glow-color: rgba(224, 98, 142, 0.07);
   --ai-badge-new-bg: #f43f5e;
   --ai-badge-existing-bg: #10b981;
-  --ai-scrollbar: #cbd5e1;
-  --ai-scrollbar-hover: #94a3b8;
-  --ai-btn-tool-bg: #f1f5f9;
-  --ai-btn-cancel-hover-bg: #e2e8f0;
+  --ai-scrollbar: #c1cad6;
+  --ai-scrollbar-hover: #8694a8;
+  --ai-btn-tool-bg: #eef2f7;
+  --ai-btn-cancel-hover-bg: #dfe5ed;
   --ai-log-success: #10b981;
-  --ai-glass-bg: rgba(255, 255, 255, 0.72);
-  --ai-glass-border: rgba(255, 255, 255, 0.6);
-  --ai-glass-blur: 32px;
-  --ai-aurora-1: #e06898;
-  --ai-aurora-2: #a78bfa;
-  --ai-aurora-3: #818cf8;
-  --ai-aurora-4: #34d399;
-  --ai-aurora-5: #38bdf8;
-  --ai-aurora-6: #c084fc;
-  --ai-neon-glow: 0 0 16px rgba(224, 104, 152, 0.28),
-                  0 0 32px rgba(167, 139, 250, 0.14),
-                  0 0 48px rgba(129, 140, 248, 0.07);
-  --ai-float-gradient: linear-gradient(135deg, #e06898 0%, #c084fc 28%, #818cf8 56%, #38bdf8 100%);
-  --ai-card-hover-glow: 0 8px 32px rgba(224, 104, 152, 0.14);
-  --ai-toast-success: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
+  --ai-glass-bg: rgba(255, 255, 255, 0.68);
+  --ai-glass-border: rgba(255, 255, 255, 0.55);
+  --ai-glass-blur: 36px;
+  /* 极光色谱 — Sakura Mist 六色系统 */
+  --ai-aurora-1: #e0628e;
+  --ai-aurora-2: #9f7aea;
+  --ai-aurora-3: #7c6df6;
+  --ai-aurora-4: #2dd4a8;
+  --ai-aurora-5: #36b5f4;
+  --ai-aurora-6: #c77dff;
+  /* 全息光晕系统 */
+  --ai-neon-glow: 0 0 18px rgba(224, 98, 142, 0.3),
+                  0 0 36px rgba(159, 122, 234, 0.15),
+                  0 0 54px rgba(124, 109, 246, 0.07);
+  --ai-float-gradient: linear-gradient(135deg, #e0628e 0%, #c77dff 25%, #7c6df6 50%, #36b5f4 75%, #2dd4a8 100%);
+  --ai-card-hover-glow: 0 8px 36px rgba(224, 98, 142, 0.15);
+  --ai-toast-success: linear-gradient(135deg, #059669 0%, #10b981 50%, #2dd4a8 100%);
   --ai-toast-error: linear-gradient(135deg, #e11d48 0%, #f43f5e 50%, #fb7185 100%);
-  --ai-toast-info: linear-gradient(135deg, #4f46e5 0%, #6366f1 50%, #818cf8 100%);
+  --ai-toast-info: linear-gradient(135deg, #5b4fdb 0%, #7c6df6 50%, #9f7aea 100%);
   --ai-toast-warning: linear-gradient(135deg, #d97706 0%, #f59e0b 50%, #fbbf24 100%);
-  /* 动画曲线 — Apple-class 运动系统 */
+  /* 动画曲线 — iOS 18 Fluid Dynamics 运动系统 */
   --ai-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --ai-spring-gentle: cubic-bezier(0.22, 1.1, 0.46, 1);
+  --ai-spring-gentle: cubic-bezier(0.22, 1.08, 0.44, 1);
   --ai-spring-bouncy: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  --ai-spring-snappy: cubic-bezier(0.2, 1.4, 0.5, 1);
-  --ai-spring-momentum: cubic-bezier(0.4, 1.8, 0.6, 1);
+  --ai-spring-snappy: cubic-bezier(0.18, 1.35, 0.48, 1);
+  --ai-spring-momentum: cubic-bezier(0.35, 1.7, 0.55, 1);
+  --ai-spring-rubber: cubic-bezier(0.4, 2.2, 0.6, 1);
   --ai-ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ai-ease-out-back: cubic-bezier(0.34, 1.3, 0.64, 1);
   --ai-ease-elastic: cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -79,146 +82,156 @@
   --ai-ease-fluid: cubic-bezier(0.25, 0.8, 0.25, 1);
   --ai-ease-apple: cubic-bezier(0.28, 0.11, 0.32, 1);
   --ai-ease-ios: cubic-bezier(0.23, 1, 0.32, 1);
-  --ai-mesh-gradient: radial-gradient(ellipse at 10% 90%, rgba(224, 104, 152, 0.055) 0%, transparent 50%),
-                       radial-gradient(ellipse at 90% 10%, rgba(167, 139, 250, 0.045) 0%, transparent 50%),
-                       radial-gradient(ellipse at 40% 40%, rgba(129, 140, 248, 0.03) 0%, transparent 55%),
-                       radial-gradient(ellipse at 75% 75%, rgba(52, 211, 153, 0.02) 0%, transparent 45%),
-                       radial-gradient(ellipse at 20% 20%, rgba(56, 189, 248, 0.018) 0%, transparent 50%);
-  --ai-noise-opacity: 0.025;
+  --ai-ease-magnetic: cubic-bezier(0.2, 0.9, 0.3, 1.1);
+  /* 多层网格渐变 — 流动环境光 */
+  --ai-mesh-gradient: radial-gradient(ellipse at 10% 90%, rgba(224, 98, 142, 0.06) 0%, transparent 50%),
+                       radial-gradient(ellipse at 90% 10%, rgba(159, 122, 234, 0.05) 0%, transparent 50%),
+                       radial-gradient(ellipse at 40% 40%, rgba(124, 109, 246, 0.035) 0%, transparent 55%),
+                       radial-gradient(ellipse at 75% 75%, rgba(45, 212, 168, 0.022) 0%, transparent 45%),
+                       radial-gradient(ellipse at 20% 20%, rgba(54, 181, 244, 0.02) 0%, transparent 50%);
+  --ai-noise-opacity: 0.022;
   /* 3D 深度系统 */
   --ai-perspective: 1200px;
   --ai-tilt-amount: 2deg;
-  /* 色彩折射边框 */
-  --ai-chromatic-border: linear-gradient(135deg, rgba(224,104,152,0.3), rgba(167,139,250,0.3), rgba(129,140,248,0.3), rgba(56,189,248,0.3));
+  /* 全息折射边框 — 彩虹棱镜 */
+  --ai-chromatic-border: linear-gradient(135deg, rgba(224,98,142,0.32), rgba(159,122,234,0.28), rgba(124,109,246,0.28), rgba(54,181,244,0.32));
+  /* 新增：悬浮光晕尺寸 */
+  --ai-glow-size: 180px;
+  /* 新增：交互反馈色 */
+  --ai-interaction-glow: rgba(224, 98, 142, 0.12);
 }
 
-/* 暗色主题 — 星云深渊 · Nebula Abyss */
+/* 暗色主题 — 星云深渊 2.0 · Nebula Depth */
 [data-theme="dark"] {
-  --ai-primary: #f0a0c4;
-  --ai-primary-dark: #e06898;
-  --ai-primary-light: #f8c8dc;
-  --ai-primary-bg: rgba(224, 104, 152, 0.1);
-  --ai-primary-shadow: rgba(224, 104, 152, 0.2);
+  --ai-primary: #f2a0c0;
+  --ai-primary-dark: #e0628e;
+  --ai-primary-light: #f8c4d8;
+  --ai-primary-bg: rgba(224, 98, 142, 0.1);
+  --ai-primary-shadow: rgba(224, 98, 142, 0.22);
   --ai-success: #34d399;
   --ai-success-dark: #10b981;
   --ai-error: #fb7185;
-  --ai-info: #818cf8;
+  --ai-info: #9f8afb;
   --ai-warning: #fbbf24;
-  --ai-text: #f1f5f9;
-  --ai-text-secondary: #94a3b8;
-  --ai-text-muted: #64748b;
-  --ai-text-light: #475569;
-  --ai-border: #1e293b;
-  --ai-border-light: #1e293b;
-  --ai-border-lighter: #0f172a;
-  --ai-bg: #020617;
-  --ai-bg-secondary: #0f172a;
-  --ai-bg-tertiary: #1e293b;
-  --ai-bg-hover: rgba(224, 104, 152, 0.07);
-  --ai-header-gradient: linear-gradient(135deg, #be185d, #7c3aed);
-  --ai-modal-backdrop: rgba(0, 0, 0, 0.82);
-  --ai-input-bg: #0f172a;
-  --ai-card-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
-  --ai-vid-odd-bg: rgba(255, 255, 255, 0.015);
-  --ai-vid-hover-bg: rgba(129, 140, 248, 0.06);
-  --ai-cat-detail-bg: #0f172a;
-  --ai-separator: #1e293b;
-  --ai-glow-color: rgba(224, 104, 152, 0.06);
+  --ai-text: #edf2f7;
+  --ai-text-secondary: #8fa0b8;
+  --ai-text-muted: #5a6d82;
+  --ai-text-light: #3d4f65;
+  --ai-border: #182236;
+  --ai-border-light: #1a2640;
+  --ai-border-lighter: #0d1526;
+  --ai-bg: #010410;
+  --ai-bg-secondary: #0b1022;
+  --ai-bg-tertiary: #151d32;
+  --ai-bg-hover: rgba(224, 98, 142, 0.07);
+  --ai-header-gradient: linear-gradient(135deg, #c0185e, #7c3aed);
+  --ai-modal-backdrop: rgba(0, 0, 0, 0.85);
+  --ai-input-bg: #0b1022;
+  --ai-card-shadow: 0 4px 28px rgba(0, 0, 0, 0.65);
+  --ai-vid-odd-bg: rgba(255, 255, 255, 0.018);
+  --ai-vid-hover-bg: rgba(124, 109, 246, 0.07);
+  --ai-cat-detail-bg: #0b1022;
+  --ai-separator: #182236;
+  --ai-glow-color: rgba(224, 98, 142, 0.07);
   --ai-badge-new-bg: #f43f5e;
   --ai-badge-existing-bg: #10b981;
-  --ai-scrollbar: #1e293b;
-  --ai-scrollbar-hover: #334155;
-  --ai-btn-tool-bg: #1e293b;
-  --ai-btn-cancel-hover-bg: #334155;
+  --ai-scrollbar: #182236;
+  --ai-scrollbar-hover: #2a3a52;
+  --ai-btn-tool-bg: #151d32;
+  --ai-btn-cancel-hover-bg: #2a3a52;
   --ai-log-success: #34d399;
-  --ai-glass-bg: rgba(2, 6, 23, 0.88);
-  --ai-glass-border: rgba(255, 255, 255, 0.06);
-  --ai-glass-blur: 36px;
-  --ai-aurora-1: #e06898;
-  --ai-aurora-2: #c084fc;
-  --ai-aurora-3: #818cf8;
-  --ai-aurora-4: #34d399;
-  --ai-aurora-5: #38bdf8;
-  --ai-aurora-6: #a78bfa;
-  --ai-neon-glow: 0 0 20px rgba(224, 104, 152, 0.3),
-                  0 0 40px rgba(192, 132, 252, 0.15),
-                  0 0 64px rgba(129, 140, 248, 0.08);
-  --ai-float-gradient: linear-gradient(135deg, #e06898, #c084fc, #818cf8, #38bdf8);
-  --ai-card-hover-glow: 0 8px 48px rgba(224, 104, 152, 0.12);
-  --ai-toast-success: linear-gradient(135deg, #059669, #10b981, #34d399);
+  --ai-glass-bg: rgba(1, 4, 16, 0.9);
+  --ai-glass-border: rgba(255, 255, 255, 0.055);
+  --ai-glass-blur: 40px;
+  --ai-aurora-1: #e0628e;
+  --ai-aurora-2: #c77dff;
+  --ai-aurora-3: #7c6df6;
+  --ai-aurora-4: #2dd4a8;
+  --ai-aurora-5: #36b5f4;
+  --ai-aurora-6: #9f7aea;
+  --ai-neon-glow: 0 0 22px rgba(224, 98, 142, 0.32),
+                  0 0 44px rgba(199, 125, 255, 0.16),
+                  0 0 72px rgba(124, 109, 246, 0.08);
+  --ai-float-gradient: linear-gradient(135deg, #e0628e, #c77dff, #7c6df6, #36b5f4, #2dd4a8);
+  --ai-card-hover-glow: 0 8px 52px rgba(224, 98, 142, 0.13);
+  --ai-toast-success: linear-gradient(135deg, #059669, #10b981, #2dd4a8);
   --ai-toast-error: linear-gradient(135deg, #e11d48, #f43f5e, #fb7185);
-  --ai-toast-info: linear-gradient(135deg, #4f46e5, #6366f1, #818cf8);
+  --ai-toast-info: linear-gradient(135deg, #5b4fdb, #7c6df6, #9f7aea);
   --ai-toast-warning: linear-gradient(135deg, #d97706, #f59e0b, #fbbf24);
-  --ai-mesh-gradient: radial-gradient(ellipse at 10% 90%, rgba(224, 104, 152, 0.07) 0%, transparent 50%),
-                       radial-gradient(ellipse at 90% 10%, rgba(192, 132, 252, 0.055) 0%, transparent 50%),
-                       radial-gradient(ellipse at 40% 40%, rgba(129, 140, 248, 0.04) 0%, transparent 55%),
-                       radial-gradient(ellipse at 75% 75%, rgba(52, 211, 153, 0.025) 0%, transparent 45%),
-                       radial-gradient(ellipse at 20% 20%, rgba(56, 189, 248, 0.02) 0%, transparent 50%);
-  --ai-noise-opacity: 0.035;
-  --ai-chromatic-border: linear-gradient(135deg, rgba(224,104,152,0.25), rgba(192,132,252,0.25), rgba(129,140,248,0.25), rgba(56,189,248,0.25));
+  --ai-mesh-gradient: radial-gradient(ellipse at 10% 90%, rgba(224, 98, 142, 0.075) 0%, transparent 50%),
+                       radial-gradient(ellipse at 90% 10%, rgba(199, 125, 255, 0.06) 0%, transparent 50%),
+                       radial-gradient(ellipse at 40% 40%, rgba(124, 109, 246, 0.045) 0%, transparent 55%),
+                       radial-gradient(ellipse at 75% 75%, rgba(45, 212, 168, 0.028) 0%, transparent 45%),
+                       radial-gradient(ellipse at 20% 20%, rgba(54, 181, 244, 0.022) 0%, transparent 50%);
+  --ai-noise-opacity: 0.03;
+  --ai-chromatic-border: linear-gradient(135deg, rgba(224,98,142,0.28), rgba(199,125,255,0.25), rgba(124,109,246,0.25), rgba(54,181,244,0.28));
+  --ai-glow-size: 200px;
+  --ai-interaction-glow: rgba(224, 98, 142, 0.15);
 }
 
 /* 自动跟随系统主题 */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --ai-primary: #f0a0c4;
-    --ai-primary-dark: #e06898;
-    --ai-primary-light: #f8c8dc;
-    --ai-primary-bg: rgba(224, 104, 152, 0.1);
-    --ai-primary-shadow: rgba(224, 104, 152, 0.2);
+    --ai-primary: #f2a0c0;
+    --ai-primary-dark: #e0628e;
+    --ai-primary-light: #f8c4d8;
+    --ai-primary-bg: rgba(224, 98, 142, 0.1);
+    --ai-primary-shadow: rgba(224, 98, 142, 0.22);
     --ai-success: #34d399;
     --ai-success-dark: #10b981;
     --ai-error: #fb7185;
-    --ai-info: #818cf8;
+    --ai-info: #9f8afb;
     --ai-warning: #fbbf24;
-    --ai-text: #f1f5f9;
-    --ai-text-secondary: #94a3b8;
-    --ai-text-muted: #64748b;
-    --ai-text-light: #475569;
-    --ai-border: #1e293b;
-    --ai-border-light: #1e293b;
-    --ai-border-lighter: #0f172a;
-    --ai-bg: #020617;
-    --ai-bg-secondary: #0f172a;
-    --ai-bg-tertiary: #1e293b;
-    --ai-bg-hover: rgba(224, 104, 152, 0.07);
-    --ai-header-gradient: linear-gradient(135deg, #be185d, #7c3aed);
-    --ai-modal-backdrop: rgba(0, 0, 0, 0.82);
-    --ai-input-bg: #0f172a;
-    --ai-card-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
-    --ai-vid-odd-bg: rgba(255, 255, 255, 0.015);
-    --ai-vid-hover-bg: rgba(129, 140, 248, 0.06);
-    --ai-cat-detail-bg: #0f172a;
-    --ai-separator: #1e293b;
-    --ai-glow-color: rgba(224, 104, 152, 0.06);
+    --ai-text: #edf2f7;
+    --ai-text-secondary: #8fa0b8;
+    --ai-text-muted: #5a6d82;
+    --ai-text-light: #3d4f65;
+    --ai-border: #182236;
+    --ai-border-light: #1a2640;
+    --ai-border-lighter: #0d1526;
+    --ai-bg: #010410;
+    --ai-bg-secondary: #0b1022;
+    --ai-bg-tertiary: #151d32;
+    --ai-bg-hover: rgba(224, 98, 142, 0.07);
+    --ai-header-gradient: linear-gradient(135deg, #c0185e, #7c3aed);
+    --ai-modal-backdrop: rgba(0, 0, 0, 0.85);
+    --ai-input-bg: #0b1022;
+    --ai-card-shadow: 0 4px 28px rgba(0, 0, 0, 0.65);
+    --ai-vid-odd-bg: rgba(255, 255, 255, 0.018);
+    --ai-vid-hover-bg: rgba(124, 109, 246, 0.07);
+    --ai-cat-detail-bg: #0b1022;
+    --ai-separator: #182236;
+    --ai-glow-color: rgba(224, 98, 142, 0.07);
     --ai-badge-new-bg: #f43f5e;
     --ai-badge-existing-bg: #10b981;
-    --ai-scrollbar: #1e293b;
-    --ai-scrollbar-hover: #334155;
-    --ai-btn-tool-bg: #1e293b;
-    --ai-btn-cancel-hover-bg: #334155;
+    --ai-scrollbar: #182236;
+    --ai-scrollbar-hover: #2a3a52;
+    --ai-btn-tool-bg: #151d32;
+    --ai-btn-cancel-hover-bg: #2a3a52;
     --ai-log-success: #34d399;
-    --ai-glass-bg: rgba(2, 6, 23, 0.88);
-    --ai-glass-border: rgba(255, 255, 255, 0.06);
-    --ai-glass-blur: 36px;
-    --ai-aurora-1: #e06898;
-    --ai-aurora-2: #c084fc;
-    --ai-aurora-3: #818cf8;
-    --ai-aurora-4: #34d399;
-    --ai-aurora-5: #38bdf8;
-    --ai-aurora-6: #a78bfa;
-    --ai-neon-glow: 0 0 20px rgba(224, 104, 152, 0.3),
-                    0 0 40px rgba(192, 132, 252, 0.15),
-                    0 0 64px rgba(129, 140, 248, 0.08);
-    --ai-float-gradient: linear-gradient(135deg, #e06898, #c084fc, #818cf8, #38bdf8);
-    --ai-card-hover-glow: 0 8px 48px rgba(224, 104, 152, 0.12);
-    --ai-mesh-gradient: radial-gradient(ellipse at 10% 90%, rgba(224, 104, 152, 0.07) 0%, transparent 50%),
-                         radial-gradient(ellipse at 90% 10%, rgba(192, 132, 252, 0.055) 0%, transparent 50%),
-                         radial-gradient(ellipse at 40% 40%, rgba(129, 140, 248, 0.04) 0%, transparent 55%),
-                         radial-gradient(ellipse at 75% 75%, rgba(52, 211, 153, 0.025) 0%, transparent 45%),
-                         radial-gradient(ellipse at 20% 20%, rgba(56, 189, 248, 0.02) 0%, transparent 50%);
-    --ai-noise-opacity: 0.035;
-    --ai-chromatic-border: linear-gradient(135deg, rgba(224,104,152,0.25), rgba(192,132,252,0.25), rgba(129,140,248,0.25), rgba(56,189,248,0.25));
+    --ai-glass-bg: rgba(1, 4, 16, 0.9);
+    --ai-glass-border: rgba(255, 255, 255, 0.055);
+    --ai-glass-blur: 40px;
+    --ai-aurora-1: #e0628e;
+    --ai-aurora-2: #c77dff;
+    --ai-aurora-3: #7c6df6;
+    --ai-aurora-4: #2dd4a8;
+    --ai-aurora-5: #36b5f4;
+    --ai-aurora-6: #9f7aea;
+    --ai-neon-glow: 0 0 22px rgba(224, 98, 142, 0.32),
+                    0 0 44px rgba(199, 125, 255, 0.16),
+                    0 0 72px rgba(124, 109, 246, 0.08);
+    --ai-float-gradient: linear-gradient(135deg, #e0628e, #c77dff, #7c6df6, #36b5f4, #2dd4a8);
+    --ai-card-hover-glow: 0 8px 52px rgba(224, 98, 142, 0.13);
+    --ai-mesh-gradient: radial-gradient(ellipse at 10% 90%, rgba(224, 98, 142, 0.075) 0%, transparent 50%),
+                         radial-gradient(ellipse at 90% 10%, rgba(199, 125, 255, 0.06) 0%, transparent 50%),
+                         radial-gradient(ellipse at 40% 40%, rgba(124, 109, 246, 0.045) 0%, transparent 55%),
+                         radial-gradient(ellipse at 75% 75%, rgba(45, 212, 168, 0.028) 0%, transparent 45%),
+                         radial-gradient(ellipse at 20% 20%, rgba(54, 181, 244, 0.022) 0%, transparent 50%);
+    --ai-noise-opacity: 0.03;
+    --ai-chromatic-border: linear-gradient(135deg, rgba(224,98,142,0.28), rgba(199,125,255,0.25), rgba(124,109,246,0.25), rgba(54,181,244,0.28));
+    --ai-glow-size: 200px;
+    --ai-interaction-glow: rgba(224, 98, 142, 0.15);
   }
 }
 
@@ -302,15 +315,15 @@
   box-sizing: border-box;
 }
 
-/* === 3. 悬浮按钮 — 轨道光环 + 磁性形变 + 呼吸脉冲 === */
+/* === 3. 悬浮按钮 — 全息光环 + 有机形变 + 磁性悬浮 === */
 #ai-float-btn {
   position: fixed;
   bottom: 30px;
   left: 30px;
   z-index: var(--ai-z-float);
   background: var(--ai-float-gradient);
-  background-size: 400% 400%;
-  animation: ai-float-gradient-shift 10s ease-in-out infinite, ai-float-levitate 6s ease-in-out infinite, ai-float-morph 10s ease-in-out infinite;
+  background-size: 500% 500%;
+  animation: ai-float-gradient-shift 12s ease-in-out infinite, ai-float-levitate 7s ease-in-out infinite, ai-float-morph 12s ease-in-out infinite;
   color: white;
   width: 56px;
   height: 56px;
@@ -320,64 +333,65 @@
   justify-content: center;
   cursor: pointer;
   box-shadow: var(--ai-neon-glow);
-  transition: transform 0.65s var(--ai-spring), box-shadow 0.5s var(--ai-ease-smooth), border-color 0.4s ease, border-radius 0.7s var(--ai-ease-fluid);
-  border: 2px solid rgba(255, 255, 255, 0.25);
+  transition: transform 0.7s var(--ai-spring), box-shadow 0.55s var(--ai-ease-smooth), border-color 0.4s ease, border-radius 0.8s var(--ai-ease-fluid);
+  border: 2px solid rgba(255, 255, 255, 0.28);
 }
 
-/* 外层轨道光环 — 色彩折射环 */
+/* 外层全息光环 — 彩虹棱镜环 + 旋转 */
 #ai-float-btn::before {
   content: '';
   position: absolute;
-  inset: -5px;
+  inset: -6px;
   border-radius: 50%;
-  background: conic-gradient(from 0deg, var(--ai-aurora-1), var(--ai-aurora-2), var(--ai-aurora-3), var(--ai-aurora-5), var(--ai-aurora-4), var(--ai-aurora-6, var(--ai-aurora-2)), var(--ai-aurora-1));
+  background: conic-gradient(from 0deg, var(--ai-aurora-1), var(--ai-aurora-2), var(--ai-aurora-3), var(--ai-aurora-5), var(--ai-aurora-4), var(--ai-aurora-6), var(--ai-aurora-1));
   z-index: -1;
-  animation: ai-rotate-gradient 8s linear infinite;
+  animation: ai-rotate-gradient 10s linear infinite;
   opacity: 0;
-  transition: opacity 0.7s var(--ai-ease-ios), inset 0.7s var(--ai-ease-ios);
-  filter: blur(3px);
-  mask-image: radial-gradient(circle, transparent 60%, black 62%, black 100%);
-  -webkit-mask-image: radial-gradient(circle, transparent 60%, black 62%, black 100%);
+  transition: opacity 0.8s var(--ai-ease-ios), inset 0.8s var(--ai-ease-ios), filter 0.6s ease;
+  filter: blur(4px);
+  mask-image: radial-gradient(circle, transparent 58%, black 61%, black 100%);
+  -webkit-mask-image: radial-gradient(circle, transparent 58%, black 61%, black 100%);
 }
 
-/* 柔光辉映 — 氛围光场 */
+/* 柔光辉映 — 多层氛围光场 */
 #ai-float-btn::after {
   content: '';
   position: absolute;
-  inset: -14px;
+  inset: -16px;
   border-radius: 50%;
   background: var(--ai-float-gradient);
-  background-size: 400% 400%;
-  animation: ai-float-gradient-shift 10s ease-in-out infinite;
-  filter: blur(22px);
-  opacity: 0.25;
+  background-size: 500% 500%;
+  animation: ai-float-gradient-shift 12s ease-in-out infinite;
+  filter: blur(26px);
+  opacity: 0.22;
   z-index: -2;
-  transition: opacity 0.7s ease, transform 0.7s var(--ai-ease-fluid);
+  transition: opacity 0.8s ease, transform 0.8s var(--ai-ease-fluid), filter 0.6s ease;
 }
 
 #ai-float-btn:hover::before {
-  opacity: 0.9;
-  inset: -7px;
-  filter: blur(2px);
+  opacity: 0.92;
+  inset: -8px;
+  filter: blur(2.5px);
 }
 
 #ai-float-btn:hover::after {
-  opacity: 0.55;
-  transform: scale(1.3);
+  opacity: 0.6;
+  transform: scale(1.35);
+  filter: blur(30px);
 }
 
 #ai-float-btn:hover {
-  transform: scale(1.14) translateY(-5px);
-  border-radius: 32% 68% 58% 42% / 48% 42% 58% 52%;
-  box-shadow: 0 0 24px rgba(224, 104, 152, 0.42),
-              0 0 48px rgba(192, 132, 252, 0.2),
-              0 16px 44px rgba(0, 0, 0, 0.12);
-  border-color: rgba(255, 255, 255, 0.4);
-  animation: ai-float-gradient-shift 10s ease-in-out infinite;
+  transform: scale(1.16) translateY(-6px);
+  border-radius: 30% 70% 56% 44% / 46% 40% 60% 54%;
+  box-shadow: 0 0 28px rgba(224, 98, 142, 0.45),
+              0 0 56px rgba(199, 125, 255, 0.22),
+              0 18px 48px rgba(0, 0, 0, 0.14);
+  border-color: rgba(255, 255, 255, 0.45);
+  animation: ai-float-gradient-shift 12s ease-in-out infinite;
 }
 
 #ai-float-btn:active {
-  transform: scale(0.88);
+  transform: scale(0.86);
   transition-duration: 0.1s;
   border-radius: 50%;
 }
@@ -385,38 +399,38 @@
 #ai-float-btn [data-lucide] {
   width: 24px;
   height: 24px;
-  transition: transform 0.65s var(--ai-spring);
-  filter: drop-shadow(0 1px 4px rgba(0,0,0,0.15));
+  transition: transform 0.7s var(--ai-spring);
+  filter: drop-shadow(0 1px 5px rgba(0,0,0,0.18));
 }
 
 #ai-float-btn:hover [data-lucide] {
-  transform: rotate(-12deg) scale(1.1);
+  transform: rotate(-15deg) scale(1.12);
 }
 
-/* === 4. 主面板 — 色彩折射玻璃 + 3D 深度 + 活体表面 === */
+/* === 4. 主面板 — 结晶玻璃 + 3D 深度 + 活体表面 + 虹光边缘 === */
 #ai-sort-wrapper {
   position: fixed;
   bottom: 30px;
   left: 30px;
   z-index: var(--ai-z-panel);
   isolation: isolate;
-  width: min(396px, calc(100vw - 60px));
+  width: min(400px, calc(100vw - 60px));
   display: none;
   flex-direction: column;
   background: var(--ai-glass-bg);
   background-image: var(--ai-mesh-gradient);
-  backdrop-filter: blur(var(--ai-glass-blur)) saturate(1.8) brightness(1.02);
-  -webkit-backdrop-filter: blur(var(--ai-glass-blur)) saturate(1.8) brightness(1.02);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1),
-              0 8px 24px rgba(0, 0, 0, 0.06),
+  backdrop-filter: blur(var(--ai-glass-blur)) saturate(1.9) brightness(1.02);
+  -webkit-backdrop-filter: blur(var(--ai-glass-blur)) saturate(1.9) brightness(1.02);
+  box-shadow: 0 24px 68px rgba(0, 0, 0, 0.11),
+              0 10px 28px rgba(0, 0, 0, 0.07),
               0 0 0 1px var(--ai-glass-border),
-              inset 0 1px 0 rgba(255,255,255,0.2),
+              inset 0 1px 0 rgba(255,255,255,0.22),
               inset 0 -1px 0 rgba(0,0,0,0.02);
-  border-radius: 24px;
+  border-radius: 26px;
   border: 1px solid var(--ai-glass-border);
   overflow: hidden;
   max-height: 85vh;
-  animation: ai-panel-in 0.65s var(--ai-ease-ios);
+  animation: ai-panel-in 0.7s var(--ai-ease-ios);
   transform-style: preserve-3d;
   perspective: var(--ai-perspective, 1200px);
 }
@@ -434,15 +448,15 @@
   padding: 0;
   overflow-y: auto;
   max-height: calc(85vh - 46px);
-  border-bottom-left-radius: var(--ai-radius-xl);
-  border-bottom-right-radius: var(--ai-radius-xl);
+  border-bottom-left-radius: 26px;
+  border-bottom-right-radius: 26px;
 }
 
-/* === 5. 标题栏 — 极光流光 + 棱镜折射 + 磨砂层叠 === */
+/* === 5. 标题栏 — 樱雾极光 + 棱镜折射 + 磨砂层叠 === */
 .ai-header {
-  background: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-2), var(--ai-aurora-3), var(--ai-aurora-5), var(--ai-aurora-4), var(--ai-aurora-6, var(--ai-aurora-2)));
-  background-size: 600% 600%;
-  animation: ai-aurora-flow 16s ease-in-out infinite;
+  background: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-6), var(--ai-aurora-2), var(--ai-aurora-3), var(--ai-aurora-5), var(--ai-aurora-4), var(--ai-aurora-6));
+  background-size: 700% 700%;
+  animation: ai-aurora-flow 18s ease-in-out infinite;
   color: #fff;
   padding: 16px 18px;
   font-weight: 600;
@@ -453,30 +467,30 @@
   position: relative;
   overflow: hidden;
   letter-spacing: 0.3px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* 多层光泽纹理 — 深度感 */
+/* 多层光泽纹理 — 结晶深度感 */
 .ai-header::before {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(135deg, transparent 10%, rgba(255,255,255,0.1) 30%, transparent 50%, rgba(255,255,255,0.06) 70%, transparent),
-    radial-gradient(ellipse at 15% 50%, rgba(255,255,255,0.14) 0%, transparent 55%),
-    radial-gradient(ellipse at 85% 30%, rgba(255,255,255,0.08) 0%, transparent 45%),
-    radial-gradient(ellipse at 50% 80%, rgba(255,255,255,0.04) 0%, transparent 50%);
+    linear-gradient(135deg, transparent 8%, rgba(255,255,255,0.12) 28%, transparent 48%, rgba(255,255,255,0.07) 68%, transparent),
+    radial-gradient(ellipse at 12% 50%, rgba(255,255,255,0.16) 0%, transparent 55%),
+    radial-gradient(ellipse at 88% 30%, rgba(255,255,255,0.1) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 85%, rgba(255,255,255,0.05) 0%, transparent 50%);
   pointer-events: none;
 }
 
-/* 流光扫过 — 棱镜虹彩 */
+/* 流光扫过 — 全息虹彩 */
 .ai-header::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(105deg, transparent 22%, rgba(255,255,255,0.1) 42%, rgba(255,255,255,0.24) 49%, rgba(255,255,255,0.28) 51%, rgba(255,255,255,0.1) 58%, transparent 78%);
-  background-size: 300% 100%;
-  animation: ai-shimmer 7s ease-in-out infinite;
+  background: linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.08) 40%, rgba(255,255,255,0.22) 48%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0.22) 52%, rgba(255,255,255,0.08) 60%, transparent 80%);
+  background-size: 320% 100%;
+  animation: ai-shimmer 8s ease-in-out infinite;
   pointer-events: none;
 }
 
@@ -585,7 +599,7 @@
   background: linear-gradient(135deg, var(--ai-primary-bg), rgba(167, 139, 250, 0.05));
   color: var(--ai-primary);
   padding-left: 14px;
-  box-shadow: inset 0 0 0 1px rgba(232, 121, 168, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(224, 98, 142, 0.08);
 }
 
 .ai-group-icon {
@@ -638,7 +652,7 @@
 
 .ai-input:focus-visible {
   border-color: var(--ai-primary);
-  box-shadow: 0 0 0 3px rgba(232, 121, 168, 0.12), 0 2px 8px rgba(232, 121, 168, 0.06);
+  box-shadow: 0 0 0 3px rgba(224, 98, 142, 0.12), 0 2px 8px rgba(224, 98, 142, 0.06);
 }
 
 .ai-input::placeholder {
@@ -652,7 +666,7 @@
 }
 
 .ai-input[type="number"]:focus-visible {
-  box-shadow: inset 0 1px 3px rgba(232, 121, 168, 0.08), 0 0 0 3px rgba(232, 121, 168, 0.12);
+  box-shadow: inset 0 1px 3px rgba(224, 98, 142, 0.08), 0 0 0 3px rgba(224, 98, 142, 0.12);
 }
 
 .ai-select {
@@ -669,12 +683,12 @@
 
 .ai-select:hover {
   border-color: var(--ai-primary-light);
-  box-shadow: 0 0 0 2px rgba(232, 121, 168, 0.06);
+  box-shadow: 0 0 0 2px rgba(224, 98, 142, 0.06);
 }
 
 .ai-select:focus-visible {
   border-color: var(--ai-primary);
-  box-shadow: 0 0 0 3px rgba(232, 121, 168, 0.12);
+  box-shadow: 0 0 0 3px rgba(224, 98, 142, 0.12);
 }
 
 .ai-label {
@@ -702,7 +716,7 @@
 
 #ai-model-trigger:hover {
   border-color: var(--ai-primary);
-  box-shadow: 0 0 0 3px rgba(232, 121, 168, 0.1);
+  box-shadow: 0 0 0 3px rgba(224, 98, 142, 0.1);
 }
 
 /* 模型下拉面板 (#72,73) */
@@ -740,7 +754,7 @@
 
 #ai-custom-prompt:focus {
   border-color: var(--ai-primary);
-  box-shadow: 0 0 0 3px rgba(232, 121, 168, 0.1);
+  box-shadow: 0 0 0 3px rgba(224, 98, 142, 0.1);
   height: 80px;
 }
 
@@ -800,11 +814,11 @@
   filter: grayscale(0.3);
 }
 
-/* 主按钮 — 液态渐变 + 脉动呼吸 + 棱镜光泽 */
+/* 主按钮 — 液态渐变 + 脉动呼吸 + 全息光泽 */
 .ai-btn-primary {
-  background: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-2), var(--ai-aurora-3), var(--ai-aurora-5), var(--ai-aurora-6, var(--ai-aurora-2)), var(--ai-aurora-1));
-  background-size: 500% 500%;
-  animation: ai-btn-gradient-shift 6s ease-in-out infinite;
+  background: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-6), var(--ai-aurora-2), var(--ai-aurora-3), var(--ai-aurora-5), var(--ai-aurora-6), var(--ai-aurora-1));
+  background-size: 600% 600%;
+  animation: ai-btn-gradient-shift 7s ease-in-out infinite;
   color: #fff;
   border: none;
   font-weight: 700;
@@ -815,10 +829,10 @@
 }
 
 .ai-btn-primary:hover {
-  box-shadow: 0 10px 30px rgba(224, 104, 152, 0.3),
-              0 4px 14px rgba(192, 132, 252, 0.16),
-              inset 0 1px 0 rgba(255,255,255,0.22);
-  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 12px 32px rgba(224, 98, 142, 0.32),
+              0 5px 16px rgba(199, 125, 255, 0.18),
+              inset 0 1px 0 rgba(255,255,255,0.25);
+  transform: translateY(-3px) scale(1.025);
 }
 
 .ai-btn-primary::after {
@@ -826,24 +840,24 @@
   position: absolute;
   top: -50%;
   left: -120%;
-  width: 60%;
+  width: 55%;
   height: 200%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), rgba(255,255,255,0.35), rgba(255,255,255,0.18), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), rgba(255,255,255,0.38), rgba(255,255,255,0.15), transparent);
   transform: skewX(-25deg);
-  transition: left 0.9s var(--ai-ease-out-expo);
+  transition: left 1s var(--ai-ease-out-expo);
 }
 
 .ai-btn-primary:hover::after {
-  left: 160%;
+  left: 170%;
 }
 
-/* 工具按钮 — 轻盈悬浮 + 柔光渐变 + 触感涟漪 */
+/* 工具按钮 — 磁性悬浮 + 柔光渐变 + 触感涟漪 */
 .ai-btn-tool {
   background: var(--ai-btn-tool-bg);
   color: var(--ai-text-secondary);
   font-size: 11px;
   font-weight: 500;
-  transition: all 0.4s var(--ai-spring-gentle) !important;
+  transition: all 0.45s var(--ai-spring-gentle) !important;
   position: relative;
   overflow: hidden;
 }
@@ -852,9 +866,9 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(232, 121, 168, 0.05), rgba(124, 140, 248, 0.05));
+  background: linear-gradient(135deg, rgba(224, 98, 142, 0.06), rgba(124, 109, 246, 0.06));
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.45s ease;
   border-radius: inherit;
 }
 
@@ -863,14 +877,14 @@
 }
 
 .ai-btn-tool:hover {
-  transform: translateY(-3px) scale(1.04);
-  box-shadow: 0 8px 24px rgba(232, 121, 168, 0.12), 0 3px 10px rgba(0,0,0,0.05);
+  transform: translateY(-3px) scale(1.045);
+  box-shadow: 0 10px 28px rgba(224, 98, 142, 0.13), 0 4px 12px rgba(0,0,0,0.05);
   border-color: var(--ai-primary-light);
   color: var(--ai-primary);
 }
 
 .ai-btn-tool:active {
-  transform: translateY(0) scale(0.93);
+  transform: translateY(0) scale(0.92);
   transition-duration: 0.08s;
   box-shadow: inset 0 2px 6px rgba(0,0,0,0.08);
 }
@@ -884,7 +898,7 @@
 /* 小图标按钮 (#36) */
 #ai-goto-api:hover, #ai-set-eye:hover, #ai-fetch-models:hover, #ai-verify-model:hover {
   transform: translateY(-2px);
-  box-shadow: 0 3px 10px rgba(232, 121, 168, 0.2);
+  box-shadow: 0 3px 10px rgba(224, 98, 142, 0.2);
 }
 
 /* 筛选按钮 — 胶囊态 + 弹性选中 + 光晕 */
@@ -905,22 +919,22 @@
   color: var(--ai-primary);
   background: var(--ai-primary-bg);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(232, 121, 168, 0.08);
+  box-shadow: 0 4px 12px rgba(224, 98, 142, 0.08);
 }
 
 .ai-filter-btn.active {
-  background: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-2), var(--ai-aurora-3), var(--ai-aurora-6, var(--ai-aurora-2)));
-  background-size: 300% 300%;
-  animation: ai-btn-gradient-shift 4s ease-in-out infinite;
+  background: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-6), var(--ai-aurora-2), var(--ai-aurora-3));
+  background-size: 350% 350%;
+  animation: ai-btn-gradient-shift 5s ease-in-out infinite;
   color: #fff;
   border-color: transparent;
-  box-shadow: 0 4px 16px var(--ai-primary-shadow);
-  transform: scale(1.04);
-  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  box-shadow: 0 5px 18px var(--ai-primary-shadow);
+  transform: scale(1.05);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.12);
 }
 
 .ai-filter-btn:active {
-  transform: scale(0.88);
+  transform: scale(0.86);
   transition-duration: 0.08s;
 }
 
@@ -940,7 +954,7 @@
   transform: translateY(-1px);
 }
 
-/* === 10. 进度条 — 液态渐变 + 光泽波纹 === */
+/* === 10. 进度条 — 液态渐变 + 全息光泽 + 脉冲波纹 === */
 .ai-progress-wrap {
   display: none;
   margin-top: 10px;
@@ -953,16 +967,16 @@
   height: 22px;
   overflow: hidden;
   position: relative;
-  box-shadow: inset 0 1px 4px rgba(0,0,0,0.06), inset 0 0 0 1px rgba(0,0,0,0.02);
+  box-shadow: inset 0 1px 5px rgba(0,0,0,0.07), inset 0 0 0 1px rgba(0,0,0,0.02);
 }
 
 #ai-progress-bar {
-  background: linear-gradient(90deg, var(--ai-aurora-1), var(--ai-aurora-2), var(--ai-aurora-3), var(--ai-aurora-5), var(--ai-aurora-4), var(--ai-aurora-1));
-  background-size: 500% 100%;
-  animation: ai-progress-flow 3s linear infinite;
+  background: linear-gradient(90deg, var(--ai-aurora-1), var(--ai-aurora-6), var(--ai-aurora-2), var(--ai-aurora-3), var(--ai-aurora-5), var(--ai-aurora-4), var(--ai-aurora-1));
+  background-size: 600% 100%;
+  animation: ai-progress-flow 3.5s linear infinite;
   height: 100%;
   width: 0%;
-  transition: width 0.6s var(--ai-ease-out-expo);
+  transition: width 0.7s var(--ai-ease-out-expo);
   border-radius: 10px;
   position: relative;
 }
@@ -1080,10 +1094,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: ai-backdrop-in 0.35s var(--ai-ease-smooth);
+  animation: ai-backdrop-in 0.4s var(--ai-ease-smooth);
   font-family: var(--ai-font);
-  backdrop-filter: blur(12px) saturate(1.3);
-  -webkit-backdrop-filter: blur(12px) saturate(1.3);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
 }
 
 .ai-modal-closing {
@@ -1097,21 +1111,21 @@
 .ai-modal {
   background: var(--ai-glass-bg) !important;
   background-image: var(--ai-mesh-gradient);
-  backdrop-filter: blur(40px) saturate(1.8) brightness(1.02);
-  -webkit-backdrop-filter: blur(40px) saturate(1.8) brightness(1.02);
+  backdrop-filter: blur(44px) saturate(1.9) brightness(1.02);
+  -webkit-backdrop-filter: blur(44px) saturate(1.9) brightness(1.02);
   color: var(--ai-text) !important;
-  border-radius: 26px;
-  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.18),
-              0 16px 40px rgba(0, 0, 0, 0.1),
+  border-radius: 28px;
+  box-shadow: 0 44px 110px rgba(0, 0, 0, 0.2),
+              0 18px 44px rgba(0, 0, 0, 0.11),
               0 0 0 1px var(--ai-glass-border),
-              inset 0 1px 0 rgba(255,255,255,0.2),
+              inset 0 1px 0 rgba(255,255,255,0.22),
               inset 0 -1px 0 rgba(0,0,0,0.03);
   border: 1px solid var(--ai-glass-border);
   width: min(600px, 90vw);
   max-height: 70vh;
   display: flex;
   flex-direction: column;
-  animation: ai-modal-enter 0.6s var(--ai-ease-ios);
+  animation: ai-modal-enter 0.65s var(--ai-ease-ios);
   overflow: hidden;
   transform-style: preserve-3d;
 }
@@ -1121,10 +1135,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  background: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-2), var(--ai-aurora-3), var(--ai-aurora-5), var(--ai-aurora-4), var(--ai-aurora-6, var(--ai-aurora-2)));
-  background-size: 600% 600%;
-  animation: ai-aurora-flow 16s ease-in-out infinite;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  background: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-6), var(--ai-aurora-2), var(--ai-aurora-3), var(--ai-aurora-5), var(--ai-aurora-4), var(--ai-aurora-6));
+  background-size: 700% 700%;
+  animation: ai-aurora-flow 18s ease-in-out infinite;
   color: #fff;
   position: relative;
   overflow: hidden;
@@ -1257,35 +1271,35 @@
   transform: translateY(-1px);
 }
 
-/* === 13. 分类预览 — 交错弹入 + 3D 微倾斜 + 光晕追踪 === */
+/* === 13. 分类预览 — 交错弹入 + 磁性悬浮 + 光晕追踪 === */
 .ai-cat-block {
-  animation: ai-cat-slide-in 0.5s var(--ai-ease-ios) both;
-  animation-delay: calc(var(--i, 0) * 0.04s);
+  animation: ai-cat-slide-in 0.55s var(--ai-ease-ios) both;
+  animation-delay: calc(var(--i, 0) * 0.045s);
 }
 
 .ai-cat-block:nth-child(even) > .ai-cat-row {
-  background: rgba(0,0,0,0.006);
+  background: rgba(0,0,0,0.008);
 }
 
 .ai-cat-row {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 13px 20px;
+  padding: 14px 20px;
   border-bottom: 1px solid var(--ai-border-lighter);
   border-left: 3px solid var(--ai-primary);
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: all 0.4s var(--ai-ease-ios), transform 0.5s var(--ai-spring-gentle);
+  transition: all 0.4s var(--ai-ease-ios), transform 0.5s var(--ai-ease-magnetic), background 0.35s ease;
 }
 
 .ai-cat-row:hover {
   background: var(--ai-bg-hover);
   border-left-width: 4px;
   padding-left: 19px;
-  box-shadow: inset 0 0 40px var(--ai-glow-color), 0 2px 12px rgba(224, 104, 152, 0.04);
-  transform: translateX(2px);
+  box-shadow: inset 0 0 44px var(--ai-glow-color), 0 3px 14px rgba(224, 98, 142, 0.05);
+  transform: translateX(3px);
 }
 
 .ai-cat-row.unchecked {
@@ -1335,10 +1349,10 @@
   font-size: 10px;
   color: #fff;
   background: linear-gradient(135deg, #f43f5e, #e11d48);
-  padding: 2px 10px;
+  padding: 2px 11px;
   border-radius: 10px;
-  transition: all 0.35s var(--ai-spring);
-  box-shadow: 0 2px 8px rgba(244, 63, 94, 0.25);
+  transition: all 0.4s var(--ai-spring);
+  box-shadow: 0 2px 10px rgba(244, 63, 94, 0.28);
   font-weight: 600;
   letter-spacing: 0.3px;
 }
@@ -1346,19 +1360,19 @@
 .ai-cat-existing {
   font-size: 10px;
   color: #fff;
-  background: linear-gradient(135deg, #10b981, #34d399);
-  padding: 2px 10px;
+  background: linear-gradient(135deg, #10b981, #2dd4a8);
+  padding: 2px 11px;
   border-radius: 10px;
-  transition: all 0.35s var(--ai-spring);
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+  transition: all 0.4s var(--ai-spring);
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.28);
   font-weight: 600;
   letter-spacing: 0.3px;
 }
 
 .ai-cat-row:hover .ai-cat-badge,
 .ai-cat-row:hover .ai-cat-existing {
-  transform: scale(1.06) translateY(-1px);
-  filter: brightness(1.1);
+  transform: scale(1.08) translateY(-1px);
+  filter: brightness(1.12);
 }
 
 /* === 14. 视频列表 — 丝滑展开 === */
@@ -1511,45 +1525,50 @@
 
 /* === 16. 动画关键帧 — Spring Physics + 灵动曲线 + 流体动效 === */
 
-/* 悬浮按钮 — 流体悬浮 + 自然呼吸 */
+/* 悬浮按钮 — 流体悬浮 + 自然呼吸（更有机的轨迹） */
 @keyframes ai-float-levitate {
   0%, 100% {
     box-shadow: var(--ai-neon-glow);
     transform: translateY(0);
   }
-  15% {
-    transform: translateY(-1.5px);
+  12% {
+    transform: translateY(-1px);
   }
-  35% {
-    box-shadow: 0 0 24px rgba(224, 104, 152, 0.38),
-                0 0 48px rgba(192, 132, 252, 0.18),
-                0 0 72px rgba(129, 140, 248, 0.09);
-    transform: translateY(-4px);
+  30% {
+    box-shadow: 0 0 26px rgba(224, 98, 142, 0.4),
+                0 0 52px rgba(199, 125, 255, 0.2),
+                0 0 78px rgba(124, 109, 246, 0.1);
+    transform: translateY(-4.5px);
   }
-  55% {
-    transform: translateY(-2.5px);
+  48% {
+    transform: translateY(-3px);
   }
-  75% {
-    transform: translateY(-0.5px);
+  65% {
+    transform: translateY(-1px);
+  }
+  82% {
+    transform: translateY(-0.3px);
   }
 }
 
-/* 液态形变 — 有机体呼吸（更微妙） */
+/* 液态形变 — 有机体呼吸（更自然的不规则变化） */
 @keyframes ai-float-morph {
   0%, 100% { border-radius: 50%; }
-  14% { border-radius: 49% 51% 50% 50% / 51% 49% 51% 49%; }
-  28% { border-radius: 50% 49% 51% 50% / 49% 51% 49% 51%; }
-  42% { border-radius: 51% 50% 49% 51% / 50% 49% 51% 50%; }
-  56% { border-radius: 49% 51% 50% 49% / 51% 50% 49% 51%; }
-  70% { border-radius: 50% 49% 51% 50% / 49% 51% 50% 49%; }
-  84% { border-radius: 51% 50% 49% 51% / 50% 49% 51% 50%; }
+  10% { border-radius: 48% 52% 50% 50% / 52% 48% 52% 48%; }
+  22% { border-radius: 50% 48% 52% 50% / 48% 52% 48% 52%; }
+  35% { border-radius: 52% 50% 48% 52% / 50% 48% 52% 50%; }
+  48% { border-radius: 48% 52% 50% 48% / 52% 50% 48% 52%; }
+  60% { border-radius: 50% 48% 52% 50% / 48% 52% 50% 48%; }
+  72% { border-radius: 52% 50% 48% 52% / 50% 48% 52% 50%; }
+  85% { border-radius: 49% 51% 50% 50% / 51% 49% 50% 50%; }
 }
 
 @keyframes ai-float-gradient-shift {
   0% { background-position: 0% 50%; }
-  25% { background-position: 50% 0%; }
-  50% { background-position: 100% 50%; }
-  75% { background-position: 50% 100%; }
+  20% { background-position: 40% 10%; }
+  40% { background-position: 80% 40%; }
+  60% { background-position: 100% 60%; }
+  80% { background-position: 60% 90%; }
   100% { background-position: 0% 50%; }
 }
 
@@ -1558,16 +1577,18 @@
   100% { transform: rotate(360deg); }
 }
 
-/* 极光流动 — 更有机的游走路径 */
+/* 极光流动 — 更有机的 Lissajous 游走路径 */
 @keyframes ai-aurora-flow {
   0% { background-position: 0% 50%; }
-  12% { background-position: 15% 95%; }
-  25% { background-position: 40% 80%; }
-  37% { background-position: 65% 65%; }
-  50% { background-position: 85% 40%; }
-  62% { background-position: 100% 20%; }
-  75% { background-position: 75% 5%; }
-  87% { background-position: 35% 25%; }
+  10% { background-position: 12% 88%; }
+  20% { background-position: 30% 75%; }
+  30% { background-position: 55% 60%; }
+  40% { background-position: 72% 45%; }
+  50% { background-position: 90% 30%; }
+  60% { background-position: 100% 18%; }
+  70% { background-position: 80% 8%; }
+  80% { background-position: 50% 20%; }
+  90% { background-position: 20% 35%; }
   100% { background-position: 0% 50%; }
 }
 
@@ -1582,26 +1603,27 @@
   100% { background-position: 400% 50%; }
 }
 
-/* 模态框弹入 — 仿 iOS 弹簧动力学（6阶衰减） */
+/* 模态框弹入 — iOS 18 弹簧动力学（7阶衰减 + 光晕绽放） */
 @keyframes ai-modal-enter {
-  0% { transform: scale(0.85) translateY(28px); opacity: 0; filter: blur(6px); }
-  22% { transform: scale(1.03) translateY(-5px); opacity: 1; filter: blur(0.3px); }
-  40% { transform: scale(0.99) translateY(1.5px); filter: blur(0); }
-  55% { transform: scale(1.006) translateY(-0.6px); }
-  70% { transform: scale(0.999) translateY(0.2px); }
-  85% { transform: scale(1.001) translateY(-0.05px); }
+  0% { transform: scale(0.82) translateY(32px); opacity: 0; filter: blur(8px); }
+  18% { transform: scale(1.04) translateY(-6px); opacity: 1; filter: blur(0.5px); }
+  34% { transform: scale(0.988) translateY(2px); filter: blur(0); }
+  48% { transform: scale(1.008) translateY(-1px); }
+  60% { transform: scale(0.998) translateY(0.4px); }
+  74% { transform: scale(1.002) translateY(-0.1px); }
+  88% { transform: scale(0.9995) translateY(0.02px); }
   100% { transform: scale(1) translateY(0); opacity: 1; filter: blur(0); }
 }
 
 @keyframes ai-modal-exit {
   0% { transform: scale(1) translateY(0); opacity: 1; filter: blur(0); }
-  35% { transform: scale(0.98) translateY(6px); opacity: 0.75; }
-  100% { transform: scale(0.9) translateY(20px); opacity: 0; filter: blur(5px); }
+  30% { transform: scale(0.985) translateY(8px); opacity: 0.7; }
+  100% { transform: scale(0.88) translateY(24px); opacity: 0; filter: blur(6px); }
 }
 
 @keyframes ai-backdrop-in {
   from { opacity: 0; backdrop-filter: blur(0) saturate(1); }
-  to { opacity: 1; backdrop-filter: blur(14px) saturate(1.4); }
+  to { opacity: 1; backdrop-filter: blur(16px) saturate(1.4); }
 }
 
 @keyframes ai-backdrop-out {
@@ -1611,17 +1633,18 @@
 
 @keyframes ai-breathe {
   0%, 100% { box-shadow: 0 4px 14px var(--ai-primary-shadow); }
-  50% { box-shadow: 0 4px 28px rgba(232, 121, 168, 0.48); }
+  50% { box-shadow: 0 4px 28px rgba(224, 98, 142, 0.48); }
 }
 
-/* 面板弹入 — Apple 风格弹簧衰减 */
+/* 面板弹入 — iOS 18 弹簧衰减（更丝滑） */
 @keyframes ai-panel-in {
-  0% { transform: translateY(36px) scale(0.92); opacity: 0; filter: blur(5px); }
-  24% { transform: translateY(-4px) scale(1.015); opacity: 1; filter: blur(0.2px); }
-  42% { transform: translateY(2px) scale(0.997); filter: blur(0); }
-  58% { transform: translateY(-0.8px) scale(1.003); }
-  72% { transform: translateY(0.2px) scale(0.999); }
-  86% { transform: translateY(-0.05px) scale(1.0005); }
+  0% { transform: translateY(40px) scale(0.9); opacity: 0; filter: blur(6px); }
+  20% { transform: translateY(-5px) scale(1.018); opacity: 1; filter: blur(0.3px); }
+  36% { transform: translateY(2.5px) scale(0.996); filter: blur(0); }
+  50% { transform: translateY(-1px) scale(1.004); }
+  64% { transform: translateY(0.4px) scale(0.999); }
+  78% { transform: translateY(-0.1px) scale(1.001); }
+  90% { transform: translateY(0.02px) scale(0.9998); }
   100% { transform: translateY(0) scale(1); opacity: 1; filter: blur(0); }
 }
 
@@ -1650,12 +1673,13 @@
   to { transform: translateX(0); opacity: 1; }
 }
 
-/* 分类列表弹性滑入 — 物理回弹 + 深度缩放 */
+/* 分类列表弹性滑入 — 物理回弹 + 深度缩放（更流畅） */
 @keyframes ai-cat-slide-in {
-  0% { transform: translateX(32px) scale(0.94); opacity: 0; filter: blur(2px); }
-  40% { transform: translateX(-4px) scale(1.012); opacity: 1; filter: blur(0); }
-  65% { transform: translateX(1.5px) scale(0.998); }
-  82% { transform: translateX(-0.3px) scale(1.001); }
+  0% { transform: translateX(36px) scale(0.93); opacity: 0; filter: blur(2.5px); }
+  30% { transform: translateX(-5px) scale(1.015); opacity: 1; filter: blur(0); }
+  52% { transform: translateX(2px) scale(0.997); }
+  70% { transform: translateX(-0.5px) scale(1.002); }
+  85% { transform: translateX(0.1px) scale(0.9995); }
   100% { transform: translateX(0) scale(1); opacity: 1; }
 }
 
@@ -1729,8 +1753,8 @@
 
 /* 工具按钮运行中呼吸 — 更柔和 */
 @keyframes ai-tool-running-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(232, 121, 168, 0); border-color: var(--ai-primary); }
-  50% { box-shadow: 0 0 0 5px rgba(232, 121, 168, 0.1); border-color: var(--ai-primary-light); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(224, 98, 142, 0); border-color: var(--ai-primary); }
+  50% { box-shadow: 0 0 0 5px rgba(224, 98, 142, 0.1); border-color: var(--ai-primary-light); }
 }
 
 @keyframes ai-shake {
@@ -1765,12 +1789,14 @@
   50% { box-shadow: inset 0 0 28px rgba(255,255,255,0.1); }
 }
 
-/* 标题图标灵动浮动 — 更自然的轨迹 */
+/* 标题图标灵动浮动 — Lissajous 曲线轨迹 */
 @keyframes ai-icon-float {
   0%, 100% { transform: translateY(0) rotate(0deg); }
-  20% { transform: translateY(-1.5px) rotate(4deg); }
-  50% { transform: translateY(0.5px) rotate(-1deg); }
-  80% { transform: translateY(1px) rotate(-3deg); }
+  15% { transform: translateY(-1.8px) rotate(5deg); }
+  35% { transform: translateY(-0.5px) rotate(1deg); }
+  55% { transform: translateY(0.8px) rotate(-2deg); }
+  75% { transform: translateY(1.2px) rotate(-4deg); }
+  90% { transform: translateY(0.3px) rotate(-1deg); }
 }
 
 /* checkbox 弹跳 — 更Q弹 */
@@ -1791,8 +1817,8 @@
 
 /* 输入框聚焦光环呼吸 */
 @keyframes ai-focus-glow {
-  0%, 100% { box-shadow: 0 0 0 3px rgba(232, 121, 168, 0.1), 0 0 12px rgba(232, 121, 168, 0.04); }
-  50% { box-shadow: 0 0 0 4px rgba(232, 121, 168, 0.15), 0 0 20px rgba(232, 121, 168, 0.06); }
+  0%, 100% { box-shadow: 0 0 0 3px rgba(224, 98, 142, 0.1), 0 0 12px rgba(224, 98, 142, 0.04); }
+  50% { box-shadow: 0 0 0 4px rgba(224, 98, 142, 0.15), 0 0 20px rgba(224, 98, 142, 0.06); }
 }
 
 /* === 17. 滚动条美化 — 渐变滚动条 === */
@@ -2059,23 +2085,23 @@
   align-items: center;
   gap: 10px;
   padding: 14px 20px;
-  border-radius: 16px;
+  border-radius: 18px;
   color: #fff;
   font-size: 13px;
   font-weight: 600;
   font-family: var(--ai-font);
-  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.16),
-              0 6px 16px rgba(0, 0, 0, 0.08),
-              inset 0 1px 0 rgba(255,255,255,0.2);
-  backdrop-filter: blur(28px) saturate(1.7);
-  -webkit-backdrop-filter: blur(28px) saturate(1.7);
-  animation: ai-toast-in 0.65s var(--ai-ease-ios);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18),
+              0 6px 18px rgba(0, 0, 0, 0.09),
+              inset 0 1px 0 rgba(255,255,255,0.22);
+  backdrop-filter: blur(32px) saturate(1.8);
+  -webkit-backdrop-filter: blur(32px) saturate(1.8);
+  animation: ai-toast-in 0.7s var(--ai-ease-ios);
   max-width: 380px;
   line-height: 1.4;
   cursor: pointer;
   transition: transform 0.4s var(--ai-spring), opacity 0.25s ease;
   letter-spacing: 0.2px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   position: relative;
   overflow: hidden;
 }
@@ -2119,18 +2145,19 @@
 }
 
 @keyframes ai-toast-in {
-  0% { transform: translateX(120%) scale(0.75); opacity: 0; filter: blur(3px); }
-  28% { transform: translateX(-3%) scale(1.03); opacity: 1; filter: blur(0); }
-  48% { transform: translateX(1.2%) scale(0.99); }
-  64% { transform: translateX(-0.4%) scale(1.004); }
-  80% { transform: translateX(0.1%) scale(0.999); }
+  0% { transform: translateX(130%) scale(0.7); opacity: 0; filter: blur(4px); }
+  22% { transform: translateX(-4%) scale(1.035); opacity: 1; filter: blur(0); }
+  40% { transform: translateX(1.5%) scale(0.988); }
+  56% { transform: translateX(-0.5%) scale(1.005); }
+  72% { transform: translateX(0.15%) scale(0.998); }
+  86% { transform: translateX(-0.03%) scale(1.001); }
   100% { transform: translateX(0) scale(1); opacity: 1; }
 }
 
 @keyframes ai-toast-out {
   0% { transform: translateX(0) scale(1); opacity: 1; max-height: 80px; margin-bottom: 10px; filter: blur(0); }
-  45% { transform: translateX(35%) scale(0.96); opacity: 0.5; }
-  100% { transform: translateX(120%) scale(0.85); opacity: 0; max-height: 0; margin-bottom: 0; padding: 0; filter: blur(2px); }
+  40% { transform: translateX(40%) scale(0.95); opacity: 0.45; }
+  100% { transform: translateX(130%) scale(0.82); opacity: 0; max-height: 0; margin-bottom: 0; padding: 0; filter: blur(3px); }
 }
 
 @keyframes ai-toast-timer {
@@ -2246,7 +2273,7 @@
 /* === 31. 增强的输入框聚焦效果 === */
 .ai-input:focus-visible, .ai-select:focus-visible {
   border-color: var(--ai-primary);
-  box-shadow: 0 0 0 3px rgba(232, 121, 168, 0.12), 0 0 16px rgba(232, 121, 168, 0.06);
+  box-shadow: 0 0 0 3px rgba(224, 98, 142, 0.12), 0 0 16px rgba(224, 98, 142, 0.06);
   background: var(--ai-input-bg);
 }
 
@@ -2398,7 +2425,7 @@
 }
 
 .ai-theme-toggle:hover {
-  box-shadow: 0 0 12px rgba(232, 121, 168, 0.2);
+  box-shadow: 0 0 12px rgba(224, 98, 142, 0.2);
 }
 
 .ai-theme-toggle::after {
@@ -2543,7 +2570,7 @@
   border-image: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-2)) 1;
   border-image-slice: 1;
   border-radius: var(--ai-radius-sm);
-  box-shadow: 0 0 0 3px rgba(232, 121, 168, 0.12), 0 0 18px rgba(232, 121, 168, 0.06);
+  box-shadow: 0 0 0 3px rgba(224, 98, 142, 0.12), 0 0 18px rgba(224, 98, 142, 0.06);
   background: var(--ai-input-bg);
   animation: ai-focus-glow 2.5s ease-in-out infinite;
 }
@@ -2568,9 +2595,9 @@
 
 /* === 57. 增强的筛选按钮 — 柔光胶囊 === */
 .ai-filter-btn.active {
-  background: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-2), var(--ai-aurora-3), var(--ai-aurora-6, var(--ai-aurora-2)));
-  background-size: 300% 300%;
-  animation: ai-btn-gradient-shift 4s ease-in-out infinite;
+  background: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-6), var(--ai-aurora-2), var(--ai-aurora-3));
+  background-size: 350% 350%;
+  animation: ai-btn-gradient-shift 5s ease-in-out infinite;
 }
 
 /* === 58. 视频封面 — 液态悬浮 + 反光 === */
@@ -2623,7 +2650,7 @@
 }
 
 .ai-theme-toggle:hover {
-  box-shadow: 0 0 14px rgba(232, 121, 168, 0.25);
+  box-shadow: 0 0 14px rgba(224, 98, 142, 0.25);
 }
 
 .ai-theme-toggle::after {
@@ -2631,7 +2658,7 @@
 }
 
 [data-theme="dark"] .ai-theme-toggle:hover::after {
-  box-shadow: 0 1px 6px rgba(0,0,0,0.3), 0 0 8px rgba(232, 121, 168, 0.2);
+  box-shadow: 0 1px 6px rgba(0,0,0,0.3), 0 0 8px rgba(224, 98, 142, 0.2);
 }
 
 /* === 64. Confetti 增强 — 更丰富的 3D 翻飞 === */
@@ -2641,19 +2668,20 @@
   perspective: 600px;
 }
 
-/* === 65. 面板关闭动画 === */
+/* === 65. 面板关闭动画 — 柔和退场 === */
 #ai-sort-wrapper.ai-panel-closing {
-  animation: ai-panel-out 0.35s var(--ai-ease-smooth) forwards;
+  animation: ai-panel-out 0.38s var(--ai-ease-smooth) forwards;
 }
 
 @keyframes ai-panel-out {
   0% { transform: translateY(0) scale(1); opacity: 1; filter: blur(0); }
-  100% { transform: translateY(24px) scale(0.94); opacity: 0; filter: blur(3px); }
+  40% { transform: translateY(6px) scale(0.98); opacity: 0.7; }
+  100% { transform: translateY(28px) scale(0.92); opacity: 0; filter: blur(4px); }
 }
 
-/* === 66. 悬浮按钮运行态 — 能量脉冲 === */
+/* === 66. 悬浮按钮运行态 — 能量脉冲 + 呼吸环 === */
 #ai-float-btn.ai-float-running {
-  animation: ai-float-gradient-shift 4s ease-in-out infinite, ai-float-running-pulse 1.5s ease-in-out infinite;
+  animation: ai-float-gradient-shift 3.5s ease-in-out infinite, ai-float-running-pulse 1.8s ease-in-out infinite;
 }
 
 @keyframes ai-float-running-pulse {
@@ -2662,58 +2690,60 @@
     transform: scale(1);
   }
   50% {
-    box-shadow: 0 0 28px rgba(224, 104, 152, 0.45),
-                0 0 56px rgba(192, 132, 252, 0.22),
-                0 0 84px rgba(129, 140, 248, 0.1);
-    transform: scale(1.05);
+    box-shadow: 0 0 32px rgba(224, 98, 142, 0.48),
+                0 0 62px rgba(199, 125, 255, 0.24),
+                0 0 92px rgba(124, 109, 246, 0.12);
+    transform: scale(1.06);
   }
 }
 
-/* === 67. 暗色主题面板增强 — 星云深渊 + 色彩折射边缘 === */
+/* === 67. 暗色主题面板增强 — 星云深渊 2.0 + 色彩折射边缘 === */
 [data-theme="dark"] #ai-sort-wrapper {
-  box-shadow: 0 20px 68px rgba(0, 0, 0, 0.45),
-              0 8px 28px rgba(0, 0, 0, 0.3),
-              0 0 0 1px rgba(255, 255, 255, 0.05),
-              0 0 80px rgba(224, 104, 152, 0.03),
-              inset 0 1px 0 rgba(255,255,255,0.07),
-              inset 0 -1px 0 rgba(0,0,0,0.2);
+  box-shadow: 0 24px 72px rgba(0, 0, 0, 0.5),
+              0 10px 32px rgba(0, 0, 0, 0.35),
+              0 0 0 1px rgba(255, 255, 255, 0.04),
+              0 0 90px rgba(224, 98, 142, 0.035),
+              0 0 60px rgba(124, 109, 246, 0.02),
+              inset 0 1px 0 rgba(255,255,255,0.06),
+              inset 0 -1px 0 rgba(0,0,0,0.25);
 }
 
 [data-theme="dark"] .ai-modal {
-  box-shadow: 0 44px 120px rgba(0, 0, 0, 0.55),
-              0 18px 44px rgba(0, 0, 0, 0.35),
-              0 0 0 1px rgba(255, 255, 255, 0.05),
-              0 0 100px rgba(224, 104, 152, 0.04),
-              inset 0 1px 0 rgba(255,255,255,0.07);
+  box-shadow: 0 48px 130px rgba(0, 0, 0, 0.6),
+              0 20px 48px rgba(0, 0, 0, 0.4),
+              0 0 0 1px rgba(255, 255, 255, 0.04),
+              0 0 110px rgba(224, 98, 142, 0.045),
+              0 0 70px rgba(124, 109, 246, 0.025),
+              inset 0 1px 0 rgba(255,255,255,0.06);
 }
 
-/* 暗色下按钮增强 — 柔和辉光 */
+/* 暗色下按钮增强 — 深层辉光 */
 [data-theme="dark"] .ai-btn-tool:hover {
-  box-shadow: 0 8px 28px rgba(224, 104, 152, 0.14), 0 3px 10px rgba(0,0,0,0.25);
+  box-shadow: 0 10px 32px rgba(224, 98, 142, 0.16), 0 4px 12px rgba(0,0,0,0.3);
 }
 
 [data-theme="dark"] .ai-btn-primary:hover {
-  box-shadow: 0 12px 36px rgba(224, 104, 152, 0.3),
-              0 5px 16px rgba(192, 132, 252, 0.18),
-              inset 0 1px 0 rgba(255,255,255,0.18);
+  box-shadow: 0 14px 40px rgba(224, 98, 142, 0.32),
+              0 6px 18px rgba(199, 125, 255, 0.2),
+              inset 0 1px 0 rgba(255,255,255,0.2);
 }
 
 /* 暗色主题星云环境光 */
 [data-theme="dark"] .ai-cat-row:hover {
-  box-shadow: inset 0 0 36px rgba(224, 104, 152, 0.04),
-              0 2px 10px rgba(0, 0, 0, 0.15);
+  box-shadow: inset 0 0 40px rgba(224, 98, 142, 0.05),
+              0 3px 12px rgba(0, 0, 0, 0.18);
 }
 
 [data-theme="dark"] .ai-toast {
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3),
-              0 6px 18px rgba(0, 0, 0, 0.2),
-              inset 0 1px 0 rgba(255,255,255,0.15);
+  box-shadow: 0 18px 52px rgba(0, 0, 0, 0.35),
+              0 7px 20px rgba(0, 0, 0, 0.22),
+              inset 0 1px 0 rgba(255,255,255,0.16);
 }
 
 /* === 68. 增强聚焦光环呼吸 === */
 @keyframes ai-focus-glow {
-  0%, 100% { box-shadow: 0 0 0 3px rgba(232, 121, 168, 0.1), 0 0 14px rgba(232, 121, 168, 0.04); }
-  50% { box-shadow: 0 0 0 4px rgba(232, 121, 168, 0.16), 0 0 22px rgba(232, 121, 168, 0.07); }
+  0%, 100% { box-shadow: 0 0 0 3px rgba(224, 98, 142, 0.1), 0 0 14px rgba(224, 98, 142, 0.04); }
+  50% { box-shadow: 0 0 0 4px rgba(224, 98, 142, 0.16), 0 0 22px rgba(224, 98, 142, 0.07); }
 }
 
 /* === 69. 分类行选中勾选增强 === */
@@ -2731,7 +2761,7 @@
 /* === 71. 滚动条轨道渐变 === */
 #ai-sort-wrapper ::-webkit-scrollbar-track,
 .ai-modal ::-webkit-scrollbar-track {
-  background: linear-gradient(180deg, transparent, rgba(232, 121, 168, 0.02), transparent);
+  background: linear-gradient(180deg, transparent, rgba(224, 98, 142, 0.02), transparent);
 }
 
 /* === 72. 增强的标签 hover 下划线 — 渐变色 === */
@@ -2791,7 +2821,7 @@
 
 .ai-vid-title a:hover {
   color: var(--ai-primary);
-  text-shadow: 0 0 20px rgba(224, 104, 152, 0.08);
+  text-shadow: 0 0 20px rgba(224, 98, 142, 0.08);
 }
 
 /* === 77. 分组图标悬浮旋转 === */
@@ -2831,15 +2861,15 @@
   border-radius: 50%;
   transform: scale(0.92);
   opacity: 0.7;
-  box-shadow: 0 0 12px rgba(224, 104, 152, 0.2);
+  box-shadow: 0 0 12px rgba(224, 98, 142, 0.2);
 }
 
 /* === 82. 暗色下的输入框微妙内发光 === */
 [data-theme="dark"] .ai-input:focus-visible,
 [data-theme="dark"] .ai-select:focus-visible {
-  box-shadow: 0 0 0 3px rgba(224, 104, 152, 0.15),
-              0 0 20px rgba(224, 104, 152, 0.06),
-              inset 0 0 12px rgba(224, 104, 152, 0.03);
+  box-shadow: 0 0 0 3px rgba(224, 98, 142, 0.16),
+              0 0 24px rgba(224, 98, 142, 0.07),
+              inset 0 0 14px rgba(224, 98, 142, 0.035);
 }
 
 /* === 83. 日志条目类型左边框增强 === */
@@ -2876,10 +2906,10 @@
   -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 16px), transparent 100%);
 }
 
-/* === 86. 暗色主题下的 header 极光增强 === */
+/* === 86. 暗色主题下的 header 极光增强 — 更深邃的星云色 === */
 [data-theme="dark"] .ai-header {
-  background: linear-gradient(135deg, #be185d, #7c3aed, #4f46e5, #2563eb, #7c3aed, #be185d);
-  background-size: 600% 600%;
+  background: linear-gradient(135deg, #c0185e, #7c3aed, #5b4fdb, #2563eb, #7c3aed, #c0185e);
+  background-size: 700% 700%;
 }
 
 /* === 87. 按钮按下时的内凹效果 === */
@@ -2910,7 +2940,7 @@
 
 /* === 90. 暗色下的按钮 hover 星光 === */
 [data-theme="dark"] .ai-btn-tool:hover::before {
-  background: linear-gradient(135deg, rgba(224, 104, 152, 0.08), rgba(129, 140, 248, 0.08));
+  background: linear-gradient(135deg, rgba(224, 98, 142, 0.08), rgba(124, 109, 246, 0.08));
 }
 
 /* === 91. 全局过渡性能 — 精确的 will-change 管理 === */
@@ -2928,32 +2958,178 @@
   will-change: transform, box-shadow;
 }
 
-/* === 92. 暗色主题面板底部星云辉光 === */
+/* === 92. 暗色主题面板底部星云辉光 + 顶部折射 === */
 [data-theme="dark"] #ai-sort-wrapper {
   background-image: var(--ai-mesh-gradient),
-                    radial-gradient(ellipse at 50% 100%, rgba(224, 104, 152, 0.04) 0%, transparent 60%);
+                    radial-gradient(ellipse at 50% 100%, rgba(224, 98, 142, 0.045) 0%, transparent 55%),
+                    radial-gradient(ellipse at 50% 0%, rgba(124, 109, 246, 0.025) 0%, transparent 40%);
 }
 
 /* === 93. 分类列表弹入优化 — 更丝滑 === */
 @keyframes ai-cat-slide-in {
-  0% { transform: translateX(28px) scale(0.95); opacity: 0; filter: blur(1.5px); }
-  35% { transform: translateX(-3px) scale(1.01); opacity: 1; filter: blur(0); }
-  58% { transform: translateX(1px) scale(0.999); }
-  78% { transform: translateX(-0.2px) scale(1.001); }
+  0% { transform: translateX(36px) scale(0.93); opacity: 0; filter: blur(2.5px); }
+  30% { transform: translateX(-5px) scale(1.015); opacity: 1; filter: blur(0); }
+  52% { transform: translateX(2px) scale(0.997); }
+  70% { transform: translateX(-0.5px) scale(1.002); }
+  85% { transform: translateX(0.1px) scale(0.9995); }
   100% { transform: translateX(0) scale(1); opacity: 1; }
 }
 
 /* === 94. 日志条目滑入 — 更自然 === */
 @keyframes ai-log-slide-in {
-  0% { transform: translateY(-8px) scale(0.98); opacity: 0; }
-  40% { transform: translateY(1px) scale(1.005); opacity: 1; }
-  65% { transform: translateY(-0.3px) scale(0.999); }
+  0% { transform: translateY(-10px) scale(0.975); opacity: 0; filter: blur(1px); }
+  35% { transform: translateY(1.5px) scale(1.006); opacity: 1; filter: blur(0); }
+  58% { transform: translateY(-0.5px) scale(0.999); }
+  78% { transform: translateY(0.1px) scale(1.0005); }
   100% { transform: translateY(0) scale(1); opacity: 1; }
 }
 
 /* === 95. Hover 状态下的键盘提示高亮 === */
 .ai-btn:hover .ai-kbd {
-  background: rgba(224, 104, 152, 0.08);
+  background: rgba(224, 98, 142, 0.08);
   border-color: var(--ai-primary-light);
   color: var(--ai-primary);
+}
+
+/* === 96. 新增：分类行悬浮时的柔光扫过效果 === */
+.ai-cat-row::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--ai-interaction-glow), transparent);
+  transition: left 0.6s var(--ai-ease-out-expo);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ai-cat-row:hover::after {
+  left: 140%;
+}
+
+/* === 97. 新增：面板开启时的虹光呼吸边框 === */
+#ai-sort-wrapper.ai-panel-active {
+  border-image: var(--ai-chromatic-border) 1;
+  border-image-slice: 1;
+}
+
+/* === 98. 新增：视频封面缩略图悬浮 3D 微倾斜 === */
+.ai-vid-rich:hover .ai-vid-cover {
+  transform: scale(1.1) translateY(-2px) perspective(200px) rotateY(-2deg);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+}
+
+/* === 99. 新增：按钮点击涟漪光效 === */
+.ai-btn-primary:active::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.3) 0%, transparent 60%);
+  border-radius: inherit;
+  animation: ai-click-ripple 0.4s ease-out forwards;
+}
+
+@keyframes ai-click-ripple {
+  0% { transform: scale(0); opacity: 1; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+/* === 100. 新增：暗色主题面板边缘星光微粒效果 === */
+[data-theme="dark"] #ai-sort-wrapper::after {
+  height: 1.5px;
+  background: var(--ai-chromatic-border);
+  opacity: 0.7;
+  filter: blur(0.2px);
+}
+
+/* === 101. 新增：分组展开箭头旋转过渡增强 === */
+.ai-group-header [data-lucide]:last-child {
+  transition: transform 0.5s var(--ai-spring), color 0.3s ease;
+}
+
+.ai-group-header:hover [data-lucide]:last-child {
+  color: var(--ai-primary);
+}
+
+/* === 102. 新增：设置区渐入效果增强 === */
+.ai-settings {
+  animation: ai-settings-reveal 0.4s var(--ai-ease-out-expo);
+}
+
+@keyframes ai-settings-reveal {
+  from { opacity: 0; transform: translateY(-8px); filter: blur(2px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+/* === 103. 新增：Toast 通知叠放时的深度偏移 === */
+.ai-toast:nth-child(2) {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+.ai-toast:nth-child(3) {
+  transform: scale(0.94);
+  opacity: 0.8;
+}
+
+/* === 104. 新增：Header 运行态增强 — 能量脉冲 + 加速极光 === */
+.ai-header.running {
+  animation: ai-aurora-flow 8s ease-in-out infinite, ai-header-energy-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes ai-header-energy-pulse {
+  0%, 100% { box-shadow: inset 0 0 0 0 rgba(255,255,255,0); filter: brightness(1); }
+  50% { box-shadow: inset 0 0 32px rgba(255,255,255,0.12); filter: brightness(1.05); }
+}
+
+/* === 105. 新增：暗色主题全局增强 — 色彩环境光 === */
+[data-theme="dark"] .ai-btn-tool::before {
+  background: linear-gradient(135deg, rgba(224, 98, 142, 0.08), rgba(124, 109, 246, 0.08));
+}
+
+[data-theme="dark"] .ai-cat-row::before {
+  background: linear-gradient(180deg, var(--ai-aurora-1), var(--ai-aurora-6), var(--ai-aurora-3));
+}
+
+/* === 106. 新增：进度条活跃态呼吸光晕 === */
+#ai-progress-bar:not([style*="width: 0"]):not(.complete) {
+  box-shadow: 0 0 12px rgba(224, 98, 142, 0.2), 0 0 24px rgba(199, 125, 255, 0.1);
+}
+
+/* === 107. 新增：面板滚动时顶部阴影提示 === */
+.ai-panel-content.scrolled {
+  box-shadow: inset 0 6px 12px -6px rgba(0,0,0,0.08);
+}
+
+/* === 108. 新增：视频条目悬浮时的左侧渐变条 === */
+.ai-vid-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 20%;
+  bottom: 20%;
+  width: 2px;
+  background: linear-gradient(180deg, var(--ai-aurora-1), var(--ai-aurora-2));
+  border-radius: 2px;
+  opacity: 0;
+  transition: opacity 0.3s ease, top 0.3s var(--ai-ease-out-expo), bottom 0.3s var(--ai-ease-out-expo);
+}
+
+.ai-vid-item:hover::before {
+  opacity: 1;
+  top: 10%;
+  bottom: 10%;
+}
+
+/* === 109. 新增：大屏优化 === */
+@media (min-width: 1920px) {
+  #ai-sort-wrapper {
+    width: min(440px, calc(100vw - 60px));
+  }
+
+  .ai-modal {
+    width: min(640px, 90vw);
+  }
 }
