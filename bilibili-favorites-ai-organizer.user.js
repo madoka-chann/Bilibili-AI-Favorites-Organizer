@@ -138,10 +138,10 @@
             @keyframes ai-bubble-pop{0%{transform:translateX(-50%) scale(0);opacity:0}50%{transform:translateX(-50%) scale(1.1);opacity:1}100%{transform:translateX(-50%) scale(1);opacity:1}}
             @keyframes ai-bubble-pulse{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.08)}}
             .ai-btn-spin-icon{display:inline-flex;animation:ai-btn-spin 0.8s linear infinite;}
-            .ai-btn.ai-btn-loading{position:relative;pointer-events:none;opacity:0.85;}
-            .ai-countdown-bubble{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#fb7299,#ff9ab5);color:#fff;font-size:10px;font-weight:bold;padding:3px 10px;border-radius:12px;white-space:nowrap;pointer-events:none;animation:ai-bubble-pop 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards;box-shadow:0 2px 10px rgba(251,114,153,0.35);z-index:10;line-height:1.4;}
-            .ai-countdown-bubble::after{content:'';position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#ff9ab5;}
-            .ai-countdown-bubble .ai-cd-num{display:inline-block;min-width:14px;text-align:center;animation:ai-bubble-pulse 1s ease-in-out infinite;}
+            .ai-btn.ai-btn-loading{position:relative;pointer-events:none;opacity:0.85;overflow:visible !important;}
+            .ai-countdown-bubble{position:fixed;z-index:2147483647;background:linear-gradient(135deg,#fb7299,#ff9ab5);color:#fff;font-size:11px;font-weight:bold;padding:4px 12px;border-radius:14px;white-space:nowrap;pointer-events:none;animation:ai-bubble-pop 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;box-shadow:0 3px 12px rgba(251,114,153,0.4),0 0 0 2px rgba(255,255,255,0.6);line-height:1.4;letter-spacing:0.5px;}
+            .ai-countdown-bubble::after{content:'';position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#ff9ab5;}
+            .ai-countdown-bubble .ai-cd-num{display:inline-block;min-width:16px;text-align:center;animation:ai-bubble-pulse 1s ease-in-out infinite;}
             #ai-sort-wrapper input,#ai-sort-wrapper textarea,#ai-sort-wrapper select,.ai-modal input,.ai-modal textarea,.ai-modal select{filter:none!important;-webkit-filter:none!important;background-color:var(--ai-input-bg)!important;color:var(--ai-text)!important;}
             #ai-sort-wrapper,#ai-sort-wrapper *:not(.ai-vid-cover):not([data-lucide]),#ai-float-btn,.ai-modal-backdrop,.ai-modal,.ai-modal *:not(.ai-vid-cover):not([data-lucide]){filter:none!important;-webkit-filter:none!important;}
         `;
@@ -241,7 +241,6 @@
 
     function loadSettings() {
         const provider = GM_getValue('bfao_provider', 'gemini');
-        // 优先使用按服务商保存的 API Key，兼容旧版全局 key
         const apiKey = GM_getValue('bfao_apiKey_' + provider, '') || GM_getValue('bfao_apiKey', '');
         return {
             provider: provider,
@@ -693,15 +692,26 @@
         btn.style.position = 'relative';
         btn.innerHTML = SPIN_SVG;
 
-        // 倒计时气泡
+        // 倒计时气泡（挂载到 body，用 fixed 定位跟随按钮）
         let bubble = null;
         let countdownInterval = null;
+        let bubblePositionRAF = null;
         if (countdown && timeout > 0) {
             let remaining = Math.ceil(timeout / 1000);
             bubble = document.createElement('span');
             bubble.className = 'ai-countdown-bubble';
-            bubble.innerHTML = `<span class="ai-cd-num">${remaining}s</span>`;
-            btn.appendChild(bubble);
+            bubble.innerHTML = `✨ <span class="ai-cd-num">${remaining}s</span>`;
+            document.body.appendChild(bubble);
+            // 用 fixed 定位让气泡浮在按钮上方
+            const positionBubble = () => {
+                const rect = btn.getBoundingClientRect();
+                bubble.style.position = 'fixed';
+                bubble.style.left = (rect.left + rect.width / 2) + 'px';
+                bubble.style.top = (rect.top - 8) + 'px';
+                bubble.style.transform = 'translate(-50%, -100%)';
+                bubblePositionRAF = requestAnimationFrame(positionBubble);
+            };
+            positionBubble();
             countdownInterval = setInterval(() => {
                 remaining--;
                 if (remaining <= 0) { clearInterval(countdownInterval); return; }
@@ -712,6 +722,7 @@
 
         const cleanup = () => {
             if (countdownInterval) clearInterval(countdownInterval);
+            if (bubblePositionRAF) cancelAnimationFrame(bubblePositionRAF);
             if (bubble && bubble.parentNode) bubble.parentNode.removeChild(bubble);
             btn.classList.remove('ai-btn-loading');
             btn.style.position = originalPosition;
@@ -4540,6 +4551,14 @@ ${topUps.length > 0 ? `<div class="section">
             input.type = input.type === 'password' ? 'text' : 'password';
         };
 
+        // API Key 输入时自动保存（防抖）
+        document.getElementById('ai-set-apikey').addEventListener('input', debounce(() => {
+            const provider = document.getElementById('ai-set-provider').value;
+            const key = document.getElementById('ai-set-apikey').value.trim();
+            GM_setValue('bfao_apiKey_' + provider, key);
+            GM_setValue('bfao_apiKey', key); // 兼容旧版全局 key
+        }, 500));
+
         // 获取当前提供商的 API 申请链接
         function getCurrentApiUrl() {
             const provider = document.getElementById('ai-set-provider').value;
@@ -4728,20 +4747,22 @@ ${topUps.length > 0 ? `<div class="section">
         }
 
         document.getElementById('ai-set-provider').onchange = function() {
+            const newProvider = this.value;
+            const config = AI_PROVIDERS[newProvider];
             // 保存当前服务商的 API Key
             const prevProvider = GM_getValue('bfao_provider', 'gemini');
             const prevKey = document.getElementById('ai-set-apikey').value.trim();
-            if (prevProvider) GM_setValue('bfao_apiKey_' + prevProvider, prevKey);
-
-            const config = AI_PROVIDERS[this.value];
+            if (prevKey) GM_setValue('bfao_apiKey_' + prevProvider, prevKey);
+            // 立即保存当前选择的 provider
+            GM_setValue('bfao_provider', newProvider);
             if (config) setModelValue(config.defaultModel);
 
-            // 恢复目标服务商的 API Key
-            const savedKey = GM_getValue('bfao_apiKey_' + this.value, '');
+            // 加载新服务商已保存的 API Key，无则清空
+            const savedKey = GM_getValue('bfao_apiKey_' + newProvider, '');
             document.getElementById('ai-set-apikey').value = savedKey;
 
             // 切换时加载缓存但不展开
-            const cached = GM_getValue('bfao_cachedModels_' + this.value, null);
+            const cached = GM_getValue('bfao_cachedModels_' + newProvider, null);
             if (cached && cached.length > 0) { loadModelOptions(cached); }
             else { document.getElementById('ai-model-select').innerHTML = ''; }
             toggleModelDropdown(false);
