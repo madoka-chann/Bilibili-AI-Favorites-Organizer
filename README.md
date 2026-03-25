@@ -6,7 +6,8 @@
 ### 安装&更新
 
 
- **[点击此处](https://raw.githubusercontent.com/madoka-chann/Bilibili-AI-Favorites-Organizer/refs/heads/main/bilibili-favorites-ai-organizer.user.js)**
+ **[Github源](https://raw.githubusercontent.com/madoka-chann/Bilibili-AI-Favorites-Organizer/refs/heads/main/bilibili-favorites-ai-organizer.user.js)**
+ **[Github国内加速源](https://ghfast.top/https://raw.githubusercontent.com/madoka-chann/Bilibili-AI-Favorites-Organizer/main/bilibili-favorites-ai-organizer.user.js)**
 
 ## 功能特性
 
@@ -66,8 +67,8 @@
 
 点击下方链接安装脚本（或在油猴扩展中手动导入 `bilibili-favorites-ai-organizer.user.js`）：
 
-> **[安装脚本](https://raw.githubusercontent.com/madoka-chann/Bilibili-AI-Favorites-Organizer/refs/heads/main/bilibili-favorites-ai-organizer.user.js)**
-
+ **[Github源](https://raw.githubusercontent.com/madoka-chann/Bilibili-AI-Favorites-Organizer/refs/heads/main/bilibili-favorites-ai-organizer.user.js)**
+ **[Github国内加速源](https://ghfast.top/https://raw.githubusercontent.com/madoka-chann/Bilibili-AI-Favorites-Organizer/main/bilibili-favorites-ai-organizer.user.js)**
 
 ### 3. 配置 AI 服务
 
