@@ -50,11 +50,11 @@
 
 ### 1. 安装油猴扩展
 
-在浏览器中安装以下任一用户脚本管理器：
+在浏览器中安装任一用户脚本管理器：
 
-- [Tampermonkey](https://www.tampermonkey.net/)（推荐）
+- [Tampermonkey](https://www.tampermonkey.net/)
 - [Violentmonkey](https://violentmonkey.github.io/)
-- [Greasemonkey](https://www.greasespot.net/)
+
 
 ### 2. 安装脚本
 
