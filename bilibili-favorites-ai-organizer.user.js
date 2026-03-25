@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.3.5
+// @version      1.3.6
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -4250,6 +4250,18 @@ ${topUps.length > 0 ? `<div class="section">
             panel.insertBefore(silkWrap, panel.firstChild);
         })();
 
+        // === Velvet Nebula v0.0.5 — 星云漂流层 ===
+        (() => {
+            const driftLayer = document.createElement('div');
+            driftLayer.className = 'ai-nebula-drift';
+            for (let i = 0; i < 3; i++) {
+                const orb = document.createElement('div');
+                orb.className = 'ai-nebula-drift-orb';
+                driftLayer.appendChild(orb);
+            }
+            panel.insertBefore(driftLayer, panel.firstChild);
+        })();
+
         // === 液态流光边框 ===
         panel.classList.add('ai-liquid-border');
 
@@ -4291,6 +4303,8 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'moonlight', label: '月光银' },
                 { id: 'frost', label: '冰霜' },
                 { id: 'dusk', label: '暮光' },
+                { id: 'graphite', label: '石墨' },
+                { id: 'lavender', label: '薰衣草' },
                 { id: 'custom', label: '自定义' }
             ];
 
