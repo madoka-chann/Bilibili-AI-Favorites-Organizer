@@ -208,10 +208,10 @@
     // ================= 设置读写 =================
     // AI 单次请求数量预设：根据模型上下文能力选择
     const AI_CHUNK_PRESETS = [
-        { label: '🧠 大上下文模型 (100个)', value: 100, desc: 'Gemini 2.5 Pro / GPT-4o 等' },
-        { label: '📊 标准模型 (50个)', value: 50, desc: 'Gemini 2.5 Flash 等，推荐' },
-        { label: '📱 小上下文模型 (25个)', value: 25, desc: '上下文窗口较小的模型' },
-        { label: '🔬 超小模型 (10个)', value: 10, desc: '轻量模型或免费 API 额度紧张时' }
+        { label: '●  大上下文模型 (100个)', value: 100, desc: 'Gemini 2.5 Pro / GPT-4o 等' },
+        { label: '◐  标准模型 (50个)', value: 50, desc: 'Gemini 2.5 Flash 等，推荐' },
+        { label: '◔  小上下文模型 (25个)', value: 25, desc: '上下文窗口较小的模型' },
+        { label: '○  超小模型 (10个)', value: 10, desc: '轻量模型或免费 API 额度紧张时' }
     ];
 
     // ================= AI 服务商预设 =================
@@ -234,9 +234,9 @@
 
     // 请求速度预设：值为每次请求间隔毫秒数
     const SPEED_PRESETS = [
-        { label: '🐢 安全 (1.5s)', value: 1500, desc: '大收藏夹推荐，几乎不会触发风控' },
-        { label: '🚶 稳健 (800ms)', value: 800, desc: '日常使用推荐，平衡速度与安全' },
-        { label: '🏃 较快 (500ms)', value: 500, desc: '小收藏夹可用，有一定风控风险' }
+        { label: '○  安全 (1.5s)', value: 1500, desc: '大收藏夹推荐，几乎不会触发风控' },
+        { label: '◐  稳健 (800ms)', value: 800, desc: '日常使用推荐，平衡速度与安全' },
+        { label: '●  较快 (500ms)', value: 500, desc: '小收藏夹可用，有一定风控风险' }
     ];
 
     function loadSettings() {
@@ -1735,8 +1735,8 @@ ${topUps.length > 0 ? `<div class="section">
                     <strong>评估：</strong>
                     ${successes.length === 0 ? '模型不可用，请检查 API Key 和模型名称。' :
                       avgLatency < 3000 ? '⚡ 响应速度优秀，适合大批量整理。' :
-                      avgLatency < 8000 ? '🚶 响应速度适中，日常使用没问题。' :
-                      '🐢 响应较慢，建议降低并发数或换用更快的模型。'}
+                      avgLatency < 8000 ? '响应速度适中，日常使用没问题。' :
+                      '响应较慢，建议降低并发数或换用更快的模型。'}
                     ${allCorrect ? ' 分类准确度：所有测试视频均正确分配。' : ''}
                 </div>
             </div>
@@ -3777,7 +3777,7 @@ ${topUps.length > 0 ? `<div class="section">
                             <label class="ai-label">AI 单次请求数量 <span style="font-size:10px;color:#999;">(每次发给 AI 多少个视频)</span></label>
                             <select id="ai-set-chunk" class="ai-select" style="width:100%;">
                                 ${AI_CHUNK_PRESETS.map(p => `<option value="${p.value}" ${p.value === settings.aiChunkSize ? 'selected' : ''}>${p.label} — ${p.desc}</option>`).join('')}
-                                <option value="custom" ${!AI_CHUNK_PRESETS.some(p => p.value === settings.aiChunkSize) ? 'selected' : ''}>⚙️ 自定义...</option>
+                                <option value="custom" ${!AI_CHUNK_PRESETS.some(p => p.value === settings.aiChunkSize) ? 'selected' : ''}>⟡  自定义...</option>
                             </select>
                             <input id="ai-set-chunk-custom" class="ai-input" type="number" min="5" max="300" step="5" value="${settings.aiChunkSize}" placeholder="自定义数量" style="display:${AI_CHUNK_PRESETS.some(p => p.value === settings.aiChunkSize) ? 'none' : 'block'};width:100%;margin-top:4px;">
                         </div>
@@ -3785,7 +3785,7 @@ ${topUps.length > 0 ? `<div class="section">
                             <label class="ai-label">抓取速度 <span style="font-size:10px;color:#999;">(大收藏夹建议用安全模式)</span></label>
                             <select id="ai-set-speed" class="ai-select" style="width:100%;">
                                 ${SPEED_PRESETS.map(p => `<option value="${p.value}" ${p.value === settings.fetchDelay ? 'selected' : ''}>${p.label} — ${p.desc}</option>`).join('')}
-                                <option value="custom" ${!SPEED_PRESETS.some(p => p.value === settings.fetchDelay) ? 'selected' : ''}>⚙️ 自定义...</option>
+                                <option value="custom" ${!SPEED_PRESETS.some(p => p.value === settings.fetchDelay) ? 'selected' : ''}>⟡  自定义...</option>
                             </select>
                             <input id="ai-set-speed-custom" class="ai-input" type="number" min="400" max="5000" step="100" value="${settings.fetchDelay}" placeholder="毫秒 (ms)" style="display:${SPEED_PRESETS.some(p => p.value === settings.fetchDelay) ? 'none' : 'block'};width:100%;margin-top:4px;">
                         </div>
@@ -3872,12 +3872,10 @@ ${topUps.length > 0 ? `<div class="section">
                         </label>
                     </div>
 
-                    <button id="ai-set-save" class="ai-btn ai-btn-primary" style="width:100%;padding:7px;font-size:12px;border-radius:6px;margin-top:4px;"><i data-lucide="save" style="width:13px;height:13px;"></i> 保存设置</button>
                     <div style="display:flex;gap:6px;margin-top:6px;">
                         <button id="ai-set-export" class="ai-btn ai-btn-tool" style="flex:1;padding:5px;font-size:11px;" title="导出设置为JSON文件"><i data-lucide="upload" style="width:11px;height:11px;"></i> 导出设置</button>
                         <button id="ai-set-import" class="ai-btn ai-btn-tool" style="flex:1;padding:5px;font-size:11px;" title="从JSON文件导入设置"><i data-lucide="download" style="width:11px;height:11px;"></i> 导入设置</button>
                     </div>
-                    <div id="ai-set-msg" style="text-align:center;font-size:11px;color:#27ae60;margin-top:4px;display:none;">✓ 已保存</div>
                 </div>
 
                 <!-- ===== 主内容区 ===== -->
@@ -4939,8 +4937,8 @@ ${topUps.length > 0 ? `<div class="section">
             }
         };
 
-        // 保存设置
-        document.getElementById('ai-set-save').onclick = () => {
+        // 自动保存所有设置（防抖）
+        function autoSaveAllSettings() {
             const speedSelect = document.getElementById('ai-set-speed');
             const speedCustom = document.getElementById('ai-set-speed-custom');
             const fetchDelay = speedSelect.value === 'custom'
@@ -4969,32 +4967,42 @@ ${topUps.length > 0 ? `<div class="section">
                 writeDelay: Math.max(500, Math.min(10000, parseInt(document.getElementById('ai-set-write-delay').value) || 2500)),
                 moveChunkSize: Math.max(1, Math.min(100, parseInt(document.getElementById('ai-set-move-chunk').value) || 20)),
                 skipDeadVideos: document.getElementById('ai-set-skipdead').checked,
-                // 新功能设置
                 adaptiveRate: document.getElementById('ai-set-adaptive').checked,
                 backupBeforeExecute: document.getElementById('ai-set-backup').checked,
                 notifyOnComplete: document.getElementById('ai-set-notify').checked,
                 multiFolderEnabled: document.getElementById('ai-set-multifolder').checked,
-                // 动画设置
                 animEnabled: document.getElementById('ai-set-anim-enabled').checked,
-                // 增量整理
                 incrementalMode: document.getElementById('ai-set-incremental').checked,
-                // 定时整理
                 autoOrganizeEnabled: document.getElementById('ai-set-auto-organize').checked,
                 autoOrganizeInterval: parseInt(document.getElementById('ai-set-auto-interval').value) || 60
             });
             // 更新定时整理状态提示
             const autoStatus = document.getElementById('ai-auto-organize-status');
             if (autoStatus) autoStatus.style.display = document.getElementById('ai-set-auto-organize').checked ? 'block' : 'none';
-            // 重新初始化定时器
             setupAutoOrganize();
-            const saveBtn = document.getElementById('ai-set-save');
-            saveBtn.classList.add('saved');
-            setTimeout(() => saveBtn.classList.remove('saved'), 2000);
-            const msg = document.getElementById('ai-set-msg');
-            msg.style.display = 'block';
-            msg.style.animation = 'none'; msg.offsetHeight; msg.style.animation = ''; // restart animation
-            setTimeout(() => { msg.style.display = 'none'; }, 2000);
-        };
+        }
+        const debouncedAutoSave = debounce(autoSaveAllSettings, 400);
+
+        // 为所有设置控件绑定自动保存
+        // select 下拉框：change 事件立即保存
+        ['ai-set-speed', 'ai-set-chunk'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('change', autoSaveAllSettings);
+        });
+        // checkbox：change 事件立即保存
+        ['ai-set-limit-enabled', 'ai-set-skipdead', 'ai-set-adaptive', 'ai-set-backup',
+         'ai-set-notify', 'ai-set-multifolder', 'ai-set-anim-enabled', 'ai-set-incremental',
+         'ai-set-auto-organize'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('change', autoSaveAllSettings);
+        });
+        // number/text 输入框：input 事件防抖保存
+        ['ai-set-base-url', 'ai-set-concurrency', 'ai-set-limit-count',
+         'ai-set-write-delay', 'ai-set-move-chunk', 'ai-set-speed-custom',
+         'ai-set-chunk-custom', 'ai-set-auto-interval'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('input', debouncedAutoSave);
+        });
 
         // 预设下拉
         document.getElementById('ai-preset-select').onchange = function() {
@@ -5171,7 +5179,7 @@ ${topUps.length > 0 ? `<div class="section">
                 const settingsArea = document.getElementById('ai-settings-area');
                 if (settingsArea && window.getComputedStyle(settingsArea).display !== 'none') {
                     e.preventDefault();
-                    document.getElementById('ai-set-save').click();
+                    autoSaveAllSettings();
                     showToast('设置已保存', 'success', 2000);
                 }
                 return;

@@ -768,12 +768,6 @@
   box-shadow: 0 3px 10px rgba(251, 114, 153, 0.2);
 }
 
-/* 保存按钮 (#29) */
-#ai-set-save.saved {
-  background: var(--ai-success) !important;
-  animation: ai-save-bounce 0.4s ease;
-}
-
 /* 筛选按钮 (#37) */
 .ai-filter-btn {
   padding: 3px 10px;
