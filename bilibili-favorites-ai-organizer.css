@@ -603,7 +603,9 @@
   background: var(--ai-bg-secondary);
   border-bottom: 1px solid var(--ai-border-light);
   transition: max-height 0.4s var(--ai-transition-slow), opacity 0.3s ease;
-  overflow: hidden;
+  max-height: 45vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
 }
 
 /* === 7. 分组标题 — 优雅展开 === */
