@@ -60,7 +60,7 @@
 
 点击下方链接安装脚本（或在油猴扩展中手动导入 `bilibili-favorites-ai-organizer.user.js`）：
 
-> **[安装脚本](https://raw.githubusercontent.com/你的用户名/Bilibili-Favorites-AI-Organizer/main/bilibili-favorites-ai-organizer.user.js)**
+> **[安装脚本](https://raw.githubusercontent.com/madoka-chann/Bilibili-Favorites-AI-Organizer/main/bilibili-favorites-ai-organizer.user.js)**
 
 ### 3. 配置 AI 服务
 
