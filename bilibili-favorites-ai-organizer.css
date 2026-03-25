@@ -461,7 +461,6 @@
   border-radius: 28px;
   border: 1px solid var(--ai-glass-border);
   overflow: hidden;
-  max-height: 85vh;
   transform-style: preserve-3d;
   perspective: var(--ai-perspective, 1600px);
 }
@@ -477,11 +476,8 @@
 .ai-panel-content {
   background: var(--ai-bg) !important;
   padding: 0;
-  flex: 1 1 0% !important;
-  min-height: 0 !important;
-  max-height: none !important;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
+  flex: none !important;
+  overflow: hidden !important;
   border-bottom-left-radius: 28px;
   border-bottom-right-radius: 28px;
 }
@@ -609,10 +605,6 @@
   padding: 10px 15px 12px;
   background: var(--ai-bg-secondary);
   border-bottom: 1px solid var(--ai-border-light);
-  transition: max-height 0.4s var(--ai-transition-slow), opacity 0.3s ease;
-  max-height: 45vh !important;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
 }
 
 /* === 7. 分组标题 — 优雅展开 === */
@@ -1472,15 +1464,13 @@
 }
 
 .ai-cat-detail.open {
-  max-height: 240px;
+  max-height: 2000px;
   opacity: 1;
   padding: 4px 0;
 }
 
 .ai-cat-detail-inner {
-  max-height: 232px;
-  overflow-y: auto;
-  scrollbar-width: thin;
+  overflow: visible;
 }
 
 .ai-vid-item {
@@ -3065,7 +3055,6 @@
 }
 
 /* === 89. 滚动条出现过渡 === */
-.ai-panel-content::-webkit-scrollbar-thumb,
 .ai-modal-body::-webkit-scrollbar-thumb {
   transition: background 0.3s ease;
 }
@@ -3231,10 +3220,7 @@
   box-shadow: 0 0 12px rgba(115, 100, 255, 0.2), 0 0 24px rgba(255, 107, 157, 0.1);
 }
 
-/* === 107. 新增：面板滚动时顶部阴影提示 === */
-.ai-panel-content.scrolled {
-  box-shadow: inset 0 6px 12px -6px rgba(0,0,0,0.08);
-}
+/* === 107. 新增：面板滚动时顶部阴影提示（已移除内部滚动） === */
 
 /* === 108. 新增：视频条目悬浮时的左侧渐变条 === */
 .ai-vid-item::before {
@@ -4855,13 +4841,11 @@
 @keyframes ai-settings-ethereal {
   0% {
     opacity: 0;
-    max-height: 0;
     filter: blur(6px);
     transform: translateY(-8px);
   }
   100% {
     opacity: 1;
-    max-height: 600px;
     filter: blur(0);
     transform: translateY(0);
   }
@@ -4909,7 +4893,6 @@
 }
 
 /* === 207. Scrollbar Ethereal Glow 滚动条幻境微光 === */
-.ai-panel-content::-webkit-scrollbar-thumb:hover,
 .ai-modal-body::-webkit-scrollbar-thumb:hover {
   box-shadow: 0 0 8px var(--ai-primary-shadow);
 }
@@ -4982,7 +4965,7 @@
     filter: blur(4px);
   }
   100% {
-    max-height: 240px;
+    max-height: 2000px;
     opacity: 1;
     filter: blur(0);
   }
@@ -5139,24 +5122,7 @@
              ai-ambient-pulse 6s var(--ai-ease-tide) infinite;
 }
 
-/* === 221. Smooth Scrollbar Fade — 丝绒滚动条 === */
-.ai-panel-content::-webkit-scrollbar {
-  width: 5px;
-}
-
-.ai-panel-content::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.ai-panel-content::-webkit-scrollbar-thumb {
-  background: var(--ai-scrollbar);
-  border-radius: 10px;
-  transition: background 0.3s ease;
-}
-
-.ai-panel-content::-webkit-scrollbar-thumb:hover {
-  background: var(--ai-scrollbar-hover);
-}
+/* === 221. Smooth Scrollbar Fade — 已移除面板内部滚动条 === */
 
 .ai-modal-body::-webkit-scrollbar {
   width: 5px;
@@ -5174,18 +5140,15 @@
 /* === 222. Smooth Group Toggle — 丝绒折叠展开 === */
 .ai-group-body {
   animation: ai-velvet-unfold 0.4s var(--ai-ease-silk) both;
-  overflow: hidden;
 }
 
 @keyframes ai-velvet-unfold {
   0% {
     opacity: 0;
-    max-height: 0;
     transform: translateY(-4px);
   }
   100% {
     opacity: 1;
-    max-height: 800px;
     transform: translateY(0);
   }
 }
@@ -5583,7 +5546,7 @@
     transform: scaleY(0.998);
   }
   100% {
-    max-height: 240px;
+    max-height: 2000px;
     opacity: 1;
     filter: blur(0) saturate(1);
     transform: scaleY(1);
@@ -5699,7 +5662,6 @@
 
 /* === 247. Elastic Scroll Edge — 弹性滚动边缘 === */
 .ai-modal-body,
-.ai-cat-detail-inner,
 .ai-status-log {
   overscroll-behavior: contain;
   scroll-behavior: smooth;
@@ -6007,15 +5969,7 @@
   }
 }
 
-/* === 263. Scroll Shadow Indicator — 滚动阴影指示器 === */
-.ai-panel-content.scrolled-top {
-  box-shadow: inset 0 8px 16px -8px rgba(0,0,0,0.08);
-}
-
-.ai-panel-content.scrolled-bottom {
-  mask-image: none;
-  -webkit-mask-image: none;
-}
+/* === 263. Scroll Shadow Indicator — 已移除内部滚动 === */
 
 /* === 264. Theme Wipe Enhanced — 增强主题切换效果 === */
 .ai-theme-wipe {
@@ -6066,13 +6020,11 @@
 /* === 266. Enhanced Settings Group — 设置组展开增强 === */
 .ai-group-body {
   animation: ai-group-crystal-unfold 0.45s var(--ai-ease-crystal) both;
-  overflow: hidden;
 }
 
 @keyframes ai-group-crystal-unfold {
   0% {
     opacity: 0;
-    max-height: 0;
     transform: translateY(-6px) scaleY(0.9);
     transform-origin: top;
     filter: blur(3px);
@@ -6087,7 +6039,6 @@
   }
   100% {
     opacity: 1;
-    max-height: 800px;
     transform: translateY(0) scaleY(1);
     filter: blur(0);
   }
