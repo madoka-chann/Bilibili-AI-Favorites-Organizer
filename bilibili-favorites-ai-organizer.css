@@ -1,10 +1,10 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v28.0
-   Ethereal Flux · 幻境流韵 · Real-time Aurora Canvas
-   Reactive Firefly Particles · Constellation Orbs · Pulse Waves
-   Cyber Neon & Moonlight Themes · Synchronized Breathing Rhythm
-   Liquid Glass Refraction · Theme Transition Wipe
-   Velvet Dynamics 5.0 · Living Glass Surfaces · Magnetic Interactions
+   B站 AI 收藏夹整理助理 — 完整样式表 v0.0.1
+   Astral Glasstide · 琉璃星潮 · Liquid Glass Morphism
+   Indigo-Nebula 双色系统 · Bioluminescent Aurora Spectrum
+   Velvet Dynamics 4.0 · Oceanic Starlight Micro-interactions
+   Stellar Abyss Dark Theme · Living Glass Surfaces
+   Multi-Accent Color Themes · Nebula Particle Fields · Liquid Borders
    ================================================================ */
 
 /* === 1. CSS 变量 (双主题系统) === */
@@ -455,7 +455,6 @@
   border: 1px solid var(--ai-glass-border);
   overflow: hidden;
   max-height: 85vh;
-  animation: ai-panel-in 0.7s var(--ai-ease-celestial);
   transform-style: preserve-3d;
   perspective: var(--ai-perspective, 1600px);
 }
@@ -3888,7 +3887,6 @@
 /* === 164. 液态流光边框 — 持续流动的渐变边框 === */
 #ai-sort-wrapper.ai-liquid-border {
   border: none;
-  position: relative;
 }
 
 #ai-sort-wrapper.ai-liquid-border::after {
