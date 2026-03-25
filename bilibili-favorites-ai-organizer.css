@@ -1,10 +1,10 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v0.0.1
-   Astral Glasstide · 琉璃星潮 · Liquid Glass Morphism
-   Indigo-Nebula 双色系统 · Bioluminescent Aurora Spectrum
-   Velvet Dynamics 4.0 · Oceanic Starlight Micro-interactions
+   B站 AI 收藏夹整理助理 — 完整样式表 v0.0.2
+   Velvet Silk · 丝绒微光 · Refined Glass Morphism
+   Indigo-Nebula 双色系统 · Restrained Aurora Palette
+   Velvet Dynamics 5.0 · Silky Spring Micro-interactions
    Stellar Abyss Dark Theme · Living Glass Surfaces
-   Multi-Accent Color Themes · Nebula Particle Fields · Liquid Borders
+   Multi-Accent Color Themes · Ambient Light Motes · Liquid Borders
    ================================================================ */
 
 /* === 1. CSS 变量 (双主题系统) === */
@@ -32,7 +32,7 @@
   --ai-bg-secondary: #F9F7FF;
   --ai-bg-tertiary: #F0EAFA;
   --ai-bg-hover: rgba(115, 100, 255, 0.04);
-  --ai-header-gradient: linear-gradient(135deg, #7364FF, #FF6B9D);
+  --ai-header-gradient: linear-gradient(135deg, #7364FF, #9B59F6, #7364FF);
   --ai-modal-backdrop: rgba(24, 18, 51, 0.58);
   --ai-input-bg: #fff;
   --ai-card-shadow: 0 1px 3px rgba(24, 18, 51, 0.04), 0 4px 14px rgba(24, 18, 51, 0.03);
@@ -65,7 +65,7 @@
                   0 0 36px rgba(255, 107, 157, 0.14),
                   0 0 56px rgba(155, 89, 246, 0.07),
                   0 0 78px rgba(0, 212, 170, 0.035);
-  --ai-float-gradient: linear-gradient(135deg, #7364FF 0%, #9B59F6 14%, #E056CF 28%, #FF6B9D 42%, #FFB347 56%, #00D4AA 70%, #20E3B2 84%, #7364FF 100%);
+  --ai-float-gradient: linear-gradient(135deg, #7364FF 0%, #9B59F6 40%, #B0A8FF 70%, #7364FF 100%);
   --ai-card-hover-glow: 0 8px 44px rgba(115, 100, 255, 0.16);
   --ai-toast-success: linear-gradient(135deg, #059669 0%, #10B981 50%, #34D399 100%);
   --ai-toast-error: linear-gradient(135deg, #E11D48 0%, #F43F5E 50%, #FB7185 100%);
@@ -169,7 +169,7 @@
                   0 0 44px rgba(255, 133, 162, 0.18),
                   0 0 68px rgba(155, 89, 246, 0.09),
                   0 0 92px rgba(0, 212, 170, 0.045);
-  --ai-float-gradient: linear-gradient(135deg, #9B8EFF, #E879F9, #C084FC, #2EE8C0, #34D399, #FF85A2);
+  --ai-float-gradient: linear-gradient(135deg, #9B8EFF 0%, #C084FC 40%, #D0CAFF 70%, #9B8EFF 100%);
   --ai-card-hover-glow: 0 8px 56px rgba(115, 100, 255, 0.14);
   --ai-toast-success: linear-gradient(135deg, #059669, #10B981, #34D399);
   --ai-toast-error: linear-gradient(135deg, #E11D48, #F43F5E, #FB7185);
@@ -242,7 +242,7 @@
                     0 0 44px rgba(255, 133, 162, 0.18),
                     0 0 68px rgba(155, 89, 246, 0.09),
                     0 0 92px rgba(0, 212, 170, 0.045);
-    --ai-float-gradient: linear-gradient(135deg, #9B8EFF, #E879F9, #C084FC, #2EE8C0, #34D399, #FF85A2);
+    --ai-float-gradient: linear-gradient(135deg, #9B8EFF 0%, #C084FC 40%, #D0CAFF 70%, #9B8EFF 100%);
     --ai-card-hover-glow: 0 8px 56px rgba(115, 100, 255, 0.14);
     --ai-mesh-gradient: radial-gradient(ellipse at 10% 90%, rgba(115, 100, 255, 0.085) 0%, transparent 50%),
                          radial-gradient(ellipse at 90% 10%, rgba(255, 133, 162, 0.065) 0%, transparent 50%),
@@ -344,7 +344,7 @@
   left: 30px;
   z-index: var(--ai-z-float);
   background: var(--ai-float-gradient);
-  background-size: 700% 700%;
+  background-size: 300% 300%;
   animation: ai-float-gradient-shift 16s ease-in-out infinite, ai-float-levitate 10s ease-in-out infinite, ai-float-morph 18s ease-in-out infinite;
   color: white;
   width: 58px;
@@ -365,7 +365,7 @@
   position: absolute;
   inset: -7px;
   border-radius: 50%;
-  background: conic-gradient(from 0deg, var(--ai-aurora-1), var(--ai-aurora-8), var(--ai-aurora-3), var(--ai-aurora-5), var(--ai-aurora-4), var(--ai-aurora-6), var(--ai-aurora-2), var(--ai-aurora-1));
+  background: conic-gradient(from 0deg, var(--ai-aurora-1), var(--ai-aurora-3), var(--ai-aurora-1));
   z-index: -1;
   animation: ai-rotate-gradient 8s linear infinite, ai-orbital-breathe 4s ease-in-out infinite;
   opacity: 0.35;
@@ -478,8 +478,8 @@
 
 /* === 5. 标题栏 — 星潮极光 + 液态折射 + 磨砂层叠 === */
 .ai-header {
-  background: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-6), var(--ai-aurora-2), var(--ai-aurora-8), var(--ai-aurora-3), var(--ai-aurora-5), var(--ai-aurora-4), var(--ai-aurora-6));
-  background-size: 900% 900%;
+  background: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-3), var(--ai-aurora-1));
+  background-size: 400% 400%;
   animation: ai-aurora-flow 24s ease-in-out infinite;
   color: #fff;
   padding: 18px 18px;
@@ -840,9 +840,9 @@
 
 /* 主按钮 — 棱光渐变 + 脉动呼吸 + 色散光泽 */
 .ai-btn-primary {
-  background: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-6), var(--ai-aurora-2), var(--ai-aurora-8), var(--ai-aurora-3), var(--ai-aurora-5), var(--ai-aurora-6), var(--ai-aurora-1));
-  background-size: 700% 700%;
-  animation: ai-btn-gradient-shift 8s ease-in-out infinite;
+  background: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-3), var(--ai-aurora-1));
+  background-size: 300% 300%;
+  animation: ai-btn-gradient-shift 6s ease-in-out infinite;
   color: #fff;
   border: none;
   font-weight: 700;
@@ -948,8 +948,8 @@
 }
 
 .ai-filter-btn.active {
-  background: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-6), var(--ai-aurora-8), var(--ai-aurora-2), var(--ai-aurora-3));
-  background-size: 400% 400%;
+  background: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-3), var(--ai-aurora-1));
+  background-size: 300% 300%;
   animation: ai-btn-gradient-shift 6s ease-in-out infinite;
   color: #fff;
   border-color: transparent;
@@ -996,8 +996,8 @@
 }
 
 #ai-progress-bar {
-  background: linear-gradient(90deg, var(--ai-aurora-1), var(--ai-aurora-6), var(--ai-aurora-2), var(--ai-aurora-8), var(--ai-aurora-3), var(--ai-aurora-5), var(--ai-aurora-4), var(--ai-aurora-7), var(--ai-aurora-1));
-  background-size: 800% 100%;
+  background: linear-gradient(90deg, var(--ai-aurora-1), var(--ai-aurora-3), var(--ai-aurora-1));
+  background-size: 300% 100%;
   animation: ai-progress-flow 4s linear infinite;
   height: 100%;
   width: 0%;
@@ -1038,7 +1038,7 @@
 }
 
 #ai-progress-bar.complete {
-  background: linear-gradient(90deg, var(--ai-aurora-1), var(--ai-aurora-2), var(--ai-aurora-3), var(--ai-aurora-5), var(--ai-aurora-4), var(--ai-aurora-1)) !important;
+  background: linear-gradient(90deg, var(--ai-aurora-1), var(--ai-aurora-3), var(--ai-aurora-1)) !important;
   background-size: 200% 100%;
   animation: ai-rainbow 2.5s linear infinite !important;
 }
@@ -1162,8 +1162,8 @@
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid rgba(255,255,255,0.10);
-  background: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-6), var(--ai-aurora-2), var(--ai-aurora-8), var(--ai-aurora-3), var(--ai-aurora-5), var(--ai-aurora-4), var(--ai-aurora-6));
-  background-size: 800% 800%;
+  background: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-3), var(--ai-aurora-1));
+  background-size: 400% 400%;
   animation: ai-aurora-flow 20s ease-in-out infinite;
   color: #fff;
   position: relative;
@@ -2647,7 +2647,7 @@
 
 /* === 55. 增强的进度条 — 液态流光 + 分段光泽 === */
 #ai-progress-bar {
-  background: linear-gradient(90deg, var(--ai-aurora-1), var(--ai-aurora-2), var(--ai-aurora-3), var(--ai-aurora-5), var(--ai-aurora-4), var(--ai-aurora-6, var(--ai-aurora-2)), var(--ai-aurora-1));
+  background: linear-gradient(90deg, var(--ai-aurora-1), var(--ai-aurora-3), var(--ai-aurora-1));
 }
 
 /* === 56. Header 标题按钮增强 — 磨砂玻璃态 === */
@@ -2665,8 +2665,8 @@
 
 /* === 57. 增强的筛选按钮 — 棱光胶囊 === */
 .ai-filter-btn.active {
-  background: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-6), var(--ai-aurora-8), var(--ai-aurora-2), var(--ai-aurora-3));
-  background-size: 400% 400%;
+  background: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-3), var(--ai-aurora-1));
+  background-size: 300% 300%;
   animation: ai-btn-gradient-shift 6s ease-in-out infinite;
 }
 
@@ -2710,8 +2710,8 @@
 
 .ai-status-log::before {
   height: 2.5px;
-  background: linear-gradient(90deg, var(--ai-aurora-1), var(--ai-aurora-2), var(--ai-aurora-3), var(--ai-aurora-5), var(--ai-aurora-4), var(--ai-aurora-6, var(--ai-aurora-2)), var(--ai-aurora-1));
-  background-size: 400% 100%;
+  background: linear-gradient(90deg, var(--ai-aurora-1), var(--ai-aurora-3), var(--ai-aurora-1));
+  background-size: 300% 100%;
 }
 
 /* === 63. 主题切换增强 — 更丝滑的开关 === */
@@ -3283,8 +3283,8 @@
 
 /* === 119. 进度条液态流光增强 === */
 #ai-progress-bar {
-  background: linear-gradient(90deg, var(--ai-aurora-1), var(--ai-aurora-6), var(--ai-aurora-2), var(--ai-aurora-4), var(--ai-aurora-5), var(--ai-aurora-3), var(--ai-aurora-1));
-  background-size: 800% 100%;
+  background: linear-gradient(90deg, var(--ai-aurora-1), var(--ai-aurora-3), var(--ai-aurora-1));
+  background-size: 300% 100%;
   animation: ai-progress-flow 4s linear infinite;
 }
 
@@ -3296,17 +3296,17 @@
 
 /* === 121. 暗色主题全局色调增强 === */
 [data-theme="dark"] .ai-cat-row::before {
-  background: linear-gradient(180deg, var(--ai-aurora-1), var(--ai-aurora-6), var(--ai-aurora-4));
+  background: linear-gradient(180deg, var(--ai-aurora-1), var(--ai-aurora-3));
 }
 
-/* === 122. 标题栏天璇模式 — 棱光色层 === */
+/* === 122. 标题栏天璇模式 — 丝绒微光 === */
 .ai-header {
-  background: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-6), var(--ai-aurora-2), var(--ai-aurora-8), var(--ai-aurora-3), var(--ai-aurora-5), var(--ai-aurora-4), var(--ai-aurora-6));
+  background: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-3), var(--ai-aurora-1));
 }
 
-/* === 123. 模态框标题增强 — 天璇棱光 === */
+/* === 123. 模态框标题增强 — 丝绒微光 === */
 .ai-modal-header {
-  background: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-6), var(--ai-aurora-2), var(--ai-aurora-8), var(--ai-aurora-3), var(--ai-aurora-5), var(--ai-aurora-4), var(--ai-aurora-6));
+  background: linear-gradient(135deg, var(--ai-aurora-1), var(--ai-aurora-3), var(--ai-aurora-1));
 }
 
 /* === 124. Astral Glasstide v27.0 — 新增星潮扩散动画 === */
@@ -3553,7 +3553,7 @@
 
 /* === 150. 暗色分类行星潮虹彩条 === */
 [data-theme="dark"] .ai-cat-row::before {
-  background: linear-gradient(180deg, var(--ai-aurora-1), var(--ai-aurora-6), var(--ai-aurora-4));
+  background: linear-gradient(180deg, var(--ai-aurora-1), var(--ai-aurora-3));
 }
 
 /* === 151. 暗色悬浮按钮轨道环增强 — 星潮荧光 === */
@@ -4489,7 +4489,7 @@
   100% { opacity: 0.25; }
 }
 
-/* === 192. Theme Transition Wipe 主题切换径向擦除 === */
+/* === 192. Theme Transition Wipe 主题切换丝绒擦除 === */
 .ai-theme-wipe {
   position: fixed;
   inset: 0;
@@ -4497,21 +4497,27 @@
   pointer-events: none;
   border-radius: 50%;
   transform: scale(0);
-  opacity: 0.9;
-  animation: ai-theme-wipe-expand 0.6s var(--ai-ease-out-expo) forwards;
+  opacity: 0.7;
+  animation: ai-theme-wipe-expand 0.7s var(--ai-ease-silk, cubic-bezier(0.14, 0.86, 0.20, 1)) forwards;
 }
 
 @keyframes ai-theme-wipe-expand {
   0% {
     transform: scale(0);
-    opacity: 0.9;
+    opacity: 0.7;
+    filter: blur(0);
   }
-  60% {
-    opacity: 0.5;
+  40% {
+    opacity: 0.45;
+    filter: blur(2px);
+  }
+  70% {
+    opacity: 0.2;
   }
   100% {
-    transform: scale(4);
+    transform: scale(5);
     opacity: 0;
+    filter: blur(8px);
   }
 }
 
@@ -4665,9 +4671,7 @@
   right: 0;
   height: 2px;
   background: linear-gradient(90deg,
-    var(--ai-aurora-1), var(--ai-aurora-2), var(--ai-aurora-3),
-    var(--ai-aurora-4), var(--ai-aurora-5), var(--ai-aurora-6),
-    var(--ai-aurora-7), var(--ai-aurora-8), var(--ai-aurora-1));
+    var(--ai-aurora-1), var(--ai-aurora-3), var(--ai-aurora-1));
   background-size: 200% 100%;
   animation: ai-ribbon-flow 4s linear infinite;
   z-index: 2;
@@ -4961,4 +4965,329 @@
 
 .ai-header-btn:hover::after {
   opacity: 1;
+}
+
+/* ================================================================
+   Velvet Silk v0.0.2 — 丝绒微光新增特性
+   ================================================================ */
+
+/* === 216. Ambient Glass Shimmer — 面板玻璃微光呼吸 === */
+#ai-sort-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.04) 35%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.04) 65%,
+    transparent 80%
+  );
+  background-size: 300% 300%;
+  animation: ai-glass-shimmer 8s var(--ai-ease-silk) infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+[data-theme="dark"] #ai-sort-wrapper::after {
+  background: linear-gradient(
+    135deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.015) 35%,
+    rgba(255, 255, 255, 0.035) 50%,
+    rgba(255, 255, 255, 0.015) 65%,
+    transparent 80%
+  );
+}
+
+@keyframes ai-glass-shimmer {
+  0%, 100% { background-position: 200% 200%; }
+  50% { background-position: 0% 0%; }
+}
+
+/* === 217. Velvet Spring Entrance — 丝绒弹簧入场 === */
+@keyframes ai-velvet-spring-in {
+  0% {
+    transform: translateY(32px) scale(0.92);
+    opacity: 0;
+    filter: blur(8px);
+  }
+  35% {
+    transform: translateY(-4px) scale(1.015);
+    opacity: 1;
+    filter: blur(0);
+  }
+  55% {
+    transform: translateY(1.5px) scale(0.998);
+  }
+  72% {
+    transform: translateY(-0.5px) scale(1.003);
+  }
+  85% {
+    transform: translateY(0.15px) scale(0.9998);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* === 218. Velvet Spring Exit — 丝绒弹簧退场 === */
+@keyframes ai-velvet-spring-out {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+  30% {
+    transform: translateY(-6px) scale(1.02);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(24px) scale(0.92);
+    opacity: 0;
+    filter: blur(6px);
+  }
+}
+
+/* === 219. Panel Closing State — 面板退场动画 === */
+.ai-panel-closing {
+  animation: ai-velvet-spring-out 0.38s var(--ai-ease-gravity) forwards !important;
+}
+
+/* === 220. Float Button Ambient Pulse — 悬浮按钮环境脉搏 === */
+@keyframes ai-ambient-pulse {
+  0%, 100% {
+    box-shadow: var(--ai-neon-glow);
+    filter: brightness(1);
+  }
+  50% {
+    box-shadow: 0 0 22px rgba(115, 100, 255, 0.35),
+                0 0 44px rgba(155, 89, 246, 0.15),
+                0 0 66px rgba(115, 100, 255, 0.06);
+    filter: brightness(1.04);
+  }
+}
+
+#ai-float-btn {
+  animation: ai-float-gradient-shift 16s ease-in-out infinite,
+             ai-float-levitate 10s ease-in-out infinite,
+             ai-float-morph 18s ease-in-out infinite,
+             ai-ambient-pulse 6s var(--ai-ease-tide) infinite;
+}
+
+/* === 221. Smooth Scrollbar Fade — 丝绒滚动条 === */
+.ai-panel-content::-webkit-scrollbar {
+  width: 5px;
+}
+
+.ai-panel-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ai-panel-content::-webkit-scrollbar-thumb {
+  background: var(--ai-scrollbar);
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+.ai-panel-content::-webkit-scrollbar-thumb:hover {
+  background: var(--ai-scrollbar-hover);
+}
+
+.ai-modal-body::-webkit-scrollbar {
+  width: 5px;
+}
+
+.ai-modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ai-modal-body::-webkit-scrollbar-thumb {
+  background: var(--ai-scrollbar);
+  border-radius: 10px;
+}
+
+/* === 222. Smooth Group Toggle — 丝绒折叠展开 === */
+.ai-group-body {
+  animation: ai-velvet-unfold 0.4s var(--ai-ease-silk) both;
+  overflow: hidden;
+}
+
+@keyframes ai-velvet-unfold {
+  0% {
+    opacity: 0;
+    max-height: 0;
+    transform: translateY(-4px);
+  }
+  100% {
+    opacity: 1;
+    max-height: 800px;
+    transform: translateY(0);
+  }
+}
+
+/* === 223. Enhanced Theme Transition — 增强主题切换过渡 === */
+#ai-sort-wrapper,
+#ai-sort-wrapper *,
+.ai-modal,
+.ai-modal *,
+#ai-float-btn {
+  transition-property: background-color, color, border-color, box-shadow, opacity;
+  transition-duration: 0.5s;
+  transition-timing-function: var(--ai-ease-silk);
+}
+
+/* Override for elements that need faster/specific transitions */
+.ai-btn,
+.ai-btn-tool,
+.ai-header-btn,
+.ai-input,
+.ai-select {
+  transition-duration: 0.3s;
+}
+
+/* === 224. Ambient Light Motes — 环境光斑 (CSS-only floating particles) === */
+.ai-light-motes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.ai-light-mote {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--ai-primary-light) 0%, transparent 70%);
+  opacity: 0;
+  animation: ai-mote-float var(--mote-duration, 12s) var(--mote-delay, 0s) var(--ai-ease-silk) infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes ai-mote-float {
+  0%, 100% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.5);
+  }
+  20% {
+    opacity: var(--mote-opacity, 0.12);
+    transform: translate(var(--mote-dx1, 10px), var(--mote-dy1, -15px)) scale(0.8);
+  }
+  50% {
+    opacity: var(--mote-opacity, 0.12);
+    transform: translate(var(--mote-dx2, -8px), var(--mote-dy2, -25px)) scale(1);
+  }
+  80% {
+    opacity: calc(var(--mote-opacity, 0.12) * 0.6);
+    transform: translate(var(--mote-dx3, 5px), var(--mote-dy3, -10px)) scale(0.7);
+  }
+}
+
+/* === 225. Button Magnetic Hover — 按钮磁性悬浮增强 === */
+.ai-btn-tool {
+  transition: all 0.5s var(--ai-spring-oceanic) !important;
+}
+
+.ai-btn-tool:hover {
+  transform: translateY(-3px) scale(1.035);
+  box-shadow: 0 8px 24px rgba(115, 100, 255, 0.10), 0 3px 10px rgba(0,0,0,0.04);
+}
+
+/* === 226. Enhanced Toast Entry — 增强 Toast 入场 === */
+@keyframes ai-toast-velvet-in {
+  0% {
+    transform: translateX(100%) scale(0.9);
+    opacity: 0;
+    filter: blur(4px);
+  }
+  40% {
+    transform: translateX(-8px) scale(1.02);
+    opacity: 1;
+    filter: blur(0);
+  }
+  60% {
+    transform: translateX(3px) scale(0.998);
+  }
+  80% {
+    transform: translateX(-1px) scale(1.001);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* === 227. Category Row Hover Glow — 分类行悬浮微光 === */
+.ai-cat-row {
+  transition: all 0.45s var(--ai-ease-silk);
+}
+
+.ai-cat-row:hover {
+  background: var(--ai-bg-hover);
+  transform: translateX(4px);
+  box-shadow: inset 3px 0 0 var(--ai-primary),
+              0 2px 12px rgba(115, 100, 255, 0.05);
+}
+
+/* === 228. Settings Reveal — 设置面板展开动画 === */
+.ai-settings {
+  transition: max-height 0.5s var(--ai-ease-silk),
+              opacity 0.4s var(--ai-ease-silk),
+              padding 0.4s var(--ai-ease-silk);
+}
+
+/* === 229. Input Focus Glow Ring — 输入框聚焦光环 === */
+.ai-input:focus-visible,
+.ai-select:focus-visible {
+  border-color: var(--ai-primary);
+  box-shadow: 0 0 0 3px rgba(115, 100, 255, 0.10),
+              0 0 12px rgba(115, 100, 255, 0.06);
+  transition: all 0.35s var(--ai-spring-gentle);
+}
+
+/* === 230. Card Hover Lift — 卡片悬浮提升 === */
+.ai-vid-item {
+  transition: all 0.4s var(--ai-ease-silk);
+}
+
+.ai-vid-item:hover {
+  transform: translateX(2px);
+  background: var(--ai-bg-hover);
+}
+
+/* === 231. Ambient Breathing Border — 环境呼吸边框 === */
+@keyframes ai-border-breathe {
+  0%, 100% {
+    border-color: var(--ai-glass-border);
+  }
+  50% {
+    border-color: rgba(115, 100, 255, 0.12);
+  }
+}
+
+#ai-sort-wrapper {
+  animation: ai-border-breathe 8s var(--ai-ease-tide) infinite;
+}
+
+/* === 232. Reduced Motion — 添加新动画到减速运动列表 === */
+@media (prefers-reduced-motion: reduce) {
+  .ai-light-mote,
+  #ai-sort-wrapper::after {
+    animation: none !important;
+  }
+  #ai-sort-wrapper {
+    animation: none !important;
+  }
+}
+
+/* === 233. GPU hints for new elements === */
+.ai-light-mote,
+#ai-sort-wrapper::after {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
