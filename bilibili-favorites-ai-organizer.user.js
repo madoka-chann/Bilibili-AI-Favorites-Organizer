@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动细化整理 (V1.0 增强版)
 // @namespace    http://tampermonkey.net/
-// @version      1.2.0
+// @version      1.3.0
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -46,13 +46,13 @@
         // Fallback: 直接注入关键 CSS（确保 z-index 和基本布局正常）
         const fallbackCSS = document.createElement('style');
         fallbackCSS.textContent = `
-            :root{--ai-primary:#f472b6;--ai-primary-dark:#ec4899;--ai-primary-light:#f9a8d4;--ai-primary-bg:rgba(244,114,182,0.06);--ai-primary-shadow:rgba(244,114,182,0.25);--ai-success:#10b981;--ai-error:#f43f5e;--ai-info:#6366f1;--ai-warning:#f59e0b;--ai-text:#1a1a2e;--ai-text-secondary:#475569;--ai-text-muted:#94a3b8;--ai-text-light:#cbd5e1;--ai-border:#e2e8f0;--ai-border-light:#f1f5f9;--ai-border-lighter:#f8fafc;--ai-bg:#fff;--ai-bg-secondary:#fafbfe;--ai-bg-tertiary:#f5f7fa;--ai-bg-hover:rgba(244,114,182,0.04);--ai-header-gradient:linear-gradient(135deg,#f472b6,#a78bfa);--ai-modal-backdrop:rgba(10,10,30,0.55);--ai-input-bg:#fff;--ai-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--ai-z-float:2147483640;--ai-z-panel:2147483641;--ai-z-modal:2147483645;--ai-z-particle:2147483646;--ai-radius-xs:6px;--ai-radius-sm:8px;--ai-radius-md:10px;--ai-radius-lg:14px;--ai-radius-xl:18px;--ai-transition:0.25s cubic-bezier(0.4,0,0.2,1);--ai-transition-slow:0.4s cubic-bezier(0.16,1,0.3,1);--ai-scrollbar:#dde1e8;--ai-scrollbar-hover:#c1c8d4;--ai-cat-detail-bg:#f8f9fe;--ai-separator:#eef1f6;--ai-glow-color:rgba(244,114,182,0.07);--ai-badge-new-bg:#f43f5e;--ai-badge-existing-bg:#10b981;--ai-vid-odd-bg:rgba(0,0,0,0.012);--ai-vid-hover-bg:rgba(99,102,241,0.04);--ai-spring:cubic-bezier(0.34,1.56,0.64,1);--ai-spring-bouncy:cubic-bezier(0.175,0.885,0.32,1.275);--ai-ease-out-expo:cubic-bezier(0.16,1,0.3,1);--ai-ease-smooth:cubic-bezier(0.4,0,0,1);}
-            #ai-float-btn{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-float);background:linear-gradient(135deg,#f472b6,#a78bfa,#818cf8,#38bdf8);background-size:400% 400%;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 16px rgba(244,114,182,0.3),0 0 32px rgba(167,139,250,0.15);border:2px solid rgba(255,255,255,0.2);transition:transform 0.6s var(--ai-spring);}
+            :root{--ai-primary:#e879a8;--ai-primary-dark:#db5090;--ai-primary-light:#f5b0cc;--ai-primary-bg:rgba(232,121,168,0.06);--ai-primary-shadow:rgba(232,121,168,0.22);--ai-success:#0fce8a;--ai-error:#ef4060;--ai-info:#6c6ff8;--ai-warning:#f5a623;--ai-text:#16162a;--ai-text-secondary:#3f4d63;--ai-text-muted:#8898ae;--ai-text-light:#b8c5d4;--ai-border:#dde4ee;--ai-border-light:#ecf0f7;--ai-border-lighter:#f5f8fc;--ai-bg:#fff;--ai-bg-secondary:#f8f9fe;--ai-bg-tertiary:#f1f4f9;--ai-bg-hover:rgba(232,121,168,0.04);--ai-header-gradient:linear-gradient(135deg,#e879a8,#a78bfa);--ai-modal-backdrop:rgba(8,8,32,0.52);--ai-input-bg:#fff;--ai-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--ai-z-float:2147483640;--ai-z-panel:2147483641;--ai-z-modal:2147483645;--ai-z-particle:2147483646;--ai-radius-xs:6px;--ai-radius-sm:8px;--ai-radius-md:10px;--ai-radius-lg:14px;--ai-radius-xl:18px;--ai-transition:0.25s cubic-bezier(0.4,0,0.2,1);--ai-transition-slow:0.4s cubic-bezier(0.16,1,0.3,1);--ai-scrollbar:#d4dae4;--ai-scrollbar-hover:#b8c2d0;--ai-cat-detail-bg:#f6f7fe;--ai-separator:#eaeff5;--ai-glow-color:rgba(232,121,168,0.07);--ai-badge-new-bg:#ef4060;--ai-badge-existing-bg:#0fce8a;--ai-vid-odd-bg:rgba(0,0,0,0.012);--ai-vid-hover-bg:rgba(108,111,248,0.04);--ai-spring:cubic-bezier(0.34,1.56,0.64,1);--ai-spring-gentle:cubic-bezier(0.22,1.1,0.46,1);--ai-spring-bouncy:cubic-bezier(0.175,0.885,0.32,1.275);--ai-ease-out-expo:cubic-bezier(0.16,1,0.3,1);--ai-ease-smooth:cubic-bezier(0.4,0,0,1);--ai-ease-fluid:cubic-bezier(0.25,0.8,0.25,1);}
+            #ai-float-btn{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-float);background:linear-gradient(135deg,#e879a8,#c084fc,#7c8cf8,#38bdf8);background-size:400% 400%;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 18px rgba(232,121,168,0.32),0 0 36px rgba(192,132,252,0.16);border:2px solid rgba(255,255,255,0.22);transition:transform 0.6s var(--ai-spring);}
             #ai-float-btn [data-lucide]{width:24px;height:24px;}
             #ai-sort-wrapper{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-panel);width:min(392px,calc(100vw - 60px));flex-direction:column;box-shadow:0 12px 48px rgba(0,0,0,0.1),0 4px 16px rgba(0,0,0,0.06);border-radius:20px;overflow:hidden;max-height:85vh;font-family:var(--ai-font);}
             #ai-sort-wrapper [data-lucide]{width:16px;height:16px;stroke-width:2;vertical-align:middle;display:inline-block;}
             .ai-panel-content{background:var(--ai-bg)!important;padding:0;overflow-y:auto;max-height:calc(85vh - 46px);border-bottom-left-radius:20px;border-bottom-right-radius:20px;}
-            .ai-header{background:linear-gradient(135deg,#f472b6,#a78bfa,#818cf8);background-size:500% 500%;color:#fff;padding:14px 16px;font-weight:600;font-size:14px;display:flex;justify-content:space-between;align-items:center;position:relative;overflow:hidden;}
+            .ai-header{background:linear-gradient(135deg,#e879a8,#a78bfa,#7c8cf8);background-size:500% 500%;color:#fff;padding:14px 16px;font-weight:600;font-size:14px;display:flex;justify-content:space-between;align-items:center;position:relative;overflow:hidden;}
             .ai-header-title{display:flex;align-items:center;gap:7px;}
             .ai-header-actions{display:flex;gap:8px;align-items:center;position:relative;z-index:1;}
             .ai-header-btn{padding:5px;border:none;background:rgba(255,255,255,0.12);color:#fff;border-radius:var(--ai-radius-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.35s var(--ai-spring);border:1px solid rgba(255,255,255,0.08);}
@@ -63,17 +63,17 @@
             .ai-group-icon{width:22px;height:22px;border-radius:var(--ai-radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
             .ai-group-body{padding-left:2px;}
             .ai-input{padding:7px 10px;border:1.5px solid var(--ai-border);border-radius:var(--ai-radius-sm);font-size:12px;outline:none;box-sizing:border-box;background:var(--ai-input-bg)!important;color:var(--ai-text)!important;transition:all 0.3s var(--ai-ease-out-expo);}
-            .ai-input:focus{border-color:var(--ai-primary);box-shadow:0 0 0 3px rgba(244,114,182,0.12);}
+            .ai-input:focus{border-color:var(--ai-primary);box-shadow:0 0 0 3px rgba(232,121,168,0.12);}
             .ai-select{padding:7px 10px;border:1.5px solid var(--ai-border);border-radius:var(--ai-radius-sm);font-size:12px;outline:none;background:var(--ai-input-bg)!important;color:var(--ai-text)!important;cursor:pointer;transition:all 0.3s var(--ai-ease-out-expo);}
             .ai-label{font-size:12px;color:var(--ai-text-secondary);display:block;margin-bottom:4px;font-weight:500;}
             .ai-btn{transition:all 0.3s var(--ai-ease-out-expo);cursor:pointer;border:1.5px solid var(--ai-border);border-radius:var(--ai-radius-sm);background:var(--ai-bg);display:inline-flex;align-items:center;justify-content:center;gap:5px;font-weight:500;}
             .ai-btn:hover{background:var(--ai-border-lighter);border-color:var(--ai-text-light);box-shadow:0 2px 10px rgba(0,0,0,0.05);}
             .ai-btn:active{transform:scale(0.92);transition-duration:0.08s;}
             .ai-btn:disabled{opacity:0.4;cursor:not-allowed;}
-            .ai-btn-primary{background:linear-gradient(135deg,#f472b6,#a78bfa,#818cf8)!important;background-size:400% 400%;color:#fff!important;border:none;font-weight:700;position:relative;overflow:hidden;}
-            .ai-btn-primary:hover{box-shadow:0 8px 28px rgba(244,114,182,0.3),0 4px 12px rgba(167,139,250,0.15);}
+            .ai-btn-primary{background:linear-gradient(135deg,#e879a8,#a78bfa,#7c8cf8)!important;background-size:400% 400%;color:#fff!important;border:none;font-weight:700;position:relative;overflow:hidden;}
+            .ai-btn-primary:hover{box-shadow:0 10px 32px rgba(232,121,168,0.32),0 4px 14px rgba(192,132,252,0.18);}
             .ai-btn-tool{background:var(--ai-bg-tertiary);color:var(--ai-text-secondary);font-size:11px;font-weight:500;}
-            .ai-btn-tool:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 6px 20px rgba(244,114,182,0.1);}
+            .ai-btn-tool:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 6px 20px rgba(232,121,168,0.1);}
             .ai-status-log{margin-top:10px;background:var(--ai-bg-tertiary)!important;padding:8px 10px;border-radius:var(--ai-radius-md);font-size:11px;color:var(--ai-text);height:120px;overflow-y:auto;overflow-wrap:break-word;word-break:break-word;border:1px solid var(--ai-border-light);scroll-behavior:smooth;display:flex;flex-direction:column;gap:2px;}
             .ai-log-entry{display:flex;align-items:flex-start;gap:6px;padding:3px 8px;border-radius:4px;background:var(--ai-bg-secondary);border-left:3px solid transparent;animation:ai-log-flash 0.6s ease-out;line-height:1.5;}
             .ai-log-time{flex-shrink:0;font-size:9px;color:var(--ai-text-muted);background:var(--ai-bg-tertiary);padding:1px 5px;border-radius:8px;line-height:16px;}
@@ -84,14 +84,14 @@
             .ai-log-info{color:var(--ai-info);border-left-color:var(--ai-info);}
             .ai-modal-backdrop{position:fixed;inset:0;background:var(--ai-modal-backdrop)!important;z-index:var(--ai-z-modal);display:flex;align-items:center;justify-content:center;font-family:var(--ai-font);backdrop-filter:blur(12px) saturate(1.3);}
             .ai-modal{background:var(--ai-bg)!important;color:var(--ai-text)!important;border-radius:22px;box-shadow:0 32px 96px rgba(0,0,0,0.18),0 12px 32px rgba(0,0,0,0.1);width:min(600px,90vw);max-height:70vh;display:flex;flex-direction:column;overflow:hidden;}
-            .ai-modal-header{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.08);background:linear-gradient(135deg,#f472b6,#a78bfa,#818cf8);background-size:500% 500%;color:#fff;position:relative;overflow:hidden;}
+            .ai-modal-header{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.08);background:linear-gradient(135deg,#e879a8,#a78bfa,#7c8cf8);background-size:500% 500%;color:#fff;position:relative;overflow:hidden;}
             .ai-modal-header h3{margin:0;font-size:15px;font-weight:bold;display:flex;align-items:center;gap:8px;position:relative;z-index:1;}
             .ai-modal-toolbar{padding:10px 20px;border-bottom:1px solid var(--ai-border-light);background:var(--ai-bg-secondary)!important;}
             .ai-modal-body{flex:1;overflow-y:auto;padding:0;min-height:0;}
             .ai-modal-footer{padding:12px 20px;border-top:1px solid var(--ai-border-light);display:flex;gap:10px;background:var(--ai-bg-secondary)!important;box-shadow:0 -4px 12px rgba(0,0,0,0.04);}
             .ai-modal-close{background:rgba(255,255,255,0.2);border:none;color:#fff;width:28px;height:28px;border-radius:var(--ai-radius-md);cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;}
             .ai-modal-btn{flex:1;padding:11px;border:none;border-radius:var(--ai-radius-md);font-size:14px;font-weight:700;cursor:pointer;transition:all 0.35s var(--ai-spring);display:flex;align-items:center;justify-content:center;gap:6px;}
-            .ai-modal-btn-confirm{background:linear-gradient(135deg,#059669,#10b981,#34d399)!important;color:#fff;}
+            .ai-modal-btn-confirm{background:linear-gradient(135deg,#06a66c,#0fce8a,#2dd4a8)!important;color:#fff;}
             .ai-modal-btn-cancel{background:var(--ai-border-lighter);color:var(--ai-text-muted);}
             .ai-cat-block{animation:ai-slide-in 0.5s var(--ai-spring-bouncy) both;animation-delay:calc(var(--i,0)*0.05s);}
             .ai-cat-row{display:flex;align-items:center;gap:10px;padding:12px 20px;border-bottom:1px solid var(--ai-border-lighter);border-left:3px solid var(--ai-primary);cursor:pointer;position:relative;overflow:hidden;transition:all 0.4s var(--ai-ease-out-expo);}
@@ -100,8 +100,8 @@
             .ai-cat-row>*{position:relative;z-index:1;}
             .ai-cat-name{flex:1;font-size:13px;color:var(--ai-text);display:flex;align-items:center;gap:6px;}
             .ai-cat-count{font-size:12px;color:var(--ai-text-muted);white-space:nowrap;}
-            .ai-cat-badge{font-size:10px;color:#fff;background:linear-gradient(135deg,#f43f5e,#fb7185);padding:2px 9px;border-radius:10px;font-weight:600;}
-            .ai-cat-existing{font-size:10px;color:#fff;background:linear-gradient(135deg,#10b981,#34d399);padding:2px 9px;border-radius:10px;font-weight:600;}
+            .ai-cat-badge{font-size:10px;color:#fff;background:linear-gradient(135deg,#ef4060,#f87088);padding:2px 9px;border-radius:10px;font-weight:600;}
+            .ai-cat-existing{font-size:10px;color:#fff;background:linear-gradient(135deg,#0fce8a,#2dd4a8);padding:2px 9px;border-radius:10px;font-weight:600;}
             .ai-cat-detail{background:var(--ai-cat-detail-bg);border-bottom:1px solid var(--ai-border-lighter);overflow:hidden;max-height:0;opacity:0;transition:max-height 0.45s var(--ai-ease-out-expo),opacity 0.35s var(--ai-ease-smooth),padding 0.35s ease;padding:0;}
             .ai-cat-detail.open{max-height:240px;opacity:1;padding:4px 0;}
             .ai-cat-detail-inner{max-height:232px;overflow-y:auto;scrollbar-width:thin;}
@@ -117,9 +117,9 @@
             .ai-vid-meta{display:flex;gap:8px;margin-top:2px;font-size:10px;color:var(--ai-text-muted);flex-wrap:wrap;}
             .ai-filter-btn{padding:5px 14px;border-radius:20px;font-size:11px;cursor:pointer;border:1.5px solid var(--ai-border);background:var(--ai-bg);color:var(--ai-text-muted);transition:all 0.35s var(--ai-spring-bouncy);font-weight:500;}
             .ai-filter-btn:hover{border-color:var(--ai-primary-light);color:var(--ai-primary);background:var(--ai-primary-bg);}
-            .ai-filter-btn.active{background:linear-gradient(135deg,#f472b6,#a78bfa);color:#fff;border-color:transparent;box-shadow:0 4px 16px rgba(244,114,182,0.25);}
+            .ai-filter-btn.active{background:linear-gradient(135deg,#e879a8,#a78bfa);color:#fff;border-color:transparent;box-shadow:0 4px 16px rgba(232,121,168,0.25);}
             .ai-modal-search{width:100%;padding:8px 12px 8px 32px!important;border:1px solid var(--ai-border);border-radius:var(--ai-radius-md);font-size:13px;outline:none;box-sizing:border-box;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:10px center;}
-            .ai-ripple-dot{position:absolute;width:20px;height:20px;border-radius:50%;background:rgba(244,114,182,0.25);pointer-events:none;z-index:2;}
+            .ai-ripple-dot{position:absolute;width:20px;height:20px;border-radius:50%;background:rgba(232,121,168,0.25);pointer-events:none;z-index:2;}
             .ai-particle-dot{position:fixed;border-radius:50%;pointer-events:none;z-index:var(--ai-z-particle);}
             .ai-glow{position:absolute;width:150px;height:150px;background:radial-gradient(circle,var(--ai-glow-color),transparent 70%);pointer-events:none;transform:translate(-50%,-50%);transition:opacity 0.3s;opacity:0;z-index:0;}
             .ai-cat-row:hover .ai-glow{opacity:1;}
@@ -132,14 +132,19 @@
             @keyframes ai-shimmer{0%{background-position:300% 0}100%{background-position:-300% 0}}
             @keyframes ai-ripple{0%{transform:scale(0);opacity:0.35}100%{transform:scale(3.5);opacity:0}}
             @keyframes ai-particle{0%{transform:translate(0,0) scale(1);opacity:0.9}40%{opacity:0.7}100%{transform:translate(var(--tx),var(--ty)) scale(0);opacity:0}}
-            @keyframes ai-breathe{0%,100%{box-shadow:0 4px 12px var(--ai-primary-shadow)}50%{box-shadow:0 4px 24px rgba(244,114,182,0.45)}}
-            @keyframes ai-panel-in{0%{transform:translateY(36px) scale(0.92);opacity:0}35%{transform:translateY(-5px) scale(1.015);opacity:1}55%{transform:translateY(2px) scale(0.997)}100%{transform:translateY(0) scale(1);opacity:1}}
+            @keyframes ai-breathe{0%,100%{box-shadow:0 4px 14px var(--ai-primary-shadow)}50%{box-shadow:0 4px 28px rgba(232,121,168,0.48)}}
+            @keyframes ai-panel-in{0%{transform:translateY(40px) scale(0.9);opacity:0;filter:blur(6px)}28%{transform:translateY(-6px) scale(1.018);opacity:1;filter:blur(0)}46%{transform:translateY(2.5px) scale(0.995)}62%{transform:translateY(-1px) scale(1.004)}100%{transform:translateY(0) scale(1);opacity:1;filter:blur(0)}}
+            @keyframes ai-panel-out{0%{transform:translateY(0) scale(1);opacity:1;filter:blur(0)}100%{transform:translateY(30px) scale(0.92);opacity:0;filter:blur(4px)}}
+            #ai-sort-wrapper.ai-panel-closing{animation:ai-panel-out 0.35s var(--ai-ease-smooth) forwards;}
+            .ai-ambient-glow{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;border-radius:inherit;}
+            .ai-ambient-glow-orb{position:absolute;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,var(--ai-primary-shadow) 0%,transparent 70%);transform:translate(-50%,-50%);transition:left 0.4s var(--ai-ease-fluid),top 0.4s var(--ai-ease-fluid),opacity 0.5s ease;opacity:0;filter:blur(40px);}
+            #ai-sort-wrapper:hover .ai-ambient-glow-orb{opacity:0.6;}
             @keyframes ai-btn-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
             @keyframes ai-bubble-pop{0%{transform:translateX(-50%) scale(0);opacity:0}40%{transform:translateX(-50%) scale(1.12);opacity:1}70%{transform:translateX(-50%) scale(0.97)}100%{transform:translateX(-50%) scale(1);opacity:1}}
             @keyframes ai-bubble-pulse{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.06)}}
             .ai-btn-spin-icon{display:inline-flex;animation:ai-btn-spin 0.8s linear infinite;}
             .ai-btn.ai-btn-loading{position:relative;pointer-events:none;opacity:0.85;overflow:visible !important;}
-            .ai-countdown-bubble{position:fixed;z-index:2147483647;background:linear-gradient(135deg,#f472b6,#a78bfa);color:#fff;font-size:11px;font-weight:bold;padding:4px 12px;border-radius:14px;white-space:nowrap;pointer-events:none;animation:ai-bubble-pop 0.45s cubic-bezier(0.175,0.885,0.32,1.275) forwards;box-shadow:0 4px 16px rgba(244,114,182,0.35),0 0 0 2px rgba(255,255,255,0.5);line-height:1.4;letter-spacing:0.5px;}
+            .ai-countdown-bubble{position:fixed;z-index:2147483647;background:linear-gradient(135deg,#e879a8,#a78bfa);color:#fff;font-size:11px;font-weight:bold;padding:4px 12px;border-radius:14px;white-space:nowrap;pointer-events:none;animation:ai-bubble-pop 0.45s cubic-bezier(0.175,0.885,0.32,1.275) forwards;box-shadow:0 4px 16px rgba(232,121,168,0.35),0 0 0 2px rgba(255,255,255,0.5);line-height:1.4;letter-spacing:0.5px;}
             .ai-countdown-bubble::after{content:'';position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#a78bfa;}
             .ai-countdown-bubble .ai-cd-num{display:inline-block;min-width:16px;text-align:center;animation:ai-bubble-pulse 1s ease-in-out infinite;}
             #ai-sort-wrapper input,#ai-sort-wrapper textarea,#ai-sort-wrapper select,.ai-modal input,.ai-modal textarea,.ai-modal select{filter:none!important;-webkit-filter:none!important;background-color:var(--ai-input-bg)!important;color:var(--ai-text)!important;}
@@ -1605,14 +1610,14 @@
 <html lang="zh-CN">
 <head><meta charset="UTF-8"><title>B站收藏夹整理报告 - ${now}</title>
 <style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;max-width:900px;margin:0 auto;padding:20px;color:#333;background:#fafafa;}
-h1{text-align:center;color:#f472b6;margin-bottom:4px;}
+h1{text-align:center;color:#e879a8;margin-bottom:4px;}
 .subtitle{text-align:center;color:#999;font-size:13px;margin-bottom:30px;}
 .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:30px;}
 .summary-card{background:#fff;border-radius:10px;padding:16px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
-.summary-card .num{font-size:28px;font-weight:bold;color:#f472b6;}
+.summary-card .num{font-size:28px;font-weight:bold;color:#e879a8;}
 .summary-card .label{font-size:11px;color:#999;margin-top:4px;}
 .section{margin-bottom:30px;}
-.section h2{font-size:16px;border-bottom:2px solid #f472b6;padding-bottom:6px;margin-bottom:12px;}
+.section h2{font-size:16px;border-bottom:2px solid #e879a8;padding-bottom:6px;margin-bottom:12px;}
 table{width:100%;border-collapse:collapse;}
 @media print{body{background:#fff;}}
 </style></head>
@@ -2077,7 +2082,7 @@ ${topUps.length > 0 ? `<div class="section">
                 <div class="ai-cat-block" data-catname="${safeKey}" data-isnew="${isNew}" style="${animSettings.animEnabled ? '--i:' + catIdx : 'animation:none'}">
                     <div class="ai-cat-row">
                         <div class="ai-glow"></div>
-                        <input type="checkbox" class="ai-mc-check" data-cat="${safeKey}" data-count="${vids.length}" checked style="width:16px;height:16px;cursor:pointer;accent-color:#f472b6;">
+                        <input type="checkbox" class="ai-mc-check" data-cat="${safeKey}" data-count="${vids.length}" checked style="width:16px;height:16px;cursor:pointer;accent-color:#e879a8;">
                         <span class="ai-cat-toggle" data-target="${catId}" style="cursor:pointer;color:#bbb;font-size:11px;width:16px;text-align:center;transition:transform 0.3s;">▶</span>
                         <span class="ai-cat-name">${escapeHtml(catName)} ${badge} ${confSummary}</span>
                         <span class="ai-cat-count">${vids.length} 个视频</span>
@@ -2107,7 +2112,7 @@ ${topUps.length > 0 ? `<div class="section">
                 <div class="ai-modal-toolbar" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
                     <input class="ai-modal-search" id="ai-mc-search" type="text" placeholder="搜索分类名..." style="flex:1;min-width:120px;">
                     <label style="display:flex;align-items:center;gap:4px;font-size:12px;color:#666;white-space:nowrap;cursor:pointer;">
-                        <input type="checkbox" id="ai-mc-selectall" checked style="width:15px;height:15px;accent-color:#f472b6;"> 全选
+                        <input type="checkbox" id="ai-mc-selectall" checked style="width:15px;height:15px;accent-color:#e879a8;"> 全选
                     </label>
                     <button class="ai-filter-btn" id="ai-mc-filter-existing" title="只勾选已有收藏夹">仅已有</button>
                     <button class="ai-filter-btn" id="ai-mc-filter-new" title="只勾选新建收藏夹">仅新建</button>
@@ -2215,7 +2220,7 @@ ${topUps.length > 0 ? `<div class="section">
             // ===== 粒子爆发 — 多彩散射 + 大小渐变 + 延迟波 =====
             function spawnParticles(x, y) {
                 if (!animSettings.animEnabled) return;
-                const colors = ['#f472b6', '#c084fc', '#818cf8', '#34d399', '#38bdf8', '#fbbf24', '#a78bfa', '#6ee7b7'];
+                const colors = ['#e879a8', '#c084fc', '#7c8cf8', '#2dd4a8', '#38bdf8', '#ffc04a', '#a78bfa', '#36e0a0', '#9094ff', '#f5a0c8'];
                 const count = 36;
                 const frag = document.createDocumentFragment();
                 for (let i = 0; i < count; i++) {
@@ -3324,7 +3329,7 @@ ${topUps.length > 0 ? `<div class="section">
         if (btn) {
             btn.innerHTML = '<i data-lucide="play" style="width:15px;height:15px;"></i> 开始深度整理';
             if (typeof lucide !== 'undefined') lucide.createIcons({nodes:[btn]});
-            btn.style.background = 'linear-gradient(135deg, #f472b6, #a78bfa)';
+            btn.style.background = 'linear-gradient(135deg, #e879a8, #a78bfa)';
             btn.disabled = false;
             btn.onclick = startProcess;
         }
@@ -3785,7 +3790,7 @@ ${topUps.length > 0 ? `<div class="section">
 
     // ================= Confetti 爆炸效果 — 丰富形态 + 真实物理 + 3D翻转 =================
     function launchConfetti(x, y, count = 60) {
-        const colors = ['#f472b6', '#c084fc', '#818cf8', '#34d399', '#38bdf8', '#fbbf24', '#fb7185', '#a78bfa', '#6ee7b7', '#f9a8d4'];
+        const colors = ['#e879a8', '#c084fc', '#7c8cf8', '#2dd4a8', '#38bdf8', '#ffc04a', '#f87088', '#a78bfa', '#36e0a0', '#f5a0c8', '#9094ff', '#6c6ff8'];
         const shapes = ['square', 'circle', 'ribbon', 'star'];
         const frag = document.createDocumentFragment();
         for (let i = 0; i < count; i++) {
@@ -3926,7 +3931,7 @@ ${topUps.length > 0 ? `<div class="section">
 
                     <!-- 分组1: AI 配置 (默认展开) -->
                     <div class="ai-group-header" data-group="ai-group-1">
-                        <span class="ai-group-icon" style="background:rgba(244,114,182,0.08);color:#f472b6;"><i data-lucide="cpu" style="width:13px;height:13px;"></i></span>
+                        <span class="ai-group-icon" style="background:rgba(232,121,168,0.08);color:#e879a8;"><i data-lucide="cpu" style="width:13px;height:13px;"></i></span>
                         <span style="flex:1;">AI 配置</span>
                         <i data-lucide="chevron-down" style="width:14px;height:14px;color:#ccc;transition:transform 0.3s;"></i>
                     </div>
@@ -3966,7 +3971,7 @@ ${topUps.length > 0 ? `<div class="section">
                                 <div id="ai-model-dropdown" style="display:none;position:absolute;left:0;right:0;top:100%;margin-top:4px;border:1px solid var(--ai-primary);border-radius:6px;background:var(--ai-bg);overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.15);z-index:10;">
                                     <div style="display:flex;border-bottom:1px solid #eee;">
                                         <input id="ai-model-custom-input" class="ai-input" type="text" placeholder="搜索或输入自定义模型名..." style="flex:1;border:none;border-radius:0;font-size:12px;">
-                                        <button id="ai-model-custom-confirm" class="ai-btn" style="border:none;border-radius:0;padding:6px 10px;font-size:11px;color:#f472b6;">确定</button>
+                                        <button id="ai-model-custom-confirm" class="ai-btn" style="border:none;border-radius:0;padding:6px 10px;font-size:11px;color:#e879a8;">确定</button>
                                     </div>
                                     <select id="ai-model-select" multiple style="width:100%;border:none;outline:none;font-size:12px;max-height:200px;cursor:pointer;"></select>
                                 </div>
@@ -4144,6 +4149,30 @@ ${topUps.length > 0 ? `<div class="section">
         document.body.appendChild(floatBtn);
         document.body.appendChild(panel);
 
+        // === Ambient Glow 光标跟随 ===
+        (() => {
+            const glowLayer = document.createElement('div');
+            glowLayer.className = 'ai-ambient-glow';
+            const orb = document.createElement('div');
+            orb.className = 'ai-ambient-glow-orb';
+            glowLayer.appendChild(orb);
+            panel.insertBefore(glowLayer, panel.firstChild);
+
+            let rafId = null;
+            panel.addEventListener('mousemove', (e) => {
+                if (rafId) return;
+                rafId = requestAnimationFrame(() => {
+                    const rect = panel.getBoundingClientRect();
+                    orb.style.left = (e.clientX - rect.left) + 'px';
+                    orb.style.top = (e.clientY - rect.top) + 'px';
+                    rafId = null;
+                });
+            });
+            panel.addEventListener('mouseleave', () => {
+                orb.style.opacity = '0';
+            });
+        })();
+
         // 悬浮按钮拖拽支持（区分拖拽和点击）
         let _dragState = { dragging: false, startX: 0, startY: 0, startLeft: 0, startBottom: 0, moved: false };
         // 恢复保存的位置
@@ -4196,30 +4225,27 @@ ${topUps.length > 0 ? `<div class="section">
         // 事件绑定（仅在没有拖拽时触发点击）— 丝滑过渡
         floatBtn.onclick = (e) => {
             if (_dragState.moved) { _dragState.moved = false; return; }
-            floatBtn.style.transition = 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease';
-            floatBtn.style.transform = 'scale(0.8)';
+            floatBtn.style.transition = 'transform 0.3s cubic-bezier(0.22, 1.1, 0.46, 1), opacity 0.22s ease';
+            floatBtn.style.transform = 'scale(0.75)';
             floatBtn.style.opacity = '0';
             setTimeout(() => {
                 floatBtn.style.display = 'none';
                 floatBtn.style.transform = '';
                 floatBtn.style.opacity = '';
                 panel.style.display = 'flex';
-                panel.style.animation = 'ai-panel-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
-            }, 180);
+                panel.classList.remove('ai-panel-closing');
+                panel.style.animation = 'ai-panel-in 0.6s cubic-bezier(0.22, 1.1, 0.46, 1)';
+            }, 190);
         };
 
         document.getElementById('ai-close-btn').onclick = () => {
-            panel.style.transition = 'transform 0.3s ease, opacity 0.25s ease';
-            panel.style.transform = 'translateY(16px) scale(0.97)';
-            panel.style.opacity = '0';
+            panel.classList.add('ai-panel-closing');
             setTimeout(() => {
                 panel.style.display = 'none';
-                panel.style.transform = '';
-                panel.style.opacity = '';
-                panel.style.transition = '';
+                panel.classList.remove('ai-panel-closing');
                 floatBtn.style.display = 'flex';
-                floatBtn.style.animation = 'ai-scale-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)';
-            }, 250);
+                floatBtn.style.animation = 'ai-scale-in 0.4s cubic-bezier(0.22, 1.1, 0.46, 1)';
+            }, 320);
         };
 
         // 主题切换
