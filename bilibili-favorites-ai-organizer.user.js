@@ -25,7 +25,7 @@
 // @connect      models.github.ai
 // @connect      localhost
 // @connect      openrouter.ai
-// @connect      *                                          // 自定义 OpenAI 兼容服务商需要通配符
+// @connect      *
 // @require      https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js
 // ==/UserScript==
 
@@ -275,7 +275,11 @@
 
     function getProviderBaseUrl(settings) {
         const config = AI_PROVIDERS[settings.provider];
-        if (config && config.isCustom) return (settings.customBaseUrl || '').replace(/\/+$/, '');
+        if (config && config.isCustom) {
+            let url = (settings.customBaseUrl || '').trim().replace(/\/+$/, '');
+            if (url && !/^https?:\/\//i.test(url)) url = 'https://' + url;
+            return url;
+        }
         return config ? config.baseUrl : '';
     }
 
@@ -533,9 +537,10 @@
                         reject(new Error(`解析 AI 回复失败: ${e.message}`));
                     }
                 },
-                onerror: function() {
+                onerror: function(resp) {
                     clearTimeout(timeoutId);
-                    reject({ retryable: true, message: '网络请求失败，请检查网络或 API 地址' });
+                    const detail = (resp && resp.error) ? ` (${resp.error})` : '';
+                    reject({ retryable: true, message: `网络请求失败${detail}，请检查网络或 API 地址` });
                 },
                 ontimeout: function() {
                     clearTimeout(timeoutId);
@@ -587,7 +592,7 @@
                         reject(new Error('响应解析失败 (非JSON): ' + (r.responseText || '').substring(0, 200)));
                     }
                 },
-                onerror: () => { clearTimeout(timeoutId); reject(new Error('网络请求失败')); },
+                onerror: (resp) => { clearTimeout(timeoutId); const detail = (resp && resp.error) ? ` (${resp.error})` : ''; reject(new Error(`网络请求失败${detail}`)); },
                 ontimeout: () => { clearTimeout(timeoutId); reject(new Error('请求超时')); }
             });
         });
