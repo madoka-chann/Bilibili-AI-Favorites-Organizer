@@ -455,7 +455,6 @@
   border: 1px solid var(--ai-glass-border);
   overflow: hidden;
   max-height: 85vh;
-  animation: ai-panel-in 0.7s var(--ai-ease-celestial);
   transform-style: preserve-3d;
   perspective: var(--ai-perspective, 1600px);
 }
