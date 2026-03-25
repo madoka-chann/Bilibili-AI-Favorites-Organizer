@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动细化整理 (V1.0 增强版)
 // @namespace    http://tampermonkey.net/
-// @version      1.1.0
+// @version      1.2.0
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://space.bilibili.com/*
@@ -46,10 +46,10 @@
         // Fallback: 直接注入关键 CSS（确保 z-index 和基本布局正常）
         const fallbackCSS = document.createElement('style');
         fallbackCSS.textContent = `
-            :root{--ai-primary:#fb7299;--ai-primary-dark:#e5668a;--ai-primary-light:#ff9cb5;--ai-primary-bg:#fff0f5;--ai-primary-shadow:rgba(251,114,153,0.3);--ai-success:#4CAF50;--ai-error:#e74c3c;--ai-info:#3498db;--ai-warning:#f39c12;--ai-text:#333;--ai-text-secondary:#555;--ai-text-muted:#999;--ai-text-light:#ccc;--ai-border:#ddd;--ai-border-light:#eee;--ai-border-lighter:#f0f0f0;--ai-bg:#fff;--ai-bg-secondary:#fafafa;--ai-bg-tertiary:#f8f8f8;--ai-bg-hover:#fef6f8;--ai-header-gradient:linear-gradient(135deg,#fb7299,#ff9cb5);--ai-modal-backdrop:rgba(0,0,0,0.45);--ai-input-bg:#fff;--ai-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--ai-z-float:2147483640;--ai-z-panel:2147483641;--ai-z-modal:2147483645;--ai-z-particle:2147483646;--ai-radius-xs:4px;--ai-radius-sm:6px;--ai-radius-md:8px;--ai-radius-lg:12px;--ai-radius-xl:16px;--ai-transition:0.2s ease;--ai-transition-slow:0.35s cubic-bezier(0.4,0,0.2,1);--ai-scrollbar:#ddd;--ai-scrollbar-hover:#ccc;--ai-cat-detail-bg:#f9f9fb;--ai-separator:#eaeaea;--ai-glow-color:rgba(251,114,153,0.08);--ai-badge-new-bg:#ff6b6b;--ai-badge-existing-bg:#52c41a;--ai-vid-odd-bg:rgba(0,0,0,0.015);--ai-vid-hover-bg:#f0f0f5;}
-            #ai-float-btn{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-float);background:var(--ai-primary);color:#fff;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 12px var(--ai-primary-shadow);}
-            #ai-float-btn [data-lucide]{width:22px;height:22px;}
-            #ai-sort-wrapper{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-panel);width:min(380px,calc(100vw - 60px));flex-direction:column;box-shadow:0 8px 32px rgba(0,0,0,0.15);border-radius:var(--ai-radius-xl);overflow:hidden;max-height:85vh;font-family:var(--ai-font);}
+            :root{--ai-primary:#fb7299;--ai-primary-dark:#e5668a;--ai-primary-light:#ff9cb5;--ai-primary-bg:#fff0f5;--ai-primary-shadow:rgba(251,114,153,0.3);--ai-success:#10b981;--ai-error:#ef4444;--ai-info:#3b82f6;--ai-warning:#f59e0b;--ai-text:#1e1e2e;--ai-text-secondary:#4a4a5a;--ai-text-muted:#94a3b8;--ai-text-light:#cbd5e1;--ai-border:#e2e8f0;--ai-border-light:#f1f5f9;--ai-border-lighter:#f8fafc;--ai-bg:#fff;--ai-bg-secondary:#fafbfe;--ai-bg-tertiary:#f5f7fa;--ai-bg-hover:#fef2f6;--ai-header-gradient:linear-gradient(135deg,#fb7299,#ff9cb5);--ai-modal-backdrop:rgba(15,15,35,0.5);--ai-input-bg:#fff;--ai-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--ai-z-float:2147483640;--ai-z-panel:2147483641;--ai-z-modal:2147483645;--ai-z-particle:2147483646;--ai-radius-xs:6px;--ai-radius-sm:8px;--ai-radius-md:10px;--ai-radius-lg:14px;--ai-radius-xl:18px;--ai-transition:0.25s cubic-bezier(0.4,0,0.2,1);--ai-transition-slow:0.4s cubic-bezier(0.16,1,0.3,1);--ai-scrollbar:#dde1e8;--ai-scrollbar-hover:#c1c8d4;--ai-cat-detail-bg:#f8f9fe;--ai-separator:#eef1f6;--ai-glow-color:rgba(251,114,153,0.08);--ai-badge-new-bg:#ff6b6b;--ai-badge-existing-bg:#10b981;--ai-vid-odd-bg:rgba(0,0,0,0.012);--ai-vid-hover-bg:#f0f2ff;--ai-spring:cubic-bezier(0.34,1.56,0.64,1);--ai-ease-out-expo:cubic-bezier(0.16,1,0.3,1);}
+            #ai-float-btn{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-float);background:linear-gradient(135deg,#fb7299,#c084fc,#60a5fa);color:#fff;width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 20px rgba(251,114,153,0.35),0 0 40px rgba(167,139,250,0.15);border:2px solid rgba(255,255,255,0.25);transition:transform 0.5s var(--ai-spring);}
+            #ai-float-btn [data-lucide]{width:24px;height:24px;}
+            #ai-sort-wrapper{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-panel);width:min(388px,calc(100vw - 60px));flex-direction:column;box-shadow:0 8px 32px rgba(0,0,0,0.12);border-radius:var(--ai-radius-xl);overflow:hidden;max-height:85vh;font-family:var(--ai-font);}
             #ai-sort-wrapper [data-lucide]{width:16px;height:16px;stroke-width:2;vertical-align:middle;display:inline-block;}
             .ai-panel-content{background:var(--ai-bg)!important;padding:0;overflow-y:auto;max-height:calc(85vh - 46px);border-bottom-left-radius:var(--ai-radius-xl);border-bottom-right-radius:var(--ai-radius-xl);}
             .ai-header{background:var(--ai-header-gradient);color:#fff;padding:10px 15px;font-weight:bold;font-size:14px;display:flex;justify-content:space-between;align-items:center;position:relative;overflow:hidden;}
@@ -2094,17 +2094,19 @@ ${topUps.length > 0 ? `<div class="section">
                 dot.addEventListener('animationend', () => dot.remove());
             }
 
-            // ===== 粒子爆发 =====
+            // ===== 粒子爆发 — 多彩散射 =====
             function spawnParticles(x, y) {
                 if (!animSettings.animEnabled) return;
-                const colors = ['#fb7299', '#ff9cb5', '#ffb7c5', '#ff6b8a', '#ffd1dc'];
-                for (let i = 0; i < 25; i++) {
+                const colors = ['#fb7299', '#c084fc', '#60a5fa', '#34d399', '#fbbf24', '#ff6b8a', '#a78bfa'];
+                const count = 30;
+                for (let i = 0; i < count; i++) {
                     const dot = document.createElement('div');
                     dot.className = 'ai-particle-dot';
-                    const size = 4 + Math.random() * 6;
-                    const angle = Math.random() * Math.PI * 2;
-                    const dist = 40 + Math.random() * 80;
-                    dot.style.cssText = `left:${x}px;top:${y}px;width:${size}px;height:${size}px;background:${colors[i % colors.length]};--tx:${Math.cos(angle) * dist}px;--ty:${Math.sin(angle) * dist - 30}px;animation-duration:${0.6 + Math.random() * 0.4}s;`;
+                    const size = 3 + Math.random() * 7;
+                    const angle = (i / count) * Math.PI * 2 + (Math.random() - 0.5) * 0.5;
+                    const dist = 50 + Math.random() * 100;
+                    const borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                    dot.style.cssText = `left:${x}px;top:${y}px;width:${size}px;height:${size}px;background:${colors[i % colors.length]};border-radius:${borderRadius};--tx:${Math.cos(angle) * dist}px;--ty:${Math.sin(angle) * dist - 40}px;animation-duration:${0.5 + Math.random() * 0.5}s;opacity:${0.7 + Math.random() * 0.3};`;
                     document.body.appendChild(dot);
                     dot.addEventListener('animationend', () => dot.remove());
                 }
@@ -3627,25 +3629,39 @@ ${topUps.length > 0 ? `<div class="section">
         setTimeout(() => toast.remove(), 300);
     }
 
-    // ================= Confetti 爆炸效果 =================
-    function launchConfetti(x, y, count = 40) {
-        const colors = ['#fb7299', '#a78bfa', '#60a5fa', '#34d399', '#fbbf24', '#f87171', '#818cf8'];
+    // ================= Confetti 爆炸效果 — 丰富形态 + 物理散射 =================
+    function launchConfetti(x, y, count = 50) {
+        const colors = ['#fb7299', '#c084fc', '#60a5fa', '#34d399', '#fbbf24', '#f87171', '#818cf8', '#f472b6', '#a78bfa'];
+        const shapes = ['square', 'circle', 'ribbon'];
         const frag = document.createDocumentFragment();
         for (let i = 0; i < count; i++) {
             const piece = document.createElement('div');
             piece.className = 'ai-confetti-piece';
+            const shape = shapes[Math.floor(Math.random() * shapes.length)];
             piece.style.left = x + 'px';
             piece.style.top = y + 'px';
             piece.style.background = colors[Math.floor(Math.random() * colors.length)];
-            piece.style.width = (4 + Math.random() * 6) + 'px';
-            piece.style.height = (4 + Math.random() * 6) + 'px';
-            piece.style.setProperty('--fall-distance', (200 + Math.random() * 500) + 'px');
+            if (shape === 'circle') {
+                const s = 5 + Math.random() * 5;
+                piece.style.width = s + 'px';
+                piece.style.height = s + 'px';
+                piece.style.borderRadius = '50%';
+            } else if (shape === 'ribbon') {
+                piece.style.width = (3 + Math.random() * 3) + 'px';
+                piece.style.height = (10 + Math.random() * 10) + 'px';
+                piece.style.borderRadius = '2px';
+            } else {
+                const s = 4 + Math.random() * 6;
+                piece.style.width = s + 'px';
+                piece.style.height = s + 'px';
+            }
+            piece.style.setProperty('--fall-distance', (250 + Math.random() * 450) + 'px');
             piece.style.setProperty('--rotate-end', (360 + Math.random() * 720) + 'deg');
             piece.style.setProperty('--rotate-x', (Math.random() * 360) + 'deg');
-            piece.style.animationDuration = (1 + Math.random() * 1.5) + 's';
-            // spread horizontally
+            piece.style.animationDuration = (1.2 + Math.random() * 1.3) + 's';
+            // 扇形散射
             const angle = (Math.random() * Math.PI * 2);
-            const spread = 50 + Math.random() * 150;
+            const spread = 60 + Math.random() * 180;
             const dx = Math.cos(angle) * spread;
             const dy = Math.sin(angle) * spread;
             piece.style.transform = `translate(${dx}px, ${dy}px)`;
@@ -3665,7 +3681,7 @@ ${topUps.length > 0 ? `<div class="section">
         }
 
         const timelineHtml = history.map((h, i) => `
-            <div class="ai-timeline-item" style="animation-delay:${i * 0.08}s;">
+            <div class="ai-timeline-item" style="--i:${i};">
                 <div class="ai-timeline-time">${escapeHtml(h.time)}</div>
                 <div class="ai-timeline-content">
                     <div style="font-weight:bold;margin-bottom:2px;">整理了 <span style="color:var(--ai-primary);">${h.videoCount}</span> 个视频 → <span style="color:var(--ai-info);">${h.categoryCount}</span> 个分类</div>
@@ -4012,16 +4028,33 @@ ${topUps.length > 0 ? `<div class="section">
             }
         });
 
-        // 事件绑定（仅在没有拖拽时触发点击）
+        // 事件绑定（仅在没有拖拽时触发点击）— 丝滑过渡
         floatBtn.onclick = (e) => {
             if (_dragState.moved) { _dragState.moved = false; return; }
-            floatBtn.style.display = 'none';
-            panel.style.display = 'flex';
+            floatBtn.style.transition = 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease';
+            floatBtn.style.transform = 'scale(0.8)';
+            floatBtn.style.opacity = '0';
+            setTimeout(() => {
+                floatBtn.style.display = 'none';
+                floatBtn.style.transform = '';
+                floatBtn.style.opacity = '';
+                panel.style.display = 'flex';
+                panel.style.animation = 'ai-panel-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            }, 180);
         };
 
         document.getElementById('ai-close-btn').onclick = () => {
-            panel.style.display = 'none';
-            floatBtn.style.display = 'flex';
+            panel.style.transition = 'transform 0.3s ease, opacity 0.25s ease';
+            panel.style.transform = 'translateY(16px) scale(0.97)';
+            panel.style.opacity = '0';
+            setTimeout(() => {
+                panel.style.display = 'none';
+                panel.style.transform = '';
+                panel.style.opacity = '';
+                panel.style.transition = '';
+                floatBtn.style.display = 'flex';
+                floatBtn.style.animation = 'ai-scale-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            }, 250);
         };
 
         // 主题切换
