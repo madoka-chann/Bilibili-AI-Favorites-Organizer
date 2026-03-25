@@ -1,10 +1,11 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v0.0.2
-   Velvet Silk · 丝绒微光 · Refined Glass Morphism
+   B站 AI 收藏夹整理助理 — 完整样式表 v0.0.3
+   Liquid Crystal · 液晶流韵 · Refined Glass Morphism
    Indigo-Nebula 双色系统 · Restrained Aurora Palette
-   Velvet Dynamics 5.0 · Silky Spring Micro-interactions
+   Velvet Dynamics 6.0 · Silky Spring Micro-interactions
    Stellar Abyss Dark Theme · Living Glass Surfaces
    Multi-Accent Color Themes · Ambient Light Motes · Liquid Borders
+   Magnetic Tilt · Cursor-Reactive Particles · Fluid Morphing
    ================================================================ */
 
 /* === 1. CSS 变量 (双主题系统) === */
@@ -5291,4 +5292,851 @@
 #ai-sort-wrapper::after {
   will-change: transform, opacity;
   backface-visibility: hidden;
+}
+
+/* ================================================================
+   Liquid Crystal v0.0.3 — 液晶流韵新增特性
+   Magnetic Tilt · Fluid Morphing · Cursor Reactive Effects
+   Velvet Dynamics 6.0 · Enhanced Spring System
+   ================================================================ */
+
+/* === 234. Velvet Dynamics 6.0 — 新增运动曲线 === */
+:root {
+  --ai-spring-jelly: cubic-bezier(0.25, 1.80, 0.50, 1);
+  --ai-spring-marshmallow: cubic-bezier(0.18, 1.20, 0.32, 1.02);
+  --ai-ease-liquid: cubic-bezier(0.10, 0.90, 0.15, 1);
+  --ai-ease-crystal: cubic-bezier(0.04, 0.94, 0.12, 1);
+  --ai-ease-velvet: cubic-bezier(0.16, 0.84, 0.24, 1.06);
+  --ai-spring-droplet: cubic-bezier(0.30, 1.60, 0.55, 1);
+  --ai-ease-breath: cubic-bezier(0.45, 0, 0.55, 1);
+}
+
+/* === 235. Frost 冰霜主题 — 清冷高雅 === */
+[data-accent="frost"] {
+  --ai-primary: #7DD3FC;
+  --ai-primary-dark: #0EA5E9;
+  --ai-primary-light: #BAE6FD;
+  --ai-primary-bg: rgba(125, 211, 252, 0.06);
+  --ai-primary-shadow: rgba(125, 211, 252, 0.22);
+  --ai-aurora-1: #7DD3FC;
+  --ai-aurora-2: #A5B4FC;
+  --ai-aurora-3: #67E8F9;
+  --ai-aurora-4: #C4B5FD;
+  --ai-aurora-5: #BAE6FD;
+  --ai-aurora-6: #93C5FD;
+  --ai-aurora-7: #E0E7FF;
+  --ai-aurora-8: #DBEAFE;
+  --ai-header-gradient: linear-gradient(135deg, #0EA5E9, #7DD3FC, #A5B4FC);
+  --ai-float-gradient: linear-gradient(135deg, #7DD3FC, #67E8F9, #A5B4FC, #C4B5FD, #BAE6FD, #93C5FD);
+  --ai-neon-glow: 0 0 20px rgba(125, 211, 252, 0.26),
+                  0 0 40px rgba(165, 180, 252, 0.14),
+                  0 0 60px rgba(103, 232, 249, 0.07),
+                  0 0 80px rgba(196, 181, 253, 0.035);
+  --ai-interaction-glow: rgba(125, 211, 252, 0.10);
+  --ai-glow-color: rgba(125, 211, 252, 0.06);
+  --ai-chromatic-border: linear-gradient(135deg, rgba(125,211,252,0.28), rgba(165,180,252,0.24), rgba(103,232,249,0.22), rgba(196,181,253,0.24));
+}
+
+.ai-accent-dot[data-accent="frost"] {
+  background: linear-gradient(135deg, #7DD3FC, #A5B4FC);
+}
+
+/* === 236. Dusk 暮光主题 — 温暖沉静 === */
+[data-accent="dusk"] {
+  --ai-primary: #D4A574;
+  --ai-primary-dark: #B8845C;
+  --ai-primary-light: #E8C9A8;
+  --ai-primary-bg: rgba(212, 165, 116, 0.06);
+  --ai-primary-shadow: rgba(212, 165, 116, 0.22);
+  --ai-aurora-1: #D4A574;
+  --ai-aurora-2: #C084B0;
+  --ai-aurora-3: #E8B4A0;
+  --ai-aurora-4: #B8A0D4;
+  --ai-aurora-5: #D4C0A0;
+  --ai-aurora-6: #C4A0C0;
+  --ai-aurora-7: #E0C8B0;
+  --ai-aurora-8: #D0B4C4;
+  --ai-header-gradient: linear-gradient(135deg, #B8845C, #D4A574, #C084B0);
+  --ai-float-gradient: linear-gradient(135deg, #D4A574, #E8B4A0, #C084B0, #B8A0D4, #D4C0A0, #C4A0C0);
+  --ai-neon-glow: 0 0 20px rgba(212, 165, 116, 0.24),
+                  0 0 40px rgba(192, 132, 176, 0.14),
+                  0 0 60px rgba(232, 180, 160, 0.07),
+                  0 0 80px rgba(184, 160, 212, 0.035);
+  --ai-interaction-glow: rgba(212, 165, 116, 0.10);
+  --ai-glow-color: rgba(212, 165, 116, 0.06);
+  --ai-chromatic-border: linear-gradient(135deg, rgba(212,165,116,0.28), rgba(192,132,176,0.24), rgba(232,180,160,0.22), rgba(184,160,212,0.24));
+}
+
+.ai-accent-dot[data-accent="dusk"] {
+  background: linear-gradient(135deg, #D4A574, #C084B0);
+}
+
+/* === 237. Magnetic Tilt — 面板磁性倾斜 3D 效果 === */
+#ai-sort-wrapper {
+  transform-style: preserve-3d;
+  transform: perspective(1200px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transition: transform 0.6s var(--ai-ease-liquid);
+}
+
+/* === 238. Cursor Glow Follower — 光标追踪光晕 === */
+.ai-cursor-glow {
+  position: absolute;
+  width: var(--ai-glow-size, 200px);
+  height: var(--ai-glow-size, 200px);
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    var(--ai-interaction-glow) 0%,
+    rgba(115, 100, 255, 0.04) 30%,
+    transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  transform: translate(-50%, -50%);
+  transition: left 0.35s var(--ai-ease-liquid),
+              top 0.35s var(--ai-ease-liquid),
+              opacity 0.5s ease,
+              width 0.6s var(--ai-ease-velvet),
+              height 0.6s var(--ai-ease-velvet);
+  opacity: 0;
+  filter: blur(30px);
+  mix-blend-mode: normal;
+}
+
+#ai-sort-wrapper:hover .ai-cursor-glow {
+  opacity: 0.8;
+}
+
+#ai-sort-wrapper:active .ai-cursor-glow {
+  width: calc(var(--ai-glow-size, 200px) * 1.3);
+  height: calc(var(--ai-glow-size, 200px) * 1.3);
+  opacity: 1;
+}
+
+[data-theme="dark"] .ai-cursor-glow {
+  background: radial-gradient(circle,
+    var(--ai-interaction-glow) 0%,
+    rgba(115, 100, 255, 0.06) 30%,
+    transparent 70%);
+  filter: blur(36px);
+}
+
+/* === 239. Fluid Border Morph — 面板边框液态变形 === */
+@property --border-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+#ai-sort-wrapper.ai-liquid-border::after {
+  background: conic-gradient(
+    from var(--border-angle),
+    var(--ai-aurora-1),
+    var(--ai-aurora-3),
+    var(--ai-aurora-4),
+    var(--ai-aurora-2),
+    var(--ai-aurora-6),
+    var(--ai-aurora-5),
+    var(--ai-aurora-1)
+  );
+  animation: ai-border-angle-spin 6s linear infinite;
+  transition: opacity 0.5s var(--ai-ease-velvet);
+}
+
+@keyframes ai-border-angle-spin {
+  0% { --border-angle: 0deg; }
+  100% { --border-angle: 360deg; }
+}
+
+/* === 240. Enhanced Button Press — Q弹按压效果 === */
+.ai-btn:active,
+.ai-btn-tool:active {
+  transform: scale(0.90) translateY(1px);
+  transition: transform 0.06s var(--ai-spring-jelly);
+}
+
+/* 松手回弹 */
+.ai-btn,
+.ai-btn-tool {
+  transition: transform 0.5s var(--ai-spring-marshmallow),
+              box-shadow 0.4s var(--ai-ease-liquid),
+              background 0.3s ease,
+              border-color 0.3s ease;
+}
+
+.ai-header-btn:active {
+  transform: scale(0.82);
+  transition: transform 0.06s var(--ai-spring-jelly);
+}
+
+.ai-header-btn {
+  transition: all 0.5s var(--ai-spring-marshmallow);
+}
+
+.ai-header-btn:hover {
+  transform: scale(1.14) translateY(-2px);
+}
+
+/* === 241. Elastic Checkbox — 果冻复选框 === */
+#ai-sort-wrapper input[type="checkbox"] {
+  transition: transform 0.5s var(--ai-spring-jelly);
+}
+
+#ai-sort-wrapper input[type="checkbox"]:active {
+  transform: scale(0.65);
+}
+
+#ai-sort-wrapper input[type="checkbox"]:checked {
+  animation: ai-jelly-check 0.6s var(--ai-spring-droplet);
+}
+
+@keyframes ai-jelly-check {
+  0% { transform: scale(1); }
+  20% { transform: scale(0.7); }
+  40% { transform: scale(1.3) rotate(5deg); }
+  60% { transform: scale(0.92) rotate(-2deg); }
+  80% { transform: scale(1.06) rotate(0.5deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+/* === 242. Silky Category Expand — 丝滑分类展开 === */
+.ai-cat-detail {
+  transition: max-height 0.55s var(--ai-ease-crystal),
+              opacity 0.4s var(--ai-ease-liquid),
+              padding 0.4s var(--ai-ease-liquid);
+}
+
+.ai-cat-detail.open {
+  animation: ai-crystal-unfold 0.6s var(--ai-ease-crystal) both;
+}
+
+@keyframes ai-crystal-unfold {
+  0% {
+    max-height: 0;
+    opacity: 0;
+    filter: blur(6px) saturate(0.5);
+    transform: scaleY(0.85);
+    transform-origin: top;
+  }
+  40% {
+    opacity: 1;
+    filter: blur(0) saturate(1.05);
+    transform: scaleY(1.01);
+  }
+  60% {
+    transform: scaleY(0.998);
+  }
+  100% {
+    max-height: 240px;
+    opacity: 1;
+    filter: blur(0) saturate(1);
+    transform: scaleY(1);
+  }
+}
+
+/* === 243. Living Gradient Mesh — 持续演化的背景梯度 === */
+@keyframes ai-mesh-evolve {
+  0% {
+    background-position: 0% 0%, 100% 100%, 50% 50%, 75% 25%, 25% 75%, 60% 10%;
+  }
+  25% {
+    background-position: 30% 70%, 70% 30%, 20% 80%, 90% 50%, 40% 40%, 80% 60%;
+  }
+  50% {
+    background-position: 60% 40%, 40% 60%, 80% 20%, 50% 80%, 70% 30%, 30% 90%;
+  }
+  75% {
+    background-position: 80% 20%, 20% 80%, 60% 40%, 30% 60%, 50% 50%, 10% 40%;
+  }
+  100% {
+    background-position: 0% 0%, 100% 100%, 50% 50%, 75% 25%, 25% 75%, 60% 10%;
+  }
+}
+
+#ai-sort-wrapper {
+  background-size: 200% 200%;
+  animation: ai-mesh-evolve 30s var(--ai-ease-breath) infinite,
+             ai-border-breathe 8s var(--ai-ease-tide) infinite;
+}
+
+/* === 244. Fluid Modal Entrance — 液态模态入场 === */
+.ai-modal {
+  animation: ai-modal-liquid-enter 0.65s var(--ai-ease-crystal);
+}
+
+@keyframes ai-modal-liquid-enter {
+  0% {
+    transform: scale(0.80) translateY(30px);
+    opacity: 0;
+    filter: blur(20px) saturate(0.5);
+    border-radius: 50px;
+  }
+  20% {
+    border-radius: 32px;
+    filter: blur(2px) saturate(1.1);
+  }
+  35% {
+    transform: scale(1.025) translateY(-6px);
+    opacity: 1;
+    filter: blur(0) saturate(1.05);
+  }
+  50% {
+    transform: scale(0.994) translateY(2px);
+    border-radius: 30px;
+  }
+  65% {
+    transform: scale(1.006) translateY(-1px);
+  }
+  80% {
+    transform: scale(0.999) translateY(0.3px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    filter: blur(0) saturate(1);
+    border-radius: 30px;
+  }
+}
+
+/* === 245. Enhanced Toast Stack — 丝滑通知堆叠 === */
+.ai-toast {
+  animation: ai-toast-velvet-in 0.6s var(--ai-spring-marshmallow);
+}
+
+.ai-toast:nth-child(2) {
+  transform: scale(0.96) translateX(4px);
+  opacity: 0.88;
+  transition: transform 0.5s var(--ai-spring-marshmallow), opacity 0.4s ease;
+}
+
+.ai-toast:nth-child(3) {
+  transform: scale(0.92) translateX(8px);
+  opacity: 0.76;
+}
+
+.ai-toast:nth-child(n+4) {
+  transform: scale(0.88) translateX(12px);
+  opacity: 0.6;
+}
+
+/* === 246. Silky Filter Button — Q弹筛选按钮 === */
+.ai-filter-btn {
+  transition: all 0.5s var(--ai-spring-marshmallow);
+}
+
+.ai-filter-btn:active {
+  transform: scale(0.82);
+  transition: transform 0.06s var(--ai-spring-jelly);
+}
+
+.ai-filter-btn.active {
+  animation: ai-filter-pop 0.5s var(--ai-spring-droplet);
+}
+
+@keyframes ai-filter-pop {
+  0% { transform: scale(1); }
+  25% { transform: scale(0.88); }
+  50% { transform: scale(1.12); }
+  75% { transform: scale(0.97); }
+  100% { transform: scale(1.05); }
+}
+
+/* === 247. Elastic Scroll Edge — 弹性滚动边缘 === */
+.ai-modal-body,
+.ai-cat-detail-inner,
+.ai-status-log {
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+}
+
+/* === 248. Living Header Aurora — 持续流动的标题极光 === */
+.ai-header {
+  background-size: 600% 600%;
+  animation: ai-header-aurora-live 20s var(--ai-ease-breath) infinite;
+}
+
+@keyframes ai-header-aurora-live {
+  0% { background-position: 0% 50%; }
+  10% { background-position: 20% 80%; }
+  20% { background-position: 50% 30%; }
+  30% { background-position: 75% 70%; }
+  40% { background-position: 100% 40%; }
+  50% { background-position: 80% 60%; }
+  60% { background-position: 55% 85%; }
+  70% { background-position: 30% 45%; }
+  80% { background-position: 15% 75%; }
+  90% { background-position: 5% 55%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* === 249. Magnetic Category Row — 磁性分类行悬浮 === */
+.ai-cat-row {
+  transition: all 0.5s var(--ai-spring-marshmallow);
+}
+
+.ai-cat-row:hover {
+  transform: translateX(5px) scale(1.008);
+  transition: all 0.4s var(--ai-ease-liquid);
+}
+
+.ai-cat-row:active {
+  transform: translateX(2px) scale(0.995);
+  transition: transform 0.08s;
+}
+
+/* === 250. Liquid Progress Bar — 液态进度条 === */
+#ai-progress-bar {
+  border-radius: 12px;
+  transition: width 0.8s var(--ai-ease-crystal);
+}
+
+#ai-progress-bar::before {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.10) 25%,
+    rgba(255,255,255,0.20) 50%,
+    rgba(255,255,255,0.10) 75%,
+    transparent
+  );
+  animation: ai-progress-liquid-wave 1.5s var(--ai-ease-liquid) infinite;
+}
+
+@keyframes ai-progress-liquid-wave {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+/* === 251. Breathing Panel Shadow — 呼吸面板阴影 === */
+@keyframes ai-panel-shadow-breathe {
+  0%, 100% {
+    box-shadow: 0 28px 72px rgba(0, 0, 0, 0.10),
+                0 12px 32px rgba(0, 0, 0, 0.06),
+                0 0 0 1px var(--ai-glass-border),
+                0 0 80px rgba(115, 100, 255, 0.02);
+  }
+  50% {
+    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.12),
+                0 14px 36px rgba(0, 0, 0, 0.08),
+                0 0 0 1px var(--ai-glass-border),
+                0 0 110px rgba(115, 100, 255, 0.04);
+  }
+}
+
+#ai-sort-wrapper:not(:hover) {
+  animation: ai-panel-shadow-breathe 6s var(--ai-ease-breath) infinite,
+             ai-mesh-evolve 30s var(--ai-ease-breath) infinite;
+}
+
+/* === 252. Float Button Jelly Hover — 悬浮按钮果冻悬停 === */
+#ai-float-btn {
+  transition: transform 0.6s var(--ai-spring-marshmallow),
+              box-shadow 0.5s var(--ai-ease-liquid),
+              border-color 0.4s ease,
+              border-radius 1.2s var(--ai-ease-liquid);
+}
+
+#ai-float-btn:hover {
+  transform: scale(1.18) translateY(-10px);
+  border-radius: 38% 62% 54% 46% / 44% 50% 50% 56%;
+  transition: transform 0.6s var(--ai-spring-jelly),
+              box-shadow 0.5s var(--ai-ease-liquid),
+              border-radius 0.8s var(--ai-spring-marshmallow);
+}
+
+#ai-float-btn:active {
+  transform: scale(0.82);
+  transition: transform 0.08s;
+  border-radius: 50%;
+}
+
+/* === 253. Silky Group Chevron — 丝滑分组箭头旋转 === */
+.ai-group-header [data-lucide]:last-child {
+  transition: transform 0.5s var(--ai-spring-marshmallow),
+              color 0.3s ease;
+}
+
+/* === 254. Living Video Cover — 活体封面悬浮 === */
+.ai-vid-cover {
+  transition: transform 0.5s var(--ai-spring-marshmallow),
+              box-shadow 0.4s var(--ai-ease-liquid) !important;
+}
+
+.ai-vid-rich:hover .ai-vid-cover {
+  transform: scale(1.10) translateY(-3px) perspective(300px) rotateY(-3deg) rotateX(1deg);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.18),
+              0 4px 12px rgba(0,0,0,0.10);
+  transition: transform 0.5s var(--ai-spring-jelly),
+              box-shadow 0.4s var(--ai-ease-liquid) !important;
+}
+
+/* === 255. Silky Modal Close — 模态框关闭动画增强 === */
+.ai-modal-closing .ai-modal {
+  animation: ai-modal-liquid-exit 0.35s var(--ai-ease-crystal) forwards;
+}
+
+@keyframes ai-modal-liquid-exit {
+  0% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    filter: blur(0);
+    border-radius: 30px;
+  }
+  40% {
+    transform: scale(0.97) translateY(10px);
+    opacity: 0.6;
+    border-radius: 36px;
+  }
+  100% {
+    transform: scale(0.85) translateY(30px);
+    opacity: 0;
+    filter: blur(10px);
+    border-radius: 50px;
+  }
+}
+
+/* === 256. Enhanced Log Entry — 增强日志条目入场 === */
+.ai-status-log > div {
+  animation: ai-log-liquid-in 0.45s var(--ai-ease-crystal);
+}
+
+@keyframes ai-log-liquid-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scaleY(0.8);
+    transform-origin: top;
+    filter: blur(2px);
+  }
+  40% {
+    opacity: 1;
+    transform: translateY(1px) scaleY(1.02);
+    filter: blur(0);
+  }
+  60% {
+    transform: translateY(-0.3px) scaleY(0.998);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+/* === 257. Accent Picker Entrance — 色彩选择器弹出动画 === */
+#ai-accent-picker {
+  animation: ai-picker-spring 0.4s var(--ai-spring-marshmallow);
+  transform-origin: top right;
+}
+
+@keyframes ai-picker-spring {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(-6px);
+    filter: blur(4px);
+  }
+  50% {
+    transform: scale(1.03) translateY(1px);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* === 258. Accent Dot Interaction — 色彩圆点交互增强 === */
+.ai-accent-dot {
+  transition: transform 0.5s var(--ai-spring-jelly),
+              border-color 0.3s ease,
+              box-shadow 0.3s ease;
+}
+
+.ai-accent-dot:active {
+  transform: scale(0.8);
+  transition: transform 0.06s;
+}
+
+.ai-accent-dot.active {
+  animation: ai-dot-select 0.5s var(--ai-spring-droplet);
+}
+
+@keyframes ai-dot-select {
+  0% { transform: scale(1); }
+  30% { transform: scale(0.7); }
+  60% { transform: scale(1.25); }
+  80% { transform: scale(1.08); }
+  100% { transform: scale(1.15); }
+}
+
+/* === 259. Magnetic Tilt Active State — 磁性倾斜活跃态 === */
+#ai-sort-wrapper.ai-tilt-active {
+  transition: transform 0.15s var(--ai-ease-liquid);
+}
+
+#ai-sort-wrapper:not(.ai-tilt-active) {
+  transform: perspective(1200px) rotateX(0deg) rotateY(0deg);
+  transition: transform 0.6s var(--ai-spring-marshmallow);
+}
+
+/* === 260. Living Input — 活体输入框 === */
+.ai-input, .ai-select {
+  transition: all 0.4s var(--ai-spring-marshmallow);
+}
+
+.ai-input:focus-visible, .ai-select:focus-visible {
+  transform: scale(1.01);
+  transition: all 0.35s var(--ai-spring-marshmallow);
+}
+
+/* === 261. Panel Entry Enhanced — 面板入场增强 === */
+@keyframes ai-velvet-spring-in {
+  0% {
+    transform: translateY(36px) scale(0.88);
+    opacity: 0;
+    filter: blur(12px) saturate(0.5);
+  }
+  25% {
+    transform: translateY(-5px) scale(1.02);
+    opacity: 1;
+    filter: blur(0) saturate(1.1);
+  }
+  42% {
+    transform: translateY(2px) scale(0.996);
+    filter: saturate(1);
+  }
+  56% {
+    transform: translateY(-0.8px) scale(1.004);
+  }
+  70% {
+    transform: translateY(0.3px) scale(0.999);
+  }
+  84% {
+    transform: translateY(-0.1px) scale(1.001);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    filter: blur(0) saturate(1);
+  }
+}
+
+/* === 262. Click Ripple Pool — 点击涟漪池 === */
+.ai-click-pool {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    var(--ai-interaction-glow) 0%,
+    rgba(115, 100, 255, 0.06) 40%,
+    transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  animation: ai-pool-expand 0.8s var(--ai-ease-crystal) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes ai-pool-expand {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    width: 300px;
+    height: 300px;
+    margin-left: -150px;
+    margin-top: -150px;
+    opacity: 0;
+  }
+}
+
+/* === 263. Scroll Shadow Indicator — 滚动阴影指示器 === */
+.ai-panel-content.scrolled-top {
+  box-shadow: inset 0 8px 16px -8px rgba(0,0,0,0.08);
+}
+
+.ai-panel-content.scrolled-bottom {
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+
+/* === 264. Theme Wipe Enhanced — 增强主题切换效果 === */
+.ai-theme-wipe {
+  animation: ai-theme-wipe-liquid 0.8s var(--ai-ease-crystal) forwards;
+}
+
+@keyframes ai-theme-wipe-liquid {
+  0% {
+    transform: scale(0);
+    opacity: 0.8;
+    filter: blur(0);
+    border-radius: 50%;
+  }
+  30% {
+    opacity: 0.5;
+    filter: blur(4px);
+    border-radius: 45%;
+  }
+  60% {
+    opacity: 0.25;
+    border-radius: 40%;
+  }
+  100% {
+    transform: scale(6);
+    opacity: 0;
+    filter: blur(12px);
+    border-radius: 35%;
+  }
+}
+
+/* === 265. Smooth Number Transition — 数字过渡动画 === */
+.ai-stat-number {
+  transition: transform 0.4s var(--ai-spring-marshmallow);
+}
+
+.ai-stat-number.counting {
+  animation: ai-number-jelly 0.5s var(--ai-spring-droplet);
+}
+
+@keyframes ai-number-jelly {
+  0% { transform: scale(1); }
+  20% { transform: scale(0.85) translateY(2px); }
+  50% { transform: scale(1.25) translateY(-3px); }
+  70% { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
+
+/* === 266. Enhanced Settings Group — 设置组展开增强 === */
+.ai-group-body {
+  animation: ai-group-crystal-unfold 0.45s var(--ai-ease-crystal) both;
+  overflow: hidden;
+}
+
+@keyframes ai-group-crystal-unfold {
+  0% {
+    opacity: 0;
+    max-height: 0;
+    transform: translateY(-6px) scaleY(0.9);
+    transform-origin: top;
+    filter: blur(3px);
+  }
+  40% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0.5px) scaleY(1.008);
+  }
+  60% {
+    transform: translateY(-0.2px) scaleY(0.999);
+  }
+  100% {
+    opacity: 1;
+    max-height: 800px;
+    transform: translateY(0) scaleY(1);
+    filter: blur(0);
+  }
+}
+
+/* === 267. Cursor Scatter Particle — 光标散射粒子 === */
+.ai-scatter-particle {
+  position: fixed;
+  width: var(--scatter-size, 4px);
+  height: var(--scatter-size, 4px);
+  border-radius: 50%;
+  background: var(--scatter-color, var(--ai-primary-light));
+  pointer-events: none;
+  z-index: var(--ai-z-particle);
+  opacity: 0;
+  animation: ai-scatter-fly var(--scatter-duration, 0.6s) var(--ai-ease-crystal) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes ai-scatter-fly {
+  0% {
+    opacity: 0.8;
+    transform: translate(0, 0) scale(1);
+  }
+  30% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--scatter-dx, 30px), var(--scatter-dy, -20px)) scale(0);
+  }
+}
+
+/* === 268. Panel Hover Lift — 面板悬浮提升 === */
+#ai-sort-wrapper:hover {
+  transform: perspective(1200px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translateY(-2px);
+}
+
+/* === 269. Close Button Jelly — 关闭按钮果冻效果 === */
+#ai-close-btn:active {
+  transform: scale(0.7) rotate(45deg);
+  transition: transform 0.08s;
+}
+
+#ai-close-btn:hover [data-lucide] {
+  transform: rotate(90deg) scale(1.15);
+  transition: transform 0.5s var(--ai-spring-jelly);
+}
+
+/* === 270. Settings Toggle Jelly — 设置按钮果冻旋转 === */
+#ai-settings-toggle.spinning [data-lucide] {
+  animation: ai-gear-jelly 0.7s var(--ai-spring-droplet);
+}
+
+@keyframes ai-gear-jelly {
+  0% { transform: rotate(0) scale(1); }
+  20% { transform: rotate(90deg) scale(0.8); }
+  40% { transform: rotate(200deg) scale(1.15); }
+  60% { transform: rotate(340deg) scale(0.95); }
+  80% { transform: rotate(365deg) scale(1.05); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+/* === 271. Enhanced reduced motion === */
+@media (prefers-reduced-motion: reduce) {
+  .ai-cursor-glow,
+  .ai-click-pool,
+  .ai-scatter-particle {
+    display: none !important;
+  }
+  #ai-sort-wrapper {
+    transform: none !important;
+    animation: none !important;
+  }
+  .ai-modal {
+    animation: ai-fade-in 0.2s ease !important;
+  }
+}
+
+/* === 272. GPU hints for v0.0.3 elements === */
+.ai-cursor-glow,
+.ai-click-pool,
+.ai-scatter-particle {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  contain: layout style;
+}
+
+/* === 273. Enhanced Dark Theme Frost === */
+[data-theme="dark"][data-accent="frost"] #ai-float-btn {
+  border-color: rgba(125, 211, 252, 0.25);
+}
+
+[data-theme="dark"][data-accent="frost"] .ai-nebula-particle {
+  background: radial-gradient(circle, #7DD3FC 0%, rgba(125,211,252,0.05) 50%, transparent 70%);
+}
+
+[data-theme="dark"][data-accent="dusk"] #ai-float-btn {
+  border-color: rgba(212, 165, 116, 0.25);
+}
+
+[data-theme="dark"][data-accent="dusk"] .ai-nebula-particle {
+  background: radial-gradient(circle, #D4A574 0%, rgba(212,165,116,0.05) 50%, transparent 70%);
+}
+
+/* === 274. Panel Content Relative — 确保子元素定位 === */
+.ai-panel-content {
+  position: relative;
+  overflow: hidden;
 }
