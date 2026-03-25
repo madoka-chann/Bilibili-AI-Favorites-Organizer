@@ -1,0 +1,1572 @@
+/* ================================================================
+   B站 AI 收藏夹整理助理 — 完整样式表 v17.0
+   100 项 UI/交互美化 · 沉浸式体验
+   ================================================================ */
+
+/* === 1. CSS 变量 (双主题系统) === */
+
+/* 亮色主题（默认） */
+:root, [data-theme="light"] {
+  --ai-primary: #fb7299;
+  --ai-primary-dark: #e5668a;
+  --ai-primary-light: #ff9cb5;
+  --ai-primary-bg: #fff0f5;
+  --ai-primary-shadow: rgba(251, 114, 153, 0.3);
+  --ai-success: #4CAF50;
+  --ai-success-dark: #43a047;
+  --ai-error: #e74c3c;
+  --ai-info: #3498db;
+  --ai-warning: #f39c12;
+  --ai-text: #333;
+  --ai-text-secondary: #555;
+  --ai-text-muted: #999;
+  --ai-text-light: #ccc;
+  --ai-border: #ddd;
+  --ai-border-light: #eee;
+  --ai-border-lighter: #f0f0f0;
+  --ai-bg: #fff;
+  --ai-bg-secondary: #fafafa;
+  --ai-bg-tertiary: #f8f8f8;
+  --ai-bg-hover: #fef6f8;
+  --ai-header-gradient: linear-gradient(135deg, #fb7299, #ff9cb5);
+  --ai-modal-backdrop: rgba(0, 0, 0, 0.45);
+  --ai-input-bg: #fff;
+  --ai-card-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --ai-vid-odd-bg: rgba(0, 0, 0, 0.015);
+  --ai-vid-hover-bg: #f0f0f5;
+  --ai-cat-detail-bg: #f9f9fb;
+  --ai-separator: #eaeaea;
+  --ai-glow-color: rgba(251, 114, 153, 0.08);
+  --ai-badge-new-bg: #ff6b6b;
+  --ai-badge-existing-bg: #52c41a;
+  --ai-scrollbar: #ddd;
+  --ai-scrollbar-hover: #ccc;
+  --ai-btn-tool-bg: #f5f5f5;
+  --ai-btn-cancel-hover-bg: #e0e0e0;
+  --ai-log-success: #27ae60;
+}
+
+/* 暗色主题 */
+[data-theme="dark"] {
+  --ai-primary: #ff7eb3;
+  --ai-primary-dark: #e0699e;
+  --ai-primary-light: #ff9ec7;
+  --ai-primary-bg: rgba(255, 126, 179, 0.1);
+  --ai-primary-shadow: rgba(255, 126, 179, 0.3);
+  --ai-success: #66bb6a;
+  --ai-success-dark: #4caf50;
+  --ai-error: #ef5350;
+  --ai-info: #42a5f5;
+  --ai-warning: #ffa726;
+  --ai-text: #e0e0e0;
+  --ai-text-secondary: #b0b0b0;
+  --ai-text-muted: #777;
+  --ai-text-light: #555;
+  --ai-border: #3a3a4a;
+  --ai-border-light: #2e2e3e;
+  --ai-border-lighter: #252535;
+  --ai-bg: #1a1a2e;
+  --ai-bg-secondary: #1e1e32;
+  --ai-bg-tertiary: #222238;
+  --ai-bg-hover: rgba(255, 126, 179, 0.06);
+  --ai-header-gradient: linear-gradient(135deg, #c0507a, #8b3a5a);
+  --ai-modal-backdrop: rgba(0, 0, 0, 0.65);
+  --ai-input-bg: #252540;
+  --ai-card-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  --ai-vid-odd-bg: rgba(255, 255, 255, 0.02);
+  --ai-vid-hover-bg: rgba(255, 255, 255, 0.05);
+  --ai-cat-detail-bg: #1e1e35;
+  --ai-separator: #333345;
+  --ai-glow-color: rgba(255, 126, 179, 0.06);
+  --ai-badge-new-bg: #e05555;
+  --ai-badge-existing-bg: #43a047;
+  --ai-scrollbar: #3a3a4a;
+  --ai-scrollbar-hover: #555;
+  --ai-btn-tool-bg: #2a2a40;
+  --ai-btn-cancel-hover-bg: #3a3a4a;
+  --ai-log-success: #66bb6a;
+}
+
+/* 自动跟随系统主题 */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ai-primary: #ff7eb3;
+    --ai-primary-dark: #e0699e;
+    --ai-primary-light: #ff9ec7;
+    --ai-primary-bg: rgba(255, 126, 179, 0.1);
+    --ai-primary-shadow: rgba(255, 126, 179, 0.3);
+    --ai-success: #66bb6a;
+    --ai-success-dark: #4caf50;
+    --ai-error: #ef5350;
+    --ai-info: #42a5f5;
+    --ai-warning: #ffa726;
+    --ai-text: #e0e0e0;
+    --ai-text-secondary: #b0b0b0;
+    --ai-text-muted: #777;
+    --ai-text-light: #555;
+    --ai-border: #3a3a4a;
+    --ai-border-light: #2e2e3e;
+    --ai-border-lighter: #252535;
+    --ai-bg: #1a1a2e;
+    --ai-bg-secondary: #1e1e32;
+    --ai-bg-tertiary: #222238;
+    --ai-bg-hover: rgba(255, 126, 179, 0.06);
+    --ai-header-gradient: linear-gradient(135deg, #c0507a, #8b3a5a);
+    --ai-modal-backdrop: rgba(0, 0, 0, 0.65);
+    --ai-input-bg: #252540;
+    --ai-card-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    --ai-vid-odd-bg: rgba(255, 255, 255, 0.02);
+    --ai-vid-hover-bg: rgba(255, 255, 255, 0.05);
+    --ai-cat-detail-bg: #1e1e35;
+    --ai-separator: #333345;
+    --ai-glow-color: rgba(255, 126, 179, 0.06);
+    --ai-badge-new-bg: #e05555;
+    --ai-badge-existing-bg: #43a047;
+    --ai-scrollbar: #3a3a4a;
+    --ai-scrollbar-hover: #555;
+    --ai-btn-tool-bg: #2a2a40;
+    --ai-btn-cancel-hover-bg: #3a3a4a;
+    --ai-log-success: #66bb6a;
+  }
+}
+
+/* 主题切换过渡 */
+#ai-sort-wrapper, .ai-modal, #ai-float-btn {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+:root {
+  --ai-radius-xs: 4px;
+  --ai-radius-sm: 6px;
+  --ai-radius-md: 8px;
+  --ai-radius-lg: 12px;
+  --ai-radius-xl: 16px;
+  --ai-radius-full: 50%;
+  --ai-shadow-xs: 0 1px 3px rgba(0,0,0,0.06);
+  --ai-shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+  --ai-shadow-md: 0 4px 16px rgba(0,0,0,0.12);
+  --ai-shadow-lg: 0 8px 32px rgba(0,0,0,0.15);
+  --ai-shadow-xl: 0 20px 60px rgba(0,0,0,0.25);
+  --ai-transition-fast: 0.15s ease;
+  --ai-transition: 0.2s ease;
+  --ai-transition-slow: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  --ai-transition-spring: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ai-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --ai-z-float: 2147483640;
+  --ai-z-panel: 2147483641;
+  --ai-z-modal: 2147483645;
+  --ai-z-particle: 2147483646;
+}
+
+/* === 2. 基础样式 (#1,6,7,85) === */
+/* 隔离外部夜间模式插件（Dark Reader等）的样式污染 */
+#ai-sort-wrapper,
+#ai-sort-wrapper *:not(.ai-vid-cover):not([data-lucide]),
+#ai-float-btn,
+.ai-modal-backdrop,
+.ai-modal,
+.ai-modal *:not(.ai-vid-cover):not([data-lucide]) {
+  filter: none !important;
+  -webkit-filter: none !important;
+}
+
+/* 强制覆盖 Dark Reader 注入的背景色 */
+#ai-sort-wrapper input,
+#ai-sort-wrapper textarea,
+#ai-sort-wrapper select,
+.ai-modal input,
+.ai-modal textarea,
+.ai-modal select {
+  background-color: var(--ai-input-bg) !important;
+  color: var(--ai-text) !important;
+  border-color: var(--ai-border) !important;
+}
+
+#ai-sort-wrapper .ai-settings,
+#ai-sort-wrapper .ai-panel-content,
+.ai-modal-body,
+.ai-modal-toolbar,
+.ai-modal-footer {
+  background-color: var(--ai-bg-secondary) !important;
+}
+
+#ai-sort-wrapper .ai-status-log {
+  background-color: var(--ai-bg-tertiary) !important;
+}
+
+#ai-sort-wrapper, .ai-modal-backdrop {
+  font-family: var(--ai-font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+#ai-sort-wrapper ::selection, .ai-modal ::selection {
+  background: var(--ai-primary-bg);
+  color: var(--ai-primary-dark);
+}
+
+#ai-sort-wrapper *, .ai-modal * {
+  box-sizing: border-box;
+}
+
+/* === 3. 悬浮按钮 (#11,12,14,15) === */
+#ai-float-btn {
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  z-index: var(--ai-z-float);
+  background: var(--ai-primary);
+  color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--ai-radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px var(--ai-primary-shadow);
+  transition: all var(--ai-transition);
+  animation: ai-breathe 2.5s ease-in-out infinite;
+}
+
+#ai-float-btn:hover {
+  transform: scale(1.12);
+  box-shadow: 0 6px 24px rgba(251, 114, 153, 0.5);
+}
+
+#ai-float-btn:active {
+  transform: scale(0.95);
+}
+
+#ai-float-btn [data-lucide] {
+  width: 22px;
+  height: 22px;
+  transition: transform 0.3s;
+}
+
+#ai-float-btn:hover [data-lucide] {
+  transform: rotate(15deg);
+}
+
+/* === 4. 主面板 (#2,3,4,5,9,10,95) === */
+#ai-sort-wrapper {
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  z-index: var(--ai-z-panel);
+  isolation: isolate;
+  width: min(380px, calc(100vw - 60px));
+  display: none;
+  flex-direction: column;
+  box-shadow: var(--ai-shadow-lg), 0 0 0 1px rgba(0,0,0,0.04);
+  border-radius: var(--ai-radius-xl);
+  overflow: hidden;
+  max-height: 85vh;
+  animation: ai-panel-in 0.35s var(--ai-transition-spring);
+}
+
+#ai-sort-wrapper [data-lucide] {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.ai-panel-content {
+  background: var(--ai-bg) !important;
+  padding: 0;
+  overflow-y: auto;
+  max-height: calc(85vh - 46px);
+  border-bottom-left-radius: var(--ai-radius-xl);
+  border-bottom-right-radius: var(--ai-radius-xl);
+}
+
+/* === 5. 标题栏 (#16,17,18,19,20) === */
+.ai-header {
+  background: var(--ai-header-gradient);
+  color: #fff;
+  padding: 10px 15px;
+  font-weight: bold;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.ai-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: ai-shimmer 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.ai-header-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.ai-header-title [data-lucide] {
+  width: 18px;
+  height: 18px;
+}
+
+.ai-header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.ai-header-btn {
+  padding: 4px;
+  border: none;
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  border-radius: var(--ai-radius-sm);
+  cursor: pointer;
+  transition: all var(--ai-transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ai-header-btn:hover {
+  background: rgba(255,255,255,0.35);
+}
+
+.ai-header-btn:active {
+  transform: scale(0.9);
+}
+
+.ai-header-btn [data-lucide] {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.3s;
+}
+
+#ai-settings-toggle:hover [data-lucide] {
+  animation: ai-spin-once 0.5s ease;
+}
+
+#ai-settings-toggle.spinning [data-lucide] {
+  animation: ai-gear-spin 0.6s ease;
+}
+
+#ai-close-btn:hover {
+  background: rgba(255, 100, 100, 0.4) !important;
+}
+
+#ai-close-btn:hover [data-lucide] {
+  transform: rotate(90deg);
+}
+
+/* 运行中标题栏脉冲 */
+.ai-header.running {
+  animation: ai-header-pulse 2s ease-in-out infinite;
+}
+
+/* === 6. 设置区域 (#21-30) === */
+.ai-settings {
+  display: none;
+  padding: 10px 15px 12px;
+  background: var(--ai-bg-secondary);
+  border-bottom: 1px solid var(--ai-border-light);
+  transition: max-height 0.4s var(--ai-transition-slow), opacity 0.3s ease;
+  overflow: hidden;
+}
+
+/* === 7. 分组标题 (#21,22,23,89) === */
+.ai-group-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  margin: 4px -10px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--ai-text-secondary);
+  user-select: none;
+  border-radius: var(--ai-radius-md);
+  transition: all var(--ai-transition);
+}
+
+.ai-group-header:hover {
+  background: var(--ai-primary-bg);
+  color: var(--ai-primary);
+}
+
+.ai-group-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: var(--ai-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ai-group-icon [data-lucide] {
+  width: 13px;
+  height: 13px;
+}
+
+.ai-group-header [data-lucide]:last-child {
+  transition: transform var(--ai-transition-spring);
+  color: var(--ai-text-light);
+  width: 14px;
+  height: 14px;
+}
+
+.ai-group-body {
+  padding-left: 2px;
+  animation: ai-fade-in 0.25s ease;
+}
+
+.ai-group-count {
+  font-size: 10px;
+  color: var(--ai-text-muted);
+  background: var(--ai-border-lighter);
+  padding: 1px 6px;
+  border-radius: var(--ai-radius-md);
+  margin-left: auto;
+}
+
+/* === 8. 输入/选择控件 (#24,25,26,27,84,87,88,91) === */
+.ai-input {
+  padding: 6px 8px;
+  border: 1px solid var(--ai-border);
+  border-radius: var(--ai-radius-xs);
+  font-size: 12px;
+  outline: none;
+  transition: all var(--ai-transition);
+  background: var(--ai-input-bg);
+  color: var(--ai-text);
+}
+
+.ai-input:focus-visible {
+  border-color: var(--ai-primary);
+  box-shadow: 0 0 0 3px var(--ai-primary-shadow);
+}
+
+.ai-input::placeholder {
+  transition: opacity 0.3s;
+}
+
+.ai-input:focus-visible::placeholder {
+  opacity: 0.4;
+}
+
+.ai-input[type="number"]:focus-visible {
+  box-shadow: inset 0 1px 3px rgba(251, 114, 153, 0.1), 0 0 0 3px var(--ai-primary-shadow);
+}
+
+.ai-select {
+  padding: 6px 8px;
+  border: 1px solid var(--ai-border);
+  border-radius: var(--ai-radius-xs);
+  font-size: 12px;
+  outline: none;
+  background: var(--ai-input-bg);
+  color: var(--ai-text);
+  transition: all var(--ai-transition);
+  cursor: pointer;
+}
+
+.ai-select:hover {
+  border-color: var(--ai-primary);
+}
+
+.ai-select:focus-visible {
+  border-color: var(--ai-primary);
+  box-shadow: 0 0 0 3px var(--ai-primary-shadow);
+}
+
+.ai-label {
+  font-size: 12px;
+  color: var(--ai-text-secondary);
+  display: block;
+  margin-bottom: 3px;
+  letter-spacing: 0.3px;
+  transition: color var(--ai-transition);
+}
+
+.ai-label:hover {
+  color: var(--ai-primary);
+}
+
+#ai-sort-wrapper input[type="checkbox"] {
+  accent-color: var(--ai-primary);
+  transition: transform var(--ai-transition-fast);
+  cursor: pointer;
+}
+
+#ai-sort-wrapper input[type="checkbox"]:active {
+  transform: scale(0.85);
+}
+
+#ai-set-limit-count {
+  transition: opacity 0.3s;
+}
+
+/* 模型触发器 (#71,75) */
+#ai-model-trigger {
+  transition: all var(--ai-transition);
+}
+
+#ai-model-trigger:hover {
+  border-color: var(--ai-primary);
+  box-shadow: 0 0 0 3px rgba(251, 114, 153, 0.1);
+}
+
+/* 模型下拉面板 (#72,73) */
+#ai-model-dropdown {
+  animation: ai-dropdown-in 0.25s ease-out;
+}
+
+#ai-model-select option {
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+#ai-model-select option:hover {
+  background: var(--ai-primary-bg);
+}
+
+#ai-model-select {
+  scrollbar-width: thin;
+}
+
+/* 模型确认按钮 (#38) */
+#ai-model-custom-confirm {
+  transition: all var(--ai-transition);
+}
+
+#ai-model-custom-confirm:hover {
+  background: var(--ai-primary) !important;
+  color: #fff !important;
+}
+
+/* textarea (#28) */
+#ai-custom-prompt {
+  transition: border-color 0.3s, box-shadow 0.3s, height 0.3s;
+}
+
+#ai-custom-prompt:focus {
+  border-color: var(--ai-primary);
+  box-shadow: 0 0 0 3px rgba(251, 114, 153, 0.1);
+  height: 80px;
+}
+
+/* 搜索框 (#55,56,93) */
+.ai-modal-search {
+  width: 100%;
+  padding: 8px 12px 8px 32px !important;
+  border: 1px solid var(--ai-border);
+  border-radius: var(--ai-radius-md);
+  font-size: 13px;
+  outline: none;
+  transition: all 0.3s !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 10px center;
+}
+
+.ai-modal-search:focus-visible {
+  border-color: var(--ai-primary);
+  box-shadow: 0 0 0 3px var(--ai-primary-shadow);
+}
+
+#ai-preset-select:hover {
+  border-color: var(--ai-primary);
+}
+
+/* === 9. 按钮系统 (#31-40) === */
+.ai-btn {
+  transition: all var(--ai-transition);
+  cursor: pointer;
+  border: 1px solid var(--ai-border);
+  border-radius: var(--ai-radius-xs);
+  background: var(--ai-bg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.ai-btn:hover {
+  background: var(--ai-border-lighter);
+  border-color: var(--ai-text-light);
+}
+
+.ai-btn:active {
+  transform: scale(0.95);
+}
+
+.ai-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 主按钮 (#31,32,97) */
+.ai-btn-primary {
+  background: linear-gradient(135deg, var(--ai-primary), #ff6b8a);
+  background-size: 150% 150%;
+  color: #fff;
+  border: none;
+  font-weight: bold;
+  position: relative;
+  overflow: hidden;
+}
+
+.ai-btn-primary:hover {
+  background-position: 100% 0;
+  box-shadow: 0 4px 15px var(--ai-primary-shadow);
+}
+
+.ai-btn-primary::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%);
+  transform: rotate(45deg);
+  transition: left 0.5s;
+}
+
+.ai-btn-primary:hover::after {
+  left: 100%;
+}
+
+/* 工具按钮 (#34,35) */
+.ai-btn-tool {
+  background: var(--ai-btn-tool-bg);
+  color: var(--ai-text-secondary);
+  font-size: 11px;
+  transition: all var(--ai-transition) !important;
+}
+
+.ai-btn-tool:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--ai-shadow-sm);
+  background: var(--ai-border-light);
+  border-color: var(--ai-text-light);
+}
+
+.ai-btn-tool.running {
+  animation: ai-border-pulse 1s infinite;
+  color: var(--ai-primary) !important;
+}
+
+/* 小图标按钮 (#36) */
+#ai-goto-api:hover, #ai-set-eye:hover, #ai-fetch-models:hover, #ai-verify-model:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(251, 114, 153, 0.2);
+}
+
+/* 保存按钮 (#29) */
+#ai-set-save.saved {
+  background: var(--ai-success) !important;
+  animation: ai-save-bounce 0.4s ease;
+}
+
+/* 筛选按钮 (#37) */
+.ai-filter-btn {
+  padding: 3px 10px;
+  border-radius: var(--ai-radius-lg);
+  font-size: 11px;
+  cursor: pointer;
+  border: 1px solid var(--ai-border);
+  background: var(--ai-bg);
+  color: var(--ai-text-muted);
+  transition: all var(--ai-transition);
+}
+
+.ai-filter-btn:hover {
+  border-color: var(--ai-primary);
+  color: var(--ai-primary);
+}
+
+.ai-filter-btn.active {
+  background: var(--ai-primary);
+  color: #fff;
+  border-color: var(--ai-primary);
+}
+
+.ai-filter-btn:active {
+  transform: scale(0.92);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* 清理确认/取消 (#3) */
+#ai-clean-confirm, #ai-clean-cancel {
+  transition: all var(--ai-transition);
+  cursor: pointer;
+}
+
+#ai-clean-confirm:hover {
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+  transform: translateY(-1px);
+}
+
+#ai-clean-cancel:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
+}
+
+/* === 10. 进度条 (#41,42,43,44,45,94) === */
+.ai-progress-wrap {
+  display: none;
+  margin-top: 10px;
+  transition: opacity 0.3s;
+}
+
+.ai-progress-container {
+  background: var(--ai-border-light);
+  border-radius: var(--ai-radius-sm);
+  height: 20px;
+  overflow: hidden;
+  position: relative;
+}
+
+#ai-progress-bar {
+  background: linear-gradient(90deg, var(--ai-primary), var(--ai-primary-light));
+  height: 100%;
+  width: 0%;
+  transition: width 0.3s;
+  border-radius: var(--ai-radius-sm);
+  position: relative;
+  animation: ai-progress-pulse 1.5s ease-in-out infinite;
+}
+
+/* 进度条光泽 */
+#ai-progress-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.2), transparent);
+  border-radius: var(--ai-radius-sm) var(--ai-radius-sm) 0 0;
+}
+
+#ai-progress-bar.complete {
+  background: linear-gradient(90deg, #fb7299, #f39c12, #2ecc71, #3498db, #9b59b6, #fb7299) !important;
+  background-size: 200% 100%;
+  animation: ai-rainbow 2s linear infinite !important;
+}
+
+#ai-progress-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  line-height: 20px;
+  font-size: 11px;
+  color: var(--ai-text);
+  font-weight: bold;
+  text-shadow: 0 0 3px rgba(255,255,255,0.8);
+  transition: color 0.5s;
+}
+
+.ai-wave-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: repeating-linear-gradient(45deg, var(--ai-primary), var(--ai-primary) 10px, var(--ai-primary-light) 10px, var(--ai-primary-light) 20px);
+  background-size: 40px 100%;
+  animation: ai-wave 0.8s linear infinite;
+}
+
+/* === 11. 日志区域 (#46,47,48,49,50,96) === */
+.ai-status-log {
+  margin-top: 10px;
+  background: var(--ai-bg-tertiary);
+  padding: 8px 10px;
+  border-radius: var(--ai-radius-md);
+  font-size: 11px;
+  color: var(--ai-text);
+  height: 120px;
+  overflow-y: auto;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  border: 1px solid var(--ai-border-light);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+  position: relative;
+}
+
+/* 顶部渐变边框（替代 border-image 以兼容 border-radius） */
+.ai-status-log::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--ai-primary), var(--ai-primary-light), var(--ai-primary));
+  border-radius: var(--ai-radius-md) var(--ai-radius-md) 0 0;
+  pointer-events: none;
+}
+
+.ai-status-log > div {
+  animation: ai-log-flash 0.8s ease-out;
+}
+
+.ai-log-error { color: var(--ai-error); }
+.ai-log-success { color: var(--ai-log-success); }
+.ai-log-info { color: var(--ai-info); }
+
+/* 空状态呼吸 */
+.ai-status-log:empty {
+  animation: ai-idle-breathe 2s ease-in-out infinite;
+}
+
+/* === 12. 模态对话框 (#51,52,53,54,65,29) === */
+.ai-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--ai-modal-backdrop) !important;
+  z-index: var(--ai-z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: ai-fade-in 0.2s;
+  font-family: var(--ai-font);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.ai-modal-closing {
+  animation: ai-fade-out 0.2s ease-in forwards;
+}
+
+.ai-modal-closing .ai-modal {
+  animation: ai-scale-out 0.2s ease-in forwards;
+}
+
+.ai-modal {
+  background: var(--ai-bg) !important;
+  color: var(--ai-text) !important;
+  border-radius: 14px;
+  box-shadow: var(--ai-shadow-xl), 0 0 0 1px var(--ai-border-lighter);
+  width: min(600px, 90vw);
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  animation: ai-scale-in 0.2s;
+  overflow: hidden;
+}
+
+.ai-modal-header {
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--ai-border-light);
+  background: var(--ai-header-gradient);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.ai-modal-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: var(--shimmer, ai-shimmer 3s ease-in-out infinite);
+  pointer-events: none;
+}
+
+.ai-modal-header h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.ai-modal-toolbar {
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--ai-border-light);
+  background: var(--ai-bg-secondary);
+}
+
+.ai-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+  min-height: 0;
+}
+
+.ai-modal-footer {
+  padding: 12px 20px;
+  border-top: 1px solid var(--ai-border-light);
+  display: flex;
+  gap: 10px;
+  background: var(--ai-bg-secondary);
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.04);
+}
+
+.ai-modal-close {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--ai-radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--ai-transition);
+  position: relative;
+  z-index: 1;
+}
+
+.ai-modal-close:hover {
+  background: rgba(255, 100, 100, 0.4);
+}
+
+/* 模态框按钮 (#39,40) */
+.ai-modal-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: var(--ai-radius-md);
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.ai-modal-btn:active {
+  transform: scale(0.97);
+}
+
+.ai-modal-btn-confirm {
+  background: linear-gradient(135deg, var(--ai-success), #66bb6a) !important;
+  background-size: 150% 150%;
+  color: #fff;
+}
+
+.ai-modal-btn-confirm:hover {
+  background-position: 100% 0;
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.35);
+}
+
+.ai-modal-btn-cancel {
+  background: var(--ai-border-lighter);
+  color: var(--ai-text-muted);
+}
+
+.ai-modal-btn-cancel:hover {
+  background: var(--ai-btn-cancel-hover-bg);
+  box-shadow: var(--ai-shadow-sm);
+  animation: ai-shake 0.3s ease;
+}
+
+/* === 13. 分类预览 (#57-65,76-80,98) === */
+.ai-cat-block {
+  animation: ai-slide-in 0.4s ease-out both;
+  animation-delay: calc(var(--i, 0) * 0.05s);
+}
+
+.ai-cat-block:nth-child(even) > .ai-cat-row {
+  background: rgba(0,0,0,0.01);
+}
+
+.ai-cat-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--ai-border-lighter);
+  border-left: 3px solid var(--ai-primary);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ai-cat-row:hover {
+  background: var(--ai-bg-hover);
+}
+
+.ai-cat-row.unchecked {
+  opacity: 0.4;
+  transform: translateX(8px);
+  border-left-color: var(--ai-border);
+}
+
+.ai-cat-row > * {
+  position: relative;
+  z-index: 1;
+}
+
+.ai-cat-row .ai-glow {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, var(--ai-glow-color), transparent 70%);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s;
+  opacity: 0;
+  z-index: 0;
+}
+
+.ai-cat-row:hover .ai-glow {
+  opacity: 1;
+}
+
+.ai-cat-name {
+  flex: 1;
+  font-size: 13px;
+  color: var(--ai-text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ai-cat-count {
+  font-size: 12px;
+  color: var(--ai-text-muted);
+  white-space: nowrap;
+}
+
+.ai-cat-badge {
+  font-size: 10px;
+  color: #fff;
+  background: var(--ai-badge-new-bg);
+  padding: 1px 6px;
+  border-radius: 10px;
+  transition: transform var(--ai-transition);
+}
+
+.ai-cat-existing {
+  font-size: 10px;
+  color: #fff;
+  background: var(--ai-badge-existing-bg);
+  padding: 1px 6px;
+  border-radius: 10px;
+  transition: transform var(--ai-transition);
+}
+
+.ai-cat-row:hover .ai-cat-badge,
+.ai-cat-row:hover .ai-cat-existing {
+  transform: scale(1.1);
+}
+
+/* === 14. 视频列表 (#66-70,99) === */
+.ai-cat-detail {
+  background: var(--ai-cat-detail-bg);
+  border-bottom: 1px solid var(--ai-border-lighter);
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height var(--ai-transition-slow), opacity 0.25s ease, padding 0.3s ease;
+  padding: 0;
+}
+
+.ai-cat-detail.open {
+  max-height: 240px;
+  opacity: 1;
+  padding: 4px 0;
+}
+
+.ai-cat-detail-inner {
+  max-height: 232px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.ai-vid-item {
+  padding: 7px 20px 7px 48px;
+  font-size: 12px;
+  color: var(--ai-text-secondary);
+  line-height: 1.5;
+  position: relative;
+  transition: background var(--ai-transition-fast);
+}
+
+.ai-vid-item:hover {
+  background: var(--ai-vid-hover-bg);
+}
+
+.ai-vid-item:nth-child(odd) {
+  background: var(--ai-vid-odd-bg);
+}
+
+.ai-vid-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 48px;
+  right: 20px;
+  height: 1px;
+  background: var(--ai-separator);
+}
+
+.ai-vid-up {
+  color: var(--ai-text-muted);
+  font-size: 11px;
+}
+
+/* 富信息视频条目 */
+.ai-vid-rich {
+  display: flex !important;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 16px 8px 40px !important;
+}
+
+.ai-vid-cover {
+  width: 64px;
+  height: 36px;
+  border-radius: var(--ai-radius-xs);
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--ai-border-lighter);
+  transition: transform var(--ai-transition), box-shadow var(--ai-transition);
+}
+
+.ai-vid-cover-empty {
+  background: var(--ai-border-lighter);
+}
+
+.ai-vid-rich:hover .ai-vid-cover {
+  transform: scale(1.05);
+  box-shadow: var(--ai-shadow-sm);
+}
+
+.ai-vid-info {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.ai-vid-title {
+  font-size: 12px;
+  color: var(--ai-text);
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ai-vid-title a {
+  color: var(--ai-text);
+  text-decoration: none;
+  transition: color var(--ai-transition);
+}
+
+.ai-vid-title a:hover {
+  color: var(--ai-primary);
+}
+
+.ai-vid-meta {
+  display: flex;
+  gap: 8px;
+  margin-top: 2px;
+  font-size: 10px;
+  color: var(--ai-text-muted);
+  flex-wrap: wrap;
+}
+
+.ai-vid-plays, .ai-vid-duration, .ai-vid-date {
+  white-space: nowrap;
+}
+
+.ai-vid-duration {
+  background: var(--ai-border-lighter);
+  padding: 0 4px;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 10px;
+}
+
+/* === 15. 粒子/波纹元素 (#61,64) === */
+.ai-ripple-dot {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--ai-radius-full);
+  background: var(--ai-primary-shadow);
+  animation: ai-ripple 0.5s ease-out forwards;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.ai-particle-dot {
+  position: fixed;
+  border-radius: var(--ai-radius-full);
+  pointer-events: none;
+  animation: ai-particle 0.8s ease-out forwards;
+  z-index: var(--ai-z-particle);
+}
+
+/* === 16. 动画关键帧 === */
+@keyframes ai-breathe {
+  0%, 100% { box-shadow: 0 4px 12px var(--ai-primary-shadow); }
+  50% { box-shadow: 0 4px 20px rgba(251, 114, 153, 0.6); }
+}
+
+@keyframes ai-panel-in {
+  from { transform: translateY(20px) scale(0.97); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes ai-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ai-fade-out { from { opacity: 1; } to { opacity: 0; } }
+
+@keyframes ai-scale-in {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes ai-scale-out {
+  from { transform: scale(1); opacity: 1; }
+  to { transform: scale(0.95); opacity: 0; }
+}
+
+@keyframes ai-slide-in {
+  from { transform: translateX(30px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes ai-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes ai-ripple {
+  0% { transform: scale(0); opacity: 0.5; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+@keyframes ai-particle {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+
+@keyframes ai-wave {
+  0% { background-position: 0 0; }
+  100% { background-position: 40px 0; }
+}
+
+@keyframes ai-progress-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes ai-rainbow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+@keyframes ai-log-flash {
+  from { background: var(--ai-glow-color); }
+  to { background: transparent; }
+}
+
+@keyframes ai-spin-once {
+  from { transform: rotate(0); }
+  to { transform: rotate(180deg); }
+}
+
+@keyframes ai-gear-spin {
+  from { transform: rotate(0); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes ai-save-bounce {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes ai-border-pulse {
+  0%, 100% { border-color: var(--ai-primary); }
+  50% { border-color: var(--ai-primary-light); }
+}
+
+@keyframes ai-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+@keyframes ai-idle-breathe {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@keyframes ai-dropdown-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes ai-msg-fade {
+  0% { opacity: 0; transform: translateY(-4px); }
+  10% { opacity: 1; transform: translateY(0); }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes ai-header-pulse {
+  0%, 100% { box-shadow: inset 0 0 0 0 rgba(255,255,255,0); }
+  50% { box-shadow: inset 0 0 20px rgba(255,255,255,0.15); }
+}
+
+/* === 17. 滚动条美化 (#81,82,83) === */
+#ai-sort-wrapper ::-webkit-scrollbar,
+.ai-modal ::-webkit-scrollbar {
+  width: 5px;
+}
+
+#ai-sort-wrapper ::-webkit-scrollbar-track,
+.ai-modal ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#ai-sort-wrapper ::-webkit-scrollbar-thumb,
+.ai-modal ::-webkit-scrollbar-thumb {
+  background: var(--ai-scrollbar);
+  border-radius: 3px;
+}
+
+#ai-sort-wrapper ::-webkit-scrollbar-thumb:hover,
+.ai-modal ::-webkit-scrollbar-thumb:hover {
+  background: var(--ai-scrollbar-hover);
+}
+
+.ai-modal ::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* === 18. 成功消息 (#30) === */
+#ai-set-msg {
+  animation: ai-msg-fade 2s ease forwards;
+}
+
+/* === 19. 预览/工具结果区 (#19) === */
+#ai-preview-area {
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+/* === 20. 自定义 URL 过渡 (#15) === */
+#ai-custom-url-row {
+  transition: opacity 0.3s, max-height 0.3s;
+  overflow: hidden;
+}
+
+/* === 21. 禁用动画覆盖 === */
+.ai-no-anim * {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* === 22. 响应式 === */
+/* 平板 */
+@media (max-width: 768px) {
+  #ai-sort-wrapper {
+    width: min(360px, calc(100vw - 40px));
+  }
+
+  .ai-modal {
+    width: min(560px, 92vw);
+  }
+
+  .ai-vid-rich {
+    padding: 8px 12px 8px 32px !important;
+  }
+}
+
+/* 手机 */
+@media (max-width: 420px) {
+  #ai-sort-wrapper {
+    width: calc(100vw - 20px) !important;
+    left: 10px !important;
+    bottom: 10px !important;
+  }
+
+  #ai-float-btn {
+    width: 42px;
+    height: 42px;
+    bottom: 16px;
+    left: 16px;
+  }
+
+  .ai-modal {
+    width: 95vw !important;
+    max-height: 80vh !important;
+    border-radius: 10px;
+  }
+
+  .ai-header {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .ai-vid-rich {
+    padding: 6px 10px 6px 24px !important;
+    gap: 8px;
+  }
+
+  .ai-vid-cover {
+    width: 56px;
+    height: 32px;
+  }
+}
+
+/* === 封面点击放大 === */
+.ai-vid-cover { cursor: zoom-in; }
+.ai-cover-zoom-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+  animation: ai-fade-in 0.2s;
+}
+.ai-cover-zoom-backdrop img {
+  max-width: 90vw;
+  max-height: 90vh;
+  border-radius: 8px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+  animation: ai-scale-in 0.25s;
+}
+
+/* === 23. 主题切换按钮 === */
+.ai-theme-toggle {
+  width: 36px;
+  height: 20px;
+  border-radius: 10px;
+  background: var(--ai-border);
+  position: relative;
+  cursor: pointer;
+  transition: background 0.3s;
+  border: none;
+  padding: 0;
+}
+
+.ai-theme-toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--ai-bg);
+  transition: transform 0.3s, background 0.3s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+[data-theme="dark"] .ai-theme-toggle {
+  background: var(--ai-primary);
+}
+
+[data-theme="dark"] .ai-theme-toggle::after {
+  transform: translateX(16px);
+  background: var(--ai-bg);
+}
+
+.ai-theme-label {
+  font-size: 10px;
+  color: var(--ai-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+/* === 24. 全局 cursor (#85,40) === */
+#ai-sort-wrapper select,
+#ai-sort-wrapper label,
+.ai-group-header,
+.ai-filter-btn,
+.ai-modal-btn,
+.ai-modal-close {
+  cursor: pointer;
+}
+
+/* === 25. 无障碍：减少动画 === */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  #ai-float-btn {
+    animation: none;
+  }
+
+  .ai-header::after,
+  .ai-modal-header::after {
+    animation: none;
+    background: none;
+  }
+
+  #ai-progress-bar {
+    animation: none;
+  }
+
+  .ai-cat-block {
+    animation: none;
+  }
+}
+
+/* === 26. 性能优化 === */
+#ai-sort-wrapper {
+  contain: layout style;
+}
+
+.ai-modal {
+  contain: layout style;
+}
+
+#ai-float-btn {
+  will-change: transform;
+}
+
+#ai-progress-bar {
+  will-change: width;
+}
+
+/* === 27. 低置信度高亮 === */
+.ai-vid-lowconf-highlight {
+  background: rgba(231, 76, 60, 0.08) !important;
+  border-left: 3px solid var(--ai-error);
+  padding-left: 8px;
+}
+
+[data-theme="dark"] .ai-vid-lowconf-highlight {
+  background: rgba(231, 76, 60, 0.15) !important;
+}
