@@ -470,7 +470,9 @@
 .ai-panel-content {
   background: var(--ai-bg) !important;
   padding: 0;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: calc(85vh - 46px);
   border-bottom-left-radius: 28px;
   border-bottom-right-radius: 28px;
 }
