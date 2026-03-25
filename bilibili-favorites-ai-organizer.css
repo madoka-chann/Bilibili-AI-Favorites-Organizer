@@ -454,7 +454,7 @@
               inset 0 -1px 0 rgba(0,0,0,0.02);
   border-radius: 28px;
   border: 1px solid var(--ai-glass-border);
-  overflow: visible;
+  overflow: hidden;
   transform-style: preserve-3d;
   perspective: var(--ai-perspective, 1600px);
 }
@@ -471,7 +471,7 @@
   background: var(--ai-bg) !important;
   padding: 0;
   flex: none !important;
-  overflow: visible !important;
+  overflow: hidden !important;
   border-bottom-left-radius: 28px;
   border-bottom-right-radius: 28px;
 }
@@ -4835,13 +4835,11 @@
 @keyframes ai-settings-ethereal {
   0% {
     opacity: 0;
-    max-height: 0;
     filter: blur(6px);
     transform: translateY(-8px);
   }
   100% {
     opacity: 1;
-    max-height: 600px;
     filter: blur(0);
     transform: translateY(0);
   }
@@ -5136,18 +5134,15 @@
 /* === 222. Smooth Group Toggle — 丝绒折叠展开 === */
 .ai-group-body {
   animation: ai-velvet-unfold 0.4s var(--ai-ease-silk) both;
-  overflow: hidden;
 }
 
 @keyframes ai-velvet-unfold {
   0% {
     opacity: 0;
-    max-height: 0;
     transform: translateY(-4px);
   }
   100% {
     opacity: 1;
-    max-height: 800px;
     transform: translateY(0);
   }
 }
@@ -6019,13 +6014,11 @@
 /* === 266. Enhanced Settings Group — 设置组展开增强 === */
 .ai-group-body {
   animation: ai-group-crystal-unfold 0.45s var(--ai-ease-crystal) both;
-  overflow: hidden;
 }
 
 @keyframes ai-group-crystal-unfold {
   0% {
     opacity: 0;
-    max-height: 0;
     transform: translateY(-6px) scaleY(0.9);
     transform-origin: top;
     filter: blur(3px);
@@ -6040,7 +6033,6 @@
   }
   100% {
     opacity: 1;
-    max-height: 800px;
     transform: translateY(0) scaleY(1);
     filter: blur(0);
   }
