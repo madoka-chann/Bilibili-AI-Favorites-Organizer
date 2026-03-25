@@ -4,8 +4,8 @@
 // @version      1.2.0
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
-// @match        *://space.bilibili.com/*
-// @include      https://space.bilibili.com/*
+// @match        *://*.bilibili.com/*
+// @include      https://*.bilibili.com/*
 // @run-at       document-idle
 // @grant        GM_xmlhttpRequest
 // @grant        GM_getValue
@@ -257,7 +257,6 @@
             lastPrompt: GM_getValue('bfao_lastPrompt', ''),
             // 新功能开关
             adaptiveRate: GM_getValue('bfao_adaptiveRate', true),
-            backupBeforeExecute: GM_getValue('bfao_backupBeforeExecute', true),
             notifyOnComplete: GM_getValue('bfao_notifyOnComplete', true),
             multiFolderEnabled: GM_getValue('bfao_multiFolderEnabled', false),
             // 动画效果开关
@@ -274,7 +273,7 @@
         // 合并为单次 GM_setValue 调用，减少存储 API 开销
         const keys = ['provider','customBaseUrl','apiKey','modelName','aiChunkSize','aiConcurrency',
             'limitEnabled','limitCount','fetchDelay','writeDelay','moveChunkSize','skipDeadVideos',
-            'lastPrompt','adaptiveRate','backupBeforeExecute','notifyOnComplete',
+            'lastPrompt','adaptiveRate','notifyOnComplete',
             'multiFolderEnabled','animEnabled','incrementalMode',
             'autoOrganizeEnabled','autoOrganizeInterval'];
         keys.forEach(k => { if (s[k] !== undefined) GM_setValue('bfao_' + k, s[k]); });
@@ -825,13 +824,11 @@
     // ================= 自适应限速 =================
     // 全局冷却：被限流后强制等待，防止连续请求全部 412
     let _globalCooldownUntil = 0; // 时间戳，在此时间之前不发请求
-    const RATE_LIMIT_COOLDOWN_BASE = 8000; // 首次被限流后冷却 8 秒
-    const RATE_LIMIT_COOLDOWN_MAX = 60000; // 最大冷却 60 秒
 
     function setGlobalCooldown() {
-        // 冷却时间随连续限流次数指数增长：8s, 16s, 32s, 最大 60s
+        // 冷却时间随限流次数线性增长：60s, 120s, 180s（封顶）
         const hits = state.adaptive.rateLimitHits || 1;
-        const cooldownMs = Math.min(RATE_LIMIT_COOLDOWN_MAX, RATE_LIMIT_COOLDOWN_BASE * Math.pow(2, Math.min(hits - 1, 3)));
+        const cooldownMs = Math.min(180000, hits * 60000);
         _globalCooldownUntil = Date.now() + cooldownMs;
         return cooldownMs;
     }
@@ -920,21 +917,133 @@
         _batchPageThreshold = BATCH_PAGE_LIMIT_MIN + Math.floor(Math.random() * (BATCH_PAGE_LIMIT_MAX - BATCH_PAGE_LIMIT_MIN + 1));
     }
 
+    // ================= 全局视频缓存 =================
+    // 所有操作（备份/整理/统计/后台缓存）共享同一份视频数据缓存
+    // 结构: { [folderId]: { title, media_count, videos: [...], cachedAt } }
+    let _globalVideoCache = null;
+
+    function loadGlobalVideoCache() {
+        if (!_globalVideoCache) {
+            try { _globalVideoCache = JSON.parse(GM_getValue('bfao_globalVideoCache', '{}')); }
+            catch(e) { _globalVideoCache = {}; }
+        }
+        return _globalVideoCache;
+    }
+
+    function saveGlobalVideoCache() {
+        if (_globalVideoCache) {
+            try { GM_setValue('bfao_globalVideoCache', JSON.stringify(_globalVideoCache)); }
+            catch(e) { console.warn('[AI整理] 缓存保存失败:', e); }
+        }
+    }
+
+    function updateCachedFolder(folderId, title, media_count, videos) {
+        const cache = loadGlobalVideoCache();
+        cache[String(folderId)] = { title, media_count, videos, cachedAt: Date.now() };
+    }
+
+    function getCachedFolder(folderId) {
+        const cache = loadGlobalVideoCache();
+        return cache[String(folderId)] || null;
+    }
+
+    // 清理已删除的收藏夹缓存
+    function cleanCacheForDeletedFolders(currentFolderIds) {
+        const cache = loadGlobalVideoCache();
+        const idSet = new Set(currentFolderIds.map(String));
+        for (const cachedId of Object.keys(cache)) {
+            if (!idSet.has(cachedId)) delete cache[cachedId];
+        }
+    }
+
+    // 增量协调缓存与 API 数据，避免全量抓取
+    // 返回 { videos, newCount, removedCount } 或 null（无缓存需全量）
+    async function reconcileCache(folderId, currentMediaCount, abortSignal = null) {
+        const cached = getCachedFolder(folderId);
+        if (!cached || !cached.videos || cached.videos.length === 0) {
+            return null; // 无缓存，调用方需全量抓取
+        }
+
+        const diff = currentMediaCount - cached.media_count;
+
+        if (diff === 0) {
+            // media_count 没变，直接用缓存
+            return { videos: cached.videos, newCount: 0, removedCount: 0 };
+        }
+
+        if (diff < 0) {
+            // media_count 减少（用户删了视频），直接用缓存，接受微小偏差
+            // 后续操作（移动/统计）会自然忽略已不存在的视频
+            return { videos: cached.videos, newCount: 0, removedCount: -diff };
+        }
+
+        // diff > 0: media_count 增加，从第1页开始增量扫描找出新增视频
+        // B站 API 按 fav_time 降序（最新收藏的在前面），新视频集中在前几页
+        const cachedIdSet = new Set(cached.videos.map(v => v.id));
+        const newVideos = [];
+        let pn = 1;
+        let foundAll = false;
+
+        while (!foundAll) {
+            if (state.cancelRequested) break;
+            try {
+                const res = await lightFetchJson(
+                    `https://api.bilibili.com/x/v3/fav/resource/list?media_id=${folderId}&pn=${pn}&ps=40&platform=web`,
+                    3, abortSignal
+                );
+                if (res.code !== 0) break;
+                const medias = (res.data && res.data.medias) || [];
+
+                let hitCachedVideo = false;
+                for (const v of medias) {
+                    if (cachedIdSet.has(v.id)) {
+                        hitCachedVideo = true;
+                    } else {
+                        newVideos.push(v);
+                        if (newVideos.length >= diff) { foundAll = true; break; }
+                    }
+                }
+
+                // 如果整页都是缓存中已有的视频，且还没找够新视频，说明新视频散布在各页
+                // 但如果已经命中缓存视频且后续页不太可能有新视频了，提前停止
+                if (!res.data.has_more || medias.length === 0) break;
+                pn++;
+                await humanDelay(getAdaptiveFetchDelay());
+                await checkBatchPause();
+            } catch (e) {
+                break; // 出错就停，用已找到的部分
+            }
+        }
+
+        // 新视频放在前面（按 fav_time 降序），与缓存合并
+        const mergedVideos = [...newVideos, ...cached.videos];
+        // 更新缓存
+        updateCachedFolder(folderId, cached.title, currentMediaCount, mergedVideos);
+        return { videos: mergedVideos, newCount: newVideos.length, removedCount: 0 };
+    }
+
     // 安全的 B站 API 请求：处理 412 限流、非 JSON 响应，自动重试，含超时保护
     // 增强：全局冷却 + 指数退避 + 动态读取自适应延迟
-    async function safeFetchJson(url, maxRetries = 4) {
+    async function safeFetchJson(url, maxRetries = 4, externalSignal = null) {
         const settings = loadSettings();
         // 请求前先等待全局冷却（如果之前被限流过）
         await waitForGlobalCooldown();
         for (let attempt = 1; attempt <= maxRetries; attempt++) {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 30000); // 30秒超时
+            if (externalSignal) {
+                if (externalSignal.aborted) { clearTimeout(timeoutId); throw new Error('操作已取消'); }
+                externalSignal.addEventListener('abort', () => controller.abort(), { once: true });
+            }
             let res;
             try {
                 res = await fetch(url, { credentials: 'include', signal: controller.signal });
             } catch (e) {
                 clearTimeout(timeoutId);
-                if (e.name === 'AbortError') throw new Error('B站 API 请求超时 (30秒)');
+                if (e.name === 'AbortError') {
+                    if (externalSignal && externalSignal.aborted) throw new Error('操作已取消');
+                    throw new Error('B站 API 请求超时 (30秒)');
+                }
                 throw e;
             }
             clearTimeout(timeoutId);
@@ -1263,16 +1372,24 @@
 
     // ================= 收藏夹备份/恢复 =================
     // 轻量级只读请求：备份只读取数据，使用更短的重试延迟，不影响全局自适应状态
-    async function lightFetchJson(url, maxRetries = 3) {
+    async function lightFetchJson(url, maxRetries = 3, externalSignal = null) {
         for (let attempt = 1; attempt <= maxRetries; attempt++) {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 15000);
+            // 外部取消信号联动：外部 abort 时也中断本次请求
+            if (externalSignal) {
+                if (externalSignal.aborted) { clearTimeout(timeoutId); throw new Error('操作已取消'); }
+                externalSignal.addEventListener('abort', () => controller.abort(), { once: true });
+            }
             let res;
             try {
                 res = await fetch(url, { credentials: 'include', signal: controller.signal });
             } catch (e) {
                 clearTimeout(timeoutId);
-                if (e.name === 'AbortError') throw new Error('请求超时 (15秒)');
+                if (e.name === 'AbortError') {
+                    if (externalSignal && externalSignal.aborted) throw new Error('操作已取消');
+                    throw new Error('请求超时 (15秒)');
+                }
                 throw e;
             }
             clearTimeout(timeoutId);
@@ -1290,7 +1407,7 @@
         throw new Error(`重试 ${maxRetries} 次仍被限流`);
     }
 
-    async function backupFavorites(biliData, silent) {
+    async function backupFavorites(biliData, silent, abortSignal = null) {
         if (!silent) logStatus('💾 正在备份收藏夹结构...');
         const allFolders = await getAllFoldersWithIds(biliData);
         const backup = {
@@ -1302,20 +1419,37 @@
         };
 
         for (let i = 0; i < allFolders.length; i++) {
+            if (state.cancelRequested) break;
             const folder = allFolders[i];
             const totalPages = Math.ceil((folder.media_count || 0) / 40) || 1;
-            if (!silent) logStatus(`💾 备份 [${i + 1}/${allFolders.length}] ${folder.title} (约${totalPages}页)...`);
             const folderData = { id: folder.id, title: folder.title, media_count: folder.media_count, videos: [] };
+
+            // 尝试使用缓存（支持增量协调）
+            const reconciled = await reconcileCache(folder.id, folder.media_count, abortSignal);
+            if (reconciled) {
+                const label = reconciled.newCount > 0 ? `缓存+${reconciled.newCount}新增` :
+                              reconciled.removedCount > 0 ? `缓存，约${reconciled.removedCount}个已删除` : '使用缓存';
+                if (!silent) logStatus(`⚡ 备份 [${i + 1}/${allFolders.length}] ${folder.title} (${label}，${reconciled.videos.length} 个视频)`);
+                reconciled.videos.forEach(v => {
+                    folderData.videos.push({ id: v.id, type: v.type, title: v.title, bvid: v.bvid || '' });
+                });
+                backup.folders.push(folderData);
+                continue;
+            }
+
+            if (!silent) logStatus(`💾 备份 [${i + 1}/${allFolders.length}] ${folder.title} (约${totalPages}页)...`);
+            const fullVideos = []; // 存完整视频对象用于写入全局缓存
 
             let pn = 1;
             while (true) {
                 if (state.cancelRequested) break;
                 try {
-                    const res = await lightFetchJson(`https://api.bilibili.com/x/v3/fav/resource/list?media_id=${folder.id}&pn=${pn}&ps=40&platform=web`);
+                    const res = await lightFetchJson(`https://api.bilibili.com/x/v3/fav/resource/list?media_id=${folder.id}&pn=${pn}&ps=40&platform=web`, 3, abortSignal);
                     if (res.code !== 0) break;
                     const medias = (res.data && res.data.medias) || [];
                     medias.forEach(v => {
                         folderData.videos.push({ id: v.id, type: v.type, title: v.title, bvid: v.bvid || '' });
+                        fullVideos.push(v);
                     });
                     if (!silent && pn > 1) logStatus(`  📄 ${folder.title} 第 ${pn}/${totalPages} 页，已获取 ${folderData.videos.length} 个视频`);
                     if (!res.data.has_more || medias.length === 0) break;
@@ -1327,11 +1461,16 @@
                     break;
                 }
             }
+            // 写入全局缓存（仅完整抓取的收藏夹）
+            if (!state.cancelRequested && fullVideos.length > 0) {
+                updateCachedFolder(folder.id, folder.title, folder.media_count, fullVideos);
+            }
             backup.folders.push(folderData);
             if (!silent) logStatus(`  ✅ ${folder.title}: ${folderData.videos.length} 个视频`);
             await humanDelay(getAdaptiveFetchDelay());
         }
 
+        saveGlobalVideoCache();
         return backup;
     }
 
@@ -1524,27 +1663,6 @@ ${topUps.length > 0 ? `<div class="section">
         a.click();
         setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
         logStatus('📄 整理报告已导出');
-    }
-
-    // 快速备份：仅保存文件夹→视频ID映射（用于撤销前的保护）
-    async function quickBackupStructure(biliData, mediaIds) {
-        const structure = {};
-        for (const mediaId of mediaIds) {
-            structure[mediaId] = [];
-            let pn = 1;
-            while (true) {
-                try {
-                    const res = await safeFetchJson(`https://api.bilibili.com/x/v3/fav/resource/list?media_id=${mediaId}&pn=${pn}&ps=40&platform=web`);
-                    if (res.code !== 0) break;
-                    const medias = (res.data && res.data.medias) || [];
-                    medias.forEach(v => structure[mediaId].push({ id: v.id, type: v.type }));
-                    if (!res.data.has_more || medias.length === 0) break;
-                    pn++;
-                    await humanDelay(getAdaptiveFetchDelay());
-                } catch (e) { break; }
-            }
-        }
-        return structure;
     }
 
     // ================= 撤销/回滚（支持历史栈，保留最近5次） =================
@@ -2630,18 +2748,6 @@ ${topUps.length > 0 ? `<div class="section">
             const existingFolderNames = Object.keys(existingFoldersMap);
             logStatus(`📦 发现 ${existingFolderNames.length} 个已有收藏夹`);
 
-            // 1.5 备份（如果开启）
-            if (settings.backupBeforeExecute) {
-                logStatus('💾 正在自动备份当前收藏夹结构...');
-                try {
-                    const backupData = await quickBackupStructure(biliData, sourceMediaIds);
-                    GM_setValue('bfao_quickBackup', JSON.stringify({ time: new Date().toISOString(), data: backupData }));
-                    logStatus('💾 备份完成');
-                } catch (e) {
-                    logStatus(`⚠️ 备份失败（继续执行）: ${e.message}`);
-                }
-            }
-
             // 2. 流水线模式：边抓取边调 AI（并发）
             const { aiChunkSize, aiConcurrency, limitEnabled, limitCount } = settings;
             const videoLimit = limitEnabled ? limitCount : Infinity;
@@ -2776,66 +2882,111 @@ ${topUps.length > 0 ? `<div class="section">
                 if (state.cancelRequested) break;
                 if (sourceMediaIds.length > 1) logStatus(`📂 正在抓取收藏夹 ${currentMediaId}...`);
 
-                let pn = 1;
                 const ps = 40;
                 let totalInFolder = 0;
 
-                while (!state.cancelRequested) {
-                    if (pn <= 3 || pn % 10 === 0) {
-                        logStatus(`📥 抓取第 ${pn} 页...${totalInFolder ? ` (已抓 ${fetchedTotal}/${Math.min(videoLimit, totalInAllFolders || fetchedTotal + 100)})` : ''}`);
-                    }
-                    let listRes;
-                    try {
-                        listRes = await safeFetchJson(`https://api.bilibili.com/x/v3/fav/resource/list?media_id=${currentMediaId}&pn=${pn}&ps=${ps}&platform=web`);
-                    } catch (e) {
-                        logStatus(`❌ 抓取出错: ${e.message}`);
-                        break;
-                    }
-                    if (listRes.code !== 0) { logStatus(`❌ 抓取出错: ${listRes.message}`); break; }
-
-                    if (pn === 1 && listRes.data && listRes.data.info) {
-                        totalInFolder = listRes.data.info.media_count || 0;
-                        totalInAllFolders += totalInFolder;
-                        logStatus(`📊 收藏夹共 ${totalInFolder} 个视频${limitEnabled ? `，本次处理前 ${Math.min(limitCount, totalInFolder)} 个` : ''}`);
-                    }
-
-                    const medias = (listRes.data && listRes.data.medias) || [];
-                    for (const v of medias) {
-                        if (fetchedTotal >= videoLimit) break;
-                        if (settings.skipDeadVideos && isDeadVideo(v)) { deadSkipped++; continue; }
-                        // 增量模式：跳过上次整理前已存在的视频（按收藏时间判断）
-                        if (lastRunTime > 0 && v.fav_time && v.fav_time <= lastRunTime) { incrementalSkipped++; continue; }
-                        // 跨收藏夹去重：记录视频出现的收藏夹
-                        if (sourceMediaIds.length > 1) {
-                            const folderInfo = { folderId: currentMediaId, folderTitle: folderTitleMap[currentMediaId] || currentMediaId };
-                            if (!videoSeenInFolders[v.id]) {
-                                videoSeenInFolders[v.id] = [folderInfo];
-                            } else {
-                                videoSeenInFolders[v.id].push(folderInfo);
-                                continue; // 跳过重复添加，不重复发给 AI
-                            }
+                // 辅助函数：将视频加入处理队列
+                const processVideo = (v) => {
+                    if (fetchedTotal >= videoLimit) return false;
+                    if (settings.skipDeadVideos && isDeadVideo(v)) { deadSkipped++; return true; }
+                    if (lastRunTime > 0 && v.fav_time && v.fav_time <= lastRunTime) { incrementalSkipped++; return true; }
+                    if (sourceMediaIds.length > 1) {
+                        const folderInfo = { folderId: currentMediaId, folderTitle: folderTitleMap[currentMediaId] || currentMediaId };
+                        if (!videoSeenInFolders[v.id]) {
+                            videoSeenInFolders[v.id] = [folderInfo];
+                        } else {
+                            videoSeenInFolders[v.id].push(folderInfo);
+                            return true;
                         }
-                        buffer.push(v);
-                        allVideos.push(v);
-                        videoIdMap[v.id] = v;
-                        videoSourceMap[v.id] = currentMediaId;
-                        fetchedTotal++;
+                    }
+                    buffer.push(v);
+                    allVideos.push(v);
+                    videoIdMap[v.id] = v;
+                    videoSourceMap[v.id] = currentMediaId;
+                    fetchedTotal++;
+                    return true;
+                };
+
+                // 先获取第1页以得到 media_count
+                let firstRes;
+                try {
+                    firstRes = await safeFetchJson(`https://api.bilibili.com/x/v3/fav/resource/list?media_id=${currentMediaId}&pn=1&ps=${ps}&platform=web`);
+                } catch (e) { logStatus(`❌ 抓取出错: ${e.message}`); continue; }
+                if (firstRes.code !== 0) { logStatus(`❌ 抓取出错: ${firstRes.message}`); continue; }
+
+                if (firstRes.data && firstRes.data.info) {
+                    totalInFolder = firstRes.data.info.media_count || 0;
+                    totalInAllFolders += totalInFolder;
+                }
+
+                // 尝试增量协调缓存
+                const reconciled = await reconcileCache(currentMediaId, totalInFolder);
+                let usedCache = false;
+
+                if (reconciled) {
+                    const label = reconciled.newCount > 0 ? `缓存+${reconciled.newCount}新增` :
+                                  reconciled.removedCount > 0 ? `缓存，约${reconciled.removedCount}个已删除` : '使用缓存';
+                    logStatus(`⚡ ${label}: ${folderTitleMap[currentMediaId] || currentMediaId} (${reconciled.videos.length} 个视频)`);
+                    for (const v of reconciled.videos) {
+                        if (!processVideo(v)) break;
+                    }
+                    usedCache = true;
+                }
+
+                // 无缓存：正常全量抓取
+                if (!usedCache) {
+                    logStatus(`📊 收藏夹共 ${totalInFolder} 个视频${limitEnabled ? `，本次处理前 ${Math.min(limitCount, totalInFolder)} 个` : ''}`);
+                    const fetchedVideosForCache = [];
+
+                    // 处理第1页结果
+                    const medias1 = (firstRes.data && firstRes.data.medias) || [];
+                    for (const v of medias1) {
+                        fetchedVideosForCache.push(v);
+                        if (!processVideo(v)) break;
                     }
 
-                    updateProgress('fetch', fetchedTotal, limitEnabled ? Math.min(limitCount, totalInAllFolders) : totalInAllFolders);
-                    flushBuffer(false);
+                    let pn = 1;
+                    const hasMore1 = firstRes.data && firstRes.data.has_more;
+                    if (hasMore1 && medias1.length > 0 && fetchedTotal < videoLimit) {
+                        pn = 2;
+                        while (!state.cancelRequested) {
+                            if (pn <= 3 || pn % 10 === 0) {
+                                logStatus(`📥 抓取第 ${pn} 页... (已抓 ${fetchedTotal}/${Math.min(videoLimit, totalInAllFolders || fetchedTotal + 100)})`);
+                            }
+                            let listRes;
+                            try {
+                                listRes = await safeFetchJson(`https://api.bilibili.com/x/v3/fav/resource/list?media_id=${currentMediaId}&pn=${pn}&ps=${ps}&platform=web`);
+                            } catch (e) { logStatus(`❌ 抓取出错: ${e.message}`); break; }
+                            if (listRes.code !== 0) { logStatus(`❌ 抓取出错: ${listRes.message}`); break; }
 
-                    const hasMore = listRes.data && listRes.data.has_more;
-                    if (!hasMore || medias.length === 0 || fetchedTotal >= videoLimit) break;
-                    pn++;
-                    await humanDelay(getAdaptiveFetchDelay());
-                    await checkBatchPause();
+                            const medias = (listRes.data && listRes.data.medias) || [];
+                            for (const v of medias) {
+                                fetchedVideosForCache.push(v);
+                                if (!processVideo(v)) break;
+                            }
+
+                            const hasMore = listRes.data && listRes.data.has_more;
+                            if (!hasMore || medias.length === 0 || fetchedTotal >= videoLimit) break;
+                            pn++;
+                            await humanDelay(getAdaptiveFetchDelay());
+                            await checkBatchPause();
+                        }
+                    }
+
+                    // 完整抓取的收藏夹写入全局缓存
+                    if (!state.cancelRequested && fetchedVideosForCache.length > 0) {
+                        updateCachedFolder(currentMediaId, folderTitleMap[currentMediaId] || '', totalInFolder, fetchedVideosForCache);
+                    }
                 }
+
+                updateProgress('fetch', fetchedTotal, limitEnabled ? Math.min(limitCount, totalInAllFolders) : totalInAllFolders);
+                flushBuffer(false);
                 if (fetchedTotal >= videoLimit) break;
             }
 
             // 抓取结束：缓冲区剩余全部发出
             flushBuffer(true);
+            saveGlobalVideoCache();
 
             // 保存抓取缓存（供取消后复用）
             videoFetchCache.mediaId = cacheKey;
@@ -3872,9 +4023,6 @@ ${topUps.length > 0 ? `<div class="section">
                             <label style="display:flex;align-items:center;gap:4px;cursor:pointer;" title="根据B站API限流响应自动调整请求速度">
                                 <input id="ai-set-adaptive" type="checkbox" ${settings.adaptiveRate ? 'checked' : ''}> 自适应限速
                             </label>
-                            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;" title="执行整理前自动保存当前收藏夹结构">
-                                <input id="ai-set-backup" type="checkbox" ${settings.backupBeforeExecute ? 'checked' : ''}> 自动备份
-                            </label>
                         </div>
                         <div style="display:flex;gap:12px;margin-bottom:8px;font-size:12px;flex-wrap:wrap;">
                             <label style="display:flex;align-items:center;gap:4px;cursor:pointer;" title="操作完成后发送浏览器通知（需要授权）">
@@ -3949,9 +4097,11 @@ ${topUps.length > 0 ? `<div class="section">
                         <button id="ai-tool-stop" class="ai-btn" style="display:none;flex:1;padding:7px;background:#e74c3c;color:#fff;border:none;font-size:11px;"><i data-lucide="square" style="width:12px;height:12px;"></i> 停止</button>
                     </div>
                     <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
-                        <button id="ai-tool-backup" class="ai-btn ai-btn-tool" style="flex:1;padding:7px;min-width:60px;" title="备份/下载收藏夹结构"><i data-lucide="download" style="width:12px;height:12px;"></i> 备份</button>
-                        <button id="ai-tool-bench" class="ai-btn ai-btn-tool" style="flex:1;padding:7px;min-width:60px;" title="AI模型性能测试"><i data-lucide="gauge" style="width:12px;height:12px;"></i> 测试AI</button>
-                        <button id="ai-tool-stats" class="ai-btn ai-btn-tool" style="flex:1;padding:7px;min-width:50px;" title="收藏夹数据统计"><i data-lucide="bar-chart-3" style="width:12px;height:12px;"></i> 统计</button>
+                        <button id="ai-tool-backup" class="ai-btn ai-btn-tool" style="flex:1;padding:7px;min-width:55px;" title="备份/下载收藏夹结构"><i data-lucide="download" style="width:12px;height:12px;"></i> 备份</button>
+                        <button id="ai-tool-bench" class="ai-btn ai-btn-tool" style="flex:1;padding:7px;min-width:65px;" title="AI模型性能测试"><i data-lucide="gauge" style="width:12px;height:12px;"></i> 测试AI</button>
+                        <button id="ai-tool-stats" class="ai-btn ai-btn-tool" style="flex:1;padding:7px;min-width:55px;" title="收藏夹数据统计"><i data-lucide="bar-chart-3" style="width:12px;height:12px;"></i> 统计</button>
+                    </div>
+                    <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
                         <button id="ai-tool-health" class="ai-btn ai-btn-tool" style="padding:7px;" title="收藏夹健康检查"><i data-lucide="heart-pulse" style="width:12px;height:12px;"></i></button>
                         <button id="ai-tool-log-export" class="ai-btn ai-btn-tool" style="padding:7px;" title="导出日志"><i data-lucide="file-text" style="width:12px;height:12px;"></i></button>
                         <button id="ai-tool-help" class="ai-btn ai-btn-tool" style="padding:7px;" title="帮助与常见问题"><i data-lucide="help-circle" style="width:12px;height:12px;"></i></button>
@@ -4275,29 +4425,44 @@ ${topUps.length > 0 ? `<div class="section">
             backupBtn.disabled = false;
             backupBtn.style.opacity = '1';
 
-            // 停止按钮点击处理
+            // AbortController 用于立即中断进行中的 fetch 请求
+            const backupAbort = new AbortController();
             const origOnclick = backupBtn.onclick;
-            backupBtn.onclick = () => { state.cancelRequested = true; logStatus('⏹ 正在停止备份...'); };
+            backupBtn.onclick = () => {
+                state.cancelRequested = true;
+                backupAbort.abort();
+                logStatus('⏹ 正在停止备份...');
+            };
 
             document.getElementById('ai-status-log').innerHTML = '';
             const settings = loadSettings();
             initAdaptiveState(settings);
 
+            let backup = null;
             try {
-                const backup = await backupFavorites(biliData, false);
+                backup = await backupFavorites(biliData, false, backupAbort.signal);
+            } catch (err) {
                 if (!state.cancelRequested) {
-                    downloadBackupFile(backup);
-                    const totalVids = backup.folders.reduce((s, f) => s + f.videos.length, 0);
-                    logStatus(`✅ 备份完成！${backup.folders.length} 个收藏夹，${totalVids} 个视频已导出`);
+                    logStatus(`❌ 备份失败: ${err.message}`);
+                }
+            }
 
+            // 无论完成还是中断，都导出已备份的数据
+            if (backup && backup.folders.length > 0) {
+                downloadBackupFile(backup);
+                const totalVids = backup.folders.reduce((s, f) => s + f.videos.length, 0);
+                if (state.cancelRequested) {
+                    logStatus(`⏹ 备份已中断，已导出 ${backup.folders.length} 个收藏夹，${totalVids} 个视频`);
+                } else {
+                    logStatus(`✅ 备份完成！${backup.folders.length} 个收藏夹，${totalVids} 个视频已导出`);
                     if (settings.notifyOnComplete) {
                         sendNotification('备份完成', `${backup.folders.length} 个收藏夹已导出为JSON文件`);
                     }
-                } else {
-                    logStatus('⏹ 备份已取消');
                 }
-            } catch (err) {
-                logStatus(`❌ 备份失败: ${err.message}`);
+            } else if (!state.cancelRequested) {
+                logStatus('⚠️ 没有备份到任何数据');
+            } else {
+                logStatus('⏹ 备份已取消');
             }
 
             // 恢复备份按钮
@@ -4323,7 +4488,7 @@ ${topUps.length > 0 ? `<div class="section">
                 { q: '可以撤销移动操作吗？', a: '可以！点击工具栏的"撤销"按钮即可撤销整理操作。系统保留最近5次操作的撤销记录，有多条记录时可选择撤销哪一次。' },
                 { q: '自适应限速是什么？', a: '开启后，脚本会根据B站实际限流响应自动调整请求速度：被限流时延迟自动翻倍，并触发全局冷却（8-60秒），连续成功5次后逐步恢复。采用指数退避策略，有效避免连续412错误。' },
                 { q: '跨收藏夹整理怎么用？', a: '在行为设置中勾选"跨收藏夹"，点击开始整理时会弹出收藏夹选择器，可以同时整理多个收藏夹中的视频。' },
-                { q: '备份功能怎么用？', a: '点击"备份"按钮可导出所有收藏夹结构为JSON文件。勾选"自动备份"则每次整理前自动保存快照，支持撤销时恢复。' },
+                { q: '备份功能怎么用？', a: '点击"备份"按钮可导出所有收藏夹结构为JSON文件。中途停止也会导出已备份的部分数据。' },
                 { q: 'AI测试是什么？', a: '点击"测试AI"可测试当前模型的响应速度和分类准确度，帮你选择最优的AI模型配置。' },
                 { q: '暗色模式怎么用？', a: '点击标题栏的 🌙 月亮图标即可切换亮色/暗色主题。会自动保存你的偏好。' },
                 { q: '支持哪些 AI 服务商？', a: '支持 13 个：Google Gemini、OpenAI、DeepSeek、硅基流动、通义千问、Moonshot(Kimi)、智谱(GLM)、Groq、OpenRouter、Ollama(本地)、GitHub Models、Anthropic Claude、自定义 OpenAI 兼容接口。' },
@@ -4461,8 +4626,13 @@ ${topUps.length > 0 ? `<div class="section">
             statsBtn.disabled = false;
             statsBtn.style.opacity = '1';
 
+            const statsAbort = new AbortController();
             const origOnclick = statsBtn.onclick;
-            statsBtn.onclick = () => { state.cancelRequested = true; logStatus('⏹ 正在停止统计...'); };
+            statsBtn.onclick = () => {
+                state.cancelRequested = true;
+                statsAbort.abort();
+                logStatus('⏹ 正在停止统计...');
+            };
 
             const settings = loadSettings();
             initAdaptiveState(settings);
@@ -4497,14 +4667,12 @@ ${topUps.length > 0 ? `<div class="section">
                     const cached = folderStatsCache[fid];
                     if (forceFullScan || !cached) {
                         foldersFullScan.push(f);
-                    } else if (cached.media_count === f.media_count) {
+                    } else if (cached.media_count >= f.media_count) {
+                        // media_count 没变或减少（删除了视频），使用已有统计缓存
                         skippedCount++;
-                    } else if (f.media_count > cached.media_count) {
-                        // 新增了视频，只需增量抓取
-                        foldersIncremental.push({ folder: f, diff: f.media_count - cached.media_count });
                     } else {
-                        // media_count 减少了（删除/移走了视频），需要全量重扫
-                        foldersFullScan.push(f);
+                        // media_count 增加，只需增量抓取新增部分
+                        foldersIncremental.push({ folder: f, diff: f.media_count - cached.media_count });
                     }
                 }
 
@@ -4572,24 +4740,38 @@ ${topUps.length > 0 ? `<div class="section">
                     if (state.cancelRequested) break;
                     const fid = String(f.id);
                     workDone++;
-                    logStatus(`📊 全扫 [${workDone}/${totalWork}] ${f.title}...`);
 
                     const folderStats = { media_count: f.media_count, dead: 0, upCounter: {}, duration: { short: 0, medium: 0, long: 0 } };
-                    try {
-                        let pn = 1;
-                        while (true) {
-                            if (state.cancelRequested) break;
-                            const res = await safeFetchJson(`https://api.bilibili.com/x/v3/fav/resource/list?media_id=${f.id}&pn=${pn}&ps=40&platform=web`);
-                            if (res.code !== 0) break;
-                            const medias = res.data.medias || [];
-                            medias.forEach(v => statVideo(v, folderStats));
-                            if (!res.data.has_more || medias.length === 0) break;
-                            pn++;
-                            await waitForGlobalCooldown();
-                            await humanDelay(getAdaptiveFetchDelay());
-                            await checkBatchPause();
+
+                    // 优先使用缓存（支持增量协调）
+                    const reconciled = await reconcileCache(f.id, f.media_count);
+                    if (reconciled) {
+                        const label = reconciled.newCount > 0 ? `缓存+${reconciled.newCount}新增` : '使用缓存';
+                        logStatus(`⚡ 统计 [${workDone}/${totalWork}] ${f.title} (${label})`);
+                        reconciled.videos.forEach(v => statVideo(v, folderStats));
+                    } else {
+                        logStatus(`📊 全扫 [${workDone}/${totalWork}] ${f.title}...`);
+                        const fetchedVideos = [];
+                        try {
+                            let pn = 1;
+                            while (true) {
+                                if (state.cancelRequested) break;
+                                const res = await safeFetchJson(`https://api.bilibili.com/x/v3/fav/resource/list?media_id=${f.id}&pn=${pn}&ps=40&platform=web`);
+                                if (res.code !== 0) break;
+                                const medias = res.data.medias || [];
+                                medias.forEach(v => { statVideo(v, folderStats); fetchedVideos.push(v); });
+                                if (!res.data.has_more || medias.length === 0) break;
+                                pn++;
+                                await waitForGlobalCooldown();
+                                await humanDelay(getAdaptiveFetchDelay());
+                                await checkBatchPause();
+                            }
+                        } catch (e) { /* skip failed folders */ }
+                        // 写入全局缓存
+                        if (!state.cancelRequested && fetchedVideos.length > 0) {
+                            updateCachedFolder(f.id, f.title, f.media_count, fetchedVideos);
                         }
-                    } catch (e) { /* skip failed folders */ }
+                    }
 
                     folderStatsCache[fid] = folderStats;
                     await waitForGlobalCooldown();
@@ -4598,6 +4780,7 @@ ${topUps.length > 0 ? `<div class="section">
 
                 // 即使取消也保存已扫描的部分（下次可续用）
                 GM_setValue(STATS_DATA_KEY, JSON.stringify(folderStatsCache));
+                saveGlobalVideoCache();
 
                 // --- 合并所有收藏夹统计 ---
                 let totalVideos = 0;
@@ -5086,7 +5269,6 @@ ${topUps.length > 0 ? `<div class="section">
                 moveChunkSize: Math.max(1, Math.min(100, parseInt(document.getElementById('ai-set-move-chunk').value) || 20)),
                 skipDeadVideos: document.getElementById('ai-set-skipdead').checked,
                 adaptiveRate: document.getElementById('ai-set-adaptive').checked,
-                backupBeforeExecute: document.getElementById('ai-set-backup').checked,
                 notifyOnComplete: document.getElementById('ai-set-notify').checked,
                 multiFolderEnabled: document.getElementById('ai-set-multifolder').checked,
                 animEnabled: document.getElementById('ai-set-anim-enabled').checked,
@@ -5108,7 +5290,7 @@ ${topUps.length > 0 ? `<div class="section">
             if (el) el.addEventListener('change', autoSaveAllSettings);
         });
         // checkbox：change 事件立即保存
-        ['ai-set-limit-enabled', 'ai-set-skipdead', 'ai-set-adaptive', 'ai-set-backup',
+        ['ai-set-limit-enabled', 'ai-set-skipdead', 'ai-set-adaptive',
          'ai-set-notify', 'ai-set-multifolder', 'ai-set-anim-enabled', 'ai-set-incremental',
          'ai-set-auto-organize'].forEach(id => {
             const el = document.getElementById(id);
@@ -5315,11 +5497,96 @@ ${topUps.length > 0 ? `<div class="section">
         setupAutoOrganize();
     }
 
-    // ================= 启动 =================
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initUI);
-    } else {
-        initUI();
+    // ================= 后台视频缓存 =================
+    // 在所有 B 站页面后台增量缓存视频数据，供整理/备份/统计复用
+    let _bgCacheTimer = null;
+
+    async function backgroundCacheScan() {
+        try {
+            const biliData = getBiliData();
+            if (!biliData.mid) return;
+
+            console.log('[AI整理] 🔄 后台缓存：开始扫描收藏夹...');
+            const allFolders = await getAllFoldersWithIds(biliData);
+            const settings = loadSettings();
+            initAdaptiveState(settings);
+
+            // 清理已删除的收藏夹
+            cleanCacheForDeletedFolders(allFolders.map(f => f.id));
+
+            let updated = 0, skipped = 0;
+            for (const folder of allFolders) {
+                if (state.isRunning) { console.log('[AI整理] 🔄 后台缓存：有任务运行中，暂停'); break; }
+
+                // 尝试增量协调
+                const reconciled = await reconcileCache(folder.id, folder.media_count);
+                if (reconciled) {
+                    if (reconciled.newCount > 0) {
+                        console.log(`[AI整理] 🔄 后台缓存: ${folder.title} 增量更新 +${reconciled.newCount}`);
+                        updated++;
+                    } else {
+                        skipped++;
+                    }
+                    continue;
+                }
+
+                // 无缓存，全量抓取
+                console.log(`[AI整理] 🔄 后台缓存: ${folder.title} (${folder.media_count} 个视频)...`);
+                const videos = [];
+                let pn = 1;
+                try {
+                    while (true) {
+                        if (state.isRunning) break;
+                        const res = await lightFetchJson(`https://api.bilibili.com/x/v3/fav/resource/list?media_id=${folder.id}&pn=${pn}&ps=40&platform=web`);
+                        if (res.code !== 0) break;
+                        const medias = (res.data && res.data.medias) || [];
+                        videos.push(...medias);
+                        if (!res.data.has_more || medias.length === 0) break;
+                        pn++;
+                        await humanDelay(getAdaptiveFetchDelay());
+                        await checkBatchPause();
+                    }
+                } catch (e) {
+                    console.warn(`[AI整理] 🔄 后台缓存 ${folder.title} 失败:`, e.message);
+                    continue;
+                }
+
+                if (videos.length > 0 && !state.isRunning) {
+                    updateCachedFolder(folder.id, folder.title, folder.media_count, videos);
+                    updated++;
+                }
+            }
+
+            saveGlobalVideoCache();
+            console.log(`[AI整理] 🔄 后台缓存完成: ${updated} 个更新, ${skipped} 个跳过`);
+        } catch (e) {
+            console.warn('[AI整理] 🔄 后台缓存出错:', e.message);
+        }
     }
+
+    function setupBackgroundCache() {
+        // 延迟 30 秒开始第一次，之后每 30 分钟
+        setTimeout(() => {
+            if (!state.isRunning) backgroundCacheScan();
+            _bgCacheTimer = setInterval(() => {
+                if (!state.isRunning) backgroundCacheScan();
+            }, 30 * 60 * 1000);
+        }, 30000);
+    }
+
+    // ================= 启动 =================
+    const _isOnSpacePage = /space\.bilibili\.com/.test(location.href);
+
+    if (_isOnSpacePage) {
+        // 在 space 页面注入完整 UI
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initUI);
+        } else {
+            initUI();
+        }
+    }
+
+    // 所有 B 站页面启动后台缓存
+    setupBackgroundCache();
 
 })();
