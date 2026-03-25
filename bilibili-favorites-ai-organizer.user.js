@@ -51,7 +51,7 @@
             #ai-float-btn [data-lucide]{width:24px;height:24px;}
             #ai-sort-wrapper{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-panel);width:min(400px,calc(100vw - 60px));flex-direction:column;background:var(--ai-bg,#fff);color:var(--ai-text,#181233);box-shadow:0 24px 68px rgba(0,0,0,0.11),0 10px 28px rgba(0,0,0,0.07);border-radius:28px;overflow:hidden;max-height:85vh;font-family:var(--ai-font);}
             #ai-sort-wrapper [data-lucide]{width:16px;height:16px;stroke-width:2;vertical-align:middle;display:inline-block;}
-            .ai-panel-content{background:var(--ai-bg)!important;padding:0;overflow-y:auto;max-height:calc(85vh - 46px);border-bottom-left-radius:26px;border-bottom-right-radius:26px;}
+            .ai-panel-content{background:var(--ai-bg)!important;padding:0;overflow-y:auto;overflow-x:hidden;max-height:calc(85vh - 46px);border-bottom-left-radius:26px;border-bottom-right-radius:26px;}
             .ai-header{background:linear-gradient(135deg,#7364FF,#E056CF,#FF6B9D,#00D4AA,#9B59F6,#20E3B2,#E056CF);background-size:900% 900%;color:#fff;padding:16px 18px;font-weight:600;font-size:14px;display:flex;justify-content:space-between;align-items:center;position:relative;overflow:hidden;}
             .ai-header-title{display:flex;align-items:center;gap:7px;}
             .ai-header-actions{display:flex;gap:8px;align-items:center;position:relative;z-index:1;}
@@ -87,7 +87,7 @@
             .ai-modal-header{padding:18px 22px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.10);background:linear-gradient(135deg,#7364FF,#E056CF,#FF6B9D,#9B59F6);background-size:800% 800%;color:#fff;position:relative;overflow:hidden;}
             .ai-modal-header h3{margin:0;font-size:15px;font-weight:bold;display:flex;align-items:center;gap:8px;position:relative;z-index:1;}
             .ai-modal-toolbar{padding:10px 20px;border-bottom:1px solid var(--ai-border-light);background:var(--ai-bg-secondary)!important;}
-            .ai-modal-body{flex:1;overflow-y:auto;padding:0;min-height:0;}
+            .ai-modal-body{flex:1;overflow-y:auto;overflow-x:hidden;padding:0;min-height:0;}
             .ai-modal-footer{padding:14px 20px;border-top:1px solid var(--ai-border-light);display:flex;gap:12px;background:var(--ai-bg-secondary)!important;box-shadow:0 -4px 12px rgba(0,0,0,0.04);}
             .ai-modal-close{background:rgba(255,255,255,0.2);border:none;color:#fff;width:28px;height:28px;border-radius:var(--ai-radius-md);cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;}
             .ai-modal-btn{flex:1;padding:11px;border:none;border-radius:var(--ai-radius-md);font-size:14px;font-weight:700;cursor:pointer;transition:all 0.35s var(--ai-spring);display:flex;align-items:center;justify-content:center;gap:6px;}
@@ -5554,8 +5554,16 @@ ${topUps.length > 0 ? `<div class="section">
             // 使用
             backdrop.querySelectorAll('.ai-tpl-use').forEach(btn => {
                 btn.onclick = () => {
-                    const t = loadCustomTemplates()[parseInt(btn.dataset.idx)];
-                    if (t) document.getElementById('ai-custom-prompt').value = t.prompt;
+                    const idx = parseInt(btn.dataset.idx);
+                    const t = loadCustomTemplates()[idx];
+                    if (t) {
+                        document.getElementById('ai-custom-prompt').value = t.prompt;
+                        // 同步更新快捷策略下拉框，选中对应的自定义模板
+                        const select = document.getElementById('ai-preset-select');
+                        const allPresets = getAllPresets();
+                        const matchIdx = allPresets.findIndex(p => p.isCustom && p.id === t.id);
+                        if (matchIdx !== -1) select.value = matchIdx;
+                    }
                     closeModal();
                 };
             });
