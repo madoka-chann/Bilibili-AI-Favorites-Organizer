@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动细化整理 (V1.0 增强版)
 // @namespace    http://tampermonkey.net/
-// @version      1.0.0
-// @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速
+// @version      1.1.0
+// @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://space.bilibili.com/*
 // @include      https://space.bilibili.com/*
@@ -3068,6 +3068,15 @@ ${topUps.length > 0 ? `<div class="section">
             const elapsedStr = elapsedSec >= 60 ? `${Math.floor(elapsedSec / 60)}分${elapsedSec % 60}秒` : `${elapsedSec}秒`;
             logStatus(`\n🎉 全部完成！共处理 ${totalProcessed} 个视频，分到 ${Object.keys(allCategories).length} 个收藏夹，耗时 ${elapsedStr}。请刷新页面！`);
 
+            // 完成庆祝：confetti + toast
+            showToast(`整理完成！${totalProcessed} 个视频 → ${Object.keys(allCategories).length} 个分类`, 'success', 5000);
+            const panelRect = document.getElementById('ai-sort-wrapper')?.getBoundingClientRect();
+            if (panelRect) {
+                launchConfetti(panelRect.left + panelRect.width / 2, panelRect.top, 50);
+                setTimeout(() => launchConfetti(panelRect.left + panelRect.width * 0.3, panelRect.top + 20, 30), 200);
+                setTimeout(() => launchConfetti(panelRect.left + panelRect.width * 0.7, panelRect.top + 20, 30), 400);
+            }
+
             // 保存本次运行时间戳（用于增量模式）
             GM_setValue('bfao_lastRunTime', Math.floor(Date.now() / 1000));
 
@@ -3144,7 +3153,7 @@ ${topUps.length > 0 ? `<div class="section">
     }
 
     function setToolButtonsDisabled(disabled) {
-        ['ai-tool-clean', 'ai-tool-dup', 'ai-tool-undo', 'ai-tool-backup', 'ai-tool-bench', 'ai-tool-log-export', 'ai-tool-health'].forEach(id => {
+        ['ai-tool-clean', 'ai-tool-dup', 'ai-tool-undo', 'ai-tool-backup', 'ai-tool-bench', 'ai-tool-log-export', 'ai-tool-health', 'ai-tool-history'].forEach(id => {
             const el = document.getElementById(id);
             if (el) { el.disabled = disabled; el.style.opacity = disabled ? '0.5' : '1'; }
         });
@@ -3276,6 +3285,7 @@ ${topUps.length > 0 ? `<div class="section">
 
             if (deadVideos.length === 0) {
                 logStatus('✅ 没有发现失效视频！你的收藏夹很健康！');
+                showToast('未发现失效视频，收藏夹很健康！', 'success');
                 resetMainButton();
                 return;
             }
@@ -3548,6 +3558,125 @@ ${topUps.length > 0 ? `<div class="section">
         area.style.display = (forceOpen === true || !isOpen) ? 'block' : 'none';
     }
 
+    // ================= Toast 通知系统 =================
+    const _toastContainer = (() => {
+        const c = document.createElement('div');
+        c.className = 'ai-toast-container';
+        c.id = 'ai-toast-container';
+        return c;
+    })();
+
+    function showToast(message, type = 'info', duration = 3500) {
+        if (!document.body.contains(_toastContainer)) {
+            document.body.appendChild(_toastContainer);
+        }
+        const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+        const toast = document.createElement('div');
+        toast.className = `ai-toast ai-toast-${type}`;
+        toast.innerHTML = `<span class="ai-toast-icon">${icons[type] || icons.info}</span><span>${escapeHtml(message)}</span>`;
+        const progress = document.createElement('div');
+        progress.className = 'ai-toast-progress';
+        progress.style.animationDuration = duration + 'ms';
+        toast.appendChild(progress);
+        toast.onclick = () => dismissToast(toast);
+        _toastContainer.appendChild(toast);
+        const timer = setTimeout(() => dismissToast(toast), duration);
+        toast._timer = timer;
+        // 最多同时显示 5 个
+        while (_toastContainer.children.length > 5) {
+            dismissToast(_toastContainer.firstChild);
+        }
+        return toast;
+    }
+
+    function dismissToast(toast) {
+        if (!toast || toast._dismissed) return;
+        toast._dismissed = true;
+        clearTimeout(toast._timer);
+        toast.classList.add('ai-toast-exit');
+        setTimeout(() => toast.remove(), 300);
+    }
+
+    // ================= Confetti 爆炸效果 =================
+    function launchConfetti(x, y, count = 40) {
+        const colors = ['#fb7299', '#a78bfa', '#60a5fa', '#34d399', '#fbbf24', '#f87171', '#818cf8'];
+        const frag = document.createDocumentFragment();
+        for (let i = 0; i < count; i++) {
+            const piece = document.createElement('div');
+            piece.className = 'ai-confetti-piece';
+            piece.style.left = x + 'px';
+            piece.style.top = y + 'px';
+            piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+            piece.style.width = (4 + Math.random() * 6) + 'px';
+            piece.style.height = (4 + Math.random() * 6) + 'px';
+            piece.style.setProperty('--fall-distance', (200 + Math.random() * 500) + 'px');
+            piece.style.setProperty('--rotate-end', (360 + Math.random() * 720) + 'deg');
+            piece.style.setProperty('--rotate-x', (Math.random() * 360) + 'deg');
+            piece.style.animationDuration = (1 + Math.random() * 1.5) + 's';
+            // spread horizontally
+            const angle = (Math.random() * Math.PI * 2);
+            const spread = 50 + Math.random() * 150;
+            const dx = Math.cos(angle) * spread;
+            const dy = Math.sin(angle) * spread;
+            piece.style.transform = `translate(${dx}px, ${dy}px)`;
+            piece.addEventListener('animationend', () => piece.remove());
+            frag.appendChild(piece);
+        }
+        document.body.appendChild(frag);
+    }
+
+    // ================= 整理历史时间线 =================
+    function showHistoryTimeline() {
+        let history;
+        try { history = JSON.parse(GM_getValue('bfao_history', '[]')); } catch(e) { history = []; }
+        if (history.length === 0) {
+            showToast('暂无整理历史记录', 'info');
+            return;
+        }
+
+        const timelineHtml = history.map((h, i) => `
+            <div class="ai-timeline-item" style="animation-delay:${i * 0.08}s;">
+                <div class="ai-timeline-time">${escapeHtml(h.time)}</div>
+                <div class="ai-timeline-content">
+                    <div style="font-weight:bold;margin-bottom:2px;">整理了 <span style="color:var(--ai-primary);">${h.videoCount}</span> 个视频 → <span style="color:var(--ai-info);">${h.categoryCount}</span> 个分类</div>
+                    <div style="font-size:10px;color:var(--ai-text-muted);line-height:1.4;">${escapeHtml(h.categories || '')}</div>
+                </div>
+            </div>
+        `).join('');
+
+        const backdrop = document.createElement('div');
+        backdrop.className = 'ai-modal-backdrop';
+        backdrop.innerHTML = `
+        <div class="ai-modal" style="width:min(480px,90vw);">
+            <div class="ai-modal-header">
+                <h3><i data-lucide="clock" style="width:18px;height:18px;"></i> 整理历史</h3>
+                <button class="ai-modal-close" id="ai-history-close"><i data-lucide="x" style="width:16px;height:16px;"></i></button>
+            </div>
+            <div class="ai-modal-body" style="padding:16px 20px;">
+                <div class="ai-timeline">
+                    ${timelineHtml}
+                </div>
+            </div>
+            <div class="ai-modal-footer" style="justify-content:space-between;">
+                <button class="ai-modal-btn ai-modal-btn-cancel" id="ai-history-clear" style="max-width:120px;font-size:12px;"><i data-lucide="trash-2" style="width:14px;height:14px;"></i> 清空</button>
+                <button class="ai-modal-btn ai-modal-btn-cancel" id="ai-history-ok" style="max-width:120px;"><i data-lucide="check" style="width:16px;height:16px;"></i> 关闭</button>
+            </div>
+        </div>`;
+        document.documentElement.appendChild(backdrop);
+        backdrop.style.zIndex = '2147483645';
+        if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [backdrop] });
+        const closeModal = () => backdrop.remove();
+        backdrop.querySelector('#ai-history-close').onclick = closeModal;
+        backdrop.querySelector('#ai-history-ok').onclick = closeModal;
+        backdrop.querySelector('#ai-history-clear').onclick = () => {
+            if (confirm('确定清空所有整理历史？')) {
+                GM_setValue('bfao_history', '[]');
+                closeModal();
+                showToast('整理历史已清空', 'success');
+            }
+        };
+    }
+
     // ================= UI 构建 =================
     function initUI() {
         if (document.getElementById('ai-sort-wrapper')) return;
@@ -3767,7 +3896,7 @@ ${topUps.length > 0 ? `<div class="section">
                     <textarea id="ai-custom-prompt" class="ai-input" placeholder="输入自定义整理要求 (可选)...\n例如：把所有 Vue 相关的放一个文件夹" style="width:100%;height:65px;resize:none;margin-bottom:4px;border-radius:6px;">${escapeHtml(settings.lastPrompt || '')}</textarea>
                     <div id="ai-prompt-history" style="display:none;margin-bottom:8px;"></div>
 
-                    <button id="ai-start-btn" class="ai-btn ai-btn-primary" style="width:100%;padding:10px;font-size:14px;border-radius:8px;"><i data-lucide="play" style="width:15px;height:15px;"></i> 开始深度整理</button>
+                    <button id="ai-start-btn" class="ai-btn ai-btn-primary" style="width:100%;padding:10px;font-size:14px;border-radius:8px;" title="Ctrl+Enter 快速启动"><i data-lucide="play" style="width:15px;height:15px;"></i> 开始深度整理 <span class="ai-kbd" style="background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.25);color:rgba(255,255,255,0.8);box-shadow:none;">⌘↵</span></button>
 
                     <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
                         <button id="ai-tool-clean" class="ai-btn ai-btn-tool" style="flex:1;padding:7px;min-width:70px;"><i data-lucide="archive" style="width:12px;height:12px;"></i> 失效归档</button>
@@ -3782,6 +3911,7 @@ ${topUps.length > 0 ? `<div class="section">
                         <button id="ai-tool-health" class="ai-btn ai-btn-tool" style="padding:7px;" title="收藏夹健康检查"><i data-lucide="heart-pulse" style="width:12px;height:12px;"></i></button>
                         <button id="ai-tool-log-export" class="ai-btn ai-btn-tool" style="padding:7px;" title="导出日志"><i data-lucide="file-text" style="width:12px;height:12px;"></i></button>
                         <button id="ai-tool-help" class="ai-btn ai-btn-tool" style="padding:7px;" title="帮助与常见问题"><i data-lucide="help-circle" style="width:12px;height:12px;"></i></button>
+                        <button id="ai-tool-history" class="ai-btn ai-btn-tool" style="padding:7px;" title="整理历史"><i data-lucide="clock" style="width:12px;height:12px;"></i></button>
                         <button id="ai-tool-preview-debug" class="ai-btn ai-btn-tool" style="padding:7px;font-size:10px;color:var(--ai-text-light);" title="预览界面调试"><i data-lucide="eye" style="width:12px;height:12px;"></i></button>
                     </div>
 
@@ -3917,6 +4047,7 @@ ${topUps.length > 0 ? `<div class="section">
         document.getElementById('ai-tool-undo').onclick = undoLastOperation;
         document.getElementById('ai-tool-bench').onclick = async function() { btnStartLoading(this); try { await benchmarkAI(); } finally { btnStopLoading(this); } };
         document.getElementById('ai-tool-log-export').onclick = exportLogs;
+        document.getElementById('ai-tool-history').onclick = showHistoryTimeline;
 
         // ===== 收藏夹健康报告 =====
         document.getElementById('ai-tool-health').onclick = async function() {
@@ -4046,6 +4177,15 @@ ${topUps.length > 0 ? `<div class="section">
                 backdrop.querySelector('#ai-health-ok').onclick = closeModal;
 
                 logStatus(`🩺 健康检查完成！评分：${score}/100`);
+                if (score >= 80) {
+                    showToast(`健康评分 ${score}/100，状态良好！`, 'success');
+                    const rect = backdrop.querySelector('.ai-modal').getBoundingClientRect();
+                    launchConfetti(rect.left + rect.width / 2, rect.top + 60, 35);
+                } else if (score >= 60) {
+                    showToast(`健康评分 ${score}/100，有优化空间`, 'warning');
+                } else {
+                    showToast(`健康评分 ${score}/100，建议尽快优化`, 'error');
+                }
             } catch (err) {
                 logStatus(`❌ 健康检查失败: ${err.message}`);
             }
@@ -4624,8 +4764,9 @@ ${topUps.length > 0 ? `<div class="section">
                 GM_setValue('bfao_cachedModels_' + provider, result);
                 loadModelOptions(result); toggleModelDropdown(true);
                 restore('✅');
+                showToast(`获取到 ${result.length} 个模型`, 'success', 2500);
             } else {
-                alert('获取模型列表失败: ' + (error?.message || '未知错误'));
+                showToast('获取模型列表失败: ' + (error?.message || '未知错误'), 'error', 5000);
                 restore('❌');
             }
         };
@@ -4653,14 +4794,14 @@ ${topUps.length > 0 ? `<div class="section">
             if (success) {
                 if (result && (result.status === 'ok' || Object.keys(result).length > 0)) {
                     restore('🟢');
-                    alert(`✅ 模型验证成功！\n\n模型 "${modelName}" 可用。`);
+                    showToast(`模型 "${modelName}" 验证成功！`, 'success');
                 } else {
                     restore('🟡');
-                    alert(`⚠️ 模型有响应但格式异常，可能仍可使用。`);
+                    showToast('模型有响应但格式异常，可能仍可使用', 'warning');
                 }
             } else {
                 restore('🔴');
-                alert(`❌ 模型验证失败！\n\n模型 "${modelName}" 不可用。\n错误: ${error?.message || '未知错误'}`);
+                showToast(`模型验证失败: ${error?.message || '未知错误'}`, 'error', 5000);
             }
         };
 
@@ -5000,6 +5141,49 @@ ${topUps.length > 0 ? `<div class="section">
                 toggleSettings(true);
             }, 1500);
         }
+
+        // ===== 全局键盘快捷键 =====
+        document.addEventListener('keydown', (e) => {
+            // Esc: 关闭面板或模态框
+            if (e.key === 'Escape') {
+                const modal = document.querySelector('.ai-modal-backdrop');
+                if (modal) { modal.remove(); return; }
+                if (panel.style.display === 'flex') {
+                    panel.style.display = 'none';
+                    floatBtn.style.display = 'flex';
+                }
+                return;
+            }
+
+            // 仅在面板打开时生效的快捷键
+            if (panel.style.display !== 'flex') return;
+
+            // Ctrl+Enter / Cmd+Enter: 开始整理
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                const startBtn = document.getElementById('ai-start-btn');
+                if (startBtn && !startBtn.disabled) startBtn.click();
+                return;
+            }
+
+            // Ctrl+S / Cmd+S: 保存设置
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                const settingsArea = document.getElementById('ai-settings-area');
+                if (settingsArea && window.getComputedStyle(settingsArea).display !== 'none') {
+                    e.preventDefault();
+                    document.getElementById('ai-set-save').click();
+                    showToast('设置已保存', 'success', 2000);
+                }
+                return;
+            }
+
+            // Ctrl+, / Cmd+,: 切换设置面板
+            if ((e.ctrlKey || e.metaKey) && e.key === ',') {
+                e.preventDefault();
+                document.getElementById('ai-settings-toggle').click();
+                return;
+            }
+        });
 
         // 初始化定时自动整理
         setupAutoOrganize();
