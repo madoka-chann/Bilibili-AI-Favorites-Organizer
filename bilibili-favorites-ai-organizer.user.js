@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动细化整理 (V1.0 增强版)
 // @namespace    http://tampermonkey.net/
-// @version      1.3.0
+// @version      1.3.1
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -3919,6 +3919,7 @@ ${topUps.length > 0 ? `<div class="section">
             <div class="ai-header">
                 <span class="ai-header-title"><i data-lucide="bot"></i> AI 收藏夹整理助理</span>
                 <div class="ai-header-actions">
+                    <span id="ai-accent-toggle" class="ai-header-btn" title="色彩主题"><i data-lucide="palette"></i></span>
                     <span id="ai-theme-toggle" class="ai-header-btn" title="切换主题"><i data-lucide="moon"></i></span>
                     <span id="ai-settings-toggle" class="ai-header-btn" title="设置"><i data-lucide="settings"></i></span>
                     <span id="ai-close-btn" class="ai-header-btn" title="关闭"><i data-lucide="x"></i></span>
@@ -4171,6 +4172,141 @@ ${topUps.length > 0 ? `<div class="section">
             panel.addEventListener('mouseleave', () => {
                 orb.style.opacity = '0';
             });
+        })();
+
+        // === 星云粒子场 — 持续漂浮的发光粒子 ===
+        (() => {
+            const particleLayer = document.createElement('div');
+            particleLayer.className = 'ai-nebula-particles';
+            panel.insertBefore(particleLayer, panel.firstChild);
+
+            const PARTICLE_COUNT = 12;
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                const p = document.createElement('div');
+                p.className = 'ai-nebula-particle';
+                const size = 3 + Math.random() * 6;
+                const duration = 10 + Math.random() * 14;
+                const delay = Math.random() * -duration;
+                const startX = Math.random() * 100;
+                const startY = Math.random() * 100;
+                p.style.cssText = `
+                    width: ${size}px; height: ${size}px;
+                    left: ${startX}%; top: ${startY}%;
+                    --drift-duration: ${duration}s;
+                    --drift-delay: ${delay}s;
+                    --start-x: ${-20 + Math.random() * 40}px;
+                    --start-y: ${-20 + Math.random() * 40}px;
+                    --mid-x: ${-30 + Math.random() * 60}px;
+                    --mid-y: ${-30 + Math.random() * 60}px;
+                    --end-x: ${-20 + Math.random() * 40}px;
+                    --end-y: ${-20 + Math.random() * 40}px;
+                    --max-opacity: ${0.3 + Math.random() * 0.4};
+                `;
+                particleLayer.appendChild(p);
+            }
+        })();
+
+        // === 星云形变团 — 有机背景团块 ===
+        (() => {
+            const blobLayer = document.createElement('div');
+            blobLayer.className = 'ai-nebula-blobs';
+            panel.insertBefore(blobLayer, panel.firstChild);
+            for (let i = 0; i < 3; i++) {
+                const blob = document.createElement('div');
+                blob.className = 'ai-nebula-blob';
+                blobLayer.appendChild(blob);
+            }
+        })();
+
+        // === 液态流光边框 ===
+        panel.classList.add('ai-liquid-border');
+
+        // === 悬浮按钮星尘粒子 ===
+        (() => {
+            const ring = document.createElement('div');
+            ring.className = 'ai-stardust-ring';
+            const DUST_COUNT = 8;
+            const colors = ['#B4A0FF', '#FF6B8A', '#22D3EE', '#34D399', '#FBBF24', '#E879F9', '#FB7185', '#A78BFA'];
+            for (let i = 0; i < DUST_COUNT; i++) {
+                const dust = document.createElement('div');
+                dust.className = 'ai-stardust';
+                const angle = (i / DUST_COUNT) * Math.PI * 2;
+                const radius = 32 + Math.random() * 12;
+                const x = 50 + Math.cos(angle) * radius;
+                const y = 50 + Math.sin(angle) * radius;
+                dust.style.cssText = `
+                    left: calc(${x}% - 1.5px); top: calc(${y}% - 1.5px);
+                    --twinkle-duration: ${2 + Math.random() * 3}s;
+                    --twinkle-delay: ${Math.random() * -5}s;
+                    color: ${colors[i % colors.length]};
+                    background: ${colors[i % colors.length]};
+                `;
+                ring.appendChild(dust);
+            }
+            floatBtn.appendChild(ring);
+        })();
+
+        // === 色彩主题切换 (Accent Color Themes) ===
+        (() => {
+            const accents = [
+                { id: 'default', label: '默认紫罗兰' },
+                { id: 'sakura', label: '樱花粉' },
+                { id: 'ocean', label: '海洋蓝' },
+                { id: 'emerald', label: '翡翠绿' },
+                { id: 'amber', label: '琥珀橙' },
+                { id: 'crimson', label: '深红' }
+            ];
+
+            const savedAccent = GM_getValue('bfao_accent', 'default');
+            if (savedAccent !== 'default') {
+                document.documentElement.setAttribute('data-accent', savedAccent);
+            }
+
+            // 创建弹出面板
+            const picker = document.createElement('div');
+            picker.id = 'ai-accent-picker';
+            picker.style.cssText = 'display:none;position:absolute;top:100%;right:0;margin-top:6px;padding:10px 12px;background:var(--ai-glass-bg);backdrop-filter:blur(24px);border:1px solid var(--ai-glass-border);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.15);z-index:10;min-width:180px;';
+
+            const title = document.createElement('div');
+            title.style.cssText = 'font-size:11px;color:var(--ai-text-muted);margin-bottom:6px;font-weight:500;';
+            title.textContent = '色彩主题';
+            picker.appendChild(title);
+
+            const dotsRow = document.createElement('div');
+            dotsRow.className = 'ai-accent-picker';
+
+            accents.forEach(a => {
+                const dot = document.createElement('div');
+                dot.className = 'ai-accent-dot' + (savedAccent === a.id ? ' active' : '');
+                dot.setAttribute('data-accent', a.id);
+                dot.title = a.label;
+                dot.onclick = () => {
+                    dotsRow.querySelectorAll('.ai-accent-dot').forEach(d => d.classList.remove('active'));
+                    dot.classList.add('active');
+                    if (a.id === 'default') {
+                        document.documentElement.removeAttribute('data-accent');
+                    } else {
+                        document.documentElement.setAttribute('data-accent', a.id);
+                    }
+                    GM_setValue('bfao_accent', a.id);
+                };
+                dotsRow.appendChild(dot);
+            });
+            picker.appendChild(dotsRow);
+
+            // 挂载到 header actions
+            const accentBtn = document.getElementById('ai-accent-toggle');
+            if (accentBtn) {
+                accentBtn.style.position = 'relative';
+                accentBtn.appendChild(picker);
+                accentBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
+                });
+                document.addEventListener('click', (e) => {
+                    if (!accentBtn.contains(e.target)) picker.style.display = 'none';
+                });
+            }
         })();
 
         // 悬浮按钮拖拽支持（区分拖拽和点击）

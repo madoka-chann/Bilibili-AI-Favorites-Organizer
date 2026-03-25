@@ -1,9 +1,10 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v26.0
-   Phantom Iridescence · 幻蝶琉光 · Opal Morphism
+   B站 AI 收藏夹整理助理 — 完整样式表 v27.0
+   Nebula Flux · 星云流变 · Living Cosmos
    Violet-Coral 双色系统 · Jewel-Tone Aurora Spectrum
-   Silk Dynamics 3.0 · Butterfly-Wing Micro-interactions
-   Void Butterfly Dark Theme · Iridescent Living Surfaces
+   Silk Dynamics 4.0 · Nebula Particle Fields
+   Void Butterfly Dark Theme · Multi-Accent Color Themes
+   Ambient Particle System · Morphing Blob BG · Liquid Borders
    ================================================================ */
 
 /* === 1. CSS 变量 (双主题系统) === */
@@ -3610,4 +3611,641 @@
 #ai-sort-wrapper ::-webkit-scrollbar-thumb,
 .ai-modal ::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, var(--ai-primary-light), var(--ai-aurora-2), var(--ai-aurora-4), var(--ai-primary)) !important;
+}
+
+/* ================================================================
+   Nebula Flux v27.0 — 星云流变 新增特性
+   ================================================================ */
+
+/* === 161. 色彩主题系统 — 可切换强调色 === */
+
+/* 樱花粉 Sakura */
+[data-accent="sakura"] {
+  --ai-primary: #F472B6;
+  --ai-primary-dark: #DB2777;
+  --ai-primary-light: #FBCFE8;
+  --ai-primary-bg: rgba(244, 114, 182, 0.06);
+  --ai-primary-shadow: rgba(244, 114, 182, 0.24);
+  --ai-aurora-1: #F472B6;
+  --ai-aurora-2: #FB923C;
+  --ai-aurora-3: #E879F9;
+  --ai-aurora-4: #F9A8D4;
+  --ai-aurora-5: #FDE68A;
+  --ai-aurora-6: #C084FC;
+  --ai-aurora-7: #FDA4AF;
+  --ai-aurora-8: #FBBF24;
+  --ai-header-gradient: linear-gradient(135deg, #F472B6, #FB923C);
+  --ai-float-gradient: linear-gradient(135deg, #F472B6, #E879F9, #C084FC, #FB923C, #FDE68A, #F9A8D4);
+  --ai-neon-glow: 0 0 20px rgba(244, 114, 182, 0.30),
+                  0 0 40px rgba(251, 146, 60, 0.16),
+                  0 0 60px rgba(232, 121, 249, 0.08),
+                  0 0 80px rgba(192, 132, 252, 0.04);
+  --ai-interaction-glow: rgba(244, 114, 182, 0.10);
+  --ai-glow-color: rgba(244, 114, 182, 0.07);
+}
+
+/* 海洋蓝 Ocean */
+[data-accent="ocean"] {
+  --ai-primary: #38BDF8;
+  --ai-primary-dark: #0284C7;
+  --ai-primary-light: #BAE6FD;
+  --ai-primary-bg: rgba(56, 189, 248, 0.06);
+  --ai-primary-shadow: rgba(56, 189, 248, 0.24);
+  --ai-aurora-1: #38BDF8;
+  --ai-aurora-2: #34D399;
+  --ai-aurora-3: #818CF8;
+  --ai-aurora-4: #22D3EE;
+  --ai-aurora-5: #2DD4BF;
+  --ai-aurora-6: #60A5FA;
+  --ai-aurora-7: #67E8F9;
+  --ai-aurora-8: #A78BFA;
+  --ai-header-gradient: linear-gradient(135deg, #38BDF8, #34D399);
+  --ai-float-gradient: linear-gradient(135deg, #38BDF8, #818CF8, #22D3EE, #34D399, #2DD4BF, #60A5FA);
+  --ai-neon-glow: 0 0 20px rgba(56, 189, 248, 0.30),
+                  0 0 40px rgba(52, 211, 153, 0.16),
+                  0 0 60px rgba(129, 140, 248, 0.08),
+                  0 0 80px rgba(34, 211, 238, 0.04);
+  --ai-interaction-glow: rgba(56, 189, 248, 0.10);
+  --ai-glow-color: rgba(56, 189, 248, 0.07);
+}
+
+/* 翡翠绿 Emerald */
+[data-accent="emerald"] {
+  --ai-primary: #34D399;
+  --ai-primary-dark: #059669;
+  --ai-primary-light: #A7F3D0;
+  --ai-primary-bg: rgba(52, 211, 153, 0.06);
+  --ai-primary-shadow: rgba(52, 211, 153, 0.24);
+  --ai-aurora-1: #34D399;
+  --ai-aurora-2: #FBBF24;
+  --ai-aurora-3: #2DD4BF;
+  --ai-aurora-4: #38BDF8;
+  --ai-aurora-5: #A3E635;
+  --ai-aurora-6: #22D3EE;
+  --ai-aurora-7: #6EE7B7;
+  --ai-aurora-8: #4ADE80;
+  --ai-header-gradient: linear-gradient(135deg, #34D399, #38BDF8);
+  --ai-float-gradient: linear-gradient(135deg, #34D399, #2DD4BF, #38BDF8, #FBBF24, #A3E635, #22D3EE);
+  --ai-neon-glow: 0 0 20px rgba(52, 211, 153, 0.30),
+                  0 0 40px rgba(251, 191, 36, 0.16),
+                  0 0 60px rgba(45, 212, 191, 0.08),
+                  0 0 80px rgba(56, 189, 248, 0.04);
+  --ai-interaction-glow: rgba(52, 211, 153, 0.10);
+  --ai-glow-color: rgba(52, 211, 153, 0.07);
+}
+
+/* 琥珀橙 Amber */
+[data-accent="amber"] {
+  --ai-primary: #FBBF24;
+  --ai-primary-dark: #D97706;
+  --ai-primary-light: #FDE68A;
+  --ai-primary-bg: rgba(251, 191, 36, 0.06);
+  --ai-primary-shadow: rgba(251, 191, 36, 0.24);
+  --ai-aurora-1: #FBBF24;
+  --ai-aurora-2: #F472B6;
+  --ai-aurora-3: #FB923C;
+  --ai-aurora-4: #F59E0B;
+  --ai-aurora-5: #FDE68A;
+  --ai-aurora-6: #F97316;
+  --ai-aurora-7: #FBBF24;
+  --ai-aurora-8: #FB7185;
+  --ai-header-gradient: linear-gradient(135deg, #FBBF24, #F472B6);
+  --ai-float-gradient: linear-gradient(135deg, #FBBF24, #FB923C, #F472B6, #F59E0B, #FDE68A, #F97316);
+  --ai-neon-glow: 0 0 20px rgba(251, 191, 36, 0.30),
+                  0 0 40px rgba(244, 114, 182, 0.16),
+                  0 0 60px rgba(251, 146, 60, 0.08),
+                  0 0 80px rgba(245, 158, 11, 0.04);
+  --ai-interaction-glow: rgba(251, 191, 36, 0.10);
+  --ai-glow-color: rgba(251, 191, 36, 0.07);
+}
+
+/* 深红 Crimson */
+[data-accent="crimson"] {
+  --ai-primary: #F43F5E;
+  --ai-primary-dark: #E11D48;
+  --ai-primary-light: #FDA4AF;
+  --ai-primary-bg: rgba(244, 63, 94, 0.06);
+  --ai-primary-shadow: rgba(244, 63, 94, 0.24);
+  --ai-aurora-1: #F43F5E;
+  --ai-aurora-2: #FB923C;
+  --ai-aurora-3: #F472B6;
+  --ai-aurora-4: #E11D48;
+  --ai-aurora-5: #FBBF24;
+  --ai-aurora-6: #FB7185;
+  --ai-aurora-7: #FF6B8A;
+  --ai-aurora-8: #FDA4AF;
+  --ai-header-gradient: linear-gradient(135deg, #F43F5E, #FB923C);
+  --ai-float-gradient: linear-gradient(135deg, #F43F5E, #F472B6, #FB923C, #E11D48, #FBBF24, #FB7185);
+  --ai-neon-glow: 0 0 20px rgba(244, 63, 94, 0.30),
+                  0 0 40px rgba(251, 146, 60, 0.16),
+                  0 0 60px rgba(244, 114, 182, 0.08),
+                  0 0 80px rgba(225, 29, 72, 0.04);
+  --ai-interaction-glow: rgba(244, 63, 94, 0.10);
+  --ai-glow-color: rgba(244, 63, 94, 0.07);
+}
+
+/* === 162. 星云粒子场 — 持续漂浮的发光粒子 === */
+.ai-nebula-particles {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.ai-nebula-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--ai-primary-light) 0%, transparent 70%);
+  opacity: 0;
+  animation: ai-nebula-drift var(--drift-duration, 12s) var(--drift-delay, 0s) ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes ai-nebula-drift {
+  0% {
+    opacity: 0;
+    transform: translate(var(--start-x, 0px), var(--start-y, 0px)) scale(0.3);
+  }
+  15% {
+    opacity: var(--max-opacity, 0.6);
+  }
+  50% {
+    transform: translate(var(--mid-x, 20px), var(--mid-y, -30px)) scale(1);
+  }
+  85% {
+    opacity: var(--max-opacity, 0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--end-x, -10px), var(--end-y, 10px)) scale(0.3);
+  }
+}
+
+/* === 163. 星云形变团 — 有机形态的背景团块 === */
+.ai-nebula-blobs {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+  opacity: 0.5;
+}
+
+.ai-nebula-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.4;
+  mix-blend-mode: screen;
+  animation: ai-blob-morph var(--blob-duration, 20s) ease-in-out infinite;
+  will-change: transform, border-radius;
+}
+
+[data-theme="light"] .ai-nebula-blob {
+  mix-blend-mode: multiply;
+  opacity: 0.12;
+}
+
+.ai-nebula-blob:nth-child(1) {
+  width: 180px;
+  height: 180px;
+  background: var(--ai-aurora-1);
+  top: -40px;
+  right: -30px;
+  --blob-duration: 18s;
+}
+
+.ai-nebula-blob:nth-child(2) {
+  width: 140px;
+  height: 140px;
+  background: var(--ai-aurora-2);
+  bottom: 20%;
+  left: -20px;
+  --blob-duration: 22s;
+  animation-delay: -5s;
+}
+
+.ai-nebula-blob:nth-child(3) {
+  width: 100px;
+  height: 100px;
+  background: var(--ai-aurora-4);
+  top: 40%;
+  right: 10%;
+  --blob-duration: 16s;
+  animation-delay: -10s;
+}
+
+@keyframes ai-blob-morph {
+  0%, 100% {
+    border-radius: 40% 60% 70% 30% / 60% 30% 70% 40%;
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  14% {
+    border-radius: 70% 30% 40% 60% / 30% 60% 40% 70%;
+    transform: translate(15px, -10px) rotate(30deg) scale(1.08);
+  }
+  28% {
+    border-radius: 30% 70% 60% 40% / 70% 40% 60% 30%;
+    transform: translate(-10px, 15px) rotate(60deg) scale(0.95);
+  }
+  42% {
+    border-radius: 60% 40% 30% 70% / 40% 70% 30% 60%;
+    transform: translate(10px, 10px) rotate(120deg) scale(1.05);
+  }
+  57% {
+    border-radius: 50% 50% 70% 30% / 50% 30% 50% 70%;
+    transform: translate(-15px, -5px) rotate(180deg) scale(0.92);
+  }
+  71% {
+    border-radius: 70% 30% 50% 50% / 30% 70% 50% 50%;
+    transform: translate(5px, -15px) rotate(240deg) scale(1.1);
+  }
+  85% {
+    border-radius: 50% 60% 40% 50% / 60% 50% 50% 40%;
+    transform: translate(-5px, 5px) rotate(300deg) scale(0.97);
+  }
+}
+
+/* === 164. 液态流光边框 — 持续流动的渐变边框 === */
+#ai-sort-wrapper.ai-liquid-border {
+  border: none;
+  position: relative;
+}
+
+#ai-sort-wrapper.ai-liquid-border::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 28px;
+  padding: 1.5px;
+  background: linear-gradient(
+    var(--liquid-angle, 0deg),
+    var(--ai-aurora-1),
+    var(--ai-aurora-3),
+    var(--ai-aurora-4),
+    var(--ai-aurora-2),
+    var(--ai-aurora-6),
+    var(--ai-aurora-5),
+    var(--ai-aurora-1)
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 2;
+  animation: ai-liquid-border-rotate 8s linear infinite;
+  opacity: 0.7;
+  transition: opacity 0.5s ease;
+}
+
+#ai-sort-wrapper.ai-liquid-border:hover::after {
+  opacity: 1;
+}
+
+@keyframes ai-liquid-border-rotate {
+  0% { --liquid-angle: 0deg; }
+  100% { --liquid-angle: 360deg; }
+}
+
+/* Fallback for browsers without @property support */
+@supports not (background: paint(something)) {
+  @keyframes ai-liquid-border-rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  #ai-sort-wrapper.ai-liquid-border::after {
+    background: conic-gradient(
+      from 0deg,
+      var(--ai-aurora-1),
+      var(--ai-aurora-3),
+      var(--ai-aurora-4),
+      var(--ai-aurora-2),
+      var(--ai-aurora-6),
+      var(--ai-aurora-5),
+      var(--ai-aurora-1)
+    );
+    animation: ai-liquid-conic-spin 8s linear infinite;
+  }
+}
+
+@keyframes ai-liquid-conic-spin {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+/* === 165. 色彩主题选择器 UI === */
+.ai-accent-picker {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.ai-accent-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.35s var(--ai-spring), border-color 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.ai-accent-dot:hover {
+  transform: scale(1.25);
+  box-shadow: 0 0 12px currentColor;
+}
+
+.ai-accent-dot.active {
+  border-color: var(--ai-text);
+  transform: scale(1.15);
+  box-shadow: 0 0 8px currentColor;
+}
+
+.ai-accent-dot.active::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+}
+
+.ai-accent-dot[data-accent="default"] { background: linear-gradient(135deg, #7C5CFC, #FF6B8A); }
+.ai-accent-dot[data-accent="sakura"] { background: linear-gradient(135deg, #F472B6, #FB923C); }
+.ai-accent-dot[data-accent="ocean"] { background: linear-gradient(135deg, #38BDF8, #34D399); }
+.ai-accent-dot[data-accent="emerald"] { background: linear-gradient(135deg, #34D399, #FBBF24); }
+.ai-accent-dot[data-accent="amber"] { background: linear-gradient(135deg, #FBBF24, #F472B6); }
+.ai-accent-dot[data-accent="crimson"] { background: linear-gradient(135deg, #F43F5E, #FB923C); }
+
+/* === 166. 面板头部呼吸光晕 — 持续的星云脉动 === */
+.ai-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 50%, rgba(255,255,255,0.15) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 50%, rgba(255,255,255,0.08) 0%, transparent 50%);
+  animation: ai-header-nebula-pulse 6s ease-in-out infinite;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+@keyframes ai-header-nebula-pulse {
+  0%, 100% {
+    opacity: 0.4;
+    background-position: 0% 50%, 100% 50%;
+  }
+  33% {
+    opacity: 0.8;
+    background-position: 30% 30%, 70% 70%;
+  }
+  66% {
+    opacity: 0.5;
+    background-position: 60% 60%, 40% 40%;
+  }
+}
+
+/* === 167. 星尘微光 — 悬浮按钮持续的星尘粒子 === */
+.ai-stardust-ring {
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.ai-stardust {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: white;
+  opacity: 0;
+  animation: ai-stardust-twinkle var(--twinkle-duration, 3s) var(--twinkle-delay, 0s) ease-in-out infinite;
+}
+
+@keyframes ai-stardust-twinkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  25% {
+    opacity: 0.9;
+    transform: scale(1.2);
+    box-shadow: 0 0 6px currentColor;
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  75% {
+    opacity: 0.7;
+    transform: scale(1);
+    box-shadow: 0 0 4px currentColor;
+  }
+}
+
+/* === 168. 波纹涟漪背景 — 面板内持续的水波效果 === */
+.ai-panel-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300%;
+  height: 300%;
+  background: radial-gradient(ellipse at center, transparent 60%, var(--ai-primary-bg) 100%);
+  animation: ai-ripple-ambient 10s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+}
+
+@keyframes ai-ripple-ambient {
+  0%, 100% {
+    transform: translateX(-50%) scale(0.8);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateX(-50%) scale(1.2);
+    opacity: 0.6;
+  }
+}
+
+/* === 169. 标题文字微光流动 === */
+.ai-header-title {
+  position: relative;
+  background: linear-gradient(90deg, #fff, rgba(255,255,255,0.7), #fff, rgba(255,255,255,0.85), #fff);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: ai-text-shimmer 5s ease-in-out infinite;
+}
+
+@keyframes ai-text-shimmer {
+  0% { background-position: 300% 0; }
+  100% { background-position: -300% 0; }
+}
+
+/* === 170. 按钮磁力悬浮增强 — 更灵动的交互反馈 === */
+.ai-btn {
+  transition: transform 0.4s var(--ai-spring-silk), box-shadow 0.35s var(--ai-ease-smooth), background 0.3s ease, border-color 0.3s ease;
+}
+
+.ai-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 6px 20px var(--ai-primary-shadow);
+}
+
+.ai-btn:active {
+  transform: translateY(0) scale(0.97);
+  transition-duration: 0.1s;
+}
+
+/* === 171. 分组头部呼吸流光 === */
+.ai-group-header {
+  position: relative;
+  overflow: hidden;
+}
+
+.ai-group-header::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--ai-interaction-glow), transparent);
+  animation: ai-group-sweep 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes ai-group-sweep {
+  0%, 100% { left: -50%; opacity: 0; }
+  50% { left: 100%; opacity: 1; }
+}
+
+/* === 172. Toast 弹入增强 — 更弹性的入场 === */
+.ai-toast {
+  transition: transform 0.5s var(--ai-spring-bouncy), opacity 0.4s ease;
+}
+
+/* === 173. 暗色主题星云粒子增强 === */
+[data-theme="dark"] .ai-nebula-particle {
+  background: radial-gradient(circle, var(--ai-primary-light) 0%, rgba(255,255,255,0.05) 50%, transparent 70%);
+}
+
+[data-theme="dark"] .ai-nebula-blobs {
+  opacity: 0.7;
+}
+
+[data-theme="dark"] .ai-nebula-blob {
+  mix-blend-mode: screen;
+  opacity: 0.35;
+}
+
+/* === 174. 面板内容区微光脉动 === */
+.ai-panel-content {
+  position: relative;
+}
+
+/* === 175. 悬浮按钮持续的能量脉动环 === */
+#ai-float-btn {
+  animation: ai-float-gradient-shift 14s ease-in-out infinite, ai-float-levitate 8s ease-in-out infinite, ai-float-morph 14s ease-in-out infinite, ai-float-energy-ring 4s ease-in-out infinite;
+}
+
+@keyframes ai-float-energy-ring {
+  0%, 100% {
+    box-shadow: var(--ai-neon-glow);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(124, 92, 252, 0.40),
+                0 0 56px rgba(255, 107, 138, 0.22),
+                0 0 84px rgba(168, 85, 247, 0.12),
+                0 0 112px rgba(6, 182, 212, 0.06);
+  }
+}
+
+/* === 176. 分类行入场增强 — 星云涌入效果 === */
+.ai-cat-row {
+  position: relative;
+  overflow: hidden;
+}
+
+/* === 177. 模态框虹光流边 === */
+.ai-modal {
+  position: relative;
+}
+
+.ai-modal::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(from var(--modal-angle, 0deg), var(--ai-aurora-1), var(--ai-aurora-3), var(--ai-aurora-2), var(--ai-aurora-4), var(--ai-aurora-1));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 2;
+  animation: ai-modal-border-flow 6s linear infinite;
+  opacity: 0.5;
+}
+
+@keyframes ai-modal-border-flow {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+/* === 178. 输入框聚焦呼吸增强 — 星云脉冲 === */
+.ai-input:focus-visible, .ai-select:focus-visible {
+  animation: ai-focus-glow 2.5s ease-in-out infinite, ai-input-nebula 3s ease-in-out infinite;
+}
+
+@keyframes ai-input-nebula {
+  0%, 100% { border-color: var(--ai-aurora-1); }
+  33% { border-color: var(--ai-aurora-3); }
+  66% { border-color: var(--ai-aurora-2); }
+}
+
+/* === 179. 进度条星云粒子效果 === */
+#ai-progress-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 30px;
+  height: 100%;
+  background: radial-gradient(circle at right, rgba(255,255,255,0.6) 0%, transparent 70%);
+  animation: ai-progress-glow 1.5s ease-in-out infinite;
+}
+
+@keyframes ai-progress-glow {
+  0%, 100% { opacity: 0.4; transform: scaleX(1); }
+  50% { opacity: 1; transform: scaleX(1.5); }
+}
+
+/* === 180. 整体性能优化 — 新增动画合成层提示 === */
+.ai-nebula-particle,
+.ai-nebula-blob,
+.ai-stardust {
+  contain: layout style;
+}
+
+/* reduce motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .ai-nebula-particle,
+  .ai-nebula-blob,
+  .ai-stardust,
+  #ai-sort-wrapper.ai-liquid-border::after,
+  .ai-header::after,
+  .ai-panel-content::before,
+  .ai-group-header::after {
+    animation: none !important;
+  }
 }
