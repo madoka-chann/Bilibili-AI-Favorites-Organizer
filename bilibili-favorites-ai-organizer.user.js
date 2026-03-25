@@ -885,6 +885,7 @@
         state.adaptive.currentFetchDelay = settings.fetchDelay;
         state.adaptive.currentWriteDelay = settings.writeDelay;
         _globalCooldownUntil = 0;
+        resetBatchPauseCounter();
     }
 
     // 模拟真人行为的随机延迟：在 base 基础上加 ±30% 随机抖动
@@ -892,6 +893,31 @@
         const jitter = baseMs * 0.3;
         const actual = baseMs + (Math.random() * 2 - 1) * jitter;
         return sleep(Math.max(100, Math.round(actual)));
+    }
+
+    // 连续抓取页数计数器（跨收藏夹累计）
+    let _continuousFetchPages = 0;
+    const BATCH_PAGE_LIMIT_MIN = 20;
+    const BATCH_PAGE_LIMIT_MAX = 25;
+    const BATCH_PAUSE_MIN = 10000; // 10秒
+    const BATCH_PAUSE_MAX = 15000; // 15秒
+    let _batchPageThreshold = BATCH_PAGE_LIMIT_MIN + Math.floor(Math.random() * (BATCH_PAGE_LIMIT_MAX - BATCH_PAGE_LIMIT_MIN + 1));
+
+    // 每次抓取一页后调用，达到阈值时暂停 10-15 秒
+    async function checkBatchPause() {
+        _continuousFetchPages++;
+        if (_continuousFetchPages >= _batchPageThreshold) {
+            const pauseMs = BATCH_PAUSE_MIN + Math.floor(Math.random() * (BATCH_PAUSE_MAX - BATCH_PAUSE_MIN + 1));
+            logStatus(`⏸️ 已连续抓取 ${_continuousFetchPages} 页，暂停 ${(pauseMs / 1000).toFixed(0)} 秒防风控...`);
+            await sleep(pauseMs);
+            _continuousFetchPages = 0;
+            _batchPageThreshold = BATCH_PAGE_LIMIT_MIN + Math.floor(Math.random() * (BATCH_PAGE_LIMIT_MAX - BATCH_PAGE_LIMIT_MIN + 1));
+        }
+    }
+
+    function resetBatchPauseCounter() {
+        _continuousFetchPages = 0;
+        _batchPageThreshold = BATCH_PAGE_LIMIT_MIN + Math.floor(Math.random() * (BATCH_PAGE_LIMIT_MAX - BATCH_PAGE_LIMIT_MIN + 1));
     }
 
     // 安全的 B站 API 请求：处理 412 限流、非 JSON 响应，自动重试，含超时保护
@@ -1229,7 +1255,8 @@
             const hasMore = listRes.data && listRes.data.has_more;
             if (!hasMore || videos.length === 0) break;
             pn++;
-            await humanDelay(fetchDelay);
+            await humanDelay(getAdaptiveFetchDelay());
+            await checkBatchPause();
         }
         return allVideos;
     }
@@ -1293,7 +1320,8 @@
                     if (!silent && pn > 1) logStatus(`  📄 ${folder.title} 第 ${pn}/${totalPages} 页，已获取 ${folderData.videos.length} 个视频`);
                     if (!res.data.has_more || medias.length === 0) break;
                     pn++;
-                    await humanDelay(1000); // 固定轻量延迟，不受自适应影响
+                    await humanDelay(getAdaptiveFetchDelay());
+                    await checkBatchPause();
                 } catch (e) {
                     if (!silent) logStatus(`⚠️ 备份 ${folder.title} 第 ${pn} 页失败: ${e.message}，跳过后续页`);
                     break;
@@ -1301,7 +1329,7 @@
             }
             backup.folders.push(folderData);
             if (!silent) logStatus(`  ✅ ${folder.title}: ${folderData.videos.length} 个视频`);
-            await humanDelay(800); // 文件夹间固定短延迟
+            await humanDelay(getAdaptiveFetchDelay());
         }
 
         return backup;
@@ -2799,6 +2827,7 @@ ${topUps.length > 0 ? `<div class="section">
                     if (!hasMore || medias.length === 0 || fetchedTotal >= videoLimit) break;
                     pn++;
                     await humanDelay(getAdaptiveFetchDelay());
+                    await checkBatchPause();
                 }
                 if (fetchedTotal >= videoLimit) break;
             }
@@ -3152,7 +3181,7 @@ ${topUps.length > 0 ? `<div class="section">
     }
 
     function setToolButtonsDisabled(disabled) {
-        ['ai-tool-clean', 'ai-tool-dup', 'ai-tool-undo', 'ai-tool-backup', 'ai-tool-bench', 'ai-tool-log-export', 'ai-tool-health', 'ai-tool-history'].forEach(id => {
+        ['ai-tool-clean', 'ai-tool-dup', 'ai-tool-undo', 'ai-tool-backup', 'ai-tool-bench', 'ai-tool-log-export', 'ai-tool-health', 'ai-tool-history', 'ai-tool-stats'].forEach(id => {
             const el = document.getElementById(id);
             if (el) { el.disabled = disabled; el.style.opacity = disabled ? '0.5' : '1'; }
         });
@@ -3271,6 +3300,7 @@ ${topUps.length > 0 ? `<div class="section">
                         pn++;
                         await waitForGlobalCooldown();
                         await humanDelay(getAdaptiveFetchDelay());
+                        await checkBatchPause();
                     } catch (e) {
                         logStatus(`⚠️ 扫描 ${folder.title} 出错: ${e.message}，跳过`);
                         break;
@@ -3471,6 +3501,7 @@ ${topUps.length > 0 ? `<div class="section">
                     if (pn > 2) logStatus(`🔍 扫描 [${fi + 1}/${allFolders.length}] ${folder.title} 第${pn}页 (已收集 ${totalScanned} 个视频)...`);
                     await waitForGlobalCooldown();
                     await humanDelay(getAdaptiveFetchDelay());
+                    await checkBatchPause();
                 }
                 await waitForGlobalCooldown();
                 await humanDelay(getAdaptiveFetchDelay());
@@ -4198,26 +4229,52 @@ ${topUps.length > 0 ? `<div class="section">
             const biliData = getBiliData();
             if (!biliData.mid) return alert('请先登录B站');
 
-            btnStartLoading(backupBtn);
+            // 将备份按钮变为停止按钮
+            backupBtn._origHTML = backupBtn.innerHTML;
+            backupBtn.innerHTML = '<i data-lucide="square" style="width:12px;height:12px;"></i> 停止';
+            backupBtn.style.background = '#e74c3c';
+            backupBtn.style.color = '#fff';
+            backupBtn.style.border = 'none';
+            if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [backupBtn] });
             state.isRunning = true;
+            state.cancelRequested = false;
             setToolButtonsDisabled(true);
+            backupBtn.disabled = false;
+            backupBtn.style.opacity = '1';
+
+            // 停止按钮点击处理
+            const origOnclick = backupBtn.onclick;
+            backupBtn.onclick = () => { state.cancelRequested = true; logStatus('⏹ 正在停止备份...'); };
+
             document.getElementById('ai-status-log').innerHTML = '';
             const settings = loadSettings();
             initAdaptiveState(settings);
 
             try {
                 const backup = await backupFavorites(biliData, false);
-                downloadBackupFile(backup);
-                const totalVids = backup.folders.reduce((s, f) => s + f.videos.length, 0);
-                logStatus(`✅ 备份完成！${backup.folders.length} 个收藏夹，${totalVids} 个视频已导出`);
+                if (!state.cancelRequested) {
+                    downloadBackupFile(backup);
+                    const totalVids = backup.folders.reduce((s, f) => s + f.videos.length, 0);
+                    logStatus(`✅ 备份完成！${backup.folders.length} 个收藏夹，${totalVids} 个视频已导出`);
 
-                if (settings.notifyOnComplete) {
-                    sendNotification('备份完成', `${backup.folders.length} 个收藏夹已导出为JSON文件`);
+                    if (settings.notifyOnComplete) {
+                        sendNotification('备份完成', `${backup.folders.length} 个收藏夹已导出为JSON文件`);
+                    }
+                } else {
+                    logStatus('⏹ 备份已取消');
                 }
             } catch (err) {
                 logStatus(`❌ 备份失败: ${err.message}`);
             }
-            btnStopLoading(backupBtn);
+
+            // 恢复备份按钮
+            backupBtn.innerHTML = backupBtn._origHTML;
+            delete backupBtn._origHTML;
+            backupBtn.style.background = '';
+            backupBtn.style.color = '';
+            backupBtn.style.border = '';
+            if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [backupBtn] });
+            backupBtn.onclick = origOnclick;
             resetMainButton();
         };
 
@@ -4357,7 +4414,22 @@ ${topUps.length > 0 ? `<div class="section">
             const statsBtn = this;
             const biliData = getBiliData();
             if (!biliData.mid) return alert('请先登录B站');
-            btnStartLoading(statsBtn);
+
+            // 将统计按钮变为停止按钮
+            statsBtn._origHTML = statsBtn.innerHTML;
+            statsBtn.innerHTML = '<i data-lucide="square" style="width:12px;height:12px;"></i> 停止';
+            statsBtn.style.background = '#e74c3c';
+            statsBtn.style.color = '#fff';
+            statsBtn.style.border = 'none';
+            if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [statsBtn] });
+            state.isRunning = true;
+            state.cancelRequested = false;
+            setToolButtonsDisabled(true);
+            statsBtn.disabled = false;
+            statsBtn.style.opacity = '1';
+
+            const origOnclick = statsBtn.onclick;
+            statsBtn.onclick = () => { state.cancelRequested = true; logStatus('⏹ 正在停止统计...'); };
 
             const settings = loadSettings();
             initAdaptiveState(settings);
@@ -4453,6 +4525,7 @@ ${topUps.length > 0 ? `<div class="section">
                             if (fetched >= diff) break;
                             await waitForGlobalCooldown();
                             await humanDelay(getAdaptiveFetchDelay());
+                            await checkBatchPause();
                         }
                     } catch (e) { /* skip failed */ }
                     cached.media_count = f.media_count;
@@ -4481,6 +4554,7 @@ ${topUps.length > 0 ? `<div class="section">
                             pn++;
                             await waitForGlobalCooldown();
                             await humanDelay(getAdaptiveFetchDelay());
+                            await checkBatchPause();
                         }
                     } catch (e) { /* skip failed folders */ }
 
@@ -4645,11 +4719,23 @@ ${topUps.length > 0 ? `<div class="section">
                     document.getElementById('ai-tool-stats').click();
                 };
 
-                logStatus('📊 统计完成');
+                if (state.cancelRequested) {
+                    logStatus('⏹ 统计已取消（已扫描的数据已保存）');
+                } else {
+                    logStatus('📊 统计完成');
+                }
             } catch (err) {
                 logStatus(`❌ 统计失败: ${err.message}`);
             }
-            btnStopLoading(statsBtn);
+
+            // 恢复统计按钮
+            statsBtn.innerHTML = statsBtn._origHTML;
+            delete statsBtn._origHTML;
+            statsBtn.style.background = '';
+            statsBtn.style.color = '';
+            statsBtn.style.border = '';
+            if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [statsBtn] });
+            statsBtn.onclick = origOnclick;
             resetMainButton();
         };
 
