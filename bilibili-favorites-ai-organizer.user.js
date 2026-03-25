@@ -4526,7 +4526,7 @@ ${topUps.length > 0 ? `<div class="section">
                     modelName: modelName,
                     customBaseUrl: document.getElementById('ai-set-base-url').value.trim()
                 };
-                const result = await callAI('请回复一个JSON：{"status":"ok"}', testSettings);
+                const result = await callAI('请回复一个JSON：{"status":"ok"}', testSettings, 1);
                 if (result && (result.status === 'ok' || Object.keys(result).length > 0)) {
                     btn.textContent = '🟢';
                     alert(`✅ 模型验证成功！\n\n模型 "${modelName}" 可用。`);
