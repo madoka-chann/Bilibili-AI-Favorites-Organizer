@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.3.1
+// @version      1.3.2
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -46,7 +46,7 @@
         // Fallback: 直接注入关键 CSS（确保 z-index 和基本布局正常）
         const fallbackCSS = document.createElement('style');
         fallbackCSS.textContent = `
-            :root{--ai-primary:#7364FF;--ai-primary-dark:#5046E5;--ai-primary-light:#B0A8FF;--ai-primary-bg:rgba(115,100,255,0.06);--ai-primary-shadow:rgba(115,100,255,0.22);--ai-success:#10B981;--ai-error:#F43F5E;--ai-info:#818CF8;--ai-warning:#F59E0B;--ai-text:#181233;--ai-text-secondary:#38305A;--ai-text-muted:#868199;--ai-text-light:#BEB8D0;--ai-border:#E4DDF5;--ai-border-light:#F0EAFA;--ai-border-lighter:#F9F7FF;--ai-bg:#fff;--ai-bg-secondary:#F9F7FF;--ai-bg-tertiary:#F0EAFA;--ai-bg-hover:rgba(115,100,255,0.04);--ai-header-gradient:linear-gradient(135deg,#7364FF,#FF6B9D);--ai-modal-backdrop:rgba(24,18,51,0.58);--ai-input-bg:#fff;--ai-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--ai-z-float:2147483640;--ai-z-panel:2147483641;--ai-z-modal:2147483645;--ai-z-particle:2147483646;--ai-radius-xs:6px;--ai-radius-sm:8px;--ai-radius-md:10px;--ai-radius-lg:14px;--ai-radius-xl:18px;--ai-transition:0.25s cubic-bezier(0.4,0,0.2,1);--ai-transition-slow:0.4s cubic-bezier(0.16,1,0.3,1);--ai-scrollbar:#BEB8D0;--ai-scrollbar-hover:#868199;--ai-cat-detail-bg:#F9F7FF;--ai-separator:#E4DDF5;--ai-glow-color:rgba(115,100,255,0.07);--ai-badge-new-bg:#F43F5E;--ai-badge-existing-bg:#10B981;--ai-vid-odd-bg:rgba(24,18,51,0.012);--ai-vid-hover-bg:rgba(115,100,255,0.05);--ai-spring:cubic-bezier(0.32,1.48,0.62,1);--ai-spring-gentle:cubic-bezier(0.20,1.04,0.42,1);--ai-spring-bouncy:cubic-bezier(0.165,0.84,0.28,1.18);--ai-spring-silk:cubic-bezier(0.20,1.10,0.36,1);--ai-ease-out-expo:cubic-bezier(0.14,1,0.28,1);--ai-ease-smooth:cubic-bezier(0.38,0,0,1);--ai-ease-fluid:cubic-bezier(0.22,0.78,0.22,1);--ai-ease-ios:cubic-bezier(0.20,0.98,0.28,1);--ai-ease-magnetic:cubic-bezier(0.18,0.88,0.28,1.08);--ai-ease-butterfly:cubic-bezier(0.13,0.94,0.22,1.03);}
+            :root{--ai-primary:#7364FF;--ai-primary-dark:#5046E5;--ai-primary-light:#B0A8FF;--ai-primary-bg:rgba(115,100,255,0.06);--ai-primary-shadow:rgba(115,100,255,0.22);--ai-success:#10B981;--ai-error:#F43F5E;--ai-info:#818CF8;--ai-warning:#F59E0B;--ai-text:#181233;--ai-text-secondary:#38305A;--ai-text-muted:#868199;--ai-text-light:#BEB8D0;--ai-border:#E4DDF5;--ai-border-light:#F0EAFA;--ai-border-lighter:#F9F7FF;--ai-bg:#fff;--ai-bg-secondary:#F9F7FF;--ai-bg-tertiary:#F0EAFA;--ai-bg-hover:rgba(115,100,255,0.04);--ai-header-gradient:linear-gradient(135deg,#7364FF,#FF6B9D);--ai-modal-backdrop:rgba(24,18,51,0.58);--ai-input-bg:#fff;--ai-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--ai-z-float:2147483640;--ai-z-panel:2147483641;--ai-z-modal:2147483645;--ai-z-particle:2147483646;--ai-radius-xs:6px;--ai-radius-sm:8px;--ai-radius-md:10px;--ai-radius-lg:14px;--ai-radius-xl:18px;--ai-transition:0.25s cubic-bezier(0.4,0,0.2,1);--ai-transition-slow:0.4s cubic-bezier(0.16,1,0.3,1);--ai-scrollbar:#BEB8D0;--ai-scrollbar-hover:#868199;--ai-cat-detail-bg:#F9F7FF;--ai-separator:#E4DDF5;--ai-glow-color:rgba(115,100,255,0.07);--ai-badge-new-bg:#F43F5E;--ai-badge-existing-bg:#10B981;--ai-vid-odd-bg:rgba(24,18,51,0.012);--ai-vid-hover-bg:rgba(115,100,255,0.05);--ai-spring:cubic-bezier(0.32,1.48,0.62,1);--ai-spring-gentle:cubic-bezier(0.20,1.04,0.42,1);--ai-spring-bouncy:cubic-bezier(0.165,0.84,0.28,1.18);--ai-spring-silk:cubic-bezier(0.20,1.10,0.36,1);--ai-ease-out-expo:cubic-bezier(0.14,1,0.28,1);--ai-ease-smooth:cubic-bezier(0.38,0,0,1);--ai-ease-fluid:cubic-bezier(0.22,0.78,0.22,1);--ai-ease-ios:cubic-bezier(0.20,0.98,0.28,1);--ai-ease-magnetic:cubic-bezier(0.18,0.88,0.28,1.08);--ai-ease-butterfly:cubic-bezier(0.13,0.94,0.22,1.03);--ai-ease-ethereal:cubic-bezier(0.08,0.92,0.16,1);--ai-spring-flux:cubic-bezier(0.22,1.36,0.42,1);--ai-ease-aurora:cubic-bezier(0.12,0.88,0.20,1.04);--ai-ease-dreamy:cubic-bezier(0.06,0.96,0.14,1);--ai-spring-firefly:cubic-bezier(0.28,1.68,0.48,1);}
             #ai-float-btn{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-float);background:linear-gradient(135deg,#7364FF,#9B59F6,#E056CF,#FF6B9D,#FFB347,#00D4AA,#20E3B2);background-size:700% 700%;color:#fff;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 18px rgba(115,100,255,0.28),0 0 36px rgba(255,107,157,0.14);border:2px solid rgba(255,255,255,0.28);transition:transform 0.7s var(--ai-spring-silk);}
             #ai-float-btn [data-lucide]{width:24px;height:24px;}
             #ai-sort-wrapper{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-panel);width:min(400px,calc(100vw - 60px));flex-direction:column;box-shadow:0 24px 68px rgba(0,0,0,0.11),0 10px 28px rgba(0,0,0,0.07);border-radius:28px;overflow:hidden;max-height:85vh;font-family:var(--ai-font);}
@@ -4254,7 +4254,9 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'ocean', label: '海洋蓝' },
                 { id: 'emerald', label: '翡翠绿' },
                 { id: 'amber', label: '琥珀橙' },
-                { id: 'crimson', label: '深红' }
+                { id: 'crimson', label: '深红' },
+                { id: 'cyber', label: '赛博霓虹' },
+                { id: 'moonlight', label: '月光银' }
             ];
 
             const savedAccent = GM_getValue('bfao_accent', 'default');
@@ -4307,6 +4309,267 @@ ${topUps.length > 0 ? `<div class="section">
                     if (!accentBtn.contains(e.target)) picker.style.display = 'none';
                 });
             }
+        })();
+
+        // === Ethereal Flux v28.0 — 幻境流韵新特性 ===
+
+        // === Real-time Aurora Canvas 实时极光画布 ===
+        (() => {
+            const auroraWrap = document.createElement('div');
+            auroraWrap.className = 'ai-aurora-canvas';
+            const canvas = document.createElement('canvas');
+            auroraWrap.appendChild(canvas);
+            panel.insertBefore(auroraWrap, panel.firstChild);
+
+            let animId = null;
+            let time = 0;
+            const resize = () => {
+                const r = panel.getBoundingClientRect();
+                canvas.width = r.width * 0.5; // half-res for perf
+                canvas.height = r.height * 0.5;
+            };
+
+            const getAuroraColors = () => {
+                const cs = getComputedStyle(document.documentElement);
+                return [
+                    cs.getPropertyValue('--ai-aurora-1').trim() || '#7364FF',
+                    cs.getPropertyValue('--ai-aurora-2').trim() || '#FF6B9D',
+                    cs.getPropertyValue('--ai-aurora-3').trim() || '#9B59F6',
+                    cs.getPropertyValue('--ai-aurora-4').trim() || '#00D4AA'
+                ];
+            };
+
+            const hexToRgb = (hex) => {
+                hex = hex.replace('#', '');
+                if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+                const n = parseInt(hex, 16);
+                return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+            };
+
+            const render = () => {
+                const ctx = canvas.getContext('2d');
+                if (!ctx || !canvas.width) { animId = requestAnimationFrame(render); return; }
+                const w = canvas.width, h = canvas.height;
+                ctx.clearRect(0, 0, w, h);
+                time += 0.008;
+
+                const colors = getAuroraColors();
+                const bands = 4;
+                for (let b = 0; b < bands; b++) {
+                    const rgb = hexToRgb(colors[b % colors.length]);
+                    ctx.beginPath();
+                    const baseY = h * (0.2 + b * 0.2);
+                    const amp = h * 0.12;
+                    ctx.moveTo(0, h);
+                    for (let x = 0; x <= w; x += 4) {
+                        const nx = x / w;
+                        const y = baseY + Math.sin(nx * 3 + time * (0.8 + b * 0.3) + b * 1.5) * amp
+                                        + Math.sin(nx * 5 - time * 0.5 + b * 0.8) * amp * 0.4;
+                        ctx.lineTo(x, y);
+                    }
+                    ctx.lineTo(w, h);
+                    ctx.closePath();
+                    const grad = ctx.createLinearGradient(0, baseY - amp, 0, baseY + amp * 2);
+                    grad.addColorStop(0, `rgba(${rgb[0]},${rgb[1]},${rgb[2]}, 0)`);
+                    grad.addColorStop(0.5, `rgba(${rgb[0]},${rgb[1]},${rgb[2]}, 0.12)`);
+                    grad.addColorStop(1, `rgba(${rgb[0]},${rgb[1]},${rgb[2]}, 0)`);
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+                }
+                animId = requestAnimationFrame(render);
+            };
+
+            // Start/stop with panel visibility
+            const startAurora = () => { resize(); if (!animId) render(); };
+            const stopAurora = () => { if (animId) { cancelAnimationFrame(animId); animId = null; } };
+
+            const obs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startAurora();
+                else stopAurora();
+            });
+            obs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startAurora();
+
+            window.addEventListener('resize', () => { if (panel.style.display !== 'none') resize(); });
+        })();
+
+        // === Reactive Firefly Particles 萤火响应粒子场 ===
+        (() => {
+            const field = document.createElement('div');
+            field.className = 'ai-firefly-field';
+            panel.insertBefore(field, panel.children[1]);
+
+            const FF_COUNT = 16;
+            const fireflies = [];
+            const auroraColors = ['var(--ai-aurora-1)', 'var(--ai-aurora-2)', 'var(--ai-aurora-3)',
+                                  'var(--ai-aurora-4)', 'var(--ai-aurora-5)', 'var(--ai-aurora-6)'];
+            for (let i = 0; i < FF_COUNT; i++) {
+                const ff = document.createElement('div');
+                ff.className = 'ai-firefly';
+                const size = 2 + Math.random() * 5;
+                const duration = 5 + Math.random() * 8;
+                const delay = Math.random() * -duration;
+                const r = () => (-25 + Math.random() * 50) + 'px';
+                ff.style.cssText = `
+                    left: ${Math.random() * 100}%;
+                    top: ${Math.random() * 100}%;
+                    --ff-size: ${size}px;
+                    --ff-color: ${auroraColors[i % auroraColors.length]};
+                    --ff-duration: ${duration}s;
+                    --ff-delay: ${delay}s;
+                    --ff-max-opacity: ${0.4 + Math.random() * 0.4};
+                    --ff-dx1: ${r()}; --ff-dy1: ${r()};
+                    --ff-dx2: ${r()}; --ff-dy2: ${r()};
+                    --ff-dx3: ${r()}; --ff-dy3: ${r()};
+                    --ff-dx4: ${r()}; --ff-dy4: ${r()};
+                `;
+                field.appendChild(ff);
+                fireflies.push({
+                    el: ff,
+                    baseX: parseFloat(ff.style.left),
+                    baseY: parseFloat(ff.style.top)
+                });
+            }
+
+            // Mouse proximity scatter
+            let mouseX = -1, mouseY = -1;
+            panel.addEventListener('mousemove', (e) => {
+                const rect = field.getBoundingClientRect();
+                mouseX = ((e.clientX - rect.left) / rect.width) * 100;
+                mouseY = ((e.clientY - rect.top) / rect.height) * 100;
+            });
+            panel.addEventListener('mouseleave', () => { mouseX = -1; mouseY = -1; });
+
+            let ffRaf = null;
+            const scatterFireflies = () => {
+                if (mouseX < 0) { ffRaf = requestAnimationFrame(scatterFireflies); return; }
+                fireflies.forEach(ff => {
+                    const dx = ff.baseX - mouseX;
+                    const dy = ff.baseY - mouseY;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 18) {
+                        const angle = Math.atan2(dy, dx);
+                        const force = (18 - dist) * 1.5;
+                        ff.el.classList.add('flee');
+                        ff.el.style.transform = `translate(${Math.cos(angle) * force}px, ${Math.sin(angle) * force}px)`;
+                    } else {
+                        ff.el.classList.remove('flee');
+                        ff.el.style.transform = '';
+                    }
+                });
+                ffRaf = requestAnimationFrame(scatterFireflies);
+            };
+
+            const obs2 = new MutationObserver(() => {
+                if (panel.style.display !== 'none' && !ffRaf) scatterFireflies();
+                else if (panel.style.display === 'none' && ffRaf) { cancelAnimationFrame(ffRaf); ffRaf = null; }
+            });
+            obs2.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') scatterFireflies();
+        })();
+
+        // === Liquid Glass Refraction Layer ===
+        (() => {
+            const refract = document.createElement('div');
+            refract.className = 'ai-refraction-layer';
+            panel.insertBefore(refract, panel.children[2]);
+        })();
+
+        // === Header Prismatic Ribbon 头部棱光彩带 ===
+        (() => {
+            const header = panel.querySelector('.ai-header');
+            if (header) {
+                const ribbon = document.createElement('div');
+                ribbon.className = 'ai-prismatic-ribbon';
+                header.appendChild(ribbon);
+            }
+        })();
+
+        // === Float Button Aura 悬浮按钮幻境气场 ===
+        (() => {
+            const aura = document.createElement('div');
+            aura.className = 'ai-float-aura';
+            floatBtn.appendChild(aura);
+        })();
+
+        // === Constellation Orbs 悬浮按钮星座轨道球 ===
+        (() => {
+            const constellation = document.createElement('div');
+            constellation.className = 'ai-constellation';
+            const ORB_COUNT = 5;
+            const orbColors = ['#B4A0FF', '#FF6B8A', '#22D3EE', '#34D399', '#E879F9'];
+            const orbs = [];
+            for (let i = 0; i < ORB_COUNT; i++) {
+                const orb = document.createElement('div');
+                orb.className = 'ai-constellation-orb';
+                const angle = (i / ORB_COUNT) * 360;
+                const size = 3 + Math.random() * 4;
+                const radius = 34 + Math.random() * 10;
+                const duration = 10 + Math.random() * 8;
+                orb.style.cssText = `
+                    --orb-size: ${size}px;
+                    --orb-color: ${orbColors[i]};
+                    --orb-start: ${angle}deg;
+                    --orb-radius: ${radius}px;
+                    --orb-duration: ${duration}s;
+                    --orb-delay: ${-Math.random() * duration}s;
+                    left: 50%; top: 50%;
+                    margin-left: ${-size / 2}px; margin-top: ${-size / 2}px;
+                `;
+                constellation.appendChild(orb);
+                orbs.push({ el: orb, angle, radius });
+            }
+
+            // Draw constellation lines between adjacent orbs
+            for (let i = 0; i < ORB_COUNT; i++) {
+                const line = document.createElement('div');
+                line.className = 'ai-constellation-line';
+                line.style.cssText = 'left:50%;top:50%;width:30px;';
+                constellation.appendChild(line);
+            }
+
+            floatBtn.appendChild(constellation);
+        })();
+
+        // === Theme Transition Wipe 主题切换径向擦除效果 ===
+        (() => {
+            const origToggle = document.getElementById('ai-theme-toggle');
+            if (origToggle) {
+                const originalOnclick = origToggle.onclick;
+                origToggle.onclick = (e) => {
+                    const current = document.documentElement.getAttribute('data-theme');
+                    const next = current === 'dark' ? 'light' : 'dark';
+
+                    // Create wipe effect
+                    const wipe = document.createElement('div');
+                    wipe.className = 'ai-theme-wipe to-' + next;
+                    const rect = origToggle.getBoundingClientRect();
+                    wipe.style.cssText = `left:${rect.left + rect.width/2}px;top:${rect.top + rect.height/2}px;width:80px;height:80px;margin-left:-40px;margin-top:-40px;`;
+                    document.body.appendChild(wipe);
+                    wipe.addEventListener('animationend', () => wipe.remove());
+
+                    // Apply theme change
+                    document.documentElement.setAttribute('data-theme', next);
+                    GM_setValue('bfao_theme', next);
+                    updateThemeIcon();
+                };
+            }
+        })();
+
+        // === Pulse Wave on Button Click 脉冲波点击效果 ===
+        (() => {
+            panel.addEventListener('click', (e) => {
+                const btn = e.target.closest('.ai-btn, .ai-header-btn, .ai-filter-btn');
+                if (!btn) return;
+                const rect = btn.getBoundingClientRect();
+                const pulse = document.createElement('div');
+                pulse.className = 'ai-pulse-wave';
+                pulse.style.cssText = `left:${e.clientX - rect.left}px;top:${e.clientY - rect.top}px;`;
+                btn.style.position = btn.style.position || 'relative';
+                btn.style.overflow = 'hidden';
+                btn.appendChild(pulse);
+                pulse.addEventListener('animationend', () => pulse.remove());
+            });
         })();
 
         // 悬浮按钮拖拽支持（区分拖拽和点击）

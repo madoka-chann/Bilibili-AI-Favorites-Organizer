@@ -1,10 +1,10 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v27.0
-   Astral Glasstide · 琉璃星潮 · Liquid Glass Morphism
-   Indigo-Nebula 双色系统 · Bioluminescent Aurora Spectrum
-   Velvet Dynamics 4.0 · Oceanic Starlight Micro-interactions
-   Stellar Abyss Dark Theme · Living Glass Surfaces
-   Multi-Accent Color Themes · Nebula Particle Fields · Liquid Borders
+   B站 AI 收藏夹整理助理 — 完整样式表 v28.0
+   Ethereal Flux · 幻境流韵 · Real-time Aurora Canvas
+   Reactive Firefly Particles · Constellation Orbs · Pulse Waves
+   Cyber Neon & Moonlight Themes · Synchronized Breathing Rhythm
+   Liquid Glass Refraction · Theme Transition Wipe
+   Velvet Dynamics 5.0 · Living Glass Surfaces · Magnetic Interactions
    ================================================================ */
 
 /* === 1. CSS 变量 (双主题系统) === */
@@ -4264,6 +4264,7 @@
   .ai-group-header::after {
     animation: none !important;
   }
+}
 
 /* ================================================================
    Astral Glasstide v27.0 — 星潮新增特性
@@ -4305,4 +4306,661 @@
 /* === 186. 进度条完成时星潮庆祝效果 === */
 #ai-progress-bar.complete {
   box-shadow: 0 0 20px rgba(32, 227, 178, 0.30), 0 0 40px rgba(115, 100, 255, 0.15);
+}
+
+/* ================================================================
+   Ethereal Flux v28.0 — 幻境流韵新增特性
+   ================================================================ */
+
+/* === 187. Cyber Neon 赛博霓虹主题 === */
+[data-accent="cyber"] {
+  --ai-primary: #00F5FF;
+  --ai-primary-dark: #00B8D4;
+  --ai-primary-light: #80FAFF;
+  --ai-primary-bg: rgba(0, 245, 255, 0.06);
+  --ai-primary-shadow: rgba(0, 245, 255, 0.28);
+  --ai-aurora-1: #00F5FF;
+  --ai-aurora-2: #FF00E5;
+  --ai-aurora-3: #7B61FF;
+  --ai-aurora-4: #00FF88;
+  --ai-aurora-5: #FFE500;
+  --ai-aurora-6: #FF3D71;
+  --ai-aurora-7: #00E5FF;
+  --ai-aurora-8: #C471FF;
+  --ai-header-gradient: linear-gradient(135deg, #00F5FF, #FF00E5, #7B61FF);
+  --ai-float-gradient: linear-gradient(135deg, #00F5FF, #7B61FF, #FF00E5, #00FF88, #FFE500, #FF3D71, #00F5FF);
+  --ai-neon-glow: 0 0 22px rgba(0, 245, 255, 0.40),
+                  0 0 44px rgba(255, 0, 229, 0.20),
+                  0 0 66px rgba(123, 97, 255, 0.10),
+                  0 0 88px rgba(0, 255, 136, 0.05);
+  --ai-interaction-glow: rgba(0, 245, 255, 0.14);
+  --ai-glow-color: rgba(0, 245, 255, 0.09);
+  --ai-chromatic-border: linear-gradient(135deg, rgba(0,245,255,0.40), rgba(255,0,229,0.35), rgba(123,97,255,0.30), rgba(0,255,136,0.30));
+}
+
+.ai-accent-dot[data-accent="cyber"] {
+  background: linear-gradient(135deg, #00F5FF, #FF00E5);
+}
+
+/* === 188. Moonlight 月光银主题 === */
+[data-accent="moonlight"] {
+  --ai-primary: #94A3B8;
+  --ai-primary-dark: #64748B;
+  --ai-primary-light: #CBD5E1;
+  --ai-primary-bg: rgba(148, 163, 184, 0.06);
+  --ai-primary-shadow: rgba(148, 163, 184, 0.24);
+  --ai-aurora-1: #94A3B8;
+  --ai-aurora-2: #A78BFA;
+  --ai-aurora-3: #67E8F9;
+  --ai-aurora-4: #C4B5FD;
+  --ai-aurora-5: #E2E8F0;
+  --ai-aurora-6: #818CF8;
+  --ai-aurora-7: #BAE6FD;
+  --ai-aurora-8: #DDD6FE;
+  --ai-header-gradient: linear-gradient(135deg, #64748B, #A78BFA, #67E8F9);
+  --ai-float-gradient: linear-gradient(135deg, #94A3B8, #A78BFA, #67E8F9, #C4B5FD, #818CF8, #BAE6FD);
+  --ai-neon-glow: 0 0 20px rgba(148, 163, 184, 0.28),
+                  0 0 40px rgba(167, 139, 250, 0.16),
+                  0 0 60px rgba(103, 232, 249, 0.08),
+                  0 0 80px rgba(196, 181, 253, 0.04);
+  --ai-interaction-glow: rgba(148, 163, 184, 0.10);
+  --ai-glow-color: rgba(148, 163, 184, 0.07);
+  --ai-chromatic-border: linear-gradient(135deg, rgba(148,163,184,0.30), rgba(167,139,250,0.26), rgba(103,232,249,0.24), rgba(196,181,253,0.26));
+}
+
+.ai-accent-dot[data-accent="moonlight"] {
+  background: linear-gradient(135deg, #94A3B8, #A78BFA);
+}
+
+/* === 189. Real-time Aurora Canvas 实时极光画布 === */
+.ai-aurora-canvas {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.35;
+  mix-blend-mode: screen;
+  overflow: hidden;
+}
+
+.ai-aurora-canvas canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+[data-theme="dark"] .ai-aurora-canvas {
+  opacity: 0.55;
+}
+
+/* === 190. Reactive Firefly Particles 萤火响应粒子场 === */
+.ai-firefly-field {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.ai-firefly {
+  position: absolute;
+  width: var(--ff-size, 4px);
+  height: var(--ff-size, 4px);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--ff-color, var(--ai-aurora-1)) 0%, transparent 70%);
+  box-shadow: 0 0 calc(var(--ff-size, 4px) * 2) var(--ff-color, var(--ai-aurora-1));
+  opacity: 0;
+  animation: ai-firefly-glow var(--ff-duration, 4s) var(--ff-delay, 0s) ease-in-out infinite;
+  transition: transform 0.6s var(--ai-ease-fluid), opacity 0.4s ease;
+  will-change: transform, opacity;
+  contain: layout style;
+}
+
+@keyframes ai-firefly-glow {
+  0%, 100% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.6);
+  }
+  15% {
+    opacity: var(--ff-max-opacity, 0.7);
+    transform: translate(var(--ff-dx1, 5px), var(--ff-dy1, -8px)) scale(1);
+  }
+  40% {
+    opacity: var(--ff-max-opacity, 0.7);
+    transform: translate(var(--ff-dx2, -10px), var(--ff-dy2, 5px)) scale(1.1);
+  }
+  65% {
+    opacity: calc(var(--ff-max-opacity, 0.7) * 0.8);
+    transform: translate(var(--ff-dx3, 8px), var(--ff-dy3, 12px)) scale(0.9);
+  }
+  85% {
+    opacity: calc(var(--ff-max-opacity, 0.7) * 0.5);
+    transform: translate(var(--ff-dx4, -3px), var(--ff-dy4, -6px)) scale(0.7);
+  }
+}
+
+/* Firefly scatter on cursor proximity */
+.ai-firefly.flee {
+  transition: transform 0.3s var(--ai-spring-snappy) !important;
+}
+
+/* === 191. Constellation Orbs 星座轨道球 === */
+.ai-constellation {
+  position: absolute;
+  inset: -30px;
+  pointer-events: none;
+  z-index: -1;
+  border-radius: 50%;
+}
+
+.ai-constellation-orb {
+  position: absolute;
+  width: var(--orb-size, 6px);
+  height: var(--orb-size, 6px);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--orb-color, #B4A0FF) 30%, transparent 70%);
+  box-shadow: 0 0 calc(var(--orb-size, 6px) * 1.5) var(--orb-color, #B4A0FF);
+  animation: ai-orbit var(--orb-duration, 12s) var(--orb-delay, 0s) linear infinite;
+  will-change: transform;
+  contain: layout style;
+}
+
+.ai-constellation-line {
+  position: absolute;
+  background: linear-gradient(90deg, transparent, var(--ai-primary-light), transparent);
+  height: 1px;
+  opacity: 0.15;
+  transform-origin: left center;
+  animation: ai-constellation-fade 6s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes ai-orbit {
+  0% {
+    transform: rotate(var(--orb-start, 0deg)) translateX(var(--orb-radius, 38px)) rotate(calc(-1 * var(--orb-start, 0deg)));
+  }
+  100% {
+    transform: rotate(calc(var(--orb-start, 0deg) + 360deg)) translateX(var(--orb-radius, 38px)) rotate(calc(-1 * var(--orb-start, 0deg) - 360deg));
+  }
+}
+
+@keyframes ai-constellation-fade {
+  0% { opacity: 0.08; }
+  100% { opacity: 0.25; }
+}
+
+/* === 192. Theme Transition Wipe 主题切换径向擦除 === */
+.ai-theme-wipe {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  pointer-events: none;
+  border-radius: 50%;
+  transform: scale(0);
+  opacity: 0.9;
+  animation: ai-theme-wipe-expand 0.6s var(--ai-ease-out-expo) forwards;
+}
+
+@keyframes ai-theme-wipe-expand {
+  0% {
+    transform: scale(0);
+    opacity: 0.9;
+  }
+  60% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.ai-theme-wipe.to-dark {
+  background: radial-gradient(circle, #1A1534 0%, #06061A 50%, transparent 70%);
+}
+
+.ai-theme-wipe.to-light {
+  background: radial-gradient(circle, #F9F7FF 0%, #ffffff 50%, transparent 70%);
+}
+
+/* === 193. Liquid Glass Refraction 液态玻璃折射层 === */
+.ai-refraction-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  opacity: 0.04;
+}
+
+.ai-refraction-layer::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background:
+    repeating-conic-gradient(from 0deg at 30% 40%, transparent 0deg, rgba(255,255,255,0.3) 2deg, transparent 4deg),
+    repeating-conic-gradient(from 45deg at 70% 60%, transparent 0deg, rgba(255,255,255,0.2) 3deg, transparent 6deg);
+  animation: ai-refraction-drift 20s linear infinite;
+  will-change: transform;
+}
+
+@keyframes ai-refraction-drift {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+[data-theme="dark"] .ai-refraction-layer {
+  opacity: 0.06;
+}
+
+[data-theme="dark"] .ai-refraction-layer::before {
+  background:
+    repeating-conic-gradient(from 0deg at 30% 40%, transparent 0deg, rgba(115,100,255,0.15) 2deg, transparent 4deg),
+    repeating-conic-gradient(from 45deg at 70% 60%, transparent 0deg, rgba(255,107,157,0.10) 3deg, transparent 6deg);
+}
+
+/* === 194. Synchronized Breathing Rhythm 全局呼吸节律 === */
+@property --ai-breath {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+#ai-sort-wrapper {
+  animation: ai-global-breath 6s ease-in-out infinite;
+}
+
+@keyframes ai-global-breath {
+  0%, 100% { --ai-breath: 0; }
+  50% { --ai-breath: 1; }
+}
+
+/* Breathing shadow on panel */
+#ai-sort-wrapper.ai-liquid-border {
+  box-shadow:
+    0 24px 68px rgba(0,0,0, calc(0.11 + var(--ai-breath, 0) * 0.04)),
+    0 10px 28px rgba(0,0,0, calc(0.07 + var(--ai-breath, 0) * 0.02)),
+    0 0 calc(40px + var(--ai-breath, 0) * 20px) var(--ai-glow-color);
+}
+
+/* === 195. Pulse Wave Click Effect 脉冲波点击效果 === */
+.ai-pulse-wave {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, var(--ai-primary-bg) 0%, transparent 70%);
+  border: 1px solid var(--ai-primary-light);
+  opacity: 0.6;
+  animation: ai-pulse-wave-expand 0.7s var(--ai-ease-out-expo) forwards;
+  z-index: 10;
+}
+
+@keyframes ai-pulse-wave-expand {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0.7;
+  }
+  100% {
+    width: 200px;
+    height: 200px;
+    margin-left: -100px;
+    margin-top: -100px;
+    opacity: 0;
+  }
+}
+
+/* === 196. Enhanced Float Button — Ethereal Flux Aura 幻境悬浮气场 === */
+#ai-float-btn::before {
+  animation: ai-rotate-gradient 10s linear infinite, ai-orbital-breathe 4s ease-in-out infinite;
+}
+
+/* 气场光环 */
+.ai-float-aura {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -2;
+  background: conic-gradient(from var(--aura-angle, 0deg),
+    var(--ai-aurora-1), var(--ai-aurora-2), var(--ai-aurora-3),
+    var(--ai-aurora-4), var(--ai-aurora-5), var(--ai-aurora-1));
+  filter: blur(16px);
+  opacity: 0.3;
+  animation: ai-aura-spin 8s linear infinite, ai-aura-breathe 4s ease-in-out infinite;
+}
+
+@keyframes ai-aura-spin {
+  0% { filter: blur(16px) hue-rotate(0deg); }
+  100% { filter: blur(16px) hue-rotate(360deg); }
+}
+
+@keyframes ai-aura-breathe {
+  0%, 100% {
+    opacity: 0.2;
+    inset: -8px;
+  }
+  50% {
+    opacity: 0.45;
+    inset: -14px;
+  }
+}
+
+[data-theme="dark"] .ai-float-aura {
+  opacity: 0.5;
+  filter: blur(20px);
+}
+
+/* === 197. Header Prismatic Ribbon 头部棱光彩带 === */
+.ai-header {
+  overflow: hidden;
+}
+
+.ai-header .ai-prismatic-ribbon {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+    var(--ai-aurora-1), var(--ai-aurora-2), var(--ai-aurora-3),
+    var(--ai-aurora-4), var(--ai-aurora-5), var(--ai-aurora-6),
+    var(--ai-aurora-7), var(--ai-aurora-8), var(--ai-aurora-1));
+  background-size: 200% 100%;
+  animation: ai-ribbon-flow 4s linear infinite;
+  z-index: 2;
+}
+
+@keyframes ai-ribbon-flow {
+  0% { background-position: 0% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* === 198. Velvet Dynamics 5.0 新增动画曲线 === */
+:root {
+  --ai-ease-ethereal: cubic-bezier(0.08, 0.92, 0.16, 1);
+  --ai-spring-flux: cubic-bezier(0.22, 1.36, 0.42, 1);
+  --ai-ease-aurora: cubic-bezier(0.12, 0.88, 0.20, 1.04);
+  --ai-ease-dreamy: cubic-bezier(0.06, 0.96, 0.14, 1);
+  --ai-spring-firefly: cubic-bezier(0.28, 1.68, 0.48, 1);
+}
+
+/* === 199. Log Entry Ethereal Entrance 日志条目幻境入场 === */
+.ai-log-entry {
+  animation: ai-log-ethereal-in 0.5s var(--ai-ease-ethereal) both;
+  position: relative;
+  overflow: hidden;
+}
+
+.ai-log-entry::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--ai-interaction-glow), transparent);
+  animation: ai-log-sweep 1.2s var(--ai-ease-dreamy) forwards;
+  pointer-events: none;
+}
+
+@keyframes ai-log-ethereal-in {
+  0% {
+    opacity: 0;
+    transform: translateX(-12px) scale(0.96);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes ai-log-sweep {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+
+/* === 200. Category Row Hover Glow Trail 分类行悬浮光轨 === */
+.ai-cat-row::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, var(--ai-interaction-glow) 50%, transparent 100%);
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: opacity 0.4s ease, transform 0.6s var(--ai-ease-aurora);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ai-cat-row:hover::before {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+/* === 201. Input Field Aurora Underline 输入框极光下划线 === */
+.ai-input:focus, .ai-select:focus {
+  border-image: linear-gradient(90deg, var(--ai-aurora-1), var(--ai-aurora-3), var(--ai-aurora-2)) 1;
+  border-image-slice: 1;
+}
+
+/* === 202. Modal Ethereal Entrance 模态框幻境入场 === */
+.ai-modal-backdrop {
+  animation: ai-backdrop-ethereal 0.4s var(--ai-ease-dreamy) both;
+}
+
+@keyframes ai-backdrop-ethereal {
+  0% {
+    backdrop-filter: blur(0px) saturate(1);
+    background: transparent;
+  }
+  100% {
+    backdrop-filter: blur(16px) saturate(1.4);
+    background: var(--ai-modal-backdrop);
+  }
+}
+
+/* === 203. Float Button Idle Wobble 悬浮按钮静息微摇 === */
+#ai-float-btn {
+  animation:
+    ai-float-gradient-shift 14s ease-in-out infinite,
+    ai-float-levitate 8s ease-in-out infinite,
+    ai-float-morph 14s ease-in-out infinite,
+    ai-float-energy-ring 4s ease-in-out infinite,
+    ai-idle-wobble 10s ease-in-out infinite;
+}
+
+@keyframes ai-idle-wobble {
+  0%, 100% { rotate: 0deg; }
+  20% { rotate: 1.2deg; }
+  40% { rotate: -0.8deg; }
+  60% { rotate: 0.6deg; }
+  80% { rotate: -1deg; }
+}
+
+/* === 204. Settings Panel Reveal 设置面板流光展开 === */
+.ai-settings[style*="display: block"], .ai-settings[style*="display:block"] {
+  animation: ai-settings-ethereal 0.5s var(--ai-ease-ethereal) both;
+}
+
+@keyframes ai-settings-ethereal {
+  0% {
+    opacity: 0;
+    max-height: 0;
+    filter: blur(6px);
+    transform: translateY(-8px);
+  }
+  100% {
+    opacity: 1;
+    max-height: 600px;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+/* === 205. Toast Ethereal Glow 通知幻境光晕 === */
+.ai-toast::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: inherit;
+  filter: blur(12px);
+  opacity: 0.3;
+  z-index: -1;
+  animation: ai-toast-glow-pulse 2s ease-in-out infinite;
+}
+
+@keyframes ai-toast-glow-pulse {
+  0%, 100% { opacity: 0.2; filter: blur(12px); }
+  50% { opacity: 0.45; filter: blur(16px); }
+}
+
+/* === 206. Progress Bar Aurora Streak 进度条极光拖尾 === */
+#ai-progress-bar {
+  position: relative;
+  overflow: hidden;
+}
+
+#ai-progress-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), rgba(255,255,255,0.6), rgba(255,255,255,0.4), transparent);
+  animation: ai-progress-streak 2s var(--ai-ease-fluid) infinite;
+  pointer-events: none;
+}
+
+@keyframes ai-progress-streak {
+  0% { left: -60%; }
+  100% { left: 120%; }
+}
+
+/* === 207. Scrollbar Ethereal Glow 滚动条幻境微光 === */
+.ai-panel-content::-webkit-scrollbar-thumb:hover,
+.ai-modal-body::-webkit-scrollbar-thumb:hover {
+  box-shadow: 0 0 8px var(--ai-primary-shadow);
+}
+
+/* === 208. Performance — Reduce motion preferences === */
+@media (prefers-reduced-motion: reduce) {
+  .ai-firefly,
+  .ai-constellation-orb,
+  .ai-constellation-line,
+  .ai-float-aura,
+  .ai-refraction-layer::before,
+  .ai-pulse-wave,
+  .ai-theme-wipe,
+  .ai-prismatic-ribbon,
+  .ai-aurora-canvas,
+  .ai-log-entry::before {
+    animation: none !important;
+  }
+  .ai-aurora-canvas { display: none !important; }
+}
+
+/* === 209. GPU Acceleration Hints === */
+.ai-firefly,
+.ai-constellation-orb,
+.ai-float-aura,
+.ai-refraction-layer::before,
+.ai-pulse-wave,
+.ai-theme-wipe,
+.ai-aurora-canvas canvas {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* === 210. Accent dot entries for new themes === */
+.ai-accent-dot[data-accent="cyber"] { background: linear-gradient(135deg, #00F5FF, #FF00E5); }
+.ai-accent-dot[data-accent="moonlight"] { background: linear-gradient(135deg, #94A3B8, #A78BFA); }
+
+/* === 211. Cyber Neon dark theme enhancements === */
+[data-theme="dark"][data-accent="cyber"] .ai-nebula-particle {
+  background: radial-gradient(circle, #00F5FF 0%, rgba(0,245,255,0.05) 50%, transparent 70%);
+}
+
+[data-theme="dark"][data-accent="cyber"] #ai-float-btn {
+  border-color: rgba(0, 245, 255, 0.3);
+}
+
+[data-theme="dark"][data-accent="moonlight"] .ai-nebula-particle {
+  background: radial-gradient(circle, #A78BFA 0%, rgba(167,139,250,0.05) 50%, transparent 70%);
+}
+
+/* === 212. Ethereal Flux Panel Border Shimmer === */
+#ai-sort-wrapper.ai-liquid-border::before {
+  animation: ai-liquid-conic-spin 8s linear infinite, ai-border-shimmer 3s ease-in-out infinite alternate;
+}
+
+@keyframes ai-border-shimmer {
+  0% { opacity: 0.35; filter: brightness(1); }
+  100% { opacity: 0.6; filter: brightness(1.2); }
+}
+
+/* === 213. Category Detail Reveal — Ethereal Unfold === */
+.ai-cat-detail.open {
+  animation: ai-detail-unfold 0.5s var(--ai-ease-ethereal) both;
+}
+
+@keyframes ai-detail-unfold {
+  0% {
+    max-height: 0;
+    opacity: 0;
+    filter: blur(4px);
+  }
+  100% {
+    max-height: 240px;
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* === 214. Video Item Stagger Animation 视频条目交错入场 === */
+.ai-cat-detail.open .ai-vid-item {
+  animation: ai-vid-stagger 0.35s var(--ai-ease-aurora) both;
+  animation-delay: calc(var(--vid-i, 0) * 0.03s);
+}
+
+@keyframes ai-vid-stagger {
+  0% {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* === 215. Header Actions Button Hover Halo === */
+.ai-header-btn {
+  position: relative;
+  overflow: visible;
+}
+
+.ai-header-btn::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  background: radial-gradient(circle, rgba(255,255,255,0.25) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.ai-header-btn:hover::after {
+  opacity: 1;
 }
