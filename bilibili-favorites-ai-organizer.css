@@ -3887,7 +3887,6 @@
 /* === 164. 液态流光边框 — 持续流动的渐变边框 === */
 #ai-sort-wrapper.ai-liquid-border {
   border: none;
-  position: relative;
 }
 
 #ai-sort-wrapper.ai-liquid-border::after {
