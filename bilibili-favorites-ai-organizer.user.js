@@ -3933,9 +3933,11 @@ ${topUps.length > 0 ? `<div class="section">
                         <button id="ai-tool-stop" class="ai-btn" style="display:none;flex:1;padding:7px;background:#e74c3c;color:#fff;border:none;font-size:11px;"><i data-lucide="square" style="width:12px;height:12px;"></i> 停止</button>
                     </div>
                     <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
-                        <button id="ai-tool-backup" class="ai-btn ai-btn-tool" style="flex:1;padding:7px;min-width:60px;" title="备份/下载收藏夹结构"><i data-lucide="download" style="width:12px;height:12px;"></i> 备份</button>
-                        <button id="ai-tool-bench" class="ai-btn ai-btn-tool" style="flex:1;padding:7px;min-width:60px;" title="AI模型性能测试"><i data-lucide="gauge" style="width:12px;height:12px;"></i> 测试AI</button>
-                        <button id="ai-tool-stats" class="ai-btn ai-btn-tool" style="flex:1;padding:7px;min-width:50px;" title="收藏夹数据统计"><i data-lucide="bar-chart-3" style="width:12px;height:12px;"></i> 统计</button>
+                        <button id="ai-tool-backup" class="ai-btn ai-btn-tool" style="flex:1;padding:7px;min-width:55px;" title="备份/下载收藏夹结构"><i data-lucide="download" style="width:12px;height:12px;"></i> 备份</button>
+                        <button id="ai-tool-bench" class="ai-btn ai-btn-tool" style="flex:1;padding:7px;min-width:65px;" title="AI模型性能测试"><i data-lucide="gauge" style="width:12px;height:12px;"></i> 测试AI</button>
+                        <button id="ai-tool-stats" class="ai-btn ai-btn-tool" style="flex:1;padding:7px;min-width:55px;" title="收藏夹数据统计"><i data-lucide="bar-chart-3" style="width:12px;height:12px;"></i> 统计</button>
+                    </div>
+                    <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
                         <button id="ai-tool-health" class="ai-btn ai-btn-tool" style="padding:7px;" title="收藏夹健康检查"><i data-lucide="heart-pulse" style="width:12px;height:12px;"></i></button>
                         <button id="ai-tool-log-export" class="ai-btn ai-btn-tool" style="padding:7px;" title="导出日志"><i data-lucide="file-text" style="width:12px;height:12px;"></i></button>
                         <button id="ai-tool-help" class="ai-btn ai-btn-tool" style="padding:7px;" title="帮助与常见问题"><i data-lucide="help-circle" style="width:12px;height:12px;"></i></button>
