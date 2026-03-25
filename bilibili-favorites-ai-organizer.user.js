@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.3.3
+// @version      1.3.4
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -4277,6 +4277,8 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'crimson', label: '深红' },
                 { id: 'cyber', label: '赛博霓虹' },
                 { id: 'moonlight', label: '月光银' },
+                { id: 'frost', label: '冰霜' },
+                { id: 'dusk', label: '暮光' },
                 { id: 'custom', label: '自定义' }
             ];
 
@@ -4407,7 +4409,7 @@ ${topUps.length > 0 ? `<div class="section">
             }
         })();
 
-        // === Velvet Silk v0.0.2 — 丝绒微光新特性 ===
+        // === Velvet Silk v0.0.2 — 丝绒微光特性 ===
 
         // === Ambient Light Motes 环境光斑 ===
         (() => {
@@ -4721,6 +4723,164 @@ ${topUps.length > 0 ? `<div class="section">
             });
         }
         window.addEventListener('resize', debounce(clampPanelPosition, 200));
+
+        // === Liquid Crystal v0.0.3 — 液晶流韵新特性 ===
+
+        // === Magnetic Tilt Effect 磁性倾斜 3D 效果 ===
+        (() => {
+            let tiltRAF = null;
+            let targetTiltX = 0, targetTiltY = 0;
+            let currentTiltX = 0, currentTiltY = 0;
+            const MAX_TILT = 1.5; // degrees
+            const LERP_SPEED = 0.08; // smooth interpolation
+
+            const lerp = (a, b, t) => a + (b - a) * t;
+
+            panel.addEventListener('mouseenter', () => {
+                panel.classList.add('ai-tilt-active');
+                if (!tiltRAF) animateTilt();
+            });
+
+            panel.addEventListener('mouseleave', () => {
+                panel.classList.remove('ai-tilt-active');
+                targetTiltX = 0;
+                targetTiltY = 0;
+            });
+
+            panel.addEventListener('mousemove', (e) => {
+                if (!panel.classList.contains('ai-tilt-active')) return;
+                const rect = panel.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width;
+                const y = (e.clientY - rect.top) / rect.height;
+                targetTiltX = (0.5 - y) * MAX_TILT * 2;
+                targetTiltY = (x - 0.5) * MAX_TILT * 2;
+            });
+
+            function animateTilt() {
+                currentTiltX = lerp(currentTiltX, targetTiltX, LERP_SPEED);
+                currentTiltY = lerp(currentTiltY, targetTiltY, LERP_SPEED);
+
+                if (Math.abs(currentTiltX - targetTiltX) > 0.001 || Math.abs(currentTiltY - targetTiltY) > 0.001) {
+                    panel.style.setProperty('--tilt-x', currentTiltX.toFixed(3) + 'deg');
+                    panel.style.setProperty('--tilt-y', currentTiltY.toFixed(3) + 'deg');
+                    tiltRAF = requestAnimationFrame(animateTilt);
+                } else {
+                    panel.style.setProperty('--tilt-x', targetTiltX.toFixed(3) + 'deg');
+                    panel.style.setProperty('--tilt-y', targetTiltY.toFixed(3) + 'deg');
+                    if (targetTiltX === 0 && targetTiltY === 0) {
+                        tiltRAF = null;
+                    } else {
+                        tiltRAF = requestAnimationFrame(animateTilt);
+                    }
+                }
+            }
+        })();
+
+        // === Cursor Glow Follower 光标追踪光晕 ===
+        (() => {
+            const glow = document.createElement('div');
+            glow.className = 'ai-cursor-glow';
+            panel.insertBefore(glow, panel.firstChild);
+
+            let glowRAF = null;
+            let targetX = 0, targetY = 0;
+            let currentX = 0, currentY = 0;
+
+            const lerp = (a, b, t) => a + (b - a) * t;
+
+            panel.addEventListener('mousemove', (e) => {
+                const rect = panel.getBoundingClientRect();
+                targetX = e.clientX - rect.left;
+                targetY = e.clientY - rect.top;
+                if (!glowRAF) animateGlow();
+            });
+
+            panel.addEventListener('mouseleave', () => {
+                glow.style.opacity = '0';
+                glowRAF = null;
+            });
+
+            panel.addEventListener('mouseenter', () => {
+                glow.style.opacity = '';
+                if (!glowRAF) animateGlow();
+            });
+
+            function animateGlow() {
+                currentX = lerp(currentX, targetX, 0.12);
+                currentY = lerp(currentY, targetY, 0.12);
+                glow.style.left = currentX + 'px';
+                glow.style.top = currentY + 'px';
+                if (Math.abs(currentX - targetX) > 0.5 || Math.abs(currentY - targetY) > 0.5) {
+                    glowRAF = requestAnimationFrame(animateGlow);
+                } else {
+                    glowRAF = null;
+                }
+            }
+        })();
+
+        // === Click Ripple Pool 点击涟漪池 ===
+        (() => {
+            panel.addEventListener('click', (e) => {
+                const rect = panel.getBoundingClientRect();
+                const pool = document.createElement('div');
+                pool.className = 'ai-click-pool';
+                pool.style.cssText = `left:${e.clientX - rect.left}px;top:${e.clientY - rect.top}px;`;
+                panel.insertBefore(pool, panel.firstChild);
+                pool.addEventListener('animationend', () => pool.remove());
+            });
+        })();
+
+        // === Cursor Scatter Particles 光标散射粒子 ===
+        (() => {
+            const auroraColors = ['var(--ai-aurora-1)', 'var(--ai-aurora-2)', 'var(--ai-aurora-3)',
+                                  'var(--ai-aurora-4)', 'var(--ai-aurora-5)', 'var(--ai-aurora-6)'];
+            let lastScatterTime = 0;
+
+            panel.addEventListener('mousemove', (e) => {
+                const now = Date.now();
+                if (now - lastScatterTime < 80) return; // throttle
+                lastScatterTime = now;
+
+                // Only scatter occasionally (30% chance)
+                if (Math.random() > 0.3) return;
+
+                const p = document.createElement('div');
+                p.className = 'ai-scatter-particle';
+                const size = 2 + Math.random() * 4;
+                const color = auroraColors[Math.floor(Math.random() * auroraColors.length)];
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 20 + Math.random() * 40;
+                const dx = Math.cos(angle) * distance;
+                const dy = Math.sin(angle) * distance;
+                const duration = 0.4 + Math.random() * 0.4;
+                p.style.cssText = `
+                    left: ${e.clientX}px; top: ${e.clientY}px;
+                    --scatter-size: ${size}px;
+                    --scatter-color: ${color};
+                    --scatter-dx: ${dx}px;
+                    --scatter-dy: ${dy}px;
+                    --scatter-duration: ${duration}s;
+                `;
+                document.body.appendChild(p);
+                p.addEventListener('animationend', () => p.remove());
+            });
+        })();
+
+        // === Scroll Shadow Indicator 滚动阴影指示器 ===
+        (() => {
+            const content = panel.querySelector('.ai-panel-content');
+            if (!content) return;
+
+            const updateScrollShadow = () => {
+                const scrollTop = content.scrollTop;
+                const scrollHeight = content.scrollHeight;
+                const clientHeight = content.clientHeight;
+                content.classList.toggle('scrolled-top', scrollTop > 8);
+                content.classList.toggle('scrolled-bottom', scrollTop + clientHeight >= scrollHeight - 8);
+            };
+
+            content.addEventListener('scroll', updateScrollShadow, { passive: true });
+        })();
 
         // 悬浮按钮拖拽支持（区分拖拽和点击）
         let _dragState = { dragging: false, startX: 0, startY: 0, startLeft: 0, startBottom: 0, moved: false };
