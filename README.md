@@ -1,7 +1,7 @@
 # Bilibili 收藏夹 AI 智能整理器
 
 一款基于 AI 的 Bilibili 收藏夹自动分类整理油猴脚本。告别手动整理，让 AI 帮你把杂乱的收藏夹自动归类到不同文件夹中。
-
+感谢b站某不知名的根号三，本脚本基于[其视频](https://www.bilibili.com/video/BV1LifmBgEPZ/?spm_id_from=333.337.search-card.all.click)最初提供的demo继续开发。
 
 ### 安装&更新
 
