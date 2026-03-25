@@ -134,6 +134,14 @@
             @keyframes ai-particle{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--tx),var(--ty)) scale(0);opacity:0}}
             @keyframes ai-breathe{0%,100%{box-shadow:0 4px 12px var(--ai-primary-shadow)}50%{box-shadow:0 4px 20px rgba(251,114,153,0.6)}}
             @keyframes ai-panel-in{from{transform:translateY(20px) scale(0.97);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+            @keyframes ai-btn-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+            @keyframes ai-bubble-pop{0%{transform:translateX(-50%) scale(0);opacity:0}50%{transform:translateX(-50%) scale(1.1);opacity:1}100%{transform:translateX(-50%) scale(1);opacity:1}}
+            @keyframes ai-bubble-pulse{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.08)}}
+            .ai-btn-spin-icon{display:inline-flex;animation:ai-btn-spin 0.8s linear infinite;}
+            .ai-btn.ai-btn-loading{position:relative;pointer-events:none;opacity:0.85;}
+            .ai-countdown-bubble{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#fb7299,#ff9ab5);color:#fff;font-size:10px;font-weight:bold;padding:3px 10px;border-radius:12px;white-space:nowrap;pointer-events:none;animation:ai-bubble-pop 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards;box-shadow:0 2px 10px rgba(251,114,153,0.35);z-index:10;line-height:1.4;}
+            .ai-countdown-bubble::after{content:'';position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#ff9ab5;}
+            .ai-countdown-bubble .ai-cd-num{display:inline-block;min-width:14px;text-align:center;animation:ai-bubble-pulse 1s ease-in-out infinite;}
             #ai-sort-wrapper input,#ai-sort-wrapper textarea,#ai-sort-wrapper select,.ai-modal input,.ai-modal textarea,.ai-modal select{filter:none!important;-webkit-filter:none!important;background-color:var(--ai-input-bg)!important;color:var(--ai-text)!important;}
             #ai-sort-wrapper,#ai-sort-wrapper *:not(.ai-vid-cover):not([data-lucide]),#ai-float-btn,.ai-modal-backdrop,.ai-modal,.ai-modal *:not(.ai-vid-cover):not([data-lucide]){filter:none!important;-webkit-filter:none!important;}
         `;
@@ -653,6 +661,93 @@
     function escapeHtml(str) {
         if (!str) return '';
         return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    // 按钮加载动画 SVG（转圈弧线）
+    const SPIN_SVG = '<svg class="ai-btn-spin-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>';
+
+    /**
+     * 统一的按钮加载动画 + 可选倒计时气泡 + 超时保护
+     * @param {HTMLElement} btn 按钮元素
+     * @param {Function} asyncFn 返回 Promise 的异步函数
+     * @param {Object} opts 选项
+     *   timeout: 超时毫秒数（0=不限）
+     *   countdown: 是否显示倒计时气泡
+     *   successText: 成功文本（emoji），默认 '✅'
+     *   failText: 失败文本（emoji），默认 '❌'
+     *   restoreDelay: 恢复原图标的延迟（ms），默认 2000
+     */
+    async function withLoadingAnimation(btn, asyncFn, opts = {}) {
+        const { timeout = 0, countdown = false, successText = '✅', failText = '❌', restoreDelay = 2000 } = opts;
+        const originalHTML = btn.innerHTML;
+        const originalPosition = btn.style.position;
+
+        // 设置按钮为加载态
+        btn.classList.add('ai-btn-loading');
+        btn.disabled = true;
+        btn.style.position = 'relative';
+        btn.innerHTML = SPIN_SVG;
+
+        // 倒计时气泡
+        let bubble = null;
+        let countdownInterval = null;
+        if (countdown && timeout > 0) {
+            let remaining = Math.ceil(timeout / 1000);
+            bubble = document.createElement('span');
+            bubble.className = 'ai-countdown-bubble';
+            bubble.innerHTML = `<span class="ai-cd-num">${remaining}s</span>`;
+            btn.appendChild(bubble);
+            countdownInterval = setInterval(() => {
+                remaining--;
+                if (remaining <= 0) { clearInterval(countdownInterval); return; }
+                const numEl = bubble.querySelector('.ai-cd-num');
+                if (numEl) numEl.textContent = remaining + 's';
+            }, 1000);
+        }
+
+        const cleanup = () => {
+            if (countdownInterval) clearInterval(countdownInterval);
+            if (bubble && bubble.parentNode) bubble.parentNode.removeChild(bubble);
+            btn.classList.remove('ai-btn-loading');
+            btn.style.position = originalPosition;
+        };
+
+        const restore = (text) => {
+            cleanup();
+            btn.textContent = text;
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+                if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [btn] });
+            }, restoreDelay);
+        };
+
+        try {
+            let result;
+            if (timeout > 0) {
+                result = await Promise.race([
+                    asyncFn(),
+                    new Promise((_, rej) => setTimeout(() => rej(new Error(`操作超时 (${Math.ceil(timeout / 1000)}秒)`)), timeout))
+                ]);
+            } else {
+                result = await asyncFn();
+            }
+            return { success: true, result, restore };
+        } catch (err) {
+            return { success: false, error: err, restore };
+        }
+    }
+
+    // 简化版：仅添加转圈动画（不超时、不倒计时）给工具按钮
+    function btnStartLoading(btn) {
+        btn._origHTML = btn.innerHTML;
+        btn.classList.add('ai-btn-loading');
+        btn.innerHTML = SPIN_SVG + '<span style="margin-left:3px;">' + (btn.textContent.trim().replace(/^[\s\S]*?\s/, '') || '') + '</span>';
+    }
+    function btnStopLoading(btn) {
+        btn.classList.remove('ai-btn-loading');
+        if (btn._origHTML) { btn.innerHTML = btn._origHTML; delete btn._origHTML; }
+        if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [btn] });
     }
 
     // 防抖函数
@@ -3801,17 +3896,19 @@ ${topUps.length > 0 ? `<div class="section">
             };
         });
         document.getElementById('ai-start-btn').onclick = startProcess;
-        document.getElementById('ai-tool-clean').onclick = cleanDeadVideos;
-        document.getElementById('ai-tool-dup').onclick = findDuplicates;
+        document.getElementById('ai-tool-clean').onclick = async function() { btnStartLoading(this); try { await cleanDeadVideos(); } finally { btnStopLoading(this); } };
+        document.getElementById('ai-tool-dup').onclick = async function() { btnStartLoading(this); try { await findDuplicates(); } finally { btnStopLoading(this); } };
         document.getElementById('ai-tool-undo').onclick = undoLastOperation;
-        document.getElementById('ai-tool-bench').onclick = benchmarkAI;
+        document.getElementById('ai-tool-bench').onclick = async function() { btnStartLoading(this); try { await benchmarkAI(); } finally { btnStopLoading(this); } };
         document.getElementById('ai-tool-log-export').onclick = exportLogs;
 
         // ===== 收藏夹健康报告 =====
-        document.getElementById('ai-tool-health').onclick = async () => {
+        document.getElementById('ai-tool-health').onclick = async function() {
+            const healthBtn = this;
             const biliData = getBiliData();
             if (!biliData.mid) return alert('请先登录B站');
 
+            btnStartLoading(healthBtn);
             logStatus('🩺 正在进行收藏夹健康检查...');
             state.isRunning = true;
             setToolButtonsDisabled(true);
@@ -3936,16 +4033,19 @@ ${topUps.length > 0 ? `<div class="section">
             } catch (err) {
                 logStatus(`❌ 健康检查失败: ${err.message}`);
             }
+            btnStopLoading(healthBtn);
             resetMainButton();
         };
         document.getElementById('ai-set-export').onclick = exportSettings;
         document.getElementById('ai-set-import').onclick = importSettings;
 
         // 备份工具
-        document.getElementById('ai-tool-backup').onclick = async () => {
+        document.getElementById('ai-tool-backup').onclick = async function() {
+            const backupBtn = this;
             const biliData = getBiliData();
             if (!biliData.mid) return alert('请先登录B站');
 
+            btnStartLoading(backupBtn);
             state.isRunning = true;
             setToolButtonsDisabled(true);
             document.getElementById('ai-status-log').innerHTML = '';
@@ -3964,6 +4064,7 @@ ${topUps.length > 0 ? `<div class="section">
             } catch (err) {
                 logStatus(`❌ 备份失败: ${err.message}`);
             }
+            btnStopLoading(backupBtn);
             resetMainButton();
         };
 
@@ -4099,9 +4200,11 @@ ${topUps.length > 0 ? `<div class="section">
         });
 
         // ===== 统计仪表盘 =====
-        document.getElementById('ai-tool-stats').onclick = async () => {
+        document.getElementById('ai-tool-stats').onclick = async function() {
+            const statsBtn = this;
             const biliData = getBiliData();
             if (!biliData.mid) return alert('请先登录B站');
+            btnStartLoading(statsBtn);
 
             const settings = loadSettings();
             initAdaptiveState(settings);
@@ -4393,6 +4496,7 @@ ${topUps.length > 0 ? `<div class="section">
             } catch (err) {
                 logStatus(`❌ 统计失败: ${err.message}`);
             }
+            btnStopLoading(statsBtn);
             resetMainButton();
         };
 
@@ -4483,27 +4587,23 @@ ${topUps.length > 0 ? `<div class="section">
 
             if (!apiKey && provider !== 'ollama') { alert('请先填入 API Key'); return; }
 
-            btn.textContent = '⏳';
-            btn.disabled = true;
-
-            try {
+            const { success, result, error, restore } = await withLoadingAnimation(btn, () => {
                 const tempSettings = {
                     provider: provider,
                     apiKey: apiKey,
                     customBaseUrl: document.getElementById('ai-set-base-url').value.trim()
                 };
-                const models = await fetchModelList(tempSettings);
-                // 缓存到本地存储
-                GM_setValue('bfao_cachedModels_' + provider, models);
-                loadModelOptions(models); toggleModelDropdown(true);
-                btn.textContent = `✅`;
-                setTimeout(() => { btn.innerHTML = '<i data-lucide="refresh-cw" style="width:13px;height:13px;"></i>'; if (typeof lucide !== 'undefined') lucide.createIcons({nodes:[btn]}); }, 2000);
-            } catch (err) {
-                btn.textContent = '❌';
-                alert('获取模型列表失败: ' + err.message);
-                setTimeout(() => { btn.innerHTML = '<i data-lucide="refresh-cw" style="width:13px;height:13px;"></i>'; if (typeof lucide !== 'undefined') lucide.createIcons({nodes:[btn]}); }, 2000);
+                return fetchModelList(tempSettings);
+            }, { timeout: 15000, countdown: true });
+
+            if (success) {
+                GM_setValue('bfao_cachedModels_' + provider, result);
+                loadModelOptions(result); toggleModelDropdown(true);
+                restore('✅');
+            } else {
+                alert('获取模型列表失败: ' + (error?.message || '未知错误'));
+                restore('❌');
             }
-            btn.disabled = false;
         };
 
         // ✅ 验证模型可用性
@@ -4516,30 +4616,28 @@ ${topUps.length > 0 ? `<div class="section">
             if (!modelName) { alert('请先填入模型名'); return; }
             if (!apiKey && provider !== 'ollama') { alert('请先填入 API Key'); return; }
 
-            btn.textContent = '⏳';
-            btn.disabled = true;
-
-            try {
+            const { success, result, error, restore } = await withLoadingAnimation(btn, () => {
                 const testSettings = {
                     provider: provider,
                     apiKey: apiKey,
                     modelName: modelName,
                     customBaseUrl: document.getElementById('ai-set-base-url').value.trim()
                 };
-                const result = await callAI('请回复一个JSON：{"status":"ok"}', testSettings, 1);
+                return callAI('请回复一个JSON：{"status":"ok"}', testSettings, 1);
+            }, { timeout: 15000, countdown: true });
+
+            if (success) {
                 if (result && (result.status === 'ok' || Object.keys(result).length > 0)) {
-                    btn.textContent = '🟢';
+                    restore('🟢');
                     alert(`✅ 模型验证成功！\n\n模型 "${modelName}" 可用。`);
                 } else {
-                    btn.textContent = '🟡';
+                    restore('🟡');
                     alert(`⚠️ 模型有响应但格式异常，可能仍可使用。`);
                 }
-            } catch (err) {
-                btn.textContent = '🔴';
-                alert(`❌ 模型验证失败！\n\n模型 "${modelName}" 不可用。\n错误: ${err.message}`);
+            } else {
+                restore('🔴');
+                alert(`❌ 模型验证失败！\n\n模型 "${modelName}" 不可用。\n错误: ${error?.message || '未知错误'}`);
             }
-            setTimeout(() => { btn.innerHTML = '<i data-lucide="check-circle" style="width:13px;height:13px;"></i>'; if (typeof lucide !== 'undefined') lucide.createIcons({nodes:[btn]}); }, 3000);
-            btn.disabled = false;
         };
 
         // 阻止面板滚轮穿透到页面，但允许内部控件正常使用滚轮
