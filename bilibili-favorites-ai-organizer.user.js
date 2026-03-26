@@ -49,7 +49,7 @@
             :root{--ai-primary:#7364FF;--ai-primary-dark:#5046E5;--ai-primary-light:#B0A8FF;--ai-primary-bg:rgba(115,100,255,0.06);--ai-primary-shadow:rgba(115,100,255,0.22);--ai-success:#10B981;--ai-error:#F43F5E;--ai-info:#818CF8;--ai-warning:#F59E0B;--ai-text:#181233;--ai-text-secondary:#38305A;--ai-text-muted:#868199;--ai-text-light:#BEB8D0;--ai-border:#E4DDF5;--ai-border-light:#F0EAFA;--ai-border-lighter:#F9F7FF;--ai-bg:#fff;--ai-bg-secondary:#F9F7FF;--ai-bg-tertiary:#F0EAFA;--ai-bg-hover:rgba(115,100,255,0.04);--ai-header-gradient:linear-gradient(135deg,#7364FF,#9B59F6,#7364FF);--ai-modal-backdrop:rgba(24,18,51,0.58);--ai-input-bg:#fff;--ai-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--ai-z-float:2147483640;--ai-z-panel:2147483641;--ai-z-modal:2147483645;--ai-z-particle:2147483646;--ai-radius-xs:6px;--ai-radius-sm:8px;--ai-radius-md:10px;--ai-radius-lg:14px;--ai-radius-xl:18px;--ai-transition:0.25s cubic-bezier(0.4,0,0.2,1);--ai-transition-slow:0.4s cubic-bezier(0.16,1,0.3,1);--ai-scrollbar:#BEB8D0;--ai-scrollbar-hover:#868199;--ai-cat-detail-bg:#F9F7FF;--ai-separator:#E4DDF5;--ai-glow-color:rgba(115,100,255,0.07);--ai-badge-new-bg:#F43F5E;--ai-badge-existing-bg:#10B981;--ai-vid-odd-bg:rgba(24,18,51,0.012);--ai-vid-hover-bg:rgba(115,100,255,0.05);--ai-spring:cubic-bezier(0.32,1.48,0.62,1);--ai-spring-gentle:cubic-bezier(0.20,1.04,0.42,1);--ai-spring-bouncy:cubic-bezier(0.165,0.84,0.28,1.18);--ai-spring-silk:cubic-bezier(0.20,1.10,0.36,1);--ai-ease-out-expo:cubic-bezier(0.14,1,0.28,1);--ai-ease-smooth:cubic-bezier(0.38,0,0,1);--ai-ease-fluid:cubic-bezier(0.22,0.78,0.22,1);--ai-ease-ios:cubic-bezier(0.20,0.98,0.28,1);--ai-ease-magnetic:cubic-bezier(0.18,0.88,0.28,1.08);--ai-ease-butterfly:cubic-bezier(0.13,0.94,0.22,1.03);--ai-ease-ethereal:cubic-bezier(0.08,0.92,0.16,1);--ai-spring-flux:cubic-bezier(0.22,1.36,0.42,1);--ai-ease-aurora:cubic-bezier(0.12,0.88,0.20,1.04);--ai-ease-dreamy:cubic-bezier(0.06,0.96,0.14,1);--ai-spring-firefly:cubic-bezier(0.28,1.68,0.48,1);--ai-spring-velvet:cubic-bezier(0.17,1.32,0.40,1);--ai-spring-jelly:cubic-bezier(0.22,1.52,0.38,1);--ai-ease-silk-out:cubic-bezier(0.08,0.90,0.15,1.02);}
             #ai-float-btn{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-float);background:linear-gradient(135deg,#7364FF,#9B59F6,#B0A8FF,#7364FF);background-size:300% 300%;color:#fff;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 14px rgba(115,100,255,0.18),0 0 28px rgba(155,89,246,0.08);border:2px solid rgba(255,255,255,0.28);transition:transform 0.7s var(--ai-spring-silk);}
             #ai-float-btn [data-lucide]{width:24px;height:24px;}
-            #ai-sort-wrapper{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-panel);width:min(400px,calc(100vw - 60px));display:flex;flex-direction:column;background:var(--ai-bg,#fff);color:var(--ai-text,#181233);box-shadow:0 24px 68px rgba(0,0,0,0.11),0 10px 28px rgba(0,0,0,0.07);border-radius:28px;overflow:hidden;max-height:85vh;font-family:var(--ai-font);}
+            #ai-sort-wrapper{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-panel);width:min(400px,calc(100vw - 60px));display:flex;flex-direction:column;background:var(--ai-bg,#fff);color:var(--ai-text,#181233);box-shadow:0 24px 68px rgba(0,0,0,0.11),0 10px 28px rgba(0,0,0,0.07);border-radius:28px;overflow:hidden;font-family:var(--ai-font);}
             #ai-sort-wrapper [data-lucide]{width:16px;height:16px;stroke-width:2;vertical-align:middle;display:inline-block;}
             .ai-panel-content{background:var(--ai-bg)!important;padding:0;flex:1 1 0%!important;min-height:0!important;max-height:none!important;overflow-y:auto!important;overflow-x:hidden!important;border-bottom-left-radius:26px;border-bottom-right-radius:26px;}
             .ai-header{background:linear-gradient(135deg,#7364FF,#9B59F6,#7364FF);background-size:400% 400%;color:#fff;padding:16px 18px;font-weight:600;font-size:14px;display:flex;justify-content:space-between;align-items:center;position:relative;overflow:hidden;}
@@ -271,9 +271,8 @@
             // 批量休息防风控
             batchRestInterval: GM_getValue('bfao_batchRestInterval', 100),
             batchRestMinutes: GM_getValue('bfao_batchRestMinutes', 1),
-            // 定时自动整理
-            autoOrganizeEnabled: GM_getValue('bfao_autoOrganizeEnabled', false),
-            autoOrganizeInterval: GM_getValue('bfao_autoOrganizeInterval', 60) // 分钟
+            // 后台缓存扫描间隔（分钟）
+            cacheScanInterval: GM_getValue('bfao_cacheScanInterval', 15)
         };
     }
 
@@ -284,7 +283,7 @@
             'lastPrompt','adaptiveRate','notifyOnComplete',
             'multiFolderEnabled','animEnabled','incrementalMode',
             'batchRestInterval','batchRestMinutes',
-            'autoOrganizeEnabled','autoOrganizeInterval'];
+            'cacheScanInterval'];
         keys.forEach(k => { if (s[k] !== undefined) GM_setValue('bfao_' + k, s[k]); });
         // 按服务商保存 API Key，切换服务商时可自动恢复
         if (s.provider && s.apiKey !== undefined) GM_setValue('bfao_apiKey_' + s.provider, s.apiKey);
@@ -976,7 +975,7 @@
 
     // 增量协调缓存与 API 数据，避免全量抓取
     // 返回 { videos, newCount, removedCount } 或 null（无缓存需全量）
-    async function reconcileCache(folderId, currentMediaCount, abortSignal = null) {
+    async function reconcileCache(folderId, currentMediaCount, abortSignal = null, fetchDelay = 0) {
         const cached = getCachedFolder(folderId);
         if (!cached || !cached.videos || cached.videos.length === 0) {
             return null; // 无缓存，调用方需全量抓取
@@ -990,8 +989,34 @@
         }
 
         if (diff < 0) {
-            // media_count 减少（用户删了视频），直接用缓存，接受微小偏差
-            // 后续操作（移动/统计）会自然忽略已不存在的视频
+            // media_count 减少（用户删了视频），从第1页扫描获取当前真实列表
+            // 用当前列表过滤掉缓存中已被删除的视频
+            const currentIds = new Set();
+            let pn = 1;
+            let scanDone = false;
+            try {
+                while (!scanDone) {
+                    if (state.cancelRequested) break;
+                    const res = await lightFetchJson(
+                        `https://api.bilibili.com/x/v3/fav/resource/list?media_id=${folderId}&pn=${pn}&ps=40&platform=web`,
+                        3, abortSignal
+                    );
+                    if (res.code !== 0) break;
+                    const medias = (res.data && res.data.medias) || [];
+                    for (const v of medias) currentIds.add(v.id);
+                    if (!res.data.has_more || medias.length === 0) { scanDone = true; break; }
+                    pn++;
+                    if (fetchDelay > 0) { await sleep(fetchDelay); } else { await humanDelay(getAdaptiveFetchDelay()); await checkBatchPause(); }
+                }
+            } catch (e) {
+                // 扫描失败，退回使用缓存
+                return { videos: cached.videos, newCount: 0, removedCount: -diff };
+            }
+            if (scanDone && currentIds.size > 0) {
+                const filteredVideos = cached.videos.filter(v => currentIds.has(v.id));
+                updateCachedFolder(folderId, cached.title, currentMediaCount, filteredVideos);
+                return { videos: filteredVideos, newCount: 0, removedCount: -diff };
+            }
             return { videos: cached.videos, newCount: 0, removedCount: -diff };
         }
 
@@ -1026,8 +1051,12 @@
                 // 但如果已经命中缓存视频且后续页不太可能有新视频了，提前停止
                 if (!res.data.has_more || medias.length === 0) break;
                 pn++;
-                await humanDelay(getAdaptiveFetchDelay());
-                await checkBatchPause();
+                if (fetchDelay > 0) {
+                    await sleep(fetchDelay);
+                } else {
+                    await humanDelay(getAdaptiveFetchDelay());
+                    await checkBatchPause();
+                }
             } catch (e) {
                 break; // 出错就停，用已找到的部分
             }
@@ -3361,67 +3390,6 @@ ${topUps.length > 0 ? `<div class="section">
         });
     }
 
-    // ================= 定时自动整理 =================
-    let _autoOrganizeTimer = null;
-
-    function setupAutoOrganize() {
-        // 清除旧定时器
-        if (_autoOrganizeTimer) { clearInterval(_autoOrganizeTimer); _autoOrganizeTimer = null; }
-
-        const settings = loadSettings();
-        if (!settings.autoOrganizeEnabled || !settings.apiKey) return;
-
-        const intervalMs = (settings.autoOrganizeInterval || 60) * 60 * 1000;
-        console.log(`[AI整理] ⏰ 定时整理已启用，间隔 ${settings.autoOrganizeInterval} 分钟`);
-
-        _autoOrganizeTimer = setInterval(() => {
-            if (state.isRunning) {
-                console.log('[AI整理] ⏰ 定时整理跳过：当前有任务运行中');
-                return;
-            }
-            autoOrganizeRun();
-        }, intervalMs);
-
-        // 页面加载后检查是否需要立即运行（距上次运行超过间隔时间）
-        const lastRun = GM_getValue('bfao_lastRunTime', 0);
-        const elapsed = Date.now() - lastRun * 1000;
-        if (lastRun > 0 && elapsed > intervalMs) {
-            // 延迟 10 秒后运行，避免页面加载时立即触发
-            setTimeout(() => {
-                if (!state.isRunning) autoOrganizeRun();
-            }, 10000);
-        }
-    }
-
-    async function autoOrganizeRun() {
-        const settings = loadSettings();
-        if (!settings.apiKey || state.isRunning) return;
-
-        const biliData = getBiliData();
-        if (!biliData.mid || !biliData.csrf) return;
-
-        const sourceMediaId = getSourceMediaId();
-        if (!sourceMediaId) {
-            console.log('[AI整理] ⏰ 定时整理跳过：未在收藏夹页面');
-            return;
-        }
-
-        logStatus('⏰ 定时自动整理开始（增量模式）...');
-
-        // 强制使用增量模式，避免重复处理
-        const origIncremental = settings.incrementalMode;
-        GM_setValue('bfao_incrementalMode', true);
-
-        try {
-            await startProcess();
-        } catch (e) {
-            logStatus(`⏰ 定时整理出错: ${e.message}`);
-        }
-
-        // 恢复原始增量模式设置
-        GM_setValue('bfao_incrementalMode', origIncremental);
-    }
-
     // ================= 工具：失效视频批量移动到专用收藏夹 =================
     const DEAD_VIDEO_FOLDER_NAME = '失效视频归档';
 
@@ -4077,22 +4045,15 @@ ${topUps.length > 0 ? `<div class="section">
                                 <input id="ai-set-incremental" type="checkbox" ${settings.incrementalMode ? 'checked' : ''}> <span>增量整理</span>
                             </label>
                         </div>
-                        <div style="display:flex;gap:8px;align-items:center;margin-top:8px;font-size:12px;flex-wrap:wrap;">
-                            <label class="ai-behavior-option" style="margin:0;" title="定时自动运行增量整理（需要页面保持打开）">
-                                <input id="ai-set-auto-organize" type="checkbox" ${settings.autoOrganizeEnabled ? 'checked' : ''}> <span>定时整理</span>
-                            </label>
-                            <div style="display:flex;align-items:center;gap:4px;">
-                                <span style="font-size:11px;color:var(--ai-text-muted);">间隔</span>
-                                <select id="ai-set-auto-interval" class="ai-select" style="font-size:11px;padding:2px 4px;">
-                                    <option value="30" ${settings.autoOrganizeInterval === 30 ? 'selected' : ''}>30分钟</option>
-                                    <option value="60" ${settings.autoOrganizeInterval === 60 ? 'selected' : ''}>1小时</option>
-                                    <option value="120" ${settings.autoOrganizeInterval === 120 ? 'selected' : ''}>2小时</option>
-                                    <option value="360" ${settings.autoOrganizeInterval === 360 ? 'selected' : ''}>6小时</option>
-                                    <option value="720" ${settings.autoOrganizeInterval === 720 ? 'selected' : ''}>12小时</option>
-                                </select>
-                            </div>
+                        <div style="display:flex;gap:8px;align-items:center;margin-top:8px;font-size:12px;">
+                            <span style="font-size:11px;color:var(--ai-text-muted);white-space:nowrap;" title="后台增量缓存收藏夹数据的检查间隔">缓存扫描间隔</span>
+                            <select id="ai-set-cache-interval" class="ai-select" style="font-size:11px;padding:2px 4px;">
+                                <option value="5" ${settings.cacheScanInterval === 5 ? 'selected' : ''}>5 分钟</option>
+                                <option value="15" ${settings.cacheScanInterval === 15 ? 'selected' : ''}>15 分钟</option>
+                                <option value="30" ${settings.cacheScanInterval === 30 ? 'selected' : ''}>30 分钟</option>
+                                <option value="60" ${settings.cacheScanInterval === 60 ? 'selected' : ''}>1 小时</option>
+                            </select>
                         </div>
-                        <div id="ai-auto-organize-status" style="font-size:10px;color:var(--ai-text-muted);display:${settings.autoOrganizeEnabled ? 'block' : 'none'};margin-top:4px;">⏰ 定时整理已启用，将自动使用增量模式</div>
                     </div>
 
                     <!-- 分组4: 动画效果 (默认折叠) -->
@@ -6225,33 +6186,29 @@ ${topUps.length > 0 ? `<div class="section">
                 incrementalMode: document.getElementById('ai-set-incremental').checked,
                 batchRestInterval: parseInt(document.getElementById('ai-set-batch-rest-interval').value) || 100,
                 batchRestMinutes: parseFloat(document.getElementById('ai-set-batch-rest-minutes').value) || 1,
-                autoOrganizeEnabled: document.getElementById('ai-set-auto-organize').checked,
-                autoOrganizeInterval: parseInt(document.getElementById('ai-set-auto-interval').value) || 60
+                cacheScanInterval: parseInt(document.getElementById('ai-set-cache-interval').value) || 15
             });
-            // 更新定时整理状态提示
-            const autoStatus = document.getElementById('ai-auto-organize-status');
-            if (autoStatus) autoStatus.style.display = document.getElementById('ai-set-auto-organize').checked ? 'block' : 'none';
-            setupAutoOrganize();
+            // 重新设置后台缓存定时器
+            setupBackgroundCache();
         }
         const debouncedAutoSave = debounce(autoSaveAllSettings, 400);
 
         // 为所有设置控件绑定自动保存
         // select 下拉框：change 事件立即保存
-        ['ai-set-speed', 'ai-set-chunk'].forEach(id => {
+        ['ai-set-speed', 'ai-set-chunk', 'ai-set-cache-interval'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.addEventListener('change', autoSaveAllSettings);
         });
         // checkbox：change 事件立即保存
         ['ai-set-limit-enabled', 'ai-set-skipdead', 'ai-set-adaptive',
-         'ai-set-notify', 'ai-set-multifolder', 'ai-set-anim-enabled', 'ai-set-incremental',
-         'ai-set-auto-organize'].forEach(id => {
+         'ai-set-notify', 'ai-set-multifolder', 'ai-set-anim-enabled', 'ai-set-incremental'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.addEventListener('change', autoSaveAllSettings);
         });
         // number/text 输入框：input 事件防抖保存
         ['ai-set-base-url', 'ai-set-concurrency', 'ai-set-limit-count',
          'ai-set-write-delay', 'ai-set-move-chunk', 'ai-set-speed-custom',
-         'ai-set-chunk-custom', 'ai-set-auto-interval',
+         'ai-set-chunk-custom',
          'ai-set-batch-rest-interval', 'ai-set-batch-rest-minutes'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.addEventListener('input', debouncedAutoSave);
@@ -6454,36 +6411,39 @@ ${topUps.length > 0 ? `<div class="section">
             }
         });
 
-        // 初始化定时自动整理
-        setupAutoOrganize();
     }
 
     // ================= 后台视频缓存 =================
     // 在所有 B 站页面后台增量缓存视频数据，供整理/备份/统计复用
+    // 扫描完成即停止，按设置间隔定期检查，增量取差值
     let _bgCacheTimer = null;
+    let _bgCacheInitTimer = null;
 
     async function backgroundCacheScan() {
         try {
             const biliData = getBiliData();
             if (!biliData.mid) return;
 
-            console.log('[AI整理] 🔄 后台缓存：开始扫描收藏夹...');
+            console.log('[AI整理] 🔄 后台缓存：开始增量扫描...');
             const allFolders = await getAllFoldersWithIds(biliData);
-            const settings = loadSettings();
-            initAdaptiveState(settings);
 
             // 清理已删除的收藏夹
             cleanCacheForDeletedFolders(allFolders.map(f => f.id));
 
             let updated = 0, skipped = 0;
+            const BG_FETCH_DELAY = 2000; // 后台扫描固定 2 秒间隔
+
             for (const folder of allFolders) {
                 if (state.isRunning) { console.log('[AI整理] 🔄 后台缓存：有任务运行中，暂停'); break; }
 
-                // 尝试增量协调
-                const reconciled = await reconcileCache(folder.id, folder.media_count);
+                // 尝试增量协调（使用 2 秒间隔）
+                const reconciled = await reconcileCache(folder.id, folder.media_count, null, BG_FETCH_DELAY);
                 if (reconciled) {
                     if (reconciled.newCount > 0) {
                         console.log(`[AI整理] 🔄 后台缓存: ${folder.title} 增量更新 +${reconciled.newCount}`);
+                        updated++;
+                    } else if (reconciled.removedCount > 0) {
+                        console.log(`[AI整理] 🔄 后台缓存: ${folder.title} 检测到 -${reconciled.removedCount} 个视频`);
                         updated++;
                     } else {
                         skipped++;
@@ -6491,8 +6451,8 @@ ${topUps.length > 0 ? `<div class="section">
                     continue;
                 }
 
-                // 无缓存，全量抓取
-                console.log(`[AI整理] 🔄 后台缓存: ${folder.title} (${folder.media_count} 个视频)...`);
+                // 无缓存，全量抓取（固定 2 秒间隔）
+                console.log(`[AI整理] 🔄 后台缓存: ${folder.title} 首次全量抓取 (${folder.media_count} 个视频)...`);
                 const videos = [];
                 let pn = 1;
                 try {
@@ -6504,8 +6464,7 @@ ${topUps.length > 0 ? `<div class="section">
                         videos.push(...medias);
                         if (!res.data.has_more || medias.length === 0) break;
                         pn++;
-                        await humanDelay(getAdaptiveFetchDelay());
-                        await checkBatchPause();
+                        await sleep(BG_FETCH_DELAY);
                     }
                 } catch (e) {
                     console.warn(`[AI整理] 🔄 后台缓存 ${folder.title} 失败:`, e.message);
@@ -6519,19 +6478,26 @@ ${topUps.length > 0 ? `<div class="section">
             }
 
             saveGlobalVideoCache();
-            console.log(`[AI整理] 🔄 后台缓存完成: ${updated} 个更新, ${skipped} 个跳过`);
+            console.log(`[AI整理] 🔄 后台缓存完成: ${updated} 个更新, ${skipped} 个无变化`);
         } catch (e) {
             console.warn('[AI整理] 🔄 后台缓存出错:', e.message);
         }
     }
 
     function setupBackgroundCache() {
-        // 延迟 30 秒开始第一次，之后每 30 分钟
-        setTimeout(() => {
+        // 清除旧定时器
+        if (_bgCacheTimer) { clearInterval(_bgCacheTimer); _bgCacheTimer = null; }
+        if (_bgCacheInitTimer) { clearTimeout(_bgCacheInitTimer); _bgCacheInitTimer = null; }
+
+        const settings = loadSettings();
+        const intervalMs = (settings.cacheScanInterval || 15) * 60 * 1000;
+
+        // 延迟 30 秒后首次扫描，之后按设置间隔定期检查
+        _bgCacheInitTimer = setTimeout(() => {
             if (!state.isRunning) backgroundCacheScan();
             _bgCacheTimer = setInterval(() => {
                 if (!state.isRunning) backgroundCacheScan();
-            }, 30 * 60 * 1000);
+            }, intervalMs);
         }, 30000);
     }
 
