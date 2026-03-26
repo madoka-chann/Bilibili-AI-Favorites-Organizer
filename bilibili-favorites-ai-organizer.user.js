@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.5.3
+// @version      1.5.4
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -4350,6 +4350,9 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'rainstorm', label: '骤雨' },
                 { id: 'sumi', label: '墨韵' },
                 { id: 'moonstone', label: '月石' },
+                { id: 'twilight-mist', label: '暮霭' },
+                { id: 'deep-sea', label: '深海' },
+                { id: 'warm-sand', label: '暖沙' },
                 { id: 'custom', label: '自定义' }
             ];
 
@@ -6631,6 +6634,148 @@ ${topUps.length > 0 ? `<div class="section">
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') swResize(); });
         })();
 
+        // === Velvet Tidal v0.2.3 — Fluid Tidal Canvas 潮汐流体画布 ===
+        (() => {
+            const tidalWrap = document.createElement('div');
+            tidalWrap.className = 'ai-tidal-canvas';
+            const tCanvas = document.createElement('canvas');
+            tidalWrap.appendChild(tCanvas);
+            panel.insertBefore(tidalWrap, panel.firstChild);
+
+            let tidalRaf = null;
+            let tidalTime = 0;
+
+            const tidalResize = () => {
+                const r = panel.getBoundingClientRect();
+                tCanvas.width = Math.round(r.width * 0.35);
+                tCanvas.height = Math.round(r.height * 0.35);
+            };
+
+            const getColors = () => {
+                const cs = getComputedStyle(document.documentElement);
+                return [
+                    cs.getPropertyValue('--ai-aurora-1').trim() || '#7364FF',
+                    cs.getPropertyValue('--ai-aurora-3').trim() || '#9B59F6',
+                    cs.getPropertyValue('--ai-aurora-5').trim() || '#20E3B2',
+                ];
+            };
+
+            const hexToRgb = (hex) => {
+                hex = hex.replace('#', '');
+                if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+                const n = parseInt(hex, 16);
+                return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+            };
+
+            // Tidal simulation: overlapping circular waves with varying amplitude
+            const WAVE_SOURCES = 4;
+            const sources = [];
+            for (let i = 0; i < WAVE_SOURCES; i++) {
+                sources.push({
+                    cx: 0.15 + Math.random() * 0.7,
+                    cy: 0.15 + Math.random() * 0.7,
+                    freq: 0.014 + Math.random() * 0.008,
+                    speed: 1.2 + Math.random() * 0.8,
+                    amp: 0.6 + Math.random() * 0.4,
+                    phase: Math.random() * Math.PI * 2,
+                    driftX: 0.0002 + Math.random() * 0.0003,
+                    driftY: 0.0002 + Math.random() * 0.0003,
+                });
+            }
+
+            const renderTidal = () => {
+                const ctx = tCanvas.getContext('2d');
+                if (!ctx || !tCanvas.width) { tidalRaf = requestAnimationFrame(renderTidal); return; }
+                const w = tCanvas.width, h = tCanvas.height;
+                ctx.clearRect(0, 0, w, h);
+                tidalTime += 0.006;
+
+                const colors = getColors();
+                const rgbs = colors.map(hexToRgb);
+
+                const imgData = ctx.createImageData(w, h);
+                const data = imgData.data;
+                const step = 2; // render every 2nd pixel for perf
+
+                for (let y = 0; y < h; y += step) {
+                    const ny = y / h;
+                    for (let x = 0; x < w; x += step) {
+                        const nx = x / w;
+                        let val = 0;
+
+                        for (let s = 0; s < WAVE_SOURCES; s++) {
+                            const src = sources[s];
+                            const sx = src.cx + Math.sin(tidalTime * src.driftX * 400 + src.phase) * 0.18;
+                            const sy = src.cy + Math.cos(tidalTime * src.driftY * 350 + src.phase * 1.3) * 0.18;
+                            const dx = nx - sx;
+                            const dy = (ny - sy) * 1.4; // slight vertical stretch
+                            const dist = Math.sqrt(dx * dx + dy * dy);
+                            // Layered waves: primary + harmonic
+                            val += Math.sin(dist / src.freq - tidalTime * src.speed + src.phase) * src.amp;
+                            val += Math.sin(dist / (src.freq * 2.3) + tidalTime * src.speed * 0.6 - src.phase * 0.7) * src.amp * 0.3;
+                        }
+
+                        // Normalize to 0..1
+                        val = (val / (WAVE_SOURCES * 1.3) + 1) * 0.5;
+                        val = val * val * val; // cubic falloff for soft shaping
+
+                        // Blend between colors based on val
+                        const ci = val * (rgbs.length - 1);
+                        const ci0 = Math.floor(ci);
+                        const ci1 = Math.min(ci0 + 1, rgbs.length - 1);
+                        const t = ci - ci0;
+                        const r = Math.round(rgbs[ci0][0] * (1 - t) + rgbs[ci1][0] * t);
+                        const g = Math.round(rgbs[ci0][1] * (1 - t) + rgbs[ci1][1] * t);
+                        const b = Math.round(rgbs[ci0][2] * (1 - t) + rgbs[ci1][2] * t);
+                        const alpha = Math.round(18 + val * 30);
+
+                        // Fill block for step size
+                        for (let dy = 0; dy < step && (y + dy) < h; dy++) {
+                            for (let dx = 0; dx < step && (x + dx) < w; dx++) {
+                                const idx = ((y + dy) * w + (x + dx)) * 4;
+                                data[idx] = r;
+                                data[idx + 1] = g;
+                                data[idx + 2] = b;
+                                data[idx + 3] = alpha;
+                            }
+                        }
+                    }
+                }
+
+                ctx.putImageData(imgData, 0, 0);
+                tidalRaf = requestAnimationFrame(renderTidal);
+            };
+
+            const startTidal = () => { tidalResize(); if (!tidalRaf) renderTidal(); };
+            const stopTidal = () => { if (tidalRaf) { cancelAnimationFrame(tidalRaf); tidalRaf = null; } };
+
+            const tidalObs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startTidal();
+                else stopTidal();
+            });
+            tidalObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startTidal();
+            window.addEventListener('resize', () => { if (panel.style.display !== 'none') tidalResize(); });
+        })();
+
+        // === Velvet Tidal v0.2.3 — Scroll Velocity Blur 滚动速度模糊 ===
+        (() => {
+            const content = panel.querySelector('.ai-panel-content');
+            if (!content) return;
+            let lastScroll = 0;
+            let blurTimer = null;
+
+            content.addEventListener('scroll', () => {
+                const velocity = Math.abs(content.scrollTop - lastScroll);
+                lastScroll = content.scrollTop;
+                if (velocity > 12) {
+                    content.classList.add('scroll-fast');
+                    clearTimeout(blurTimer);
+                    blurTimer = setTimeout(() => content.classList.remove('scroll-fast'), 80);
+                }
+            }, { passive: true });
+        })();
+
         // === Velvet Ripple v0.1.8 — Header Particle Drift 头部粒子漂流 ===
         (() => {
             const header = panel.querySelector('.ai-header');
@@ -7272,7 +7417,7 @@ ${topUps.length > 0 ? `<div class="section">
             panel.style.filter = 'none';
             // 强制 reflow 后触发弹性形变入场动画
             void panel.offsetHeight;
-            panel.style.animation = 'ai-silk-morph-open 0.68s cubic-bezier(0.18, 1.38, 0.34, 1.00) forwards';
+            panel.style.animation = 'ai-tidal-panel-in 0.72s cubic-bezier(0.16, 1.38, 0.34, 0.98) forwards';
             clampPanelPosition();
         };
 
@@ -7281,7 +7426,7 @@ ${topUps.length > 0 ? `<div class="section">
             // 弹性形变关闭 — Velvet Bloom v0.1.0
             panel.style.animation = 'none';
             void panel.offsetHeight;
-            panel.style.animation = 'ai-silk-morph-close 0.42s cubic-bezier(0.06, 0.82, 0.14, 1.01) forwards';
+            panel.style.animation = 'ai-tidal-panel-out 0.4s cubic-bezier(0.06, 0.82, 0.14, 1.01) forwards';
             setTimeout(() => {
                 panel.style.display = 'none';
                 panel.style.animation = 'none';
@@ -7290,8 +7435,8 @@ ${topUps.length > 0 ? `<div class="section">
                 // 悬浮按钮丝绒弹簧回场
                 floatBtn.style.animation = 'none';
                 void floatBtn.offsetHeight;
-                floatBtn.style.animation = 'ai-velvet-spring-in 0.5s cubic-bezier(0.18, 1.38, 0.34, 1.00)';
-            }, 420);
+                floatBtn.style.animation = 'ai-velvet-spring-in 0.55s cubic-bezier(0.16, 1.38, 0.34, 0.98)';
+            }, 400);
         };
 
         // 主题切换
@@ -7322,20 +7467,20 @@ ${topUps.length > 0 ? `<div class="section">
             morph.style.setProperty('--morph-y', cy + '%');
             document.body.appendChild(morph);
 
-            // 主题图标弹性旋转 — Velvet Mirage 丝绒幻境弹簧曲线
+            // 主题图标弹性旋转 — Velvet Tidal 潮汐弹簧曲线
             const icon = btn.querySelector('[data-lucide]');
             if (icon) {
-                icon.style.transition = 'transform 0.55s cubic-bezier(0.18, 1.38, 0.34, 1.00)';
-                icon.style.transform = 'rotate(360deg) scale(0.5)';
+                icon.style.transition = 'transform 0.5s cubic-bezier(0.16, 1.38, 0.34, 0.98)';
+                icon.style.transform = 'rotate(360deg) scale(0.4)';
                 setTimeout(() => {
-                    icon.style.transition = 'transform 0.42s cubic-bezier(0.24, 1.72, 0.42, 0.96)';
-                    icon.style.transform = 'rotate(720deg) scale(1.08)';
+                    icon.style.transition = 'transform 0.4s cubic-bezier(0.20, 1.52, 0.40, 0.97)';
+                    icon.style.transform = 'rotate(720deg) scale(1.1)';
                     setTimeout(() => {
-                        icon.style.transition = 'transform 0.25s cubic-bezier(0.06, 0.82, 0.14, 1.01)';
+                        icon.style.transition = 'transform 0.3s cubic-bezier(0.04, 0.88, 0.10, 1.01)';
                         icon.style.transform = 'rotate(720deg) scale(1)';
-                        setTimeout(() => { icon.style.transform = ''; icon.style.transition = ''; }, 250);
-                    }, 380);
-                }, 280);
+                        setTimeout(() => { icon.style.transform = ''; icon.style.transition = ''; }, 300);
+                    }, 350);
+                }, 250);
             }
 
             // 延迟切换以配合液态动画 — 更精确的时机

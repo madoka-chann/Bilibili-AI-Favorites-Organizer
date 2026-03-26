@@ -1,8 +1,8 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v0.2.2
-   Velvet Drift · 天鹅绒漂流 · Refined Glass Morphism
+   B站 AI 收藏夹整理助理 — 完整样式表 v0.2.3
+   Velvet Tidal · 天鹅绒潮汐 · Refined Glass Morphism
    Indigo-Nebula 双色系统 · Restrained Aurora Palette
-   Velvet Dynamics 24.0 · Ultra-Smooth Spring Micro-interactions
+   Velvet Dynamics 26.0 · Ultra-Smooth Spring Micro-interactions
    Stellar Abyss Dark Theme · Living Glass Surfaces
    Multi-Accent Color Themes · Ambient Light Motes · Liquid Borders
    Magnetic Tilt · Cursor-Reactive Particles · Fluid Morphing
@@ -26,9 +26,10 @@
    Velvet Nebula · Constellation Canvas · Living Border · Aurora & Bamboo Themes
    Velvet Mirage · Liquid Aurora Canvas · Silk Morph · Fossil & Rainstorm Themes
    Velvet Drift · Nebula Ink Flow · Sine Wave Canvas · Sumi & Moonstone Themes
+   Velvet Tidal · Fluid Tidal Canvas · Breathing Halo · TwilightMist & DeepSea & WarmSand Themes
    ================================================================ */
 
-/* === 1. CSS 变量 (双主题系统) v0.2.2 === */
+/* === 1. CSS 变量 (双主题系统) v0.2.3 === */
 
 /* 亮色主题（默认） — 星潮·晨曦琉璃 Astral Glasstide */
 :root, [data-theme="light"] {
@@ -16314,4 +16315,471 @@ input[type="checkbox"]:active {
 #ai-sort-wrapper::before {
   animation: ai-border-flow 12s ease-in-out infinite,
              ai-border-drift-breathe 8s ease-in-out infinite !important;
+}
+
+/* ================================================================
+   Velvet Tidal v0.2.3 — 天鹅绒潮汐 New Features
+   ================================================================ */
+
+/* === 650. Twilight Mist Theme (暮霭) v0.2.3 === */
+[data-accent="twilight-mist"] {
+  --ai-primary: #6B7A99;
+  --ai-primary-dark: #4A5A78;
+  --ai-primary-light: #95A3BC;
+  --ai-primary-bg: rgba(107, 122, 153, 0.06);
+  --ai-primary-shadow: rgba(107, 122, 153, 0.18);
+  --ai-aurora-1: #6B7A99;
+  --ai-aurora-2: #8490A8;
+  --ai-aurora-3: #7B8CA5;
+  --ai-aurora-4: #5E7088;
+  --ai-aurora-5: #94A1B5;
+  --ai-aurora-6: #727F96;
+  --ai-aurora-7: #9BA8BD;
+  --ai-aurora-8: #5A6B85;
+  --ai-header-gradient: linear-gradient(135deg, #5A6B85, #8490A8, #5A6B85);
+  --ai-float-gradient: linear-gradient(135deg, #6B7A99, #8C9AB2, #7B8CA5, #6B7A99);
+  --ai-neon-glow: 0 0 14px rgba(107, 122, 153, 0.18),
+                  0 0 28px rgba(132, 144, 168, 0.07),
+                  0 0 48px rgba(107, 122, 153, 0.02);
+  --ai-interaction-glow: rgba(107, 122, 153, 0.06);
+  --ai-glow-color: rgba(107, 122, 153, 0.04);
+}
+.ai-accent-dot[data-accent="twilight-mist"] { background: linear-gradient(135deg, #6B7A99, #95A3BC); }
+[data-theme="dark"][data-accent="twilight-mist"] #ai-float-btn {
+  --ai-float-gradient: linear-gradient(135deg, #7B8CA5, #A0AEC0, #8C9AB2, #7B8CA5);
+}
+
+/* === 651. Deep Sea Theme (深海) v0.2.3 === */
+[data-accent="deep-sea"] {
+  --ai-primary: #3A6B8C;
+  --ai-primary-dark: #2A4F6A;
+  --ai-primary-light: #6A9AB8;
+  --ai-primary-bg: rgba(58, 107, 140, 0.06);
+  --ai-primary-shadow: rgba(58, 107, 140, 0.18);
+  --ai-aurora-1: #3A6B8C;
+  --ai-aurora-2: #4A7DA0;
+  --ai-aurora-3: #2E5F7F;
+  --ai-aurora-4: #5590B0;
+  --ai-aurora-5: #6AAAC8;
+  --ai-aurora-6: #3E7294;
+  --ai-aurora-7: #7ABACD;
+  --ai-aurora-8: #2A5570;
+  --ai-header-gradient: linear-gradient(135deg, #2A5570, #4A7DA0, #2A5570);
+  --ai-float-gradient: linear-gradient(135deg, #3A6B8C, #5590B0, #4A7DA0, #3A6B8C);
+  --ai-neon-glow: 0 0 14px rgba(58, 107, 140, 0.20),
+                  0 0 28px rgba(74, 125, 160, 0.08),
+                  0 0 48px rgba(58, 107, 140, 0.03);
+  --ai-interaction-glow: rgba(58, 107, 140, 0.06);
+  --ai-glow-color: rgba(58, 107, 140, 0.04);
+}
+.ai-accent-dot[data-accent="deep-sea"] { background: linear-gradient(135deg, #3A6B8C, #6A9AB8); }
+[data-theme="dark"][data-accent="deep-sea"] #ai-float-btn {
+  --ai-float-gradient: linear-gradient(135deg, #4A7DA0, #6AAAC8, #5590B0, #4A7DA0);
+}
+
+/* === 652. Warm Sand Theme (暖沙) v0.2.3 === */
+[data-accent="warm-sand"] {
+  --ai-primary: #A08060;
+  --ai-primary-dark: #806040;
+  --ai-primary-light: #C0A888;
+  --ai-primary-bg: rgba(160, 128, 96, 0.06);
+  --ai-primary-shadow: rgba(160, 128, 96, 0.18);
+  --ai-aurora-1: #A08060;
+  --ai-aurora-2: #B89878;
+  --ai-aurora-3: #907050;
+  --ai-aurora-4: #C8A880;
+  --ai-aurora-5: #D0B898;
+  --ai-aurora-6: #988868;
+  --ai-aurora-7: #B8A078;
+  --ai-aurora-8: #887050;
+  --ai-header-gradient: linear-gradient(135deg, #887050, #B89878, #887050);
+  --ai-float-gradient: linear-gradient(135deg, #A08060, #C8A880, #B89878, #A08060);
+  --ai-neon-glow: 0 0 14px rgba(160, 128, 96, 0.18),
+                  0 0 28px rgba(184, 152, 120, 0.07),
+                  0 0 48px rgba(160, 128, 96, 0.02);
+  --ai-interaction-glow: rgba(160, 128, 96, 0.06);
+  --ai-glow-color: rgba(160, 128, 96, 0.04);
+}
+.ai-accent-dot[data-accent="warm-sand"] { background: linear-gradient(135deg, #A08060, #C0A888); }
+[data-theme="dark"][data-accent="warm-sand"] #ai-float-btn {
+  --ai-float-gradient: linear-gradient(135deg, #B89878, #D0B898, #C8A880, #B89878);
+}
+
+/* === 653. Velvet Tidal Canvas v0.2.3 — 潮汐流体画布 === */
+.ai-tidal-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  mix-blend-mode: soft-light;
+  opacity: 0.6;
+}
+[data-theme="dark"] .ai-tidal-canvas {
+  mix-blend-mode: screen;
+  opacity: 0.35;
+}
+.ai-tidal-canvas canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* === 654. Float Button Breathing Halo v0.2.3 — 呼吸光晕 === */
+@keyframes ai-halo-breathe {
+  0%, 100% {
+    box-shadow: var(--ai-neon-glow),
+                0 0 0 0px rgba(115, 100, 255, 0.06);
+  }
+  25% {
+    box-shadow: var(--ai-neon-glow),
+                0 0 0 6px rgba(115, 100, 255, 0.04),
+                0 0 18px rgba(115, 100, 255, 0.08);
+  }
+  50% {
+    box-shadow: var(--ai-neon-glow),
+                0 0 0 10px rgba(115, 100, 255, 0.02),
+                0 0 24px rgba(115, 100, 255, 0.06);
+  }
+  75% {
+    box-shadow: var(--ai-neon-glow),
+                0 0 0 5px rgba(115, 100, 255, 0.03),
+                0 0 14px rgba(115, 100, 255, 0.06);
+  }
+}
+
+#ai-float-btn {
+  animation: ai-float-gradient-shift 16s ease-in-out infinite,
+             ai-jellyfish-idle 14s ease-in-out infinite,
+             ai-halo-breathe 5s ease-in-out infinite !important;
+}
+
+#ai-float-btn:hover {
+  animation: ai-float-gradient-shift 16s ease-in-out infinite !important;
+}
+
+/* === 655. Enhanced Panel Open Spring v0.2.3 — 弹性展开优化 === */
+@keyframes ai-tidal-panel-in {
+  0% {
+    transform: translateY(32px) scale(0.92) rotate3d(1, 0, 0, 4deg);
+    opacity: 0;
+    filter: blur(6px);
+  }
+  18% {
+    transform: translateY(-8px) scale(1.02) rotate3d(1, 0, 0, -1deg);
+    opacity: 1;
+    filter: blur(0.5px);
+  }
+  32% {
+    transform: translateY(3px) scale(0.995) rotate3d(1, 0, 0, 0.5deg);
+    filter: blur(0);
+  }
+  48% {
+    transform: translateY(-2px) scale(1.005) rotate3d(1, 0, 0, -0.2deg);
+  }
+  65% {
+    transform: translateY(1px) scale(0.998);
+  }
+  100% {
+    transform: translateY(0) scale(1) rotate3d(1, 0, 0, 0deg);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes ai-tidal-panel-out {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+  30% {
+    transform: translateY(-4px) scale(1.01);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(28px) scale(0.92) rotate3d(1, 0, 0, 3deg);
+    opacity: 0;
+    filter: blur(4px);
+  }
+}
+
+/* === 656. Tidal Micro-Interactions v0.2.3 — 潮汐微交互 === */
+
+/* Button press — deeper jelly compression with rebound */
+.ai-btn:active {
+  transform: scale(0.88) !important;
+  transition-duration: 0.06s !important;
+}
+.ai-btn:not(:active) {
+  transition: transform 0.55s var(--ai-spring-silk, cubic-bezier(0.20, 1.10, 0.36, 1)),
+              box-shadow 0.45s var(--ai-ease-ios, cubic-bezier(0.20, 0.98, 0.28, 1)),
+              background-color 0.3s ease,
+              border-color 0.3s ease,
+              color 0.3s ease;
+}
+
+/* Group header expand — smooth wave */
+.ai-group-header {
+  transition: all 0.45s var(--ai-spring-silk, cubic-bezier(0.20, 1.10, 0.36, 1)) !important;
+}
+.ai-group-header:active {
+  transform: scale(0.97) !important;
+  transition-duration: 0.06s !important;
+}
+
+/* Category row hover — subtle float with glow */
+.ai-cat-row {
+  transition: all 0.5s var(--ai-ease-gossamer, cubic-bezier(0.08, 0.96, 0.18, 1)) !important;
+}
+.ai-cat-row:hover {
+  transform: translateX(4px) translateY(-1px) !important;
+  box-shadow: inset 0 0 0 0 transparent, 0 2px 12px var(--ai-glow-color, rgba(115, 100, 255, 0.07));
+}
+
+/* Header button spring hover */
+.ai-header-btn {
+  transition: all 0.4s var(--ai-spring-velvet, cubic-bezier(0.17, 1.32, 0.40, 1)) !important;
+}
+.ai-header-btn:hover {
+  transform: scale(1.15) translateY(-1.5px) !important;
+  background: rgba(255, 255, 255, 0.28) !important;
+}
+.ai-header-btn:active {
+  transform: scale(0.88) !important;
+  transition-duration: 0.06s !important;
+}
+
+/* Filter button jelly pop */
+.ai-filter-btn {
+  transition: all 0.45s var(--ai-spring-jelly, cubic-bezier(0.22, 1.52, 0.38, 1)) !important;
+}
+.ai-filter-btn:hover {
+  transform: translateY(-2px) scale(1.04) !important;
+}
+.ai-filter-btn:active {
+  transform: scale(0.90) !important;
+  transition-duration: 0.06s !important;
+}
+
+/* Modal backdrop — smooth fade */
+.ai-modal-backdrop {
+  animation: ai-tidal-backdrop-in 0.4s var(--ai-ease-gossamer, cubic-bezier(0.08, 0.96, 0.18, 1)) both;
+}
+@keyframes ai-tidal-backdrop-in {
+  0% {
+    opacity: 0;
+    backdrop-filter: blur(0px) saturate(1);
+  }
+  100% {
+    opacity: 1;
+    backdrop-filter: blur(16px) saturate(1.4);
+  }
+}
+
+/* Toast entrance — springy slide from bottom */
+@keyframes ai-tidal-toast-in {
+  0% {
+    transform: translateY(20px) scale(0.92);
+    opacity: 0;
+    filter: blur(2px);
+  }
+  40% {
+    transform: translateY(-4px) scale(1.02);
+    opacity: 1;
+    filter: blur(0);
+  }
+  65% {
+    transform: translateY(1.5px) scale(0.995);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* Input focus — gentle glow expansion */
+.ai-input:focus,
+.ai-select:focus {
+  border-color: var(--ai-primary) !important;
+  box-shadow: 0 0 0 3.5px var(--ai-primary-bg, rgba(115, 100, 255, 0.06)),
+              0 0 12px var(--ai-glow-color, rgba(115, 100, 255, 0.07)) !important;
+  transition: border-color 0.3s ease,
+              box-shadow 0.45s var(--ai-spring-silk, cubic-bezier(0.20, 1.10, 0.36, 1)) !important;
+}
+
+/* === 657. Continuous Living Glow v0.2.3 — 持续活体光晕 === */
+@keyframes ai-panel-living-glow {
+  0%, 100% {
+    box-shadow: 0 28px 72px rgba(0, 0, 0, 0.11),
+                0 12px 32px rgba(0, 0, 0, 0.07),
+                0 0 0 1px var(--ai-glass-border),
+                0 0 60px var(--ai-glow-color),
+                inset 0 1px 0 rgba(255,255,255,0.26);
+  }
+  33% {
+    box-shadow: 0 28px 72px rgba(0, 0, 0, 0.11),
+                0 12px 32px rgba(0, 0, 0, 0.07),
+                0 0 0 1px var(--ai-glass-border),
+                0 0 80px var(--ai-glow-color),
+                0 0 40px rgba(115, 100, 255, 0.02),
+                inset 0 1px 0 rgba(255,255,255,0.30);
+  }
+  66% {
+    box-shadow: 0 28px 72px rgba(0, 0, 0, 0.11),
+                0 12px 32px rgba(0, 0, 0, 0.07),
+                0 0 0 1px var(--ai-glass-border),
+                0 0 50px var(--ai-glow-color),
+                inset 0 1px 0 rgba(255,255,255,0.24);
+  }
+}
+
+#ai-sort-wrapper {
+  animation: ai-ambient-drift-breathe 24s ease-in-out infinite,
+             ai-panel-living-glow 10s ease-in-out infinite !important;
+}
+
+/* === 658. Scroll Velocity Blur v0.2.3 — 滚动速度模糊 === */
+.ai-panel-content.scroll-fast {
+  filter: blur(0.3px);
+  transition: filter 0.1s ease;
+}
+.ai-panel-content:not(.scroll-fast) {
+  filter: blur(0);
+  transition: filter 0.4s var(--ai-ease-gossamer, ease);
+}
+
+/* === 659. Velvet Dynamics 26.0 New Curves v0.2.3 === */
+:root {
+  --ai-spring-tidal: cubic-bezier(0.16, 1.38, 0.34, 0.98);
+  --ai-ease-ocean: cubic-bezier(0.04, 0.88, 0.10, 1.01);
+  --ai-spring-foam: cubic-bezier(0.20, 1.52, 0.40, 0.97);
+  --ai-ease-current: cubic-bezier(0.08, 0.82, 0.14, 1.02);
+  --ai-spring-wave: cubic-bezier(0.24, 1.44, 0.42, 1.00);
+  --ai-ease-depth: cubic-bezier(0.06, 0.94, 0.12, 1.00);
+}
+
+/* === 660. Category Stagger Enhancement v0.2.3 === */
+.ai-cat-block {
+  animation: ai-tidal-cat-in 0.6s var(--ai-spring-tidal, cubic-bezier(0.16, 1.38, 0.34, 0.98)) both !important;
+  animation-delay: calc(var(--i, 0) * 0.04s) !important;
+}
+
+@keyframes ai-tidal-cat-in {
+  0% {
+    transform: translateX(28px) scale(0.94);
+    opacity: 0;
+    filter: blur(2px);
+  }
+  30% {
+    transform: translateX(-3px) scale(1.01);
+    opacity: 1;
+    filter: blur(0);
+  }
+  55% {
+    transform: translateX(1.5px) scale(0.998);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* === 661. Log Entry Slide Enhancement v0.2.3 === */
+@keyframes ai-tidal-log-in {
+  0% {
+    transform: translateX(16px);
+    opacity: 0;
+    max-height: 0;
+  }
+  40% {
+    transform: translateX(-2px);
+    opacity: 1;
+  }
+  70% {
+    transform: translateX(0.5px);
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+    max-height: 60px;
+  }
+}
+
+.ai-log-entry {
+  animation: ai-tidal-log-in 0.45s var(--ai-ease-ocean, cubic-bezier(0.04, 0.88, 0.10, 1.01)) both !important;
+}
+
+/* === 662. Video Item Stagger v0.2.3 === */
+.ai-vid-item, .ai-vid-rich {
+  animation: ai-tidal-vid-in 0.35s var(--ai-ease-current, cubic-bezier(0.08, 0.82, 0.14, 1.02)) both;
+  animation-delay: calc(var(--vid-i, 0) * 0.025s);
+}
+
+@keyframes ai-tidal-vid-in {
+  0% {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* === 663. Progress Bar Tidal Pulse v0.2.3 === */
+@keyframes ai-tidal-progress-pulse {
+  0%, 100% {
+    box-shadow: 0 0 8px var(--ai-primary-shadow);
+  }
+  50% {
+    box-shadow: 0 0 16px var(--ai-primary-shadow),
+                0 0 4px var(--ai-primary-bg);
+  }
+}
+
+.ai-progress-fill {
+  animation: ai-tidal-progress-pulse 2.5s ease-in-out infinite;
+}
+
+/* === 664. Tidal Canvas Reduced Motion v0.2.3 === */
+@media (prefers-reduced-motion: reduce) {
+  .ai-tidal-canvas { display: none; }
+  #ai-float-btn {
+    animation: none !important;
+  }
+  .ai-cat-block,
+  .ai-log-entry,
+  .ai-vid-item,
+  .ai-vid-rich {
+    animation: none !important;
+  }
+}
+
+/* === 665. Tidal Accent Dot Enhancement v0.2.3 === */
+.ai-accent-dot[data-accent="twilight-mist"] { background: linear-gradient(135deg, #6B7A99, #95A3BC); }
+.ai-accent-dot[data-accent="deep-sea"] { background: linear-gradient(135deg, #3A6B8C, #6A9AB8); }
+.ai-accent-dot[data-accent="warm-sand"] { background: linear-gradient(135deg, #A08060, #C0A888); }
+
+/* === 666. Settings Area Smooth Expand v0.2.3 === */
+.ai-settings {
+  transition: max-height 0.5s var(--ai-ease-depth, cubic-bezier(0.06, 0.94, 0.12, 1)),
+              opacity 0.4s ease,
+              padding 0.4s ease !important;
+}
+
+/* === 667. Enhanced Checkbox Spring v0.2.3 === */
+.ai-option-check input[type="checkbox"]:checked {
+  animation: ai-tidal-check 0.5s var(--ai-spring-foam, cubic-bezier(0.20, 1.52, 0.40, 0.97));
+}
+
+@keyframes ai-tidal-check {
+  0% { transform: scale(1); }
+  30% { transform: scale(0.82); }
+  60% { transform: scale(1.12); }
+  85% { transform: scale(0.97); }
+  100% { transform: scale(1); }
 }
