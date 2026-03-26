@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.4.6
+// @version      1.4.7
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -4336,6 +4336,8 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'tide', label: '潮汐' },
                 { id: 'volcanic', label: '火山' },
                 { id: 'glacier', label: '冰川' },
+                { id: 'pearl', label: '珍珠白' },
+                { id: 'northlight', label: '北极光' },
                 { id: 'custom', label: '自定义' }
             ];
 
@@ -5561,7 +5563,193 @@ ${topUps.length > 0 ? `<div class="section">
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') hResize(); });
         })();
 
-        // === Velvet Aether v0.1.5 — Spring Scroll Physics 弹簧滚动物理 ===
+        // === Velvet Zephyr v0.1.6 — Luminous Membrane Canvas 荧光膜画布 ===
+        (() => {
+            const mWrap = document.createElement('div');
+            mWrap.className = 'ai-membrane-canvas';
+            const mCanvas = document.createElement('canvas');
+            mWrap.appendChild(mCanvas);
+            panel.insertBefore(mWrap, panel.firstChild);
+
+            let mAnimId = null;
+            let mTime = 0;
+
+            const mResize = () => {
+                const r = panel.getBoundingClientRect();
+                mCanvas.width = Math.round(r.width * 0.3);
+                mCanvas.height = Math.round(r.height * 0.3);
+            };
+
+            const getMColors = () => {
+                const cs = getComputedStyle(document.documentElement);
+                return [
+                    cs.getPropertyValue('--ai-aurora-1').trim() || '#7364FF',
+                    cs.getPropertyValue('--ai-aurora-2').trim() || '#FF6B9D',
+                    cs.getPropertyValue('--ai-aurora-5').trim() || '#20E3B2',
+                ];
+            };
+
+            const hexRgbM = (hex) => {
+                hex = hex.replace('#', '');
+                if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+                const n = parseInt(hex, 16);
+                return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+            };
+
+            // Membrane nodes — organic control points that drift and breathe
+            const NODES = 6;
+            const nodes = [];
+            for (let i = 0; i < NODES; i++) {
+                nodes.push({
+                    bx: 0.1 + Math.random() * 0.8,
+                    by: 0.1 + Math.random() * 0.8,
+                    driftX: 0.15 + Math.random() * 0.25,
+                    driftY: 0.12 + Math.random() * 0.22,
+                    phaseX: Math.random() * Math.PI * 2,
+                    phaseY: Math.random() * Math.PI * 2,
+                    radius: 0.15 + Math.random() * 0.2,
+                    breathPhase: Math.random() * Math.PI * 2,
+                    breathSpeed: 0.3 + Math.random() * 0.4
+                });
+            }
+
+            const renderMembrane = () => {
+                const ctx = mCanvas.getContext('2d');
+                if (!ctx || !mCanvas.width) { mAnimId = requestAnimationFrame(renderMembrane); return; }
+                const w = mCanvas.width, h = mCanvas.height;
+                const imgData = ctx.createImageData(w, h);
+                const data = imgData.data;
+                mTime += 0.003;
+
+                const colors = getMColors();
+                const rgbs = colors.map(hexRgbM);
+
+                // Compute current node positions with organic drift
+                const curNodes = nodes.map(n => ({
+                    x: (n.bx + Math.sin(mTime * n.driftX + n.phaseX) * 0.18) * w,
+                    y: (n.by + Math.cos(mTime * n.driftY + n.phaseY) * 0.18) * h,
+                    r: (n.radius + Math.sin(mTime * n.breathSpeed + n.breathPhase) * 0.06) * Math.min(w, h)
+                }));
+
+                for (let py = 0; py < h; py++) {
+                    for (let px = 0; px < w; px++) {
+                        // Metaball field — sum of inverse-square influences
+                        let field = 0;
+                        for (let ni = 0; ni < curNodes.length; ni++) {
+                            const n = curNodes[ni];
+                            const dx = px - n.x;
+                            const dy = py - n.y;
+                            const distSq = dx * dx + dy * dy;
+                            field += (n.r * n.r) / (distSq + 1);
+                        }
+
+                        // Soft threshold — creates organic membrane boundaries
+                        const membrane = 1 / (1 + Math.exp(-(field - 1.2) * 6));
+
+                        // Iridescent color shift based on field value and position
+                        const hueShift = Math.sin(field * 2.5 + mTime * 0.8) * 0.5 + 0.5;
+                        const ci = hueShift * (rgbs.length - 1);
+                        const ci0 = Math.floor(ci);
+                        const ci1 = Math.min(ci0 + 1, rgbs.length - 1);
+                        const t = ci - ci0;
+                        const r = rgbs[ci0][0] + (rgbs[ci1][0] - rgbs[ci0][0]) * t;
+                        const g = rgbs[ci0][1] + (rgbs[ci1][1] - rgbs[ci0][1]) * t;
+                        const b = rgbs[ci0][2] + (rgbs[ci1][2] - rgbs[ci0][2]) * t;
+
+                        // Subtle shimmer at membrane edges
+                        const edgeGlow = Math.exp(-Math.pow(field - 1.2, 2) * 8) * 0.6;
+                        const alpha = (membrane * 0.35 + edgeGlow) * 255 * 0.28;
+
+                        const idx = (py * w + px) * 4;
+                        data[idx] = r;
+                        data[idx + 1] = g;
+                        data[idx + 2] = b;
+                        data[idx + 3] = Math.min(255, alpha);
+                    }
+                }
+                ctx.putImageData(imgData, 0, 0);
+                mAnimId = requestAnimationFrame(renderMembrane);
+            };
+
+            const startMembrane = () => { mResize(); if (!mAnimId) renderMembrane(); };
+            const stopMembrane = () => { if (mAnimId) { cancelAnimationFrame(mAnimId); mAnimId = null; } };
+
+            const mObs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startMembrane();
+                else stopMembrane();
+            });
+            mObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startMembrane();
+            window.addEventListener('resize', () => { if (panel.style.display !== 'none') mResize(); });
+        })();
+
+        // === Velvet Zephyr v0.1.6 — Zephyr Particle Field 和风粒子场 ===
+        (() => {
+            const zField = document.createElement('div');
+            zField.className = 'ai-zephyr-field';
+            panel.insertBefore(zField, panel.firstChild);
+
+            const PARTICLE_COUNT = 18;
+            const particles = [];
+
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                const p = document.createElement('div');
+                p.className = 'ai-zephyr-particle';
+                const size = 2 + Math.random() * 3;
+                p.style.width = size + 'px';
+                p.style.height = size + 'px';
+                zField.appendChild(p);
+                particles.push({
+                    el: p,
+                    x: Math.random() * 100,
+                    y: Math.random() * 100,
+                    baseVx: (Math.random() - 0.5) * 0.04,
+                    baseVy: -0.01 - Math.random() * 0.03,
+                    phase: Math.random() * Math.PI * 2,
+                    freq: 0.4 + Math.random() * 0.6,
+                    amp: 0.3 + Math.random() * 0.5,
+                    size: size,
+                    opacity: 0.15 + Math.random() * 0.2
+                });
+            }
+
+            let zRaf = null;
+            let zTime = 0;
+
+            const renderZephyr = () => {
+                zTime += 0.008;
+                particles.forEach(p => {
+                    // Gentle wind-like drift with sine modulation
+                    p.x += p.baseVx + Math.sin(zTime * p.freq + p.phase) * 0.06;
+                    p.y += p.baseVy + Math.cos(zTime * p.freq * 0.7 + p.phase) * 0.02;
+
+                    // Wrap around edges softly
+                    if (p.y < -5) { p.y = 105; p.x = Math.random() * 100; }
+                    if (p.x < -5) p.x = 105;
+                    if (p.x > 105) p.x = -5;
+
+                    // Breathing opacity
+                    const breathe = p.opacity + Math.sin(zTime * 0.6 + p.phase) * 0.08;
+                    const scale = 0.8 + Math.sin(zTime * 0.4 + p.phase) * 0.2;
+
+                    p.el.style.transform = `translate(${p.x}vw, ${p.y}vh) scale(${scale.toFixed(2)})`;
+                    p.el.style.opacity = Math.max(0.05, breathe).toFixed(2);
+                });
+                zRaf = requestAnimationFrame(renderZephyr);
+            };
+
+            const startZephyr = () => { if (!zRaf) renderZephyr(); };
+            const stopZephyr = () => { if (zRaf) { cancelAnimationFrame(zRaf); zRaf = null; } };
+
+            const zObs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startZephyr();
+                else stopZephyr();
+            });
+            zObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startZephyr();
+        })();
+
+        // === Velvet Zephyr v0.1.6 — Spring Scroll Physics 弹簧滚动物理 ===
         (() => {
             const content = panel.querySelector('.ai-panel-content');
             if (!content) return;

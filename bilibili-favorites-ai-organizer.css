@@ -1,8 +1,8 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v0.1.5
-   Velvet Aether · 天鹅绒以太 · Refined Glass Morphism
+   B站 AI 收藏夹整理助理 — 完整样式表 v0.1.6
+   Velvet Zephyr · 天鹅绒和风 · Refined Glass Morphism
    Indigo-Nebula 双色系统 · Restrained Aurora Palette
-   Velvet Dynamics 18.0 · Silky Spring Micro-interactions
+   Velvet Dynamics 19.0 · Silky Spring Micro-interactions
    Stellar Abyss Dark Theme · Living Glass Surfaces
    Multi-Accent Color Themes · Ambient Light Motes · Liquid Borders
    Magnetic Tilt · Cursor-Reactive Particles · Fluid Morphing
@@ -19,6 +19,7 @@
    Velvet Prism · Gravity Orb Canvas · Breath Sync · Birch & Tide Themes
    Velvet Flux · Plasma Vein Canvas · Harmonic Pulse · Volcanic & Glacier
    Velvet Aether · Harmonic Ripple Canvas · Kinetic Glow · Spring Scroll
+   Velvet Zephyr · Luminous Membrane Canvas · Pearl & Northlight Themes
    ================================================================ */
 
 /* === 1. CSS 变量 (双主题系统) === */
@@ -12008,6 +12009,64 @@ input[type="checkbox"]:active {
   background: linear-gradient(135deg, #7DD3E8, #38BDF8);
 }
 
+/* === Pearl 珍珠白 — Velvet Zephyr v0.1.6 === */
+[data-accent="pearl"] {
+  --ai-primary: #A8A0B8;
+  --ai-primary-dark: #7A7290;
+  --ai-primary-light: #D4CDE4;
+  --ai-primary-bg: rgba(168, 160, 184, 0.06);
+  --ai-primary-shadow: rgba(168, 160, 184, 0.22);
+  --ai-aurora-1: #A8A0B8;
+  --ai-aurora-2: #C4BCD4;
+  --ai-aurora-3: #B8B0C8;
+  --ai-aurora-4: #D0C8E0;
+  --ai-aurora-5: #BEB6CE;
+  --ai-aurora-6: #C8C0D8;
+  --ai-aurora-7: #E0D8F0;
+  --ai-aurora-8: #D8D0E8;
+  --ai-header-gradient: linear-gradient(135deg, #A8A0B8, #B8B0C8, #C4BCD4);
+  --ai-float-gradient: linear-gradient(135deg, #A8A0B8, #B8B0C8, #C4BCD4, #D0C8E0, #BEB6CE);
+  --ai-neon-glow: 0 0 18px rgba(168, 160, 184, 0.22),
+                  0 0 36px rgba(184, 176, 200, 0.12),
+                  0 0 56px rgba(196, 188, 212, 0.06);
+  --ai-interaction-glow: rgba(168, 160, 184, 0.08);
+  --ai-glow-color: rgba(168, 160, 184, 0.06);
+  --ai-chromatic-border: linear-gradient(135deg, rgba(168,160,184,0.28), rgba(184,176,200,0.24), rgba(196,188,212,0.22), rgba(208,200,224,0.20));
+}
+
+.ai-accent-dot[data-accent="pearl"] {
+  background: linear-gradient(135deg, #A8A0B8, #D0C8E0);
+}
+
+/* === Northlight 北极光 — Velvet Zephyr v0.1.6 === */
+[data-accent="northlight"] {
+  --ai-primary: #5BA88C;
+  --ai-primary-dark: #3D7A64;
+  --ai-primary-light: #8ECDB4;
+  --ai-primary-bg: rgba(91, 168, 140, 0.06);
+  --ai-primary-shadow: rgba(91, 168, 140, 0.22);
+  --ai-aurora-1: #5BA88C;
+  --ai-aurora-2: #7BBAA4;
+  --ai-aurora-3: #4D9A80;
+  --ai-aurora-4: #6EADCB;
+  --ai-aurora-5: #8ECDB4;
+  --ai-aurora-6: #5E9EB8;
+  --ai-aurora-7: #A8D8C4;
+  --ai-aurora-8: #78B4A0;
+  --ai-header-gradient: linear-gradient(135deg, #5BA88C, #6EADCB, #4D9A80);
+  --ai-float-gradient: linear-gradient(135deg, #5BA88C, #6EADCB, #7BBAA4, #5E9EB8, #8ECDB4);
+  --ai-neon-glow: 0 0 18px rgba(91, 168, 140, 0.24),
+                  0 0 36px rgba(110, 173, 203, 0.14),
+                  0 0 56px rgba(142, 205, 180, 0.07);
+  --ai-interaction-glow: rgba(91, 168, 140, 0.09);
+  --ai-glow-color: rgba(91, 168, 140, 0.06);
+  --ai-chromatic-border: linear-gradient(135deg, rgba(91,168,140,0.30), rgba(110,173,203,0.26), rgba(142,205,180,0.24), rgba(94,158,184,0.22));
+}
+
+.ai-accent-dot[data-accent="northlight"] {
+  background: linear-gradient(135deg, #5BA88C, #6EADCB);
+}
+
 /* === 508. Enhanced button micro-interactions — Velvet Flux spring v17 === */
 .ai-btn-tool {
   transition: all 0.45s var(--ai-spring-plasma) !important;
@@ -12736,6 +12795,460 @@ input[type="checkbox"]:active {
   scroll-snap-align: start;
 }
 
+/* === 541. Luminous Membrane Canvas — Velvet Zephyr v0.1.6 荧光膜画布 === */
+.ai-membrane-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+  opacity: 0.7;
+  mix-blend-mode: soft-light;
+  animation: ai-membrane-breathe 16s var(--ai-ease-breath-deep, cubic-bezier(0.45, 0, 0.55, 1)) infinite;
+  will-change: opacity;
+  contain: strict;
+}
+
+[data-theme="dark"] .ai-membrane-canvas {
+  opacity: 0.5;
+  mix-blend-mode: screen;
+}
+
+.ai-membrane-canvas canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: auto;
+  will-change: contents;
+}
+
+@keyframes ai-membrane-breathe {
+  0%, 100% { opacity: 0.55; filter: brightness(1); }
+  25% { opacity: 0.7; filter: brightness(1.03); }
+  50% { opacity: 0.6; filter: brightness(0.98); }
+  75% { opacity: 0.72; filter: brightness(1.02); }
+}
+
+/* === 542. Zephyr Particle Field — Velvet Zephyr v0.1.6 和风粒子场 === */
+.ai-zephyr-field {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.ai-zephyr-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--ai-primary, #7364FF);
+  pointer-events: none;
+  will-change: transform, opacity;
+  filter: blur(0.5px);
+  transition: opacity 0.8s var(--ai-ease-gossamer, cubic-bezier(0.08, 0.96, 0.18, 1));
+}
+
+[data-theme="dark"] .ai-zephyr-particle {
+  background: var(--ai-primary-light, #B0A8FF);
+  filter: blur(0.8px);
+}
+
+/* === 543. Enhanced Jelly Hover — Velvet Zephyr v0.1.6 果冻悬停 === */
+.ai-btn-tool {
+  transition: all 0.5s var(--ai-spring-pudding, cubic-bezier(0.21, 1.46, 0.40, 1)) !important;
+}
+
+.ai-btn-tool:hover {
+  transform: translateY(-3px) scale(1.045);
+  box-shadow: 0 10px 28px var(--ai-interaction-glow, rgba(115, 100, 255, 0.12));
+  transition: all 0.55s var(--ai-spring-pudding, cubic-bezier(0.21, 1.46, 0.40, 1)) !important;
+}
+
+.ai-btn-tool:active {
+  transform: translateY(0px) scale(0.94);
+  transition-duration: 0.1s !important;
+}
+
+/* Jelly squish on primary button click */
+.ai-btn-primary:active {
+  transform: scale(0.92) translateY(1px);
+  transition: transform 0.08s ease !important;
+}
+
+.ai-btn-primary:not(:active) {
+  transition: transform 0.55s var(--ai-spring-bloom, cubic-bezier(0.14, 1.34, 0.32, 1.01)),
+              box-shadow 0.45s var(--ai-ease-gossamer, cubic-bezier(0.08, 0.96, 0.18, 1)),
+              background-position 0.3s ease !important;
+}
+
+/* === 544. Velvet Border Breathing — 天鹅绒边框呼吸 v0.1.6 === */
+@keyframes ai-velvet-border-breathe {
+  0%, 100% {
+    box-shadow: 0 24px 68px rgba(0,0,0,0.08),
+                0 10px 28px rgba(0,0,0,0.05),
+                0 0 0 1px var(--ai-border-light, #F0EAFA),
+                inset 0 0 0 0.5px rgba(255,255,255,0.1);
+  }
+  33% {
+    box-shadow: 0 26px 72px rgba(0,0,0,0.09),
+                0 12px 32px rgba(0,0,0,0.06),
+                0 0 0 1.5px var(--ai-primary-bg, rgba(115, 100, 255, 0.06)),
+                inset 0 0 0 0.5px rgba(255,255,255,0.14);
+  }
+  66% {
+    box-shadow: 0 22px 64px rgba(0,0,0,0.07),
+                0 8px 24px rgba(0,0,0,0.04),
+                0 0 0 1px var(--ai-border-light, #F0EAFA),
+                inset 0 0 0 0.5px rgba(255,255,255,0.08);
+  }
+}
+
+#ai-sort-wrapper {
+  animation: ai-velvet-border-breathe 12s var(--ai-ease-breath-deep, cubic-bezier(0.45, 0, 0.55, 1)) infinite,
+             ai-living-canvas 20s var(--ai-ease-breath, cubic-bezier(0.45, 0, 0.55, 1)) infinite;
+}
+
+/* === 545. Silk Category Entrance — 丝绸分类入场 v0.1.6 === */
+@keyframes ai-zephyr-cat-in {
+  0% {
+    transform: translateY(18px) scale(0.96);
+    opacity: 0;
+    filter: blur(3px);
+  }
+  30% {
+    transform: translateY(-3px) scale(1.01);
+    opacity: 0.85;
+    filter: blur(0.5px);
+  }
+  50% {
+    transform: translateY(1.5px) scale(0.998);
+    opacity: 1;
+    filter: blur(0);
+  }
+  70% {
+    transform: translateY(-0.8px) scale(1.002);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+.ai-cat-block {
+  animation: ai-zephyr-cat-in 0.65s var(--ai-spring-bloom, cubic-bezier(0.14, 1.34, 0.32, 1.01)) both;
+  animation-delay: calc(var(--i, 0) * 0.04s);
+}
+
+/* === 546. Zephyr Toast Enhancement — 和风通知增强 v0.1.6 === */
+@keyframes ai-zephyr-toast-in {
+  0% {
+    transform: translateX(40px) scale(0.9);
+    opacity: 0;
+    filter: blur(4px);
+  }
+  25% {
+    transform: translateX(-4px) scale(1.02);
+    opacity: 0.9;
+    filter: blur(0.5px);
+  }
+  45% {
+    transform: translateX(2px) scale(0.995);
+    opacity: 1;
+    filter: blur(0);
+  }
+  65% {
+    transform: translateX(-1px) scale(1.003);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* === 547. Header Shimmer Wave — 头部微光波纹 v0.1.6 === */
+@keyframes ai-zephyr-header-flow {
+  0% { background-position: 0% 50%; }
+  25% { background-position: 100% 30%; }
+  50% { background-position: 50% 70%; }
+  75% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.ai-header {
+  animation: ai-zephyr-header-flow 10s var(--ai-ease-breath-deep, cubic-bezier(0.45, 0, 0.55, 1)) infinite !important;
+  background-size: 400% 400% !important;
+}
+
+/* === 548. Smooth Settings Expand — 丝滑设置展开 v0.1.6 === */
+@keyframes ai-zephyr-settings-unfold {
+  0% {
+    opacity: 0;
+    transform: scaleY(0.92) translateY(-6px);
+    filter: blur(2px);
+  }
+  35% {
+    opacity: 0.9;
+    transform: scaleY(1.015) translateY(1px);
+    filter: blur(0);
+  }
+  60% {
+    transform: scaleY(0.997) translateY(-0.5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(1) translateY(0);
+    filter: blur(0);
+  }
+}
+
+.ai-settings[style*="display: block"],
+.ai-settings[style*="display:block"] {
+  animation: ai-zephyr-settings-unfold 0.5s var(--ai-spring-bloom, cubic-bezier(0.14, 1.34, 0.32, 1.01)) both;
+  transform-origin: top center;
+}
+
+/* === 549. Floating Button Magnetic Pulse — 悬浮按钮磁力脉冲 v0.1.6 === */
+@keyframes ai-zephyr-float-pulse {
+  0%, 100% {
+    box-shadow: 0 0 14px rgba(115, 100, 255, 0.18),
+                0 0 28px rgba(155, 89, 246, 0.08);
+  }
+  30% {
+    box-shadow: 0 0 18px rgba(115, 100, 255, 0.24),
+                0 0 36px rgba(155, 89, 246, 0.12),
+                0 0 52px rgba(115, 100, 255, 0.04);
+  }
+  60% {
+    box-shadow: 0 0 12px rgba(115, 100, 255, 0.16),
+                0 0 24px rgba(155, 89, 246, 0.06);
+  }
+}
+
+#ai-float-btn {
+  animation: ai-float-levitate 6s var(--ai-spring-silk, cubic-bezier(0.20, 1.10, 0.36, 1)) infinite,
+             ai-zephyr-float-pulse 8s var(--ai-ease-breath-deep, cubic-bezier(0.45, 0, 0.55, 1)) infinite !important;
+}
+
+/* === 550. Modal Silk Entrance — 弹窗丝绸入场 v0.1.6 === */
+@keyframes ai-zephyr-modal-in {
+  0% {
+    transform: scale(0.88) translateY(20px);
+    opacity: 0;
+    filter: blur(8px);
+  }
+  22% {
+    transform: scale(1.02) translateY(-3px);
+    opacity: 0.9;
+    filter: blur(1px);
+  }
+  42% {
+    transform: scale(0.995) translateY(1.5px);
+    opacity: 1;
+    filter: blur(0);
+  }
+  62% {
+    transform: scale(1.003) translateY(-0.5px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes ai-zephyr-modal-out {
+  0% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    transform: scale(0.92) translateY(16px);
+    opacity: 0;
+    filter: blur(6px);
+  }
+}
+
+@keyframes ai-zephyr-backdrop-in {
+  0% { opacity: 0; backdrop-filter: blur(0px); }
+  100% { opacity: 1; backdrop-filter: blur(16px) saturate(1.4); }
+}
+
+/* === 551. Input Focus Glow — 输入框聚焦发光 v0.1.6 === */
+.ai-input:focus,
+.ai-select:focus {
+  border-color: var(--ai-primary) !important;
+  box-shadow: 0 0 0 3px var(--ai-primary-bg, rgba(115, 100, 255, 0.06)),
+              0 0 12px var(--ai-interaction-glow, rgba(115, 100, 255, 0.10)) !important;
+  transition: all 0.4s var(--ai-spring-bloom, cubic-bezier(0.14, 1.34, 0.32, 1.01)) !important;
+}
+
+/* === 552. Category Row Hover Silk — 分类行悬停丝滑 v0.1.6 === */
+.ai-cat-row {
+  transition: all 0.45s var(--ai-spring-silk-bounce, cubic-bezier(0.14, 1.28, 0.34, 1.02)),
+              background 0.3s var(--ai-ease-gossamer, cubic-bezier(0.08, 0.96, 0.18, 1)) !important;
+}
+
+.ai-cat-row:hover {
+  transform: translateX(4px);
+  background: var(--ai-bg-hover) !important;
+  box-shadow: inset 0 0 0 0.5px var(--ai-primary-bg, rgba(115, 100, 255, 0.06));
+}
+
+/* === 553. Video Cover Hover Lift — 视频封面悬浮抬升 v0.1.6 === */
+.ai-vid-cover {
+  transition: transform 0.5s var(--ai-spring-bloom, cubic-bezier(0.14, 1.34, 0.32, 1.01)),
+              box-shadow 0.4s var(--ai-ease-gossamer, cubic-bezier(0.08, 0.96, 0.18, 1)) !important;
+}
+
+.ai-vid-cover:hover {
+  transform: scale(1.08) translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* === 554. Zephyr Easing Variables — 和风运动曲线 v0.1.6 === */
+:root, [data-theme="light"] {
+  --ai-ease-zephyr: cubic-bezier(0.10, 0.90, 0.16, 1.01);
+  --ai-spring-zephyr: cubic-bezier(0.16, 1.30, 0.34, 1.00);
+  --ai-ease-silk-wave: cubic-bezier(0.06, 0.84, 0.14, 1.02);
+  --ai-spring-membrane: cubic-bezier(0.20, 1.44, 0.38, 0.98);
+  --ai-ease-pearl: cubic-bezier(0.04, 0.92, 0.12, 1.00);
+}
+
+[data-theme="dark"] {
+  --ai-ease-zephyr: cubic-bezier(0.10, 0.90, 0.16, 1.01);
+  --ai-spring-zephyr: cubic-bezier(0.16, 1.30, 0.34, 1.00);
+  --ai-ease-silk-wave: cubic-bezier(0.06, 0.84, 0.14, 1.02);
+  --ai-spring-membrane: cubic-bezier(0.20, 1.44, 0.38, 0.98);
+  --ai-ease-pearl: cubic-bezier(0.04, 0.92, 0.12, 1.00);
+}
+
+/* === 555. Panel Open/Close Silk — 面板开关丝滑 v0.1.6 === */
+@keyframes ai-zephyr-panel-in {
+  0% {
+    transform: translateY(32px) scale(0.92);
+    opacity: 0;
+    filter: blur(6px);
+  }
+  18% {
+    transform: translateY(-4px) scale(1.015);
+    opacity: 0.9;
+    filter: blur(0.5px);
+  }
+  32% {
+    transform: translateY(2px) scale(0.997);
+    filter: blur(0);
+  }
+  48% {
+    transform: translateY(-1px) scale(1.003);
+  }
+  68% {
+    transform: translateY(0.5px) scale(0.999);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes ai-zephyr-panel-out {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    transform: translateY(20px) scale(0.95);
+    opacity: 0;
+    filter: blur(4px);
+  }
+}
+
+/* === 556. Log Entry Cascade — 日志条目级联 v0.1.6 === */
+@keyframes ai-zephyr-log-in {
+  0% {
+    transform: translateX(16px) scale(0.95);
+    opacity: 0;
+    filter: blur(2px);
+  }
+  30% {
+    transform: translateX(-2px) scale(1.01);
+    opacity: 0.9;
+    filter: blur(0);
+  }
+  55% {
+    transform: translateX(1px) scale(0.998);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+.ai-log-entry {
+  animation: ai-zephyr-log-in 0.5s var(--ai-spring-bloom, cubic-bezier(0.14, 1.34, 0.32, 1.01)) both;
+}
+
+/* === 557. Theme Switch Ripple — 主题切换涟漪 v0.1.6 === */
+@keyframes ai-zephyr-theme-ripple {
+  0% {
+    transform: scale(0);
+    opacity: 0.4;
+  }
+  60% {
+    opacity: 0.15;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* === 558. Scrollbar Silk — 滚动条丝滑 v0.1.6 === */
+#ai-sort-wrapper ::-webkit-scrollbar-thumb,
+.ai-modal ::-webkit-scrollbar-thumb {
+  transition: background 0.3s var(--ai-ease-zephyr, cubic-bezier(0.10, 0.90, 0.16, 1.01));
+}
+
+#ai-sort-wrapper ::-webkit-scrollbar-thumb:hover,
+.ai-modal ::-webkit-scrollbar-thumb:hover {
+  background: var(--ai-scrollbar-hover) !important;
+}
+
+/* === 559. Filter Button Spring — 筛选按钮弹簧 v0.1.6 === */
+.ai-filter-btn {
+  transition: all 0.45s var(--ai-spring-zephyr, cubic-bezier(0.16, 1.30, 0.34, 1.00)) !important;
+}
+
+.ai-filter-btn:hover {
+  transform: translateY(-2px) scale(1.04);
+}
+
+.ai-filter-btn:active {
+  transform: translateY(0) scale(0.95);
+  transition-duration: 0.08s !important;
+}
+
+.ai-filter-btn.active {
+  transform: scale(1.03);
+  transition: all 0.5s var(--ai-spring-membrane, cubic-bezier(0.20, 1.44, 0.38, 0.98)) !important;
+}
+
+/* === 560. Membrane Canvas Mobile — 荧光膜移动端 v0.1.6 === */
+@media (max-width: 500px) {
+  .ai-membrane-canvas,
+  .ai-zephyr-field {
+    display: none !important;
+  }
+}
+
 /* === 540. Enhanced Reduced Motion — 无障碍动画降级 === */
 @media (prefers-reduced-motion: reduce) {
   #ai-float-btn {
@@ -12750,7 +13263,9 @@ input[type="checkbox"]:active {
   #ai-sort-wrapper::before {
     animation: none !important;
   }
-  .ai-harmonic-canvas {
+  .ai-harmonic-canvas,
+  .ai-membrane-canvas,
+  .ai-zephyr-field {
     display: none !important;
   }
   .ai-modal {
