@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.5.0
+// @version      1.5.1
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -4344,6 +4344,8 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'ember', label: '暮烬' },
                 { id: 'opal', label: '蛋白石' },
                 { id: 'driftwood', label: '漂木' },
+                { id: 'aurora', label: '极光' },
+                { id: 'bamboo', label: '竹韵' },
                 { id: 'custom', label: '自定义' }
             ];
 
@@ -6129,6 +6131,166 @@ ${topUps.length > 0 ? `<div class="section">
             pwObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startPW();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') pwResize(); });
+        })();
+
+        // === Velvet Nebula v0.2.0 — Constellation Canvas 星座网络画布 ===
+        (() => {
+            const cWrap = document.createElement('div');
+            cWrap.className = 'ai-constellation-canvas';
+            const cCvs = document.createElement('canvas');
+            cWrap.appendChild(cCvs);
+            panel.insertBefore(cWrap, panel.firstChild);
+
+            let cRaf = null;
+            let cTime = 0;
+
+            const STAR_COUNT = 20;
+            const LINK_DIST = 0.22;
+            const stars = [];
+            for (let i = 0; i < STAR_COUNT; i++) {
+                stars.push({
+                    x: Math.random(),
+                    y: Math.random(),
+                    vx: (Math.random() - 0.5) * 0.00035,
+                    vy: (Math.random() - 0.5) * 0.00035,
+                    phase: Math.random() * Math.PI * 2,
+                    twinkleSpeed: 0.6 + Math.random() * 1.0,
+                    baseR: 1 + Math.random() * 1.8,
+                    orbitRadius: 0.005 + Math.random() * 0.012,
+                    orbitSpeed: 0.1 + Math.random() * 0.2
+                });
+            }
+
+            function cResize() {
+                const rect = panel.getBoundingClientRect();
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                cCvs.width = rect.width * dpr * 0.5;
+                cCvs.height = rect.height * dpr * 0.5;
+                cCvs.style.width = rect.width + 'px';
+                cCvs.style.height = rect.height + 'px';
+            }
+
+            function getConstellationColors() {
+                const s = getComputedStyle(document.documentElement);
+                return [
+                    s.getPropertyValue('--ai-aurora-1').trim() || '#7364FF',
+                    s.getPropertyValue('--ai-aurora-3').trim() || '#9B59F6',
+                    s.getPropertyValue('--ai-aurora-5').trim() || '#20E3B2',
+                    s.getPropertyValue('--ai-aurora-2').trim() || '#FF6B9D',
+                ];
+            }
+
+            const hexToRgba = (hex, a) => {
+                hex = hex.replace('#', '');
+                if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+                const n = parseInt(hex, 16);
+                return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;
+            };
+
+            function renderConstellation() {
+                const ctx = cCvs.getContext('2d');
+                if (!ctx || !cCvs.width) { cRaf = requestAnimationFrame(renderConstellation); return; }
+                const w = cCvs.width, h = cCvs.height;
+                ctx.clearRect(0, 0, w, h);
+                cTime += 0.004;
+
+                const colors = getConstellationColors();
+
+                // Update star positions — gentle orbital drift + linear velocity
+                stars.forEach(star => {
+                    const orbX = Math.sin(cTime * star.orbitSpeed + star.phase) * star.orbitRadius;
+                    const orbY = Math.cos(cTime * star.orbitSpeed * 0.8 + star.phase * 1.3) * star.orbitRadius;
+                    star.x += star.vx + orbX * 0.002;
+                    star.y += star.vy + orbY * 0.002;
+
+                    // Soft wrap at boundaries
+                    if (star.x < -0.03) star.vx += 0.00008;
+                    if (star.x > 1.03) star.vx -= 0.00008;
+                    if (star.y < -0.03) star.vy += 0.00008;
+                    if (star.y > 1.03) star.vy -= 0.00008;
+                    star.x = Math.max(-0.06, Math.min(1.06, star.x));
+                    star.y = Math.max(-0.06, Math.min(1.06, star.y));
+                    star.vx *= 0.9995;
+                    star.vy *= 0.9995;
+                });
+
+                // Draw constellation lines — curved, with distance-based opacity
+                for (let i = 0; i < STAR_COUNT; i++) {
+                    for (let j = i + 1; j < STAR_COUNT; j++) {
+                        const a = stars[i], b = stars[j];
+                        const dx = a.x - b.x, dy = a.y - b.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < LINK_DIST) {
+                            const alpha = (1 - dist / LINK_DIST);
+                            const pulse = 0.08 + Math.sin(cTime * 1.5 + (a.phase + b.phase)) * 0.04;
+                            const lineAlpha = alpha * alpha * pulse;
+
+                            // Gentle curve for organic feel
+                            const mx = (a.x + b.x) / 2 + Math.sin(cTime * 0.5 + i * 0.7) * 0.008;
+                            const my = (a.y + b.y) / 2 + Math.cos(cTime * 0.4 + j * 0.9) * 0.008;
+
+                            ctx.beginPath();
+                            ctx.moveTo(a.x * w, a.y * h);
+                            ctx.quadraticCurveTo(mx * w, my * h, b.x * w, b.y * h);
+                            ctx.strokeStyle = hexToRgba(colors[(i + j) % colors.length], lineAlpha);
+                            ctx.lineWidth = 0.6 + alpha * 0.4;
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                // Draw stars with twinkle and glow
+                stars.forEach((star, i) => {
+                    const twinkle = 0.4 + Math.sin(cTime * star.twinkleSpeed + star.phase) * 0.3
+                                        + Math.sin(cTime * star.twinkleSpeed * 2.3 + star.phase * 1.7) * 0.15;
+                    const r = star.baseR * (0.8 + twinkle * 0.4);
+                    const cx = star.x * w;
+                    const cy = star.y * h;
+                    const color = colors[i % colors.length];
+
+                    // Soft glow halo
+                    const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r * 5);
+                    grad.addColorStop(0, hexToRgba(color, 0.18 * twinkle));
+                    grad.addColorStop(0.4, hexToRgba(color, 0.06 * twinkle));
+                    grad.addColorStop(1, 'transparent');
+                    ctx.fillStyle = grad;
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, r * 5, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Core star
+                    ctx.fillStyle = hexToRgba(color, 0.5 + twinkle * 0.35);
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Tiny cross sparkle on bright twinkle
+                    if (twinkle > 0.55) {
+                        const sparkleAlpha = (twinkle - 0.55) * 2;
+                        ctx.strokeStyle = hexToRgba(color, sparkleAlpha * 0.3);
+                        ctx.lineWidth = 0.5;
+                        const sLen = r * 2.5;
+                        ctx.beginPath();
+                        ctx.moveTo(cx - sLen, cy); ctx.lineTo(cx + sLen, cy);
+                        ctx.moveTo(cx, cy - sLen); ctx.lineTo(cx, cy + sLen);
+                        ctx.stroke();
+                    }
+                });
+
+                cRaf = requestAnimationFrame(renderConstellation);
+            }
+
+            const startConst = () => { cResize(); if (!cRaf) renderConstellation(); };
+            const stopConst = () => { if (cRaf) { cancelAnimationFrame(cRaf); cRaf = null; } };
+
+            const cObs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startConst();
+                else stopConst();
+            });
+            cObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startConst();
+            window.addEventListener('resize', () => { if (panel.style.display !== 'none') cResize(); });
         })();
 
         // === Velvet Ripple v0.1.8 — Header Particle Drift 头部粒子漂流 ===

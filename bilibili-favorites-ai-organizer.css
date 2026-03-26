@@ -1,8 +1,8 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v0.1.9
-   Velvet Pulse · 天鹅绒脉动 · Refined Glass Morphism
+   B站 AI 收藏夹整理助理 — 完整样式表 v0.2.0
+   Velvet Nebula · 天鹅绒星云 · Refined Glass Morphism
    Indigo-Nebula 双色系统 · Restrained Aurora Palette
-   Velvet Dynamics 22.0 · Silky Spring Micro-interactions
+   Velvet Dynamics 23.0 · Ultra-Smooth Spring Micro-interactions
    Stellar Abyss Dark Theme · Living Glass Surfaces
    Multi-Accent Color Themes · Ambient Light Motes · Liquid Borders
    Magnetic Tilt · Cursor-Reactive Particles · Fluid Morphing
@@ -23,9 +23,10 @@
    Velvet Cascade · Silk Waterfall Canvas · Sandstone & Monsoon Themes
    Velvet Ripple · Luminous Orb Field · Header Particles · Dew & Ember
    Velvet Pulse · Pulse Web Canvas · Jelly Physics · Opal & Driftwood Themes
+   Velvet Nebula · Constellation Canvas · Living Border · Aurora & Bamboo Themes
    ================================================================ */
 
-/* === 1. CSS 变量 (双主题系统) === */
+/* === 1. CSS 变量 (双主题系统) v0.2.0 === */
 
 /* 亮色主题（默认） — 星潮·晨曦琉璃 Astral Glasstide */
 :root, [data-theme="light"] {
@@ -14661,5 +14662,499 @@ input[type="checkbox"]:active {
   }
   .ai-btn {
     transition-duration: 0.1s !important;
+  }
+}
+
+/* ================================================================
+   Velvet Nebula v0.2.0 — 天鹅绒星云 · Constellation Canvas ·
+   Living Gradient Border · Aurora & Bamboo Themes ·
+   Ultra-Smooth Q-Bounce Spring Physics
+   ================================================================ */
+
+/* === 601. Aurora Theme — 极光 === */
+[data-accent="aurora"] {
+  --ai-primary: #38BDE8;
+  --ai-primary-dark: #0E7FAD;
+  --ai-primary-light: #7DD5F5;
+  --ai-primary-bg: rgba(56, 189, 232, 0.06);
+  --ai-primary-shadow: rgba(56, 189, 232, 0.22);
+  --ai-aurora-1: #38BDE8;
+  --ai-aurora-2: #2DD4BF;
+  --ai-aurora-3: #6D8FE8;
+  --ai-aurora-4: #34D39A;
+  --ai-aurora-5: #4AC1C8;
+  --ai-aurora-6: #5A9DE8;
+  --ai-aurora-7: #67D4E0;
+  --ai-aurora-8: #8BB5F0;
+  --ai-header-gradient: linear-gradient(135deg, #38BDE8, #2DD4BF, #6D8FE8);
+  --ai-float-gradient: linear-gradient(135deg, #38BDE8, #2DD4BF, #6D8FE8, #34D39A, #38BDE8);
+  --ai-neon-glow: 0 0 18px rgba(56, 189, 232, 0.24),
+                  0 0 36px rgba(45, 212, 191, 0.10),
+                  0 0 56px rgba(109, 143, 232, 0.05);
+  --ai-interaction-glow: rgba(56, 189, 232, 0.10);
+  --ai-glow-color: rgba(56, 189, 232, 0.06);
+}
+.ai-accent-dot[data-accent="aurora"] { background: linear-gradient(135deg, #38BDE8, #2DD4BF); }
+[data-theme="dark"][data-accent="aurora"] #ai-float-btn {
+  --ai-float-gradient: linear-gradient(135deg, #4DC8F0, #3DE0CA, #7D9FF0, #4DC8F0);
+}
+[data-theme="dark"][data-accent="aurora"] .ai-nebula-particle {
+  background: radial-gradient(circle, rgba(56, 189, 232, 0.30), transparent 70%);
+}
+
+/* === 602. Bamboo Theme — 竹韵 === */
+[data-accent="bamboo"] {
+  --ai-primary: #6B8E6B;
+  --ai-primary-dark: #4A6B4A;
+  --ai-primary-light: #A3C4A3;
+  --ai-primary-bg: rgba(107, 142, 107, 0.06);
+  --ai-primary-shadow: rgba(107, 142, 107, 0.20);
+  --ai-aurora-1: #6B8E6B;
+  --ai-aurora-2: #8BA88B;
+  --ai-aurora-3: #7A9478;
+  --ai-aurora-4: #5C7A5C;
+  --ai-aurora-5: #94B094;
+  --ai-aurora-6: #839683;
+  --ai-aurora-7: #9DB89D;
+  --ai-aurora-8: #708C70;
+  --ai-header-gradient: linear-gradient(135deg, #6B8E6B, #839683, #6B8E6B);
+  --ai-float-gradient: linear-gradient(135deg, #6B8E6B, #8BA88B, #7A9478, #6B8E6B);
+  --ai-neon-glow: 0 0 16px rgba(107, 142, 107, 0.22),
+                  0 0 32px rgba(122, 148, 120, 0.09),
+                  0 0 52px rgba(107, 142, 107, 0.04);
+  --ai-interaction-glow: rgba(107, 142, 107, 0.08);
+  --ai-glow-color: rgba(107, 142, 107, 0.05);
+}
+.ai-accent-dot[data-accent="bamboo"] { background: linear-gradient(135deg, #6B8E6B, #A3C4A3); }
+[data-theme="dark"][data-accent="bamboo"] #ai-float-btn {
+  --ai-float-gradient: linear-gradient(135deg, #7BA07B, #96B696, #8AAC8A, #7BA07B);
+}
+[data-theme="dark"][data-accent="bamboo"] .ai-nebula-particle {
+  background: radial-gradient(circle, rgba(107, 142, 107, 0.28), transparent 70%);
+}
+
+/* === 603. Constellation Canvas 星座画布 v0.2.0 === */
+.ai-constellation-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+  opacity: 0.7;
+  mix-blend-mode: screen;
+  transition: opacity 0.6s var(--ai-ease-silk, ease);
+}
+.ai-constellation-canvas canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  image-rendering: auto;
+}
+[data-theme="dark"] .ai-constellation-canvas {
+  opacity: 0.55;
+}
+
+/* === 604. Living Gradient Border 流光边框 v0.2.0 === */
+@keyframes ai-border-flow {
+  0% { background-position: 0% 50%; }
+  25% { background-position: 50% 100%; }
+  50% { background-position: 100% 50%; }
+  75% { background-position: 50% 0%; }
+  100% { background-position: 0% 50%; }
+}
+
+#ai-sort-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border-radius: 29px;
+  background: linear-gradient(
+    var(--ai-border-angle, 135deg),
+    var(--ai-aurora-1),
+    transparent 25%,
+    var(--ai-aurora-3) 50%,
+    transparent 75%,
+    var(--ai-aurora-1)
+  );
+  background-size: 300% 300%;
+  animation: ai-border-flow 12s ease-in-out infinite;
+  opacity: 0.16;
+  z-index: -1;
+  pointer-events: none;
+  transition: opacity 0.8s var(--ai-ease-silk, ease);
+}
+#ai-sort-wrapper:hover::before {
+  opacity: 0.32;
+}
+[data-theme="dark"] #ai-sort-wrapper::before {
+  opacity: 0.12;
+}
+[data-theme="dark"] #ai-sort-wrapper:hover::before {
+  opacity: 0.24;
+}
+
+/* === 605. Enhanced Q-Bounce Physics 果冻弹性物理 v0.2.0 === */
+
+/* Ultra-smooth spring curves for v0.2.0 */
+:root {
+  --ai-spring-nebula: cubic-bezier(0.16, 1.32, 0.34, 1.02);
+  --ai-spring-quartz: cubic-bezier(0.12, 1.18, 0.28, 1.04);
+  --ai-ease-nebula-out: cubic-bezier(0.06, 0.88, 0.14, 1.02);
+  --ai-spring-cotton: cubic-bezier(0.20, 1.42, 0.38, 0.98);
+  --ai-ease-cloud: cubic-bezier(0.04, 0.86, 0.10, 1.00);
+}
+
+/* Float button — enhanced idle breathing with subtle morphing */
+@keyframes ai-nebula-idle {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    border-radius: 50%;
+  }
+  12% {
+    transform: translateY(-2.5px) scale(1.008);
+    border-radius: 48% 52% 50% 50% / 52% 48% 50% 50%;
+  }
+  28% {
+    transform: translateY(-4.5px) scale(1.014);
+    border-radius: 46% 54% 52% 48% / 50% 52% 48% 50%;
+  }
+  42% {
+    transform: translateY(-2px) scale(1.004);
+    border-radius: 50% 50% 48% 52% / 48% 50% 52% 50%;
+  }
+  56% {
+    transform: translateY(-3.5px) scale(1.010);
+    border-radius: 52% 48% 50% 50% / 50% 48% 52% 50%;
+  }
+  72% {
+    transform: translateY(-1.5px) scale(1.002);
+    border-radius: 50% 50% 50% 50%;
+  }
+  86% {
+    transform: translateY(-3px) scale(1.006);
+    border-radius: 48% 52% 50% 50% / 52% 50% 48% 50%;
+  }
+}
+
+#ai-float-btn {
+  animation: ai-nebula-idle 10s var(--ai-ease-cloud) infinite,
+             ai-float-gradient-shift 16s ease-in-out infinite !important;
+}
+
+/* Buttons — jelly press with elastic recovery */
+.ai-btn:active {
+  transform: scale(0.88) !important;
+  transition: transform 0.06s linear !important;
+}
+.ai-btn:not(:active) {
+  transition: all 0.5s var(--ai-spring-nebula), transform 0.55s var(--ai-spring-cotton) !important;
+}
+
+.ai-btn-primary:hover {
+  transform: translateY(-3px) scale(1.035) !important;
+  transition: all 0.45s var(--ai-spring-quartz) !important;
+}
+
+.ai-btn-tool:hover {
+  transform: translateY(-4px) scale(1.05) !important;
+  transition: all 0.5s var(--ai-spring-nebula) !important;
+}
+.ai-btn-tool:active {
+  transform: translateY(0) scale(0.90) !important;
+  transition: transform 0.06s linear !important;
+}
+
+/* Modal — enhanced entry with depth blur */
+@keyframes ai-nebula-modal-enter {
+  0% {
+    transform: scale(0.82) translateY(36px);
+    opacity: 0;
+    filter: blur(14px) saturate(0.7);
+  }
+  12% {
+    transform: scale(1.03) translateY(-8px);
+    opacity: 1;
+    filter: blur(0.3px) saturate(1.06);
+  }
+  24% {
+    transform: scale(0.988) translateY(3px);
+    filter: blur(0) saturate(1);
+  }
+  36% {
+    transform: scale(1.008) translateY(-1.5px);
+  }
+  48% {
+    transform: scale(0.997) translateY(0.6px);
+  }
+  60% {
+    transform: scale(1.003) translateY(-0.2px);
+  }
+  74% {
+    transform: scale(0.9995) translateY(0.05px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    filter: blur(0) saturate(1);
+  }
+}
+.ai-modal {
+  animation: ai-nebula-modal-enter 0.65s var(--ai-ease-nebula-out) !important;
+}
+
+/* Panel — enhanced entry with Q-bounce */
+@keyframes ai-nebula-panel-in {
+  0% {
+    transform: translateY(44px) scale(0.88);
+    opacity: 0;
+    filter: blur(12px);
+  }
+  14% {
+    transform: translateY(-6px) scale(1.02);
+    opacity: 1;
+    filter: blur(0.2px);
+  }
+  26% {
+    transform: translateY(3px) scale(0.994);
+    filter: blur(0);
+  }
+  38% {
+    transform: translateY(-1.5px) scale(1.005);
+  }
+  50% {
+    transform: translateY(0.5px) scale(0.998);
+  }
+  64% {
+    transform: translateY(-0.2px) scale(1.001);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* Category row — silky hover with depth */
+.ai-cat-row {
+  transition: all 0.45s var(--ai-spring-quartz),
+              transform 0.5s var(--ai-spring-nebula),
+              background 0.35s var(--ai-ease-cloud) !important;
+}
+.ai-cat-row:hover {
+  transform: translateX(6px) scale(1.006) !important;
+  transition: all 0.4s var(--ai-spring-nebula) !important;
+}
+.ai-cat-row:active {
+  transform: translateX(4px) scale(0.994) !important;
+  transition: transform 0.06s linear !important;
+}
+
+/* Category slide-in — enhanced stagger with depth oscillation */
+@keyframes ai-nebula-cat-slide {
+  0% {
+    transform: translateX(40px) scale(0.92);
+    opacity: 0;
+    filter: blur(3px);
+  }
+  25% {
+    transform: translateX(-6px) scale(1.018);
+    opacity: 1;
+    filter: blur(0);
+  }
+  45% {
+    transform: translateX(3px) scale(0.995);
+  }
+  62% {
+    transform: translateX(-1px) scale(1.003);
+  }
+  78% {
+    transform: translateX(0.3px) scale(0.999);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+.ai-cat-block {
+  animation: ai-nebula-cat-slide 0.6s var(--ai-ease-nebula-out) both !important;
+  animation-delay: calc(var(--i, 0) * 0.05s) !important;
+}
+
+/* Toast — smoother entry with rotation dampening */
+@keyframes ai-nebula-toast-in {
+  0% {
+    transform: translateX(120%) scale(0.65) rotate(4deg);
+    opacity: 0;
+    filter: blur(10px);
+  }
+  16% {
+    transform: translateX(-5%) scale(1.035) rotate(-0.3deg);
+    opacity: 1;
+    filter: blur(0);
+  }
+  30% {
+    transform: translateX(2.5%) scale(0.985) rotate(0.12deg);
+  }
+  44% {
+    transform: translateX(-1%) scale(1.006) rotate(-0.04deg);
+  }
+  58% {
+    transform: translateX(0.3%) scale(0.998) rotate(0.01deg);
+  }
+  100% {
+    transform: translateX(0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+.ai-toast {
+  animation: ai-nebula-toast-in 0.7s var(--ai-ease-nebula-out) !important;
+}
+
+/* Header buttons — micro jelly on hover */
+.ai-header-btn {
+  transition: all 0.4s var(--ai-spring-quartz),
+              transform 0.45s var(--ai-spring-nebula) !important;
+}
+.ai-header-btn:hover {
+  transform: scale(1.16) translateY(-1.5px) !important;
+}
+.ai-header-btn:active {
+  transform: scale(0.88) !important;
+  transition: transform 0.05s linear !important;
+}
+
+/* Filter buttons — capsule jelly */
+.ai-filter-btn {
+  transition: all 0.4s var(--ai-spring-quartz) !important;
+}
+.ai-filter-btn:hover {
+  transform: translateY(-2.5px) scale(1.04) !important;
+}
+.ai-filter-btn:active {
+  transform: scale(0.88) !important;
+  transition: transform 0.05s linear !important;
+}
+.ai-filter-btn.active {
+  transform: scale(1.06) !important;
+  transition: all 0.5s var(--ai-spring-cotton) !important;
+}
+
+/* Input/Select focus — breathing glow pulse */
+@keyframes ai-nebula-focus-breathe {
+  0%, 100% {
+    box-shadow: 0 0 0 3px rgba(115, 100, 255, 0.10), 0 0 14px rgba(115, 100, 255, 0.04);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(115, 100, 255, 0.16), 0 0 22px rgba(115, 100, 255, 0.07);
+  }
+}
+.ai-input:focus-visible, .ai-select:focus-visible {
+  animation: ai-nebula-focus-breathe 2.5s ease-in-out infinite !important;
+  border-color: var(--ai-primary) !important;
+}
+
+/* Group header — elastic indent on hover */
+.ai-group-header {
+  transition: all 0.4s var(--ai-spring-quartz) !important;
+}
+.ai-group-header:hover {
+  transform: translateX(4px) !important;
+  transition: all 0.35s var(--ai-spring-nebula) !important;
+}
+
+/* Modal close — satisfying rotation spring */
+.ai-modal-close {
+  transition: all 0.4s var(--ai-spring-quartz) !important;
+}
+.ai-modal-close:hover {
+  transform: scale(1.2) rotate(90deg) !important;
+}
+.ai-modal-close:active {
+  transform: scale(0.85) rotate(90deg) !important;
+  transition: transform 0.06s linear !important;
+}
+
+/* Modal buttons — confirm button elastic lift */
+.ai-modal-btn {
+  transition: all 0.4s var(--ai-spring-quartz) !important;
+}
+.ai-modal-btn-confirm:hover {
+  transform: translateY(-2.5px) scale(1.02) !important;
+}
+.ai-modal-btn:active {
+  transform: scale(0.94) !important;
+  transition: transform 0.06s linear !important;
+}
+
+/* Badge — subtle pulse on parent hover */
+.ai-cat-row:hover .ai-cat-badge,
+.ai-cat-row:hover .ai-cat-existing {
+  transform: scale(1.10) translateY(-1.5px) !important;
+  transition: all 0.45s var(--ai-spring-cotton) !important;
+}
+
+/* Video cover — depth hover lift */
+.ai-vid-rich:hover .ai-vid-cover {
+  transform: scale(1.08) translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.14) !important;
+  transition: all 0.45s var(--ai-spring-quartz) !important;
+}
+
+/* Theme toggle — marshmallow slide */
+.ai-theme-toggle {
+  transition: background 0.55s var(--ai-ease-cloud),
+              box-shadow 0.5s var(--ai-ease-cloud) !important;
+}
+.ai-theme-toggle::after {
+  transition: transform 0.55s var(--ai-spring-cotton),
+              background 0.45s var(--ai-ease-cloud) !important;
+}
+
+/* Progress bar — smoother width transition */
+#ai-progress-bar {
+  transition: width 0.8s var(--ai-ease-nebula-out) !important;
+}
+
+/* Log entry — softer slide-in */
+@keyframes ai-nebula-log-slide {
+  0% {
+    transform: translateY(-8px) scale(0.96);
+    opacity: 0;
+    filter: blur(1.5px);
+  }
+  40% {
+    transform: translateY(1.5px) scale(1.008);
+    opacity: 1;
+    filter: blur(0);
+  }
+  65% {
+    transform: translateY(-0.5px) scale(0.998);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+.ai-status-log > div {
+  animation: ai-nebula-log-slide 0.45s var(--ai-ease-nebula-out) !important;
+}
+
+/* === 606. Constellation Canvas Reduced Motion v0.2.0 === */
+@media (prefers-reduced-motion: reduce) {
+  .ai-constellation-canvas {
+    display: none !important;
+  }
+  #ai-sort-wrapper::before {
+    animation: none !important;
+    opacity: 0.08 !important;
+  }
+}
+
+/* === 607. Constellation Canvas Mobile v0.2.0 === */
+@media (max-width: 500px) {
+  .ai-constellation-canvas {
+    display: none !important;
   }
 }
