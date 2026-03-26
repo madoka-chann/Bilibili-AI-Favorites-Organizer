@@ -1,8 +1,8 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v0.1.2
-   Velvet Nebula · 天鹅绒星云 · Refined Glass Morphism
+   B站 AI 收藏夹整理助理 — 完整样式表 v0.1.3
+   Velvet Prism · 天鹅绒棱镜 · Refined Glass Morphism
    Indigo-Nebula 双色系统 · Restrained Aurora Palette
-   Velvet Dynamics 15.0 · Silky Spring Micro-interactions
+   Velvet Dynamics 16.0 · Silky Spring Micro-interactions
    Stellar Abyss Dark Theme · Living Glass Surfaces
    Multi-Accent Color Themes · Ambient Light Motes · Liquid Borders
    Magnetic Tilt · Cursor-Reactive Particles · Fluid Morphing
@@ -16,6 +16,7 @@
    Velvet Bloom · Ripple Interference · Magnetic Trail · Mist & Twilight
    Velvet Breath · Silk Thread Canvas · Slate & Mocha Themes
    Lucid Drift · Firefly Canvas · Aurora Ribbon · Cloud & Cedar Themes
+   Velvet Prism · Gravity Orb Canvas · Breath Sync · Birch & Tide Themes
    ================================================================ */
 
 /* === 1. CSS 变量 (双主题系统) === */
@@ -11095,7 +11096,8 @@ input[type="checkbox"]:active {
 /* === 468. Reduced Motion v0.1.2 === */
 @media (prefers-reduced-motion: reduce) {
   .ai-firefly-canvas,
-  .ai-aurora-ribbon {
+  .ai-aurora-ribbon,
+  .ai-gravity-canvas {
     display: none !important;
   }
   .ai-cat-block {
@@ -11105,6 +11107,536 @@ input[type="checkbox"]:active {
     animation: none !important;
   }
   #ai-float-btn:not(:hover):not(:active)::after {
+    animation: none !important;
+  }
+}
+
+/* ================================================================
+   Velvet Prism v0.1.3 — 天鹅绒棱镜 新增特性
+   Gravity Orb Canvas · Breath Sync · Jelly Morph Hover
+   Velvet Dynamics 16.0 · Birch & Tide Themes
+   Pendulum Idle · Springy Micro-interactions · Elastic Polish
+   ================================================================ */
+
+/* === 469. Velvet Dynamics 16.0 — 天鹅绒棱镜运动曲线系统 === */
+:root {
+  --ai-spring-prism: cubic-bezier(0.16, 1.34, 0.30, 1.00);
+  --ai-ease-velvet: cubic-bezier(0.04, 0.92, 0.10, 1.01);
+  --ai-spring-gravity: cubic-bezier(0.20, 1.56, 0.36, 0.97);
+  --ai-ease-crystal-flow: cubic-bezier(0.06, 0.84, 0.14, 1.00);
+  --ai-spring-pendulum: cubic-bezier(0.24, 1.44, 0.40, 0.99);
+  --ai-ease-satin: cubic-bezier(0.03, 0.90, 0.08, 1.00);
+  --ai-spring-taffy: cubic-bezier(0.18, 1.62, 0.34, 0.96);
+  --ai-ease-pond: cubic-bezier(0.05, 0.82, 0.12, 1.01);
+}
+
+/* === 470. Birch Theme — 白桦 (温润素木) === */
+[data-accent="birch"] {
+  --ai-primary: #9A8B78;
+  --ai-primary-dark: #7D6E5D;
+  --ai-primary-light: #B8ADA0;
+  --ai-primary-bg: rgba(154, 139, 120, 0.06);
+  --ai-primary-shadow: rgba(154, 139, 120, 0.16);
+  --ai-aurora-1: #9A8B78;
+  --ai-aurora-2: #A69685;
+  --ai-aurora-3: #8D7E6B;
+  --ai-aurora-4: #B0A291;
+  --ai-aurora-5: #B8ADA0;
+  --ai-aurora-6: #7D6E5D;
+  --ai-aurora-7: #C4BAB0;
+  --ai-aurora-8: #A09181;
+  --ai-header-gradient: linear-gradient(135deg, #9A8B78, #A69685, #9A8B78);
+  --ai-float-gradient: linear-gradient(135deg, #9A8B78 0%, #A89989 40%, #B8ADA0 70%, #9A8B78 100%);
+  --ai-neon-glow: 0 0 14px rgba(154, 139, 120, 0.18), 0 0 28px rgba(154, 139, 120, 0.08);
+  --ai-glow-color: rgba(154, 139, 120, 0.07);
+  --ai-scrollbar: #C4BAB0;
+  --ai-scrollbar-hover: #9A8B78;
+}
+
+/* === 471. Tide Theme — 潮汐 (深沉墨蓝) === */
+[data-accent="tide"] {
+  --ai-primary: #5B7B8A;
+  --ai-primary-dark: #456571;
+  --ai-primary-light: #7E9EAD;
+  --ai-primary-bg: rgba(91, 123, 138, 0.06);
+  --ai-primary-shadow: rgba(91, 123, 138, 0.16);
+  --ai-aurora-1: #5B7B8A;
+  --ai-aurora-2: #6B8B98;
+  --ai-aurora-3: #4E6E7D;
+  --ai-aurora-4: #7E9EAD;
+  --ai-aurora-5: #8AAAB8;
+  --ai-aurora-6: #456571;
+  --ai-aurora-7: #96B2BE;
+  --ai-aurora-8: #628694;
+  --ai-header-gradient: linear-gradient(135deg, #5B7B8A, #6B8B98, #5B7B8A);
+  --ai-float-gradient: linear-gradient(135deg, #5B7B8A 0%, #6A8A98 40%, #7E9EAD 70%, #5B7B8A 100%);
+  --ai-neon-glow: 0 0 14px rgba(91, 123, 138, 0.18), 0 0 28px rgba(91, 123, 138, 0.08);
+  --ai-glow-color: rgba(91, 123, 138, 0.07);
+  --ai-scrollbar: #96B2BE;
+  --ai-scrollbar-hover: #5B7B8A;
+}
+
+/* === 472. Birch/Tide Float Button === */
+[data-accent="birch"] ~ body #ai-float-btn,
+[data-accent="birch"] #ai-float-btn {
+  --ai-float-gradient: linear-gradient(135deg, #9A8B78, #A69685, #B8ADA0, #9A8B78);
+}
+[data-accent="tide"] ~ body #ai-float-btn,
+[data-accent="tide"] #ai-float-btn {
+  --ai-float-gradient: linear-gradient(135deg, #5B7B8A, #6B8B98, #7E9EAD, #5B7B8A);
+}
+
+/* === 473. Birch/Tide Nebula Particles === */
+[data-accent="birch"] .ai-nebula-particle { background: #9A8B78 !important; }
+[data-accent="tide"] .ai-nebula-particle { background: #5B7B8A !important; }
+
+/* === 474. Gravity Orb Canvas 引力球画布 === */
+.ai-gravity-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  opacity: 0.6;
+  mix-blend-mode: screen;
+  will-change: contents;
+}
+
+[data-theme="light"] .ai-gravity-canvas,
+:root:not([data-theme="dark"]) .ai-gravity-canvas {
+  mix-blend-mode: soft-light;
+  opacity: 0.45;
+}
+
+.ai-gravity-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform, opacity;
+  filter: blur(32px);
+  transition: background 0.8s var(--ai-ease-velvet, ease);
+}
+
+/* === 475. Breath Sync System 呼吸同步系统 === */
+@keyframes ai-breath-sync {
+  0%, 100% {
+    --breath-scale: 1;
+    --breath-opacity: 1;
+  }
+  50% {
+    --breath-scale: 1.008;
+    --breath-opacity: 0.92;
+  }
+}
+
+@property --breath-scale {
+  syntax: '<number>';
+  initial-value: 1;
+  inherits: true;
+}
+
+@property --breath-opacity {
+  syntax: '<number>';
+  initial-value: 1;
+  inherits: true;
+}
+
+#ai-sort-wrapper {
+  animation: ai-breath-sync 6s var(--ai-ease-satin, ease) infinite;
+}
+
+.ai-header {
+  animation: ai-header-live-flow 20s ease-in-out infinite,
+             ai-breath-sync 6s var(--ai-ease-satin, ease) infinite;
+}
+
+/* === 476. Pendulum Idle 悬浮按钮钟摆闲置动画 === */
+@keyframes ai-pendulum-idle {
+  0%, 100% {
+    transform: rotate(0deg) translateY(0px);
+  }
+  15% {
+    transform: rotate(1.2deg) translateY(-1px);
+  }
+  30% {
+    transform: rotate(-0.8deg) translateY(0.5px);
+  }
+  50% {
+    transform: rotate(0.6deg) translateY(-1.5px);
+  }
+  65% {
+    transform: rotate(-1deg) translateY(0px);
+  }
+  80% {
+    transform: rotate(0.4deg) translateY(-0.8px);
+  }
+}
+
+#ai-float-btn:not(:hover):not(:active) {
+  animation: ai-float-gradient-shift 16s ease-in-out infinite,
+             ai-pendulum-idle 8s var(--ai-ease-velvet, ease) infinite;
+}
+
+/* === 477. Jelly Morph Hover 果冻变形悬停 === */
+@keyframes ai-jelly-morph-hover {
+  0% {
+    border-radius: var(--ai-radius-sm);
+    transform: scale(1);
+  }
+  25% {
+    border-radius: 10px 6px 12px 8px;
+    transform: scale(1.04, 0.97);
+  }
+  50% {
+    border-radius: 8px 11px 7px 10px;
+    transform: scale(0.98, 1.03);
+  }
+  75% {
+    border-radius: 11px 8px 9px 12px;
+    transform: scale(1.02, 0.99);
+  }
+  100% {
+    border-radius: var(--ai-radius-sm);
+    transform: scale(1);
+  }
+}
+
+.ai-btn-tool:hover {
+  animation: ai-jelly-morph-hover 0.6s var(--ai-spring-prism) forwards;
+  transform: translateY(-3px) scale(1.045);
+  box-shadow: 0 10px 28px rgba(115, 100, 255, 0.12);
+}
+
+/* === 478. Elastic Card Enter 弹性卡片入场 === */
+@keyframes ai-elastic-card-in {
+  0% {
+    transform: translateY(18px) scale(0.92, 1.06);
+    opacity: 0;
+    filter: blur(4px);
+  }
+  30% {
+    transform: translateY(-4px) scale(1.02, 0.97);
+    opacity: 1;
+    filter: blur(0);
+  }
+  50% {
+    transform: translateY(2px) scale(0.99, 1.01);
+  }
+  70% {
+    transform: translateY(-1px) scale(1.005, 0.998);
+  }
+  85% {
+    transform: translateY(0.5px) scale(0.998, 1.001);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* === 479. Panel Entrance v0.1.3 — 弹性面板入场增强 === */
+@keyframes ai-panel-prism-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.88, 1.04) translateY(24px);
+    filter: blur(6px);
+  }
+  25% {
+    opacity: 1;
+    transform: scale(1.03, 0.96) translateY(-6px);
+    filter: blur(0);
+  }
+  42% {
+    transform: scale(0.985, 1.01) translateY(2px);
+  }
+  58% {
+    transform: scale(1.008, 0.996) translateY(-1px);
+  }
+  72% {
+    transform: scale(0.997, 1.002) translateY(0.5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
+}
+
+#ai-sort-wrapper.ai-velvet-spring-in {
+  animation: ai-panel-prism-in 0.6s var(--ai-spring-prism) both !important;
+}
+
+/* === 480. Toast Spring Enter v0.1.3 === */
+@keyframes ai-toast-prism-in {
+  0% {
+    transform: translateX(40px) scale(0.9, 1.05);
+    opacity: 0;
+    filter: blur(4px);
+  }
+  30% {
+    transform: translateX(-6px) scale(1.03, 0.97);
+    opacity: 1;
+    filter: blur(0);
+  }
+  55% {
+    transform: translateX(2px) scale(0.99, 1.01);
+  }
+  75% {
+    transform: translateX(-0.5px) scale(1.002);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.ai-toast {
+  animation: ai-toast-prism-in 0.5s var(--ai-spring-prism) both;
+}
+
+/* === 481. Float Button Magnetic Pull 悬浮按钮磁吸效果 === */
+#ai-float-btn:hover {
+  transform: scale(1.16) translateY(-12px) rotate(-4deg);
+  transition: transform 0.5s var(--ai-spring-gravity),
+              border-radius 0.6s var(--ai-spring-taffy),
+              box-shadow 0.5s var(--ai-ease-velvet),
+              border-color 0.4s var(--ai-ease-satin);
+}
+
+#ai-float-btn:active {
+  transform: scale(0.82) rotate(2deg);
+  transition-duration: 0.08s;
+}
+
+/* === 482. Category Row Prism Enter v0.1.3 === */
+@keyframes ai-cat-prism-in {
+  0% {
+    transform: translateX(22px) scale(0.94, 1.03);
+    opacity: 0;
+    filter: blur(3px);
+  }
+  30% {
+    transform: translateX(-4px) scale(1.015, 0.99);
+    opacity: 1;
+    filter: blur(0);
+  }
+  50% {
+    transform: translateX(1.8px) scale(0.997, 1.003);
+  }
+  70% {
+    transform: translateX(-0.6px) scale(1.001);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+.ai-cat-block {
+  animation: ai-cat-prism-in 0.5s var(--ai-spring-prism) both;
+  animation-delay: calc(var(--i, 0) * 0.035s);
+}
+
+/* === 483. Header Glow Drift 标题栏流光漂移 === */
+@keyframes ai-header-glow-drift {
+  0% {
+    background-position: 0% 50%;
+    filter: brightness(1);
+  }
+  25% {
+    background-position: 50% 80%;
+    filter: brightness(1.02);
+  }
+  50% {
+    background-position: 100% 50%;
+    filter: brightness(1);
+  }
+  75% {
+    background-position: 50% 20%;
+    filter: brightness(1.015);
+  }
+  100% {
+    background-position: 0% 50%;
+    filter: brightness(1);
+  }
+}
+
+.ai-header {
+  background-size: 400% 400%;
+  animation: ai-header-glow-drift 14s var(--ai-ease-pond) infinite;
+}
+
+/* === 484. Input Focus Prism 输入框聚焦棱镜 === */
+.ai-input:focus {
+  border-color: var(--ai-primary);
+  box-shadow: 0 0 0 3px var(--ai-primary-bg),
+              0 0 12px var(--ai-glow-color);
+  transition: all 0.35s var(--ai-spring-prism);
+}
+
+/* === 485. Modal Enter Prism v0.1.3 === */
+@keyframes ai-modal-prism-enter {
+  0% {
+    opacity: 0;
+    transform: scale(0.90, 1.04) translateY(20px);
+    filter: blur(6px);
+  }
+  28% {
+    opacity: 1;
+    transform: scale(1.025, 0.97) translateY(-4px);
+    filter: blur(0);
+  }
+  48% {
+    transform: scale(0.99, 1.008) translateY(1.5px);
+  }
+  65% {
+    transform: scale(1.004, 0.998) translateY(-0.5px);
+  }
+  80% {
+    transform: scale(0.999, 1.001);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
+}
+
+.ai-modal {
+  animation: ai-modal-prism-enter 0.55s var(--ai-spring-prism) both;
+}
+
+/* === 486. Gravity Orb Specific Animations === */
+@keyframes ai-orb-glow {
+  0%, 100% {
+    filter: blur(32px) brightness(1);
+  }
+  50% {
+    filter: blur(36px) brightness(1.15);
+  }
+}
+
+/* === 487. Group Header Hover Polish v0.1.3 === */
+.ai-group-header:hover {
+  transform: translateX(2px);
+  transition: all 0.4s var(--ai-spring-prism);
+}
+
+.ai-group-header:active {
+  transform: translateX(1px) scale(0.98);
+  transition-duration: 0.06s;
+}
+
+/* === 488. Log Entry Prism v0.1.3 === */
+@keyframes ai-log-prism-in {
+  0% {
+    transform: translateX(14px) scale(0.96, 1.02);
+    opacity: 0;
+  }
+  35% {
+    transform: translateX(-2px) scale(1.01, 0.99);
+    opacity: 1;
+  }
+  60% {
+    transform: translateX(0.8px) scale(0.998);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.ai-log-entry {
+  animation: ai-log-prism-in 0.38s var(--ai-spring-prism) both;
+}
+
+/* === 489. Settings Reveal Prism v0.1.3 === */
+@keyframes ai-settings-prism-reveal {
+  0% {
+    max-height: 0;
+    opacity: 0;
+    transform: scaleY(0.9);
+    transform-origin: top center;
+  }
+  40% {
+    opacity: 1;
+    transform: scaleY(1.01);
+  }
+  60% {
+    transform: scaleY(0.998);
+  }
+  100% {
+    max-height: 800px;
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+.ai-settings[style*="display: block"],
+.ai-settings[style*="display:block"] {
+  animation: ai-settings-prism-reveal 0.45s var(--ai-spring-prism) both;
+}
+
+/* === 490. Video Item Hover Prism v0.1.3 === */
+.ai-vid-rich {
+  transition: background 0.3s var(--ai-ease-velvet),
+              transform 0.4s var(--ai-spring-prism);
+}
+
+.ai-vid-rich:hover {
+  transform: translateX(4px);
+}
+
+.ai-vid-rich:hover .ai-vid-cover {
+  transform: scale(1.07);
+  transition: transform 0.45s var(--ai-spring-gravity),
+              box-shadow 0.35s var(--ai-ease-velvet);
+}
+
+/* === 491. Scrollbar Polish v0.1.3 === */
+.ai-panel-content::-webkit-scrollbar {
+  width: 5px;
+}
+
+.ai-panel-content::-webkit-scrollbar-thumb {
+  background: var(--ai-scrollbar);
+  border-radius: 10px;
+  transition: background 0.3s;
+}
+
+.ai-panel-content::-webkit-scrollbar-thumb:hover {
+  background: var(--ai-scrollbar-hover);
+}
+
+.ai-panel-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* === 492. GPU Hints v0.1.3 === */
+.ai-gravity-canvas,
+.ai-gravity-orb {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* === 493. Reduced Motion v0.1.3 === */
+@media (prefers-reduced-motion: reduce) {
+  .ai-gravity-canvas {
+    display: none !important;
+  }
+  #ai-float-btn:not(:hover):not(:active) {
+    animation: ai-float-gradient-shift 16s ease-in-out infinite !important;
+  }
+  .ai-toast {
+    animation: ai-fade-in 0.15s ease !important;
+  }
+  .ai-modal {
+    animation: ai-fade-in 0.15s ease !important;
+  }
+  #ai-sort-wrapper {
     animation: none !important;
   }
 }
