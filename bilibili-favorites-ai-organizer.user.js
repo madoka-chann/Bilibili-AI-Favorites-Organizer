@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.4.0
+// @version      1.4.1
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -46,7 +46,7 @@
         // Fallback: 直接注入关键 CSS（确保 z-index 和基本布局正常）
         const fallbackCSS = document.createElement('style');
         fallbackCSS.textContent = `
-            :root{--ai-primary:#7364FF;--ai-primary-dark:#5046E5;--ai-primary-light:#B0A8FF;--ai-primary-bg:rgba(115,100,255,0.06);--ai-primary-shadow:rgba(115,100,255,0.22);--ai-success:#10B981;--ai-error:#F43F5E;--ai-info:#818CF8;--ai-warning:#F59E0B;--ai-text:#181233;--ai-text-secondary:#38305A;--ai-text-muted:#868199;--ai-text-light:#BEB8D0;--ai-border:#E4DDF5;--ai-border-light:#F0EAFA;--ai-border-lighter:#F9F7FF;--ai-bg:#fff;--ai-bg-secondary:#F9F7FF;--ai-bg-tertiary:#F0EAFA;--ai-bg-hover:rgba(115,100,255,0.04);--ai-header-gradient:linear-gradient(135deg,#7364FF,#9B59F6,#7364FF);--ai-modal-backdrop:rgba(24,18,51,0.58);--ai-input-bg:#fff;--ai-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--ai-z-float:2147483640;--ai-z-panel:2147483641;--ai-z-modal:2147483645;--ai-z-particle:2147483646;--ai-radius-xs:6px;--ai-radius-sm:8px;--ai-radius-md:10px;--ai-radius-lg:14px;--ai-radius-xl:18px;--ai-transition:0.25s cubic-bezier(0.4,0,0.2,1);--ai-transition-slow:0.4s cubic-bezier(0.16,1,0.3,1);--ai-scrollbar:#BEB8D0;--ai-scrollbar-hover:#868199;--ai-cat-detail-bg:#F9F7FF;--ai-separator:#E4DDF5;--ai-glow-color:rgba(115,100,255,0.07);--ai-badge-new-bg:#F43F5E;--ai-badge-existing-bg:#10B981;--ai-vid-odd-bg:rgba(24,18,51,0.012);--ai-vid-hover-bg:rgba(115,100,255,0.05);--ai-spring:cubic-bezier(0.32,1.48,0.62,1);--ai-spring-gentle:cubic-bezier(0.20,1.04,0.42,1);--ai-spring-bouncy:cubic-bezier(0.165,0.84,0.28,1.18);--ai-spring-silk:cubic-bezier(0.20,1.10,0.36,1);--ai-ease-out-expo:cubic-bezier(0.14,1,0.28,1);--ai-ease-smooth:cubic-bezier(0.38,0,0,1);--ai-ease-fluid:cubic-bezier(0.22,0.78,0.22,1);--ai-ease-ios:cubic-bezier(0.20,0.98,0.28,1);--ai-ease-magnetic:cubic-bezier(0.18,0.88,0.28,1.08);--ai-ease-butterfly:cubic-bezier(0.13,0.94,0.22,1.03);--ai-ease-ethereal:cubic-bezier(0.08,0.92,0.16,1);--ai-spring-flux:cubic-bezier(0.22,1.36,0.42,1);--ai-ease-aurora:cubic-bezier(0.12,0.88,0.20,1.04);--ai-ease-dreamy:cubic-bezier(0.06,0.96,0.14,1);--ai-spring-firefly:cubic-bezier(0.28,1.68,0.48,1);--ai-spring-velvet:cubic-bezier(0.17,1.32,0.40,1);--ai-spring-jelly:cubic-bezier(0.22,1.52,0.38,1);--ai-ease-silk-out:cubic-bezier(0.08,0.90,0.15,1.02);--ai-spring-marshmallow:cubic-bezier(0.19,1.42,0.37,1);--ai-spring-droplet:cubic-bezier(0.26,1.58,0.44,1);--ai-spring-silk-bounce:cubic-bezier(0.14,1.28,0.34,1.02);--ai-ease-gossamer:cubic-bezier(0.08,0.96,0.18,1);--ai-spring-pudding:cubic-bezier(0.21,1.46,0.40,1);--ai-ease-dewdrop:cubic-bezier(0.04,0.88,0.10,1.03);}
+            :root{--ai-primary:#7364FF;--ai-primary-dark:#5046E5;--ai-primary-light:#B0A8FF;--ai-primary-bg:rgba(115,100,255,0.06);--ai-primary-shadow:rgba(115,100,255,0.22);--ai-success:#10B981;--ai-error:#F43F5E;--ai-info:#818CF8;--ai-warning:#F59E0B;--ai-text:#181233;--ai-text-secondary:#38305A;--ai-text-muted:#868199;--ai-text-light:#BEB8D0;--ai-border:#E4DDF5;--ai-border-light:#F0EAFA;--ai-border-lighter:#F9F7FF;--ai-bg:#fff;--ai-bg-secondary:#F9F7FF;--ai-bg-tertiary:#F0EAFA;--ai-bg-hover:rgba(115,100,255,0.04);--ai-header-gradient:linear-gradient(135deg,#7364FF,#9B59F6,#7364FF);--ai-modal-backdrop:rgba(24,18,51,0.58);--ai-input-bg:#fff;--ai-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--ai-z-float:2147483640;--ai-z-panel:2147483641;--ai-z-modal:2147483645;--ai-z-particle:2147483646;--ai-radius-xs:6px;--ai-radius-sm:8px;--ai-radius-md:10px;--ai-radius-lg:14px;--ai-radius-xl:18px;--ai-transition:0.25s cubic-bezier(0.4,0,0.2,1);--ai-transition-slow:0.4s cubic-bezier(0.16,1,0.3,1);--ai-scrollbar:#BEB8D0;--ai-scrollbar-hover:#868199;--ai-cat-detail-bg:#F9F7FF;--ai-separator:#E4DDF5;--ai-glow-color:rgba(115,100,255,0.07);--ai-badge-new-bg:#F43F5E;--ai-badge-existing-bg:#10B981;--ai-vid-odd-bg:rgba(24,18,51,0.012);--ai-vid-hover-bg:rgba(115,100,255,0.05);--ai-spring:cubic-bezier(0.32,1.48,0.62,1);--ai-spring-gentle:cubic-bezier(0.20,1.04,0.42,1);--ai-spring-bouncy:cubic-bezier(0.165,0.84,0.28,1.18);--ai-spring-silk:cubic-bezier(0.20,1.10,0.36,1);--ai-ease-out-expo:cubic-bezier(0.14,1,0.28,1);--ai-ease-smooth:cubic-bezier(0.38,0,0,1);--ai-ease-fluid:cubic-bezier(0.22,0.78,0.22,1);--ai-ease-ios:cubic-bezier(0.20,0.98,0.28,1);--ai-ease-magnetic:cubic-bezier(0.18,0.88,0.28,1.08);--ai-ease-butterfly:cubic-bezier(0.13,0.94,0.22,1.03);--ai-ease-ethereal:cubic-bezier(0.08,0.92,0.16,1);--ai-spring-flux:cubic-bezier(0.22,1.36,0.42,1);--ai-ease-aurora:cubic-bezier(0.12,0.88,0.20,1.04);--ai-ease-dreamy:cubic-bezier(0.06,0.96,0.14,1);--ai-spring-firefly:cubic-bezier(0.28,1.68,0.48,1);--ai-spring-velvet:cubic-bezier(0.17,1.32,0.40,1);--ai-spring-jelly:cubic-bezier(0.22,1.52,0.38,1);--ai-ease-silk-out:cubic-bezier(0.08,0.90,0.15,1.02);--ai-spring-marshmallow:cubic-bezier(0.19,1.42,0.37,1);--ai-spring-droplet:cubic-bezier(0.26,1.58,0.44,1);--ai-spring-silk-bounce:cubic-bezier(0.14,1.28,0.34,1.02);--ai-ease-gossamer:cubic-bezier(0.08,0.96,0.18,1);--ai-spring-pudding:cubic-bezier(0.21,1.46,0.40,1);--ai-ease-dewdrop:cubic-bezier(0.04,0.88,0.10,1.03);--ai-spring-bloom:cubic-bezier(0.14,1.34,0.32,1.01);--ai-spring-petal:cubic-bezier(0.18,1.52,0.38,0.98);--ai-ease-bloom:cubic-bezier(0.04,0.90,0.10,1.02);--ai-ease-mist:cubic-bezier(0.06,0.88,0.14,1);--ai-spring-dew:cubic-bezier(0.12,1.42,0.28,1.01);--ai-ease-twilight:cubic-bezier(0.10,0.94,0.16,1.01);--ai-spring-ripple:cubic-bezier(0.20,1.28,0.36,1);--ai-ease-breath-deep:cubic-bezier(0.45,0,0.55,1);}
             #ai-float-btn{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-float);background:linear-gradient(135deg,#7364FF,#9B59F6,#B0A8FF,#7364FF);background-size:300% 300%;color:#fff;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 14px rgba(115,100,255,0.18),0 0 28px rgba(155,89,246,0.08);border:2px solid rgba(255,255,255,0.28);transition:transform 0.7s var(--ai-spring-silk);}
             #ai-float-btn [data-lucide]{width:24px;height:24px;}
             #ai-sort-wrapper{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-panel);width:min(400px,calc(100vw - 60px));display:flex;flex-direction:column;background:var(--ai-bg,#fff);color:var(--ai-text,#181233);box-shadow:0 24px 68px rgba(0,0,0,0.11),0 10px 28px rgba(0,0,0,0.07);border-radius:28px;overflow:hidden;font-family:var(--ai-font);}
@@ -4326,6 +4326,8 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'matcha', label: '抹茶' },
                 { id: 'obsidian', label: '黑曜石' },
                 { id: 'porcelain', label: '青瓷' },
+                { id: 'mist', label: '清雾' },
+                { id: 'twilight', label: '薄暮' },
                 { id: 'custom', label: '自定义' }
             ];
 
@@ -4756,6 +4758,174 @@ ${topUps.length > 0 ? `<div class="section">
                     depthLayer.style.transform = `translateY(${offsetY}px)`;
                 }, { passive: true });
             }
+        })();
+
+        // === Velvet Bloom v0.1.0 — Ripple Interference Canvas 涟漪干涉画布 ===
+        (() => {
+            const ripWrap = document.createElement('div');
+            ripWrap.className = 'ai-ripple-canvas';
+            const rCanvas = document.createElement('canvas');
+            ripWrap.appendChild(rCanvas);
+            panel.insertBefore(ripWrap, panel.firstChild);
+
+            let ripAnimId = null;
+            let ripTime = 0;
+            const ripSources = [];
+            // 3 permanent ripple sources with slow drift
+            for (let i = 0; i < 3; i++) {
+                ripSources.push({
+                    x: 0.2 + Math.random() * 0.6,
+                    y: 0.2 + Math.random() * 0.6,
+                    freq: 0.018 + Math.random() * 0.012,
+                    phase: Math.random() * Math.PI * 2,
+                    driftSpeed: 0.0003 + Math.random() * 0.0004,
+                    driftPhase: Math.random() * Math.PI * 2
+                });
+            }
+
+            const ripResize = () => {
+                const r = panel.getBoundingClientRect();
+                rCanvas.width = Math.round(r.width * 0.25);
+                rCanvas.height = Math.round(r.height * 0.25);
+            };
+
+            const getColors = () => {
+                const cs = getComputedStyle(document.documentElement);
+                return [
+                    cs.getPropertyValue('--ai-aurora-1').trim() || '#7364FF',
+                    cs.getPropertyValue('--ai-aurora-3').trim() || '#9B59F6',
+                ];
+            };
+
+            const hexToRgb = (hex) => {
+                hex = hex.replace('#', '');
+                if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+                const n = parseInt(hex, 16);
+                return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+            };
+
+            const renderRipple = () => {
+                const ctx = rCanvas.getContext('2d');
+                if (!ctx || !rCanvas.width) { ripAnimId = requestAnimationFrame(renderRipple); return; }
+                const w = rCanvas.width, h = rCanvas.height;
+                ripTime += 0.015;
+
+                const colors = getColors();
+                const rgb1 = hexToRgb(colors[0]);
+                const rgb2 = hexToRgb(colors[1]);
+
+                const imgData = ctx.createImageData(w, h);
+                const data = imgData.data;
+
+                for (let y = 0; y < h; y++) {
+                    const ny = y / h;
+                    for (let x = 0; x < w; x++) {
+                        const nx = x / w;
+                        let val = 0;
+
+                        // Compute interference from all sources
+                        for (const src of ripSources) {
+                            // Drift the source positions slowly
+                            const sx = src.x + Math.sin(ripTime * src.driftSpeed * 100 + src.driftPhase) * 0.15;
+                            const sy = src.y + Math.cos(ripTime * src.driftSpeed * 80 + src.driftPhase) * 0.15;
+                            const dx = nx - sx;
+                            const dy = ny - sy;
+                            const dist = Math.sqrt(dx * dx + dy * dy);
+                            val += Math.sin(dist / src.freq - ripTime * 2 + src.phase) * 0.5;
+                        }
+
+                        // Normalize to 0-1
+                        val = (val + 1.5) / 3;
+                        const t = val * val; // Soften with square
+
+                        const r = Math.round(rgb1[0] * (1 - t) + rgb2[0] * t);
+                        const g = Math.round(rgb1[1] * (1 - t) + rgb2[1] * t);
+                        const b = Math.round(rgb1[2] * (1 - t) + rgb2[2] * t);
+                        const alpha = Math.round(28 + t * 22);
+
+                        const idx = (y * w + x) * 4;
+                        data[idx] = r;
+                        data[idx + 1] = g;
+                        data[idx + 2] = b;
+                        data[idx + 3] = alpha;
+                    }
+                }
+
+                ctx.putImageData(imgData, 0, 0);
+                ripAnimId = requestAnimationFrame(renderRipple);
+            };
+
+            const startRipple = () => { ripResize(); if (!ripAnimId) renderRipple(); };
+            const stopRipple = () => { if (ripAnimId) { cancelAnimationFrame(ripAnimId); ripAnimId = null; } };
+
+            const ripObs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startRipple();
+                else stopRipple();
+            });
+            ripObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startRipple();
+            window.addEventListener('resize', () => { if (panel.style.display !== 'none') ripResize(); });
+        })();
+
+        // === Velvet Bloom v0.1.0 — Magnetic Cursor Trail 磁性光标拖尾 ===
+        (() => {
+            const trailWrap = document.createElement('div');
+            trailWrap.className = 'ai-cursor-trail';
+            panel.insertBefore(trailWrap, panel.children[1]);
+
+            const TRAIL_COUNT = 12;
+            const dots = [];
+            const positions = [];
+
+            for (let i = 0; i < TRAIL_COUNT; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'ai-trail-dot';
+                dot.style.width = Math.max(3, 7 - i * 0.4) + 'px';
+                dot.style.height = Math.max(3, 7 - i * 0.4) + 'px';
+                trailWrap.appendChild(dot);
+                dots.push(dot);
+                positions.push({ x: 0, y: 0 });
+            }
+
+            let mouseX = 0, mouseY = 0;
+            let isInPanel = false;
+            let trailRaf = null;
+
+            panel.addEventListener('mouseenter', () => { isInPanel = true; startTrail(); });
+            panel.addEventListener('mouseleave', () => {
+                isInPanel = false;
+                dots.forEach(d => d.style.opacity = '0');
+            });
+
+            panel.addEventListener('mousemove', (e) => {
+                const rect = panel.getBoundingClientRect();
+                mouseX = e.clientX - rect.left;
+                mouseY = e.clientY - rect.top;
+            });
+
+            const renderTrail = () => {
+                if (!isInPanel) { trailRaf = null; return; }
+
+                // Leader follows cursor directly
+                positions[0].x += (mouseX - positions[0].x) * 0.28;
+                positions[0].y += (mouseY - positions[0].y) * 0.28;
+
+                // Each subsequent dot follows the previous with easing
+                for (let i = 1; i < TRAIL_COUNT; i++) {
+                    const ease = 0.18 - i * 0.008;
+                    positions[i].x += (positions[i-1].x - positions[i].x) * Math.max(0.04, ease);
+                    positions[i].y += (positions[i-1].y - positions[i].y) * Math.max(0.04, ease);
+                }
+
+                dots.forEach((dot, i) => {
+                    dot.style.transform = `translate(${positions[i].x - 3}px, ${positions[i].y - 3}px)`;
+                    dot.style.opacity = String(0.35 - i * 0.025);
+                });
+
+                trailRaf = requestAnimationFrame(renderTrail);
+            };
+
+            const startTrail = () => { if (!trailRaf) trailRaf = requestAnimationFrame(renderTrail); };
         })();
 
         // === Lava Lamp Particle System 熔岩灯实时渲染粒子 v0.0.6 ===
@@ -5201,21 +5371,25 @@ ${topUps.length > 0 ? `<div class="section">
                 floatBtn.style.opacity = '';
                 floatBtn.style.filter = '';
             });
-            // 面板液态弹出 — Liquid Mirage v0.0.8
+            // 面板弹性形变弹出 — Velvet Bloom v0.1.0
             panel.classList.remove('ai-panel-closing');
             panel.style.animation = 'none';
             panel.style.display = 'flex';
             panel.style.opacity = '1';
             panel.style.transform = 'none';
             panel.style.filter = 'none';
-            // 强制 reflow 后触发液态入场动画
+            // 强制 reflow 后触发弹性形变入场动画
             void panel.offsetHeight;
-            panel.style.animation = 'ai-panel-liquid-in 0.65s cubic-bezier(0.18, 1.34, 0.36, 1)';
+            panel.style.animation = 'ai-elastic-open 0.72s cubic-bezier(0.14, 1.34, 0.32, 1.01) forwards';
             clampPanelPosition();
         };
 
         document.getElementById('ai-close-btn').onclick = () => {
             panel.classList.add('ai-panel-closing');
+            // 弹性形变关闭 — Velvet Bloom v0.1.0
+            panel.style.animation = 'none';
+            void panel.offsetHeight;
+            panel.style.animation = 'ai-elastic-close 0.45s cubic-bezier(0.04, 0.90, 0.10, 1.02) forwards';
             setTimeout(() => {
                 panel.style.display = 'none';
                 panel.style.animation = 'none';
@@ -5225,7 +5399,7 @@ ${topUps.length > 0 ? `<div class="section">
                 floatBtn.style.animation = 'none';
                 void floatBtn.offsetHeight;
                 floatBtn.style.animation = 'ai-velvet-spring-in 0.5s cubic-bezier(0.14, 1.28, 0.34, 1.02)';
-            }, 420);
+            }, 450);
         };
 
         // 主题切换

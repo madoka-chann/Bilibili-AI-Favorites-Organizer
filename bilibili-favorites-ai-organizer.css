@@ -1,8 +1,8 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v0.0.9
+   B站 AI 收藏夹整理助理 — 完整样式表 v0.1.0
    Velvet Nebula · 天鹅绒星云 · Refined Glass Morphism
    Indigo-Nebula 双色系统 · Restrained Aurora Palette
-   Velvet Dynamics 12.0 · Silky Spring Micro-interactions
+   Velvet Dynamics 13.0 · Silky Spring Micro-interactions
    Stellar Abyss Dark Theme · Living Glass Surfaces
    Multi-Accent Color Themes · Ambient Light Motes · Liquid Borders
    Magnetic Tilt · Cursor-Reactive Particles · Fluid Morphing
@@ -13,6 +13,7 @@
    Elastic Rebound · Jelly Stagger · Breathing Pulse
    Liquid Mirage · Aurora Weave · Obsidian & Porcelain Themes
    Phantom Silk · Morphic Flow · Depth Parallax · Living Luminance
+   Velvet Bloom · Ripple Interference · Magnetic Trail · Mist & Twilight
    ================================================================ */
 
 /* === 1. CSS 变量 (双主题系统) === */
@@ -9799,6 +9800,415 @@ input[type="checkbox"]:active {
   transform: rotate(-30deg) scale(1.18);
 }
 
+/* ================================================================
+   Velvet Bloom v0.1.0 — 天鹅绒绽放 新增特性
+   Ripple Interference Canvas · Magnetic Cursor Trail
+   Breathing Border Glow · Elastic Morph Transitions
+   Velvet Dynamics 13.0 · Mist & Twilight Themes
+   ================================================================ */
+
+/* === 409. Velvet Dynamics 13.0 — 天鹅绒绽放运动曲线系统 === */
+:root {
+  --ai-spring-bloom: cubic-bezier(0.14, 1.34, 0.32, 1.01);
+  --ai-spring-petal: cubic-bezier(0.18, 1.52, 0.38, 0.98);
+  --ai-ease-bloom: cubic-bezier(0.04, 0.90, 0.10, 1.02);
+  --ai-ease-mist: cubic-bezier(0.06, 0.88, 0.14, 1);
+  --ai-spring-dew: cubic-bezier(0.12, 1.42, 0.28, 1.01);
+  --ai-ease-twilight: cubic-bezier(0.10, 0.94, 0.16, 1.01);
+  --ai-spring-ripple: cubic-bezier(0.20, 1.28, 0.36, 1);
+  --ai-ease-breath-deep: cubic-bezier(0.45, 0, 0.55, 1);
+}
+
+/* === 410. Mist Theme — 清雾朦胧 (静谧清雅) === */
+[data-accent="mist"] {
+  --ai-primary: #8BA4B8;
+  --ai-primary-dark: #6B8498;
+  --ai-primary-light: #B0C4D4;
+  --ai-primary-bg: rgba(139, 164, 184, 0.06);
+  --ai-primary-shadow: rgba(139, 164, 184, 0.18);
+  --ai-aurora-1: #8BA4B8;
+  --ai-aurora-2: #96AEC0;
+  --ai-aurora-3: #7C96AA;
+  --ai-aurora-4: #A2B8CA;
+  --ai-aurora-5: #B0C4D4;
+  --ai-aurora-6: #6E8EA2;
+  --ai-aurora-7: #C0D2DE;
+  --ai-aurora-8: #7A94A8;
+  --ai-header-gradient: linear-gradient(135deg, #6B8498, #8BA4B8, #6B8498);
+  --ai-float-gradient: linear-gradient(135deg, #8BA4B8, #7C96AA, #A2B8CA, #8BA4B8);
+  --ai-neon-glow: 0 0 14px rgba(139, 164, 184, 0.16),
+                  0 0 28px rgba(107, 132, 152, 0.07),
+                  0 0 42px rgba(139, 164, 184, 0.03);
+  --ai-interaction-glow: rgba(139, 164, 184, 0.06);
+  --ai-glow-color: rgba(139, 164, 184, 0.04);
+  --ai-chromatic-border: linear-gradient(135deg, rgba(139,164,184,0.20), rgba(107,132,152,0.16), rgba(162,184,202,0.14), rgba(176,196,212,0.16));
+}
+
+.ai-accent-dot[data-accent="mist"] {
+  background: linear-gradient(135deg, #6B8498, #8BA4B8);
+}
+
+[data-theme="dark"][data-accent="mist"] #ai-float-btn {
+  border-color: rgba(139, 164, 184, 0.25);
+}
+
+[data-theme="dark"][data-accent="mist"] .ai-nebula-particle {
+  background: radial-gradient(circle, #B0C4D4 0%, rgba(176,196,212,0.05) 50%, transparent 70%);
+}
+
+/* === 411. Twilight Theme — 薄暮余晖 (温柔沉静) === */
+[data-accent="twilight"] {
+  --ai-primary: #A08090;
+  --ai-primary-dark: #806474;
+  --ai-primary-light: #C4A8B6;
+  --ai-primary-bg: rgba(160, 128, 144, 0.06);
+  --ai-primary-shadow: rgba(160, 128, 144, 0.18);
+  --ai-aurora-1: #A08090;
+  --ai-aurora-2: #AA8E9C;
+  --ai-aurora-3: #927282;
+  --ai-aurora-4: #B49CA8;
+  --ai-aurora-5: #C4A8B6;
+  --ai-aurora-6: #846876;
+  --ai-aurora-7: #D2B8C4;
+  --ai-aurora-8: #927686;
+  --ai-header-gradient: linear-gradient(135deg, #806474, #A08090, #806474);
+  --ai-float-gradient: linear-gradient(135deg, #A08090, #927282, #B49CA8, #A08090);
+  --ai-neon-glow: 0 0 14px rgba(160, 128, 144, 0.16),
+                  0 0 28px rgba(128, 100, 116, 0.07),
+                  0 0 42px rgba(160, 128, 144, 0.03);
+  --ai-interaction-glow: rgba(160, 128, 144, 0.06);
+  --ai-glow-color: rgba(160, 128, 144, 0.04);
+  --ai-chromatic-border: linear-gradient(135deg, rgba(160,128,144,0.20), rgba(128,100,116,0.16), rgba(180,156,168,0.14), rgba(196,168,182,0.16));
+}
+
+.ai-accent-dot[data-accent="twilight"] {
+  background: linear-gradient(135deg, #806474, #A08090);
+}
+
+[data-theme="dark"][data-accent="twilight"] #ai-float-btn {
+  border-color: rgba(160, 128, 144, 0.25);
+}
+
+[data-theme="dark"][data-accent="twilight"] .ai-nebula-particle {
+  background: radial-gradient(circle, #C4A8B6 0%, rgba(196,168,182,0.05) 50%, transparent 70%);
+}
+
+/* === 412. Ripple Interference Canvas — 涟漪干涉画布 (实时水波干涉纹) === */
+.ai-ripple-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  opacity: 0.16;
+  mix-blend-mode: soft-light;
+}
+
+.ai-ripple-canvas canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+[data-theme="dark"] .ai-ripple-canvas {
+  opacity: 0.10;
+  mix-blend-mode: screen;
+}
+
+/* === 413. Magnetic Cursor Trail — 磁性光标拖尾 === */
+.ai-cursor-trail {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.ai-trail-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ai-primary);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+  transition: opacity 0.4s var(--ai-ease-mist);
+  filter: blur(1px);
+}
+
+[data-theme="dark"] .ai-trail-dot {
+  filter: blur(1.5px);
+}
+
+/* === 414. Breathing Border Glow — 呼吸边框光晕 === */
+@keyframes ai-border-breathe {
+  0%, 100% {
+    box-shadow: 0 0 0 1px var(--ai-border-light),
+                0 0 20px rgba(115, 100, 255, 0.00),
+                0 24px 68px rgba(0,0,0,0.11);
+  }
+  50% {
+    box-shadow: 0 0 0 1px var(--ai-primary-bg),
+                0 0 28px var(--ai-primary-bg),
+                0 24px 68px rgba(0,0,0,0.11);
+  }
+}
+
+#ai-sort-wrapper:not(.ai-panel-closing) {
+  animation: ai-border-breathe 6s var(--ai-ease-breath-deep) infinite;
+}
+
+/* === 415. Elastic Morph Panel Open — 弹性形变面板展开 === */
+@keyframes ai-elastic-open {
+  0% {
+    opacity: 0;
+    transform: scale(0.88, 0.92) translateY(16px);
+    border-radius: 36px;
+    filter: blur(4px);
+  }
+  35% {
+    opacity: 1;
+    transform: scale(1.018, 0.985) translateY(-2px);
+    border-radius: 30px;
+    filter: blur(0px);
+  }
+  55% {
+    transform: scale(0.994, 1.008) translateY(1px);
+    border-radius: 28px;
+  }
+  72% {
+    transform: scale(1.004, 0.998) translateY(-0.5px);
+  }
+  85% {
+    transform: scale(0.999, 1.001);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    border-radius: 28px;
+    filter: blur(0px);
+  }
+}
+
+@keyframes ai-elastic-close {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0px);
+  }
+  25% {
+    transform: scale(1.015, 0.99) translateY(-3px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.90, 0.94) translateY(20px);
+    filter: blur(6px);
+  }
+}
+
+/* === 416. Stagger Cascade — 列表项交错入场 === */
+@keyframes ai-stagger-in {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.ai-cat-block {
+  animation: ai-stagger-in 0.45s var(--ai-spring-bloom) backwards;
+}
+
+.ai-cat-block:nth-child(1) { animation-delay: 0.02s; }
+.ai-cat-block:nth-child(2) { animation-delay: 0.05s; }
+.ai-cat-block:nth-child(3) { animation-delay: 0.08s; }
+.ai-cat-block:nth-child(4) { animation-delay: 0.11s; }
+.ai-cat-block:nth-child(5) { animation-delay: 0.14s; }
+.ai-cat-block:nth-child(6) { animation-delay: 0.17s; }
+.ai-cat-block:nth-child(7) { animation-delay: 0.20s; }
+.ai-cat-block:nth-child(8) { animation-delay: 0.23s; }
+.ai-cat-block:nth-child(9) { animation-delay: 0.26s; }
+.ai-cat-block:nth-child(10) { animation-delay: 0.29s; }
+
+/* === 417. Float Button Magnetic Hover — 悬浮按钮磁性吸附 === */
+#ai-float-btn {
+  transition: transform 0.7s var(--ai-spring-bloom),
+              box-shadow 0.5s var(--ai-ease-mist);
+}
+
+#ai-float-btn:hover {
+  transform: scale(1.12) translateY(-3px);
+  box-shadow: var(--ai-neon-glow),
+              0 16px 40px rgba(0,0,0,0.12);
+}
+
+#ai-float-btn:active {
+  transform: scale(0.92);
+  transition-duration: 0.08s;
+}
+
+/* === 418. Smooth Group Expand — 丝滑分组展开 === */
+.ai-group-body {
+  overflow: hidden;
+  transition: max-height 0.55s var(--ai-spring-bloom),
+              opacity 0.4s var(--ai-ease-mist);
+}
+
+/* === 419. Input Focus Bloom — 输入框焦点绽放 === */
+.ai-input:focus,
+.ai-select:focus {
+  border-color: var(--ai-primary);
+  box-shadow: 0 0 0 3px var(--ai-primary-bg),
+              0 0 16px var(--ai-primary-bg);
+  transition: border-color 0.3s var(--ai-ease-bloom),
+              box-shadow 0.5s var(--ai-spring-dew);
+}
+
+/* === 420. Button Ripple Bloom — 按钮涟漪绽放 === */
+.ai-btn::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  opacity: 0;
+  background: radial-gradient(circle at center, var(--ai-primary-bg), transparent 70%);
+  transition: opacity 0.5s var(--ai-ease-bloom);
+  pointer-events: none;
+}
+
+.ai-btn:hover::after {
+  opacity: 1;
+}
+
+/* === 421. Settings Slide — 设置区丝滑滑入 === */
+.ai-settings {
+  transition: max-height 0.5s var(--ai-spring-bloom),
+              opacity 0.35s var(--ai-ease-mist),
+              padding 0.4s var(--ai-ease-bloom);
+}
+
+/* === 422. Log Entry Bloom — 日志条目绽放入场 === */
+@keyframes ai-log-bloom {
+  0% {
+    opacity: 0;
+    transform: translateX(-8px) scale(0.96);
+    filter: blur(2px);
+  }
+  60% {
+    opacity: 1;
+    transform: translateX(1px) scale(1.01);
+    filter: blur(0px);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+.ai-log-entry {
+  animation: ai-log-bloom 0.5s var(--ai-spring-bloom) backwards;
+}
+
+/* === 423. Toast Bloom Enter — 通知弹窗绽放入场 === */
+@keyframes ai-toast-bloom {
+  0% {
+    opacity: 0;
+    transform: translateX(40px) scale(0.92);
+    filter: blur(4px);
+  }
+  40% {
+    opacity: 1;
+    transform: translateX(-4px) scale(1.02);
+    filter: blur(0px);
+  }
+  65% {
+    transform: translateX(2px) scale(0.995);
+  }
+  82% {
+    transform: translateX(-0.5px) scale(1.002);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+/* === 424. Header Shimmer Wave — 标题栏微光波纹 === */
+@keyframes ai-header-wave {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.ai-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,255,255,0.06) 45%,
+    rgba(255,255,255,0.12) 50%,
+    rgba(255,255,255,0.06) 55%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: ai-header-wave 8s var(--ai-ease-breath-deep) infinite;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* === 425. Accent Picker Bloom — 色彩选择器绽放 === */
+#ai-accent-picker {
+  transition: opacity 0.35s var(--ai-ease-bloom),
+              transform 0.45s var(--ai-spring-bloom);
+  transform-origin: top right;
+}
+
+#ai-accent-picker[style*="display: block"],
+#ai-accent-picker[style*="display:block"] {
+  animation: ai-stagger-in 0.4s var(--ai-spring-petal);
+}
+
+/* === 426. Scrollbar Smooth — 丝滑滚动条 === */
+.ai-panel-content::-webkit-scrollbar {
+  width: 5px;
+}
+
+.ai-panel-content::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 3px;
+}
+
+.ai-panel-content::-webkit-scrollbar-thumb {
+  background: var(--ai-scrollbar);
+  border-radius: 3px;
+  transition: background 0.3s ease;
+}
+
+.ai-panel-content::-webkit-scrollbar-thumb:hover {
+  background: var(--ai-scrollbar-hover);
+}
+
+/* === 427. GPU Performance Hints v0.1.0 === */
+.ai-ripple-canvas,
+.ai-ripple-canvas canvas,
+.ai-cursor-trail,
+.ai-trail-dot {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
 /* === 407. GPU Performance Hints v0.0.9 === */
 .ai-morphic-canvas,
 .ai-morphic-canvas canvas,
@@ -9809,10 +10219,12 @@ input[type="checkbox"]:active {
   contain: layout style;
 }
 
-/* === 408. Reduced Motion v0.0.9 — 无障碍适配 === */
+/* === 408. Reduced Motion v0.1.0 — 无障碍适配 === */
 @media (prefers-reduced-motion: reduce) {
   .ai-morphic-canvas,
-  .ai-depth-layer {
+  .ai-depth-layer,
+  .ai-ripple-canvas,
+  .ai-cursor-trail {
     display: none !important;
   }
   #ai-sort-wrapper:not(.ai-panel-closing) {
@@ -9820,6 +10232,10 @@ input[type="checkbox"]:active {
   }
   .ai-header {
     animation: none !important;
+  }
+  .ai-header::after {
+    animation: none !important;
+    opacity: 0 !important;
   }
   #ai-float-btn:not(:hover):not(:active) {
     animation: none !important;
@@ -9832,6 +10248,9 @@ input[type="checkbox"]:active {
     animation: ai-fade-in 0.2s ease !important;
   }
   .ai-cat-block {
+    animation: ai-fade-in 0.15s ease !important;
+  }
+  .ai-log-entry {
     animation: ai-fade-in 0.15s ease !important;
   }
 }
