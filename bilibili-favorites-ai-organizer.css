@@ -1,8 +1,8 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v0.0.7
+   B站 AI 收藏夹整理助理 — 完整样式表 v0.0.8
    Velvet Nebula · 天鹅绒星云 · Refined Glass Morphism
    Indigo-Nebula 双色系统 · Restrained Aurora Palette
-   Velvet Dynamics 10.0 · Silky Spring Micro-interactions
+   Velvet Dynamics 11.0 · Silky Spring Micro-interactions
    Stellar Abyss Dark Theme · Living Glass Surfaces
    Multi-Accent Color Themes · Ambient Light Motes · Liquid Borders
    Magnetic Tilt · Cursor-Reactive Particles · Fluid Morphing
@@ -11,6 +11,7 @@
    Luminous Flow Border · Lava Lamp Particles · Ink Wash & Rose Gold
    Silk Cascade · Shimmer Sweep · Midnight & Matcha Themes
    Elastic Rebound · Jelly Stagger · Breathing Pulse
+   Liquid Mirage · Aurora Weave · Obsidian & Porcelain Themes
    ================================================================ */
 
 /* === 1. CSS 变量 (双主题系统) === */
@@ -8418,6 +8419,552 @@
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
 }
 
+/* ================================================================
+   Liquid Mirage v0.0.8 — 液态幻境 新增特性
+   Aurora Weave · Caustic Light · Elastic Momentum
+   Obsidian & Porcelain Themes · Liquid Morph Transitions
+   Always-on Living Canvas · Smooth Momentum Feel
+   ================================================================ */
+
+/* === 357. Velvet Dynamics 11.0 — 新增运动曲线 === */
+:root {
+  --ai-spring-liquid: cubic-bezier(0.18, 1.34, 0.36, 1);
+  --ai-ease-mirage: cubic-bezier(0.06, 0.94, 0.14, 1.01);
+  --ai-spring-mochi: cubic-bezier(0.24, 1.52, 0.42, 1);
+  --ai-ease-breath: cubic-bezier(0.4, 0, 0.6, 1);
+  --ai-spring-whip: cubic-bezier(0.12, 1.64, 0.32, 1);
+  --ai-ease-molten: cubic-bezier(0.08, 0.88, 0.12, 1.04);
+  --ai-ease-cascade: cubic-bezier(0.16, 1, 0.22, 1);
+}
+
+/* === 358. Obsidian Theme — 黑曜石韵 (沉稳内敛) === */
+[data-accent="obsidian"] {
+  --ai-primary: #8A8A9A;
+  --ai-primary-dark: #5E5E72;
+  --ai-primary-light: #B8B8C8;
+  --ai-primary-bg: rgba(138, 138, 154, 0.06);
+  --ai-primary-shadow: rgba(138, 138, 154, 0.18);
+  --ai-aurora-1: #8A8A9A;
+  --ai-aurora-2: #9696A8;
+  --ai-aurora-3: #7A7A8E;
+  --ai-aurora-4: #A4A4B6;
+  --ai-aurora-5: #B8B8C8;
+  --ai-aurora-6: #6E6E84;
+  --ai-aurora-7: #C4C4D2;
+  --ai-aurora-8: #5E5E72;
+  --ai-header-gradient: linear-gradient(135deg, #5E5E72, #8A8A9A, #5E5E72);
+  --ai-float-gradient: linear-gradient(135deg, #8A8A9A, #7A7A8E, #A4A4B6, #8A8A9A);
+  --ai-neon-glow: 0 0 14px rgba(138, 138, 154, 0.18),
+                  0 0 28px rgba(94, 94, 114, 0.08),
+                  0 0 42px rgba(138, 138, 154, 0.03);
+  --ai-interaction-glow: rgba(138, 138, 154, 0.07);
+  --ai-glow-color: rgba(138, 138, 154, 0.04);
+  --ai-chromatic-border: linear-gradient(135deg, rgba(138,138,154,0.22), rgba(94,94,114,0.18), rgba(164,164,182,0.16), rgba(184,184,200,0.18));
+}
+
+.ai-accent-dot[data-accent="obsidian"] {
+  background: linear-gradient(135deg, #5E5E72, #8A8A9A);
+}
+
+[data-theme="dark"][data-accent="obsidian"] #ai-float-btn {
+  border-color: rgba(138, 138, 154, 0.25);
+}
+
+[data-theme="dark"][data-accent="obsidian"] .ai-nebula-particle {
+  background: radial-gradient(circle, #B8B8C8 0%, rgba(184,184,200,0.05) 50%, transparent 70%);
+}
+
+/* === 359. Porcelain Theme — 青瓷雅韵 (温润如玉) === */
+[data-accent="porcelain"] {
+  --ai-primary: #7AACB5;
+  --ai-primary-dark: #5A8C98;
+  --ai-primary-light: #A8CED6;
+  --ai-primary-bg: rgba(122, 172, 181, 0.06);
+  --ai-primary-shadow: rgba(122, 172, 181, 0.18);
+  --ai-aurora-1: #7AACB5;
+  --ai-aurora-2: #88BAC2;
+  --ai-aurora-3: #6A9CA6;
+  --ai-aurora-4: #96C6CE;
+  --ai-aurora-5: #A8CED6;
+  --ai-aurora-6: #5A8C98;
+  --ai-aurora-7: #B8D8DE;
+  --ai-aurora-8: #4E7E8A;
+  --ai-header-gradient: linear-gradient(135deg, #5A8C98, #7AACB5, #5A8C98);
+  --ai-float-gradient: linear-gradient(135deg, #7AACB5, #6A9CA6, #96C6CE, #7AACB5);
+  --ai-neon-glow: 0 0 14px rgba(122, 172, 181, 0.20),
+                  0 0 28px rgba(90, 140, 152, 0.09),
+                  0 0 42px rgba(122, 172, 181, 0.03);
+  --ai-interaction-glow: rgba(122, 172, 181, 0.07);
+  --ai-glow-color: rgba(122, 172, 181, 0.04);
+  --ai-chromatic-border: linear-gradient(135deg, rgba(122,172,181,0.24), rgba(90,140,152,0.20), rgba(150,198,206,0.18), rgba(168,206,214,0.20));
+}
+
+.ai-accent-dot[data-accent="porcelain"] {
+  background: linear-gradient(135deg, #5A8C98, #7AACB5);
+}
+
+[data-theme="dark"][data-accent="porcelain"] #ai-float-btn {
+  border-color: rgba(122, 172, 181, 0.25);
+}
+
+[data-theme="dark"][data-accent="porcelain"] .ai-nebula-particle {
+  background: radial-gradient(circle, #A8CED6 0%, rgba(168,206,214,0.05) 50%, transparent 70%);
+}
+
+/* === 360. Aurora Weave — 极光编织层 (始终流动的色彩织锦) === */
+.ai-aurora-weave {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  opacity: 0.18;
+  mix-blend-mode: soft-light;
+}
+
+[data-theme="dark"] .ai-aurora-weave {
+  opacity: 0.12;
+  mix-blend-mode: screen;
+}
+
+.ai-aurora-strand {
+  position: absolute;
+  width: 300%;
+  height: 300%;
+  left: -100%;
+  top: -100%;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.ai-aurora-strand:nth-child(1) {
+  background: conic-gradient(
+    from 0deg at 40% 50%,
+    transparent 0deg,
+    var(--ai-primary-bg) 60deg,
+    transparent 120deg,
+    rgba(155, 89, 246, 0.03) 200deg,
+    transparent 280deg
+  );
+  animation: ai-aurora-weave-spin 35s linear infinite;
+}
+
+.ai-aurora-strand:nth-child(2) {
+  background: conic-gradient(
+    from 120deg at 60% 50%,
+    transparent 0deg,
+    rgba(115, 100, 255, 0.025) 80deg,
+    transparent 160deg,
+    var(--ai-primary-bg) 240deg,
+    transparent 320deg
+  );
+  animation: ai-aurora-weave-spin 45s linear infinite reverse;
+  opacity: 0.7;
+}
+
+@keyframes ai-aurora-weave-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* === 361. Caustic Light Ripple — 焦散水纹 (面板底部始终荡漾) === */
+.ai-caustic-layer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  opacity: 0;
+  animation: ai-caustic-reveal 1.5s var(--ai-ease-mirage) 0.5s forwards;
+}
+
+@keyframes ai-caustic-reveal {
+  to { opacity: 1; }
+}
+
+.ai-caustic-pattern {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80px 60px at 20% 70%, var(--ai-primary-bg) 0%, transparent 100%),
+    radial-gradient(ellipse 60px 40px at 60% 80%, rgba(155, 89, 246, 0.025) 0%, transparent 100%),
+    radial-gradient(ellipse 90px 50px at 80% 60%, var(--ai-primary-bg) 0%, transparent 100%);
+  opacity: 0.5;
+  animation: ai-caustic-drift 12s var(--ai-ease-breath) infinite;
+  will-change: transform;
+}
+
+.ai-caustic-pattern:nth-child(2) {
+  background:
+    radial-gradient(ellipse 70px 50px at 40% 65%, rgba(115, 100, 255, 0.03) 0%, transparent 100%),
+    radial-gradient(ellipse 50px 35px at 75% 75%, var(--ai-primary-bg) 0%, transparent 100%);
+  animation: ai-caustic-drift 16s var(--ai-ease-breath) infinite reverse;
+  animation-delay: -4s;
+  opacity: 0.4;
+}
+
+@keyframes ai-caustic-drift {
+  0%, 100% {
+    transform: translate(0%, 0%) scale(1);
+  }
+  25% {
+    transform: translate(3%, -4%) scale(1.05);
+  }
+  50% {
+    transform: translate(-2%, 3%) scale(0.95);
+  }
+  75% {
+    transform: translate(4%, 2%) scale(1.03);
+  }
+}
+
+[data-theme="dark"] .ai-caustic-layer {
+  opacity: 0;
+  animation: ai-caustic-reveal 1.5s var(--ai-ease-mirage) 0.5s forwards;
+}
+
+[data-theme="dark"] .ai-caustic-pattern {
+  opacity: 0.35;
+}
+
+/* === 362. Liquid Morph Theme Transition — 液态融合主题过渡 === */
+.ai-theme-morph {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  pointer-events: none;
+  opacity: 0;
+  animation: ai-theme-morph-wave 0.7s var(--ai-ease-cascade) forwards;
+}
+
+.ai-theme-morph.to-dark {
+  background: radial-gradient(circle at var(--morph-x, 50%) var(--morph-y, 50%),
+    rgba(6, 6, 26, 0.95) 0%,
+    rgba(6, 6, 26, 0.6) 30%,
+    rgba(6, 6, 26, 0.2) 60%,
+    transparent 85%
+  );
+}
+
+.ai-theme-morph.to-light {
+  background: radial-gradient(circle at var(--morph-x, 50%) var(--morph-y, 50%),
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0.6) 30%,
+    rgba(255, 255, 255, 0.2) 60%,
+    transparent 85%
+  );
+}
+
+@keyframes ai-theme-morph-wave {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(3.5);
+  }
+}
+
+/* === 363. Elastic Momentum Scroll — 弹性动量滚动 === */
+.ai-panel-content {
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+}
+
+.ai-panel-content.ai-overscroll-top {
+  animation: ai-elastic-bounce-top 0.5s var(--ai-spring-liquid);
+}
+
+.ai-panel-content.ai-overscroll-bottom {
+  animation: ai-elastic-bounce-bottom 0.5s var(--ai-spring-liquid);
+}
+
+@keyframes ai-elastic-bounce-top {
+  0% { transform: translateY(0); }
+  30% { transform: translateY(8px); }
+  60% { transform: translateY(-2px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes ai-elastic-bounce-bottom {
+  0% { transform: translateY(0); }
+  30% { transform: translateY(-8px); }
+  60% { transform: translateY(2px); }
+  100% { transform: translateY(0); }
+}
+
+/* === 364. Hover Elastic Card — 悬停弹性卡片 === */
+.ai-cat-row {
+  transition: all 0.45s var(--ai-spring-liquid),
+              box-shadow 0.4s var(--ai-ease-mirage);
+}
+
+.ai-cat-row:hover {
+  transform: translateX(4px) scale(1.008);
+  box-shadow: 0 2px 16px var(--ai-glow-color);
+}
+
+.ai-cat-row:active {
+  transform: translateX(2px) scale(0.995);
+  transition-duration: 0.08s;
+}
+
+/* === 365. Float Button Liquid Idle — 悬浮按钮液态休憩 (始终微动) === */
+@keyframes ai-liquid-idle {
+  0%, 100% {
+    border-radius: 50%;
+    transform: translateY(0) rotate(0deg);
+  }
+  10% {
+    border-radius: 48% 52% 50% 50% / 50% 48% 52% 50%;
+  }
+  20% {
+    border-radius: 50% 48% 52% 50% / 52% 50% 48% 50%;
+    transform: translateY(-1.5px) rotate(0.5deg);
+  }
+  30% {
+    border-radius: 52% 50% 48% 50% / 50% 52% 50% 48%;
+  }
+  40% {
+    border-radius: 50% 50% 50% 50% / 48% 50% 52% 50%;
+    transform: translateY(0.5px) rotate(-0.3deg);
+  }
+  50% {
+    border-radius: 48% 50% 52% 50% / 50% 50% 48% 52%;
+  }
+  60% {
+    border-radius: 50% 52% 48% 50% / 52% 48% 50% 50%;
+    transform: translateY(-1px) rotate(0.2deg);
+  }
+  70% {
+    border-radius: 52% 48% 50% 50% / 50% 52% 48% 50%;
+  }
+  80% {
+    border-radius: 50% 50% 52% 48% / 48% 50% 50% 52%;
+    transform: translateY(0.8px) rotate(-0.4deg);
+  }
+  90% {
+    border-radius: 48% 52% 50% 50% / 50% 48% 52% 50%;
+  }
+}
+
+#ai-float-btn:not(:hover):not(:active) {
+  animation: ai-liquid-idle 8s var(--ai-ease-breath) infinite,
+             ai-float-gradient-shift 10s var(--ai-ease-breath) infinite,
+             ai-float-breath-ring 3s var(--ai-ease-breath) infinite !important;
+}
+
+/* === 366. Living Canvas BG — 面板活体画布 (始终呼吸的渐变背景) === */
+@keyframes ai-living-canvas {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  25% {
+    background-position: 100% 25%;
+  }
+  50% {
+    background-position: 50% 100%;
+  }
+  75% {
+    background-position: 0% 75%;
+  }
+}
+
+#ai-sort-wrapper {
+  background-image: radial-gradient(ellipse at 10% 20%, var(--ai-primary-bg) 0%, transparent 50%),
+                     radial-gradient(ellipse at 90% 80%, rgba(155, 89, 246, 0.02) 0%, transparent 50%);
+  background-size: 200% 200%;
+  animation: ai-living-canvas 20s var(--ai-ease-breath) infinite;
+}
+
+/* === 367. Header Live Gradient — 头部活体渐变 (始终流动) === */
+.ai-header {
+  background-size: 600% 600% !important;
+  animation: ai-header-live-flow 8s var(--ai-ease-breath) infinite !important;
+}
+
+@keyframes ai-header-live-flow {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  20% {
+    background-position: 40% 30%;
+  }
+  40% {
+    background-position: 80% 60%;
+  }
+  60% {
+    background-position: 100% 40%;
+  }
+  80% {
+    background-position: 60% 70%;
+  }
+}
+
+/* === 368. Smooth Panel Enter/Exit v0.0.8 — 丝滑面板出入场 === */
+@keyframes ai-panel-liquid-in {
+  0% {
+    opacity: 0;
+    transform: translateY(24px) scale(0.92);
+    filter: blur(8px);
+  }
+  40% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  65% {
+    transform: translateY(-4px) scale(1.01);
+  }
+  80% {
+    transform: translateY(1.5px) scale(0.998);
+  }
+  90% {
+    transform: translateY(-0.5px) scale(1.002);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes ai-panel-liquid-out {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+  40% {
+    opacity: 0.6;
+    transform: translateY(-6px) scale(1.015);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.94);
+    filter: blur(6px);
+  }
+}
+
+.ai-panel-closing {
+  animation: ai-panel-liquid-out 0.4s var(--ai-ease-cascade) forwards !important;
+}
+
+/* === 369. Button Press Elastic v0.0.8 — 按钮弹性按压 === */
+.ai-btn:active,
+.ai-header-btn:active {
+  transform: scale(0.88) !important;
+  transition: transform 0.06s var(--ai-spring-whip) !important;
+}
+
+.ai-btn:not(:active),
+.ai-header-btn:not(:active) {
+  transition: transform 0.5s var(--ai-spring-mochi),
+              background 0.3s var(--ai-ease-mirage),
+              box-shadow 0.4s var(--ai-ease-mirage) !important;
+}
+
+/* === 370. Smooth Checkbox Toggle v0.0.8 — 丝滑复选框 === */
+.ai-folder-check,
+.ai-mc-check,
+input[type="checkbox"] {
+  transition: transform 0.35s var(--ai-spring-mochi);
+}
+
+.ai-folder-check:active,
+.ai-mc-check:active,
+input[type="checkbox"]:active {
+  transform: scale(0.82);
+}
+
+/* === 371. Modal Liquid Enter v0.0.8 — 弹窗液态入场 === */
+@keyframes ai-modal-liquid-in-v8 {
+  0% {
+    opacity: 0;
+    transform: scale(0.88) translateY(16px);
+    filter: blur(12px);
+    border-radius: 40px;
+  }
+  35% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  55% {
+    transform: scale(1.015) translateY(-3px);
+    border-radius: 26px;
+  }
+  75% {
+    transform: scale(0.997) translateY(1px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+    border-radius: 28px;
+  }
+}
+
+/* === 372. Scroll Shadow Fade — 滚动阴影渐隐 === */
+.ai-panel-content {
+  background:
+    linear-gradient(var(--ai-bg) 33%, transparent),
+    linear-gradient(transparent, var(--ai-bg) 66%) 0 100%,
+    linear-gradient(to bottom, var(--ai-primary-bg), transparent 8px),
+    linear-gradient(to top, var(--ai-primary-bg), transparent 8px) 0 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 20px, 100% 20px, 100% 8px, 100% 8px;
+  background-attachment: local, local, scroll, scroll;
+}
+
+/* === 373. Tool Button Hover Lift v0.0.8 — 工具按钮悬停抬升 === */
+.ai-btn-tool {
+  transition: all 0.45s var(--ai-spring-liquid) !important;
+}
+
+.ai-btn-tool:hover {
+  transform: translateY(-4px) scale(1.04) !important;
+  box-shadow: 0 8px 24px var(--ai-glow-color),
+              0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* === 374. Settings Group Smooth Expand v0.0.8 === */
+.ai-group-body {
+  transition: max-height 0.5s var(--ai-ease-cascade),
+              opacity 0.35s var(--ai-ease-mirage),
+              transform 0.4s var(--ai-spring-liquid);
+  transform-origin: top;
+}
+
+.ai-group-body[style*="display: none"],
+.ai-group-body[style*="display:none"] {
+  opacity: 0;
+  transform: scaleY(0.95) translateY(-4px);
+}
+
+/* === 375. Toast Smooth Stack — Toast 丝滑堆叠 === */
+.ai-toast {
+  transition: transform 0.5s var(--ai-spring-liquid),
+              opacity 0.3s var(--ai-ease-mirage) !important;
+}
+
+/* === 376. GPU Performance Hints v0.0.8 === */
+.ai-aurora-weave,
+.ai-aurora-strand,
+.ai-caustic-pattern,
+.ai-theme-morph {
+  will-change: transform;
+  backface-visibility: hidden;
+  contain: layout style;
+}
+
 /* === 356. GPU Performance Hints v0.0.7 === */
 .ai-shimmer-sweep,
 .ai-shimmer-sweep::after {
@@ -8437,7 +8984,7 @@
   contain: layout style;
 }
 
-/* === 331. Reduced Motion v0.0.7 — 无障碍适配 === */
+/* === 331. Reduced Motion v0.0.8 — 无障碍适配 === */
 @media (prefers-reduced-motion: reduce) {
   .ai-nebula-drift,
   .ai-nebula-drift-orb {
@@ -8447,7 +8994,8 @@
   .ai-cat-existing {
     animation: none !important;
   }
-  .ai-theme-wipe {
+  .ai-theme-wipe,
+  .ai-theme-morph {
     animation: ai-fade-out 0.2s ease forwards !important;
   }
   .ai-shimmer-sweep::after {
@@ -8461,6 +9009,20 @@
     animation: none !important;
   }
   .ai-btn-tool {
+    animation: none !important;
+  }
+  .ai-aurora-weave,
+  .ai-caustic-layer,
+  .ai-aurora-strand,
+  .ai-caustic-pattern {
+    animation: none !important;
+    display: none !important;
+  }
+  #ai-float-btn {
+    animation: none !important;
+    border-radius: 50% !important;
+  }
+  #ai-sort-wrapper {
     animation: none !important;
   }
 }

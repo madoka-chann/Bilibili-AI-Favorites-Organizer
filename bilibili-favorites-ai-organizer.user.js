@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.3.8
+// @version      1.3.9
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -4235,6 +4235,51 @@ ${topUps.length > 0 ? `<div class="section">
             panel.insertBefore(shimmer, panel.firstChild);
         })();
 
+        // === Liquid Mirage v0.0.8 — 极光编织层 (始终流动) ===
+        (() => {
+            const weave = document.createElement('div');
+            weave.className = 'ai-aurora-weave';
+            for (let i = 0; i < 2; i++) {
+                const strand = document.createElement('div');
+                strand.className = 'ai-aurora-strand';
+                weave.appendChild(strand);
+            }
+            panel.insertBefore(weave, panel.firstChild);
+        })();
+
+        // === Liquid Mirage v0.0.8 — 焦散水纹层 (始终荡漾) ===
+        (() => {
+            const caustic = document.createElement('div');
+            caustic.className = 'ai-caustic-layer';
+            for (let i = 0; i < 2; i++) {
+                const pattern = document.createElement('div');
+                pattern.className = 'ai-caustic-pattern';
+                caustic.appendChild(pattern);
+            }
+            panel.insertBefore(caustic, panel.children[2] || null);
+        })();
+
+        // === Liquid Mirage v0.0.8 — 弹性动量滚动 ===
+        (() => {
+            const content = panel.querySelector('.ai-panel-content');
+            if (!content) return;
+            let lastScrollTop = 0;
+            content.addEventListener('scroll', () => {
+                const st = content.scrollTop;
+                const isTop = st <= 0;
+                const isBottom = st + content.clientHeight >= content.scrollHeight - 1;
+                if (isTop && st < lastScrollTop) {
+                    content.classList.add('ai-overscroll-top');
+                    content.addEventListener('animationend', () => content.classList.remove('ai-overscroll-top'), { once: true });
+                }
+                if (isBottom && st > lastScrollTop) {
+                    content.classList.add('ai-overscroll-bottom');
+                    content.addEventListener('animationend', () => content.classList.remove('ai-overscroll-bottom'), { once: true });
+                }
+                lastScrollTop = st;
+            }, { passive: true });
+        })();
+
         // === 悬浮按钮星尘粒子 ===
         (() => {
             const ring = document.createElement('div');
@@ -4279,6 +4324,8 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'rosegold', label: '玫瑰金' },
                 { id: 'midnight', label: '午夜蓝' },
                 { id: 'matcha', label: '抹茶' },
+                { id: 'obsidian', label: '黑曜石' },
+                { id: 'porcelain', label: '青瓷' },
                 { id: 'custom', label: '自定义' }
             ];
 
@@ -4747,39 +4794,7 @@ ${topUps.length > 0 ? `<div class="section">
             floatBtn.appendChild(constellation);
         })();
 
-        // === Theme Transition Wipe 主题切换丝绒过渡效果 ===
-        (() => {
-            const origToggle = document.getElementById('ai-theme-toggle');
-            if (origToggle) {
-                origToggle.onclick = (e) => {
-                    const current = document.documentElement.getAttribute('data-theme');
-                    const next = current === 'dark' ? 'light' : 'dark';
-
-                    // 丝绒径向擦除效果
-                    const wipe = document.createElement('div');
-                    wipe.className = 'ai-theme-wipe to-' + next;
-                    const rect = origToggle.getBoundingClientRect();
-                    wipe.style.cssText = `left:${rect.left + rect.width/2}px;top:${rect.top + rect.height/2}px;width:80px;height:80px;margin-left:-40px;margin-top:-40px;`;
-                    document.body.appendChild(wipe);
-                    wipe.addEventListener('animationend', () => wipe.remove());
-
-                    // 主题图标旋转过渡
-                    const icon = origToggle.querySelector('[data-lucide]');
-                    if (icon) {
-                        icon.style.transition = 'transform 0.5s cubic-bezier(0.20, 1.10, 0.36, 1)';
-                        icon.style.transform = 'rotate(180deg) scale(0.8)';
-                        setTimeout(() => {
-                            icon.style.transform = '';
-                        }, 300);
-                    }
-
-                    // Apply theme change
-                    document.documentElement.setAttribute('data-theme', next);
-                    GM_setValue('bfao_theme', next);
-                    updateThemeIcon();
-                };
-            }
-        })();
+        // === Theme Transition — 由主切换器统一处理 (Liquid Mirage v0.0.8) ===
 
         // === Pulse Wave on Button Click 脉冲波点击效果 ===
         (() => {
@@ -5078,16 +5093,16 @@ ${topUps.length > 0 ? `<div class="section">
                 floatBtn.style.opacity = '';
                 floatBtn.style.filter = '';
             });
-            // 面板立即弹出，与按钮淡出同步 — Silk Curtain v0.0.7
+            // 面板液态弹出 — Liquid Mirage v0.0.8
             panel.classList.remove('ai-panel-closing');
             panel.style.animation = 'none';
             panel.style.display = 'flex';
             panel.style.opacity = '1';
             panel.style.transform = 'none';
             panel.style.filter = 'none';
-            // 强制 reflow 后触发丝绸帷幕入场动画
+            // 强制 reflow 后触发液态入场动画
             void panel.offsetHeight;
-            panel.style.animation = 'ai-silk-curtain-in 0.6s cubic-bezier(0.14, 1.28, 0.34, 1.02)';
+            panel.style.animation = 'ai-panel-liquid-in 0.65s cubic-bezier(0.18, 1.34, 0.36, 1)';
             clampPanelPosition();
         };
 
@@ -5118,29 +5133,40 @@ ${topUps.length > 0 ? `<div class="section">
         }
         updateThemeIcon();
 
-        document.getElementById('ai-theme-toggle').onclick = () => {
+        document.getElementById('ai-theme-toggle').onclick = (e) => {
             const current = document.documentElement.getAttribute('data-theme');
             const next = current === 'dark' ? 'light' : 'dark';
 
-            // 丝绒擦除过渡效果
-            const wipe = document.createElement('div');
-            wipe.className = `ai-theme-wipe to-${next}`;
+            // 液态融合过渡效果 v0.0.8
+            const morph = document.createElement('div');
+            morph.className = `ai-theme-morph to-${next}`;
             const btn = document.getElementById('ai-theme-toggle');
             const rect = btn.getBoundingClientRect();
-            wipe.style.transformOrigin = `${rect.left + rect.width / 2}px ${rect.top + rect.height / 2}px`;
-            document.body.appendChild(wipe);
+            const cx = ((rect.left + rect.width / 2) / window.innerWidth * 100).toFixed(1);
+            const cy = ((rect.top + rect.height / 2) / window.innerHeight * 100).toFixed(1);
+            morph.style.setProperty('--morph-x', cx + '%');
+            morph.style.setProperty('--morph-y', cy + '%');
+            document.body.appendChild(morph);
 
-            // 延迟切换以配合动画
+            // 主题图标弹性旋转
+            const icon = btn.querySelector('[data-lucide]');
+            if (icon) {
+                icon.style.transition = 'transform 0.55s cubic-bezier(0.18, 1.34, 0.36, 1)';
+                icon.style.transform = 'rotate(360deg) scale(0.7)';
+                setTimeout(() => { icon.style.transform = ''; }, 400);
+            }
+
+            // 延迟切换以配合液态动画
             requestAnimationFrame(() => {
                 setTimeout(() => {
                     document.documentElement.setAttribute('data-theme', next);
                     GM_setValue('bfao_theme', next);
                     updateThemeIcon();
-                }, 120);
+                }, 150);
             });
 
-            wipe.addEventListener('animationend', () => wipe.remove());
-            setTimeout(() => wipe.remove(), 1200); // fallback cleanup
+            morph.addEventListener('animationend', () => morph.remove());
+            setTimeout(() => morph.remove(), 1000); // fallback cleanup
         };
 
         document.getElementById('ai-settings-toggle').onclick = () => {
