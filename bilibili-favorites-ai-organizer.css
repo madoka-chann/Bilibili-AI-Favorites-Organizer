@@ -1,14 +1,16 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v0.0.6
+   B站 AI 收藏夹整理助理 — 完整样式表 v0.0.7
    Velvet Nebula · 天鹅绒星云 · Refined Glass Morphism
    Indigo-Nebula 双色系统 · Restrained Aurora Palette
-   Velvet Dynamics 9.0 · Silky Spring Micro-interactions
+   Velvet Dynamics 10.0 · Silky Spring Micro-interactions
    Stellar Abyss Dark Theme · Living Glass Surfaces
    Multi-Accent Color Themes · Ambient Light Motes · Liquid Borders
    Magnetic Tilt · Cursor-Reactive Particles · Fluid Morphing
    Velvet Tide · Ambient Flow · Living Surfaces
    Nebula Drift · Silk Pulse · Graphite & Lavender Themes
    Luminous Flow Border · Lava Lamp Particles · Ink Wash & Rose Gold
+   Silk Cascade · Shimmer Sweep · Midnight & Matcha Themes
+   Elastic Rebound · Jelly Stagger · Breathing Pulse
    ================================================================ */
 
 /* === 1. CSS 变量 (双主题系统) === */
@@ -354,7 +356,7 @@
   z-index: var(--ai-z-float);
   background: var(--ai-float-gradient);
   background-size: 300% 300%;
-  animation: ai-float-gradient-shift 16s ease-in-out infinite, ai-float-levitate 10s ease-in-out infinite, ai-float-morph 18s ease-in-out infinite;
+  animation: ai-float-gradient-shift 16s ease-in-out infinite, ai-jellyfish-idle 14s ease-in-out infinite;
   color: white;
   width: 58px;
   height: 58px;
@@ -2790,9 +2792,9 @@
   perspective: 600px;
 }
 
-/* === 65. 面板关闭动画 — 柔和退场 === */
+/* === 65. 面板关闭动画 — 丝绸帷幕退场 v10.0 === */
 #ai-sort-wrapper.ai-panel-closing {
-  animation: ai-panel-out 0.38s var(--ai-ease-smooth) forwards;
+  animation: ai-silk-curtain-out 0.42s var(--ai-ease-smooth) forwards;
 }
 
 @keyframes ai-panel-out {
@@ -5098,9 +5100,9 @@
   }
 }
 
-/* === 219. Panel Closing State — 面板退场动画 === */
+/* === 219. Panel Closing State — 丝绸帷幕退场 v10.0 === */
 .ai-panel-closing {
-  animation: ai-velvet-spring-out 0.38s var(--ai-ease-gravity) forwards !important;
+  animation: ai-silk-curtain-out 0.42s var(--ai-ease-gravity) forwards !important;
 }
 
 /* === 220. Float Button Ambient Pulse — 悬浮按钮环境脉搏 === */
@@ -7834,6 +7836,599 @@
   background: linear-gradient(to top, var(--ai-bg), transparent);
 }
 
+/* ================================================================
+   Velvet Dynamics 10.0 · v0.0.7 新增特性
+   Silk Cascade · Shimmer Sweep · Elastic Rebound
+   Midnight & Matcha Themes · Breathing Pulse · Jelly Stagger
+   ================================================================ */
+
+/* === 343. Velvet Dynamics 10.0 — 新增运动曲线 === */
+:root {
+  --ai-spring-marshmallow: cubic-bezier(0.19, 1.42, 0.37, 1);
+  --ai-spring-droplet: cubic-bezier(0.26, 1.58, 0.44, 1);
+  --ai-spring-silk-bounce: cubic-bezier(0.14, 1.28, 0.34, 1.02);
+  --ai-ease-waterfall: cubic-bezier(0.06, 0.82, 0.12, 1.01);
+  --ai-ease-gossamer: cubic-bezier(0.08, 0.96, 0.18, 1);
+  --ai-spring-pudding: cubic-bezier(0.21, 1.46, 0.40, 1);
+  --ai-ease-dewdrop: cubic-bezier(0.04, 0.88, 0.10, 1.03);
+}
+
+/* === 344. Midnight Theme — 午夜蓝韵 (深邃静谧) === */
+[data-accent="midnight"] {
+  --ai-primary: #6B8AFF;
+  --ai-primary-dark: #4466DD;
+  --ai-primary-light: #A0B4FF;
+  --ai-primary-bg: rgba(107, 138, 255, 0.06);
+  --ai-primary-shadow: rgba(107, 138, 255, 0.20);
+  --ai-aurora-1: #6B8AFF;
+  --ai-aurora-2: #7B9CDB;
+  --ai-aurora-3: #5A7AE6;
+  --ai-aurora-4: #8BA8E8;
+  --ai-aurora-5: #A0B4FF;
+  --ai-aurora-6: #6E8CC8;
+  --ai-aurora-7: #B0C0E8;
+  --ai-aurora-8: #5570B8;
+  --ai-header-gradient: linear-gradient(135deg, #4466DD, #6B8AFF, #4466DD);
+  --ai-float-gradient: linear-gradient(135deg, #6B8AFF, #5A7AE6, #8BA8E8, #6B8AFF);
+  --ai-neon-glow: 0 0 16px rgba(107, 138, 255, 0.22),
+                  0 0 32px rgba(90, 122, 230, 0.10),
+                  0 0 48px rgba(107, 138, 255, 0.04);
+  --ai-interaction-glow: rgba(107, 138, 255, 0.08);
+  --ai-glow-color: rgba(107, 138, 255, 0.05);
+  --ai-chromatic-border: linear-gradient(135deg, rgba(107,138,255,0.26), rgba(90,122,230,0.22), rgba(139,168,232,0.20), rgba(160,180,255,0.22));
+}
+
+.ai-accent-dot[data-accent="midnight"] {
+  background: linear-gradient(135deg, #4466DD, #6B8AFF);
+}
+
+[data-theme="dark"][data-accent="midnight"] #ai-float-btn {
+  border-color: rgba(107, 138, 255, 0.28);
+}
+
+[data-theme="dark"][data-accent="midnight"] .ai-nebula-particle {
+  background: radial-gradient(circle, #A0B4FF 0%, rgba(160,180,255,0.05) 50%, transparent 70%);
+}
+
+/* === 345. Matcha Theme — 抹茶清韵 (温润淡雅) === */
+[data-accent="matcha"] {
+  --ai-primary: #8CB878;
+  --ai-primary-dark: #6A9A58;
+  --ai-primary-light: #B8D4A8;
+  --ai-primary-bg: rgba(140, 184, 120, 0.06);
+  --ai-primary-shadow: rgba(140, 184, 120, 0.20);
+  --ai-aurora-1: #8CB878;
+  --ai-aurora-2: #9CC48A;
+  --ai-aurora-3: #7AAA68;
+  --ai-aurora-4: #A8CC98;
+  --ai-aurora-5: #B8D4A8;
+  --ai-aurora-6: #82B072;
+  --ai-aurora-7: #C4DDB8;
+  --ai-aurora-8: #6A9A58;
+  --ai-header-gradient: linear-gradient(135deg, #6A9A58, #8CB878, #6A9A58);
+  --ai-float-gradient: linear-gradient(135deg, #8CB878, #7AAA68, #A8CC98, #8CB878);
+  --ai-neon-glow: 0 0 16px rgba(140, 184, 120, 0.22),
+                  0 0 32px rgba(106, 154, 88, 0.10),
+                  0 0 48px rgba(140, 184, 120, 0.04);
+  --ai-interaction-glow: rgba(140, 184, 120, 0.08);
+  --ai-glow-color: rgba(140, 184, 120, 0.05);
+  --ai-chromatic-border: linear-gradient(135deg, rgba(140,184,120,0.26), rgba(106,154,88,0.22), rgba(168,204,152,0.20), rgba(184,212,168,0.22));
+}
+
+.ai-accent-dot[data-accent="matcha"] {
+  background: linear-gradient(135deg, #6A9A58, #8CB878);
+}
+
+[data-theme="dark"][data-accent="matcha"] #ai-float-btn {
+  border-color: rgba(140, 184, 120, 0.28);
+}
+
+[data-theme="dark"][data-accent="matcha"] .ai-nebula-particle {
+  background: radial-gradient(circle, #B8D4A8 0%, rgba(184,212,168,0.05) 50%, transparent 70%);
+}
+
+/* === 346. Shimmer Sweep — 流光扫掠 (面板始终有微光流过) === */
+@keyframes ai-shimmer-sweep {
+  0% {
+    transform: translateX(-100%) skewX(-18deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  30% {
+    opacity: 1;
+  }
+  40% {
+    transform: translateX(200%) skewX(-18deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(200%) skewX(-18deg);
+    opacity: 0;
+  }
+}
+
+.ai-shimmer-sweep {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.ai-shimmer-sweep::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.03) 35%,
+    rgba(255, 255, 255, 0.06) 50%,
+    rgba(255, 255, 255, 0.03) 65%,
+    transparent 100%
+  );
+  animation: ai-shimmer-sweep 12s var(--ai-ease-gossamer) infinite;
+  will-change: transform;
+}
+
+[data-theme="dark"] .ai-shimmer-sweep::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.015) 35%,
+    rgba(255, 255, 255, 0.035) 50%,
+    rgba(255, 255, 255, 0.015) 65%,
+    transparent 100%
+  );
+}
+
+/* === 347. Silk Cascade — 丝绸级联悬浮 (相邻行联动反应) === */
+.ai-cat-block:has(+ .ai-cat-block .ai-cat-row:hover) .ai-cat-row {
+  transform: translateX(2px) scale(0.998);
+  opacity: 0.92;
+  transition: all 0.5s var(--ai-spring-marshmallow);
+}
+
+.ai-cat-block:has(.ai-cat-row:hover) + .ai-cat-block .ai-cat-row {
+  transform: translateX(2px) scale(0.998);
+  opacity: 0.92;
+  transition: all 0.5s var(--ai-spring-marshmallow);
+}
+
+.ai-cat-block:has(+ .ai-cat-block + .ai-cat-block .ai-cat-row:hover) .ai-cat-row {
+  transform: translateX(1px) scale(0.999);
+  opacity: 0.96;
+  transition: all 0.6s var(--ai-spring-marshmallow);
+}
+
+.ai-cat-block:has(.ai-cat-row:hover) + .ai-cat-block + .ai-cat-block .ai-cat-row {
+  transform: translateX(1px) scale(0.999);
+  opacity: 0.96;
+  transition: all 0.6s var(--ai-spring-marshmallow);
+}
+
+/* === 348. Breathing Pulse Dot — 状态呼吸脉冲 (日志区活力指示) === */
+@keyframes ai-pulse-breathe {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.5;
+    box-shadow: 0 0 0 0 var(--ai-primary-shadow);
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.9;
+    box-shadow: 0 0 8px 2px var(--ai-primary-shadow);
+  }
+}
+
+.ai-breathing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ai-primary);
+  display: inline-block;
+  margin-right: 6px;
+  vertical-align: middle;
+  animation: ai-pulse-breathe 2.4s var(--ai-ease-gossamer) infinite;
+  flex-shrink: 0;
+}
+
+.ai-breathing-dot.idle {
+  animation: ai-pulse-breathe 3.6s var(--ai-ease-gossamer) infinite;
+  opacity: 0.35;
+}
+
+.ai-breathing-dot.active {
+  background: var(--ai-success);
+  animation: ai-pulse-breathe 1.2s var(--ai-ease-gossamer) infinite;
+}
+
+.ai-breathing-dot.error {
+  background: var(--ai-error);
+  animation: ai-pulse-breathe 0.8s var(--ai-ease-gossamer) infinite;
+}
+
+/* === 349. Elastic Rebound — 弹力反弹增强 === */
+
+/* 主按钮 弹性点击反馈 */
+.ai-btn-primary:active {
+  transform: scale(0.88) !important;
+  transition: transform 0.08s var(--ai-spring-droplet) !important;
+}
+
+.ai-btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at var(--click-x, 50%) var(--click-y, 50%),
+    rgba(255, 255, 255, 0.25) 0%,
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.4s var(--ai-ease-gossamer);
+  pointer-events: none;
+}
+
+.ai-btn-primary:active::after {
+  opacity: 1;
+  transition: opacity 0.06s;
+}
+
+/* Tool button jelly stagger entrance */
+@keyframes ai-jelly-stagger-in {
+  0% {
+    transform: translateY(16px) scale(0.85);
+    opacity: 0;
+    filter: blur(3px);
+  }
+  35% {
+    transform: translateY(-3px) scale(1.06);
+    opacity: 1;
+    filter: blur(0);
+  }
+  55% {
+    transform: translateY(1.5px) scale(0.98);
+  }
+  72% {
+    transform: translateY(-0.5px) scale(1.01);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.ai-btn-tool {
+  animation: ai-jelly-stagger-in 0.6s var(--ai-spring-marshmallow) both;
+  animation-delay: calc(var(--btn-i, 0) * 0.06s);
+}
+
+/* === 350. Enhanced Panel Entrance — 丝绸帷幕入场 v10.0 === */
+@keyframes ai-silk-curtain-in {
+  0% {
+    transform: translateY(56px) scale(0.82) rotate(-0.4deg);
+    opacity: 0;
+    filter: blur(18px) brightness(1.08) saturate(0.6);
+    clip-path: inset(40% 5% 0% 5% round 28px);
+  }
+  8% {
+    clip-path: inset(10% 1% 0% 1% round 28px);
+    filter: blur(4px) brightness(1.04) saturate(0.85);
+  }
+  15% {
+    transform: translateY(-6px) scale(1.028) rotate(0.12deg);
+    opacity: 1;
+    filter: blur(0.3px) brightness(1.01) saturate(1.04);
+    clip-path: inset(0% 0% 0% 0% round 28px);
+  }
+  24% {
+    transform: translateY(3px) scale(0.993) rotate(-0.05deg);
+    filter: blur(0) brightness(1);
+  }
+  33% {
+    transform: translateY(-1.5px) scale(1.006) rotate(0.025deg);
+  }
+  42% {
+    transform: translateY(0.6px) scale(0.998) rotate(-0.01deg);
+  }
+  52% {
+    transform: translateY(-0.3px) scale(1.002) rotate(0.005deg);
+  }
+  64% {
+    transform: translateY(0.08px) scale(0.9998) rotate(-0.001deg);
+  }
+  78% {
+    transform: translateY(-0.02px) scale(1.0001);
+  }
+  100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+    opacity: 1;
+    filter: blur(0) brightness(1) saturate(1);
+    clip-path: inset(0% 0% 0% 0% round 28px);
+  }
+}
+
+/* Enhanced panel exit with silk curtain */
+@keyframes ai-silk-curtain-out {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+    clip-path: inset(0% 0% 0% 0% round 28px);
+  }
+  25% {
+    transform: translateY(-3px) scale(1.01);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateY(32px) scale(0.88) rotate(0.3deg);
+    opacity: 0;
+    filter: blur(8px) brightness(0.96);
+    clip-path: inset(0% 3% 30% 3% round 28px);
+  }
+}
+
+/* === 351. Float Button Enhanced Idle — 水母呼吸待机 v10.0 === */
+@keyframes ai-jellyfish-idle {
+  0%, 100% {
+    border-radius: 50%;
+    transform: translateY(0) rotate(0deg) scale(1);
+    filter: brightness(1);
+  }
+  5% {
+    border-radius: 48% 52% 50% 50% / 53% 47% 53% 47%;
+    transform: translateY(-1.5px) rotate(0.4deg) scale(1.008);
+  }
+  12% {
+    border-radius: 46% 54% 52% 48% / 47% 53% 47% 53%;
+    transform: translateY(-4px) rotate(-0.5deg) scale(1.015);
+    filter: brightness(1.03);
+  }
+  20% {
+    border-radius: 52% 48% 46% 54% / 54% 46% 54% 46%;
+    transform: translateY(-6.5px) rotate(0.6deg) scale(1.006);
+  }
+  30% {
+    border-radius: 44% 56% 53% 47% / 49% 51% 47% 53%;
+    transform: translateY(-3px) rotate(-0.3deg) scale(0.995);
+  }
+  40% {
+    border-radius: 53% 47% 44% 56% / 55% 45% 56% 44%;
+    transform: translateY(-5px) rotate(0.2deg) scale(1.01);
+    filter: brightness(1.02);
+  }
+  50% {
+    border-radius: 47% 53% 56% 44% / 44% 56% 44% 56%;
+    transform: translateY(-2px) rotate(-0.4deg) scale(0.998);
+  }
+  60% {
+    border-radius: 55% 45% 48% 52% / 52% 48% 55% 45%;
+    transform: translateY(-5.5px) rotate(0.3deg) scale(1.012);
+    filter: brightness(1.025);
+  }
+  70% {
+    border-radius: 49% 51% 54% 46% / 46% 54% 49% 51%;
+    transform: translateY(-1.5px) rotate(-0.15deg) scale(0.997);
+  }
+  80% {
+    border-radius: 51% 49% 47% 53% / 53% 47% 51% 49%;
+    transform: translateY(-4px) rotate(0.1deg) scale(1.005);
+    filter: brightness(1.015);
+  }
+  90% {
+    border-radius: 50% 50% 51% 49% / 49% 51% 50% 50%;
+    transform: translateY(-0.5px) rotate(-0.05deg) scale(1.001);
+  }
+}
+
+/* === 352. Scroll Overscroll Glow — 过度滚动柔光 === */
+@keyframes ai-overscroll-glow {
+  0% {
+    opacity: 0;
+    height: 0;
+  }
+  50% {
+    opacity: 1;
+    height: 36px;
+  }
+  100% {
+    opacity: 0;
+    height: 0;
+  }
+}
+
+.ai-panel-content.scrolled-top::before {
+  background: linear-gradient(to bottom,
+    color-mix(in srgb, var(--ai-primary) 6%, var(--ai-bg) 94%),
+    transparent
+  );
+  height: 28px;
+  transition: height 0.5s var(--ai-ease-dewdrop), background 0.5s ease;
+}
+
+.ai-panel-content.scrolled-bottom::after {
+  background: linear-gradient(to top,
+    color-mix(in srgb, var(--ai-primary) 6%, var(--ai-bg) 94%),
+    transparent
+  );
+  height: 28px;
+  transition: height 0.5s var(--ai-ease-dewdrop), background 0.5s ease;
+}
+
+/* === 353. Toast Enhanced Stacking — 吐司增强堆叠动效 === */
+.ai-toast:nth-child(2) {
+  transform: translateX(8px) scale(0.96);
+  opacity: 0.85;
+  filter: blur(0.3px);
+  transition: all 0.5s var(--ai-spring-marshmallow);
+}
+
+.ai-toast:nth-child(3) {
+  transform: translateX(16px) scale(0.92);
+  opacity: 0.72;
+  filter: blur(0.6px);
+  transition: all 0.5s var(--ai-spring-marshmallow);
+}
+
+.ai-toast:nth-child(n+4) {
+  transform: translateX(24px) scale(0.86);
+  opacity: 0.55;
+  filter: blur(1px);
+  transition: all 0.5s var(--ai-spring-marshmallow);
+}
+
+/* Toast hover lift — hover 时整体上浮 */
+.ai-toast:hover ~ .ai-toast {
+  transform: translateX(4px) scale(0.98);
+  transition: all 0.4s var(--ai-spring-silk-bounce);
+}
+
+/* === 354. Category Row Enhanced Spring — 分类行增强弹簧 === */
+.ai-cat-row {
+  transition: all 0.5s var(--ai-spring-marshmallow);
+}
+
+.ai-cat-row:hover {
+  transform: translateX(6px) scale(1.012);
+  background: var(--ai-bg-hover);
+  box-shadow: inset 3px 0 0 var(--ai-primary),
+              0 4px 20px rgba(115, 100, 255, 0.06);
+}
+
+.ai-cat-row:active {
+  transform: translateX(2px) scale(0.982);
+  transition: transform 0.06s var(--ai-spring-droplet);
+}
+
+/* Checkbox enhanced jelly */
+.ai-cat-row input[type="checkbox"] {
+  transition: transform 0.45s var(--ai-spring-pudding);
+}
+
+.ai-cat-row input[type="checkbox"]:active {
+  transform: scale(0.55);
+  transition: transform 0.06s;
+}
+
+/* === 355. Ambient Micro-motion — 环境微动效 (始终感受到生命力) === */
+
+/* Header shimmer — 头部微光呼吸 */
+@keyframes ai-header-shimmer-flow {
+  0%, 100% {
+    background-size: 400% 400%;
+    background-position: 0% 50%;
+  }
+  25% {
+    background-position: 50% 0%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  75% {
+    background-position: 50% 100%;
+  }
+}
+
+.ai-header {
+  animation: ai-header-shimmer-flow 18s ease-in-out infinite;
+  background-size: 400% 400% !important;
+}
+
+/* Settings area gentle float */
+@keyframes ai-settings-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-0.5px);
+  }
+}
+
+.ai-group-header:hover .ai-group-icon {
+  animation: ai-settings-float 1.5s var(--ai-ease-gossamer) infinite;
+}
+
+/* Status log new entry enhanced entrance */
+@keyframes ai-log-silk-in {
+  0% {
+    transform: translateX(28px) scale(0.92);
+    opacity: 0;
+    filter: blur(2px);
+  }
+  30% {
+    transform: translateX(-3px) scale(1.02);
+    opacity: 1;
+    filter: blur(0);
+  }
+  50% {
+    transform: translateX(1.5px) scale(0.995);
+  }
+  70% {
+    transform: translateX(-0.5px) scale(1.002);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.ai-log-entry {
+  animation: ai-log-silk-in 0.55s var(--ai-spring-marshmallow) both;
+}
+
+/* Badge subtle pulse */
+@keyframes ai-badge-gentle-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.ai-cat-badge {
+  animation: ai-badge-gentle-pulse 3s var(--ai-ease-gossamer) infinite;
+}
+
+/* Filter button ripple on active */
+.ai-filter-btn:active {
+  transform: scale(0.90);
+  transition: transform 0.06s var(--ai-spring-droplet);
+}
+
+.ai-filter-btn.active {
+  transition: all 0.45s var(--ai-spring-pudding);
+}
+
+/* Video cover 3D tilt on hover */
+.ai-vid-cover {
+  transition: transform 0.5s var(--ai-spring-marshmallow),
+              box-shadow 0.4s var(--ai-ease-gossamer);
+}
+
+.ai-vid-cover:hover {
+  transform: scale(1.08) perspective(400px) rotateY(-3deg) rotateX(2deg);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* === 356. GPU Performance Hints v0.0.7 === */
+.ai-shimmer-sweep,
+.ai-shimmer-sweep::after {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.ai-breathing-dot {
+  will-change: transform, opacity;
+}
+
 /* === 330. GPU Performance Hints v0.0.5 === */
 .ai-nebula-drift,
 .ai-nebula-drift-orb {
@@ -7842,7 +8437,7 @@
   contain: layout style;
 }
 
-/* === 331. Reduced Motion v0.0.5 — 无障碍适配 === */
+/* === 331. Reduced Motion v0.0.7 — 无障碍适配 === */
 @media (prefers-reduced-motion: reduce) {
   .ai-nebula-drift,
   .ai-nebula-drift-orb {
@@ -7854,5 +8449,18 @@
   }
   .ai-theme-wipe {
     animation: ai-fade-out 0.2s ease forwards !important;
+  }
+  .ai-shimmer-sweep::after {
+    animation: none !important;
+  }
+  .ai-breathing-dot {
+    animation: none !important;
+    opacity: 0.5;
+  }
+  .ai-header {
+    animation: none !important;
+  }
+  .ai-btn-tool {
+    animation: none !important;
   }
 }

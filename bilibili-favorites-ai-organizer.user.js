@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.3.7
+// @version      1.3.8
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -46,7 +46,7 @@
         // Fallback: 直接注入关键 CSS（确保 z-index 和基本布局正常）
         const fallbackCSS = document.createElement('style');
         fallbackCSS.textContent = `
-            :root{--ai-primary:#7364FF;--ai-primary-dark:#5046E5;--ai-primary-light:#B0A8FF;--ai-primary-bg:rgba(115,100,255,0.06);--ai-primary-shadow:rgba(115,100,255,0.22);--ai-success:#10B981;--ai-error:#F43F5E;--ai-info:#818CF8;--ai-warning:#F59E0B;--ai-text:#181233;--ai-text-secondary:#38305A;--ai-text-muted:#868199;--ai-text-light:#BEB8D0;--ai-border:#E4DDF5;--ai-border-light:#F0EAFA;--ai-border-lighter:#F9F7FF;--ai-bg:#fff;--ai-bg-secondary:#F9F7FF;--ai-bg-tertiary:#F0EAFA;--ai-bg-hover:rgba(115,100,255,0.04);--ai-header-gradient:linear-gradient(135deg,#7364FF,#9B59F6,#7364FF);--ai-modal-backdrop:rgba(24,18,51,0.58);--ai-input-bg:#fff;--ai-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--ai-z-float:2147483640;--ai-z-panel:2147483641;--ai-z-modal:2147483645;--ai-z-particle:2147483646;--ai-radius-xs:6px;--ai-radius-sm:8px;--ai-radius-md:10px;--ai-radius-lg:14px;--ai-radius-xl:18px;--ai-transition:0.25s cubic-bezier(0.4,0,0.2,1);--ai-transition-slow:0.4s cubic-bezier(0.16,1,0.3,1);--ai-scrollbar:#BEB8D0;--ai-scrollbar-hover:#868199;--ai-cat-detail-bg:#F9F7FF;--ai-separator:#E4DDF5;--ai-glow-color:rgba(115,100,255,0.07);--ai-badge-new-bg:#F43F5E;--ai-badge-existing-bg:#10B981;--ai-vid-odd-bg:rgba(24,18,51,0.012);--ai-vid-hover-bg:rgba(115,100,255,0.05);--ai-spring:cubic-bezier(0.32,1.48,0.62,1);--ai-spring-gentle:cubic-bezier(0.20,1.04,0.42,1);--ai-spring-bouncy:cubic-bezier(0.165,0.84,0.28,1.18);--ai-spring-silk:cubic-bezier(0.20,1.10,0.36,1);--ai-ease-out-expo:cubic-bezier(0.14,1,0.28,1);--ai-ease-smooth:cubic-bezier(0.38,0,0,1);--ai-ease-fluid:cubic-bezier(0.22,0.78,0.22,1);--ai-ease-ios:cubic-bezier(0.20,0.98,0.28,1);--ai-ease-magnetic:cubic-bezier(0.18,0.88,0.28,1.08);--ai-ease-butterfly:cubic-bezier(0.13,0.94,0.22,1.03);--ai-ease-ethereal:cubic-bezier(0.08,0.92,0.16,1);--ai-spring-flux:cubic-bezier(0.22,1.36,0.42,1);--ai-ease-aurora:cubic-bezier(0.12,0.88,0.20,1.04);--ai-ease-dreamy:cubic-bezier(0.06,0.96,0.14,1);--ai-spring-firefly:cubic-bezier(0.28,1.68,0.48,1);--ai-spring-velvet:cubic-bezier(0.17,1.32,0.40,1);--ai-spring-jelly:cubic-bezier(0.22,1.52,0.38,1);--ai-ease-silk-out:cubic-bezier(0.08,0.90,0.15,1.02);}
+            :root{--ai-primary:#7364FF;--ai-primary-dark:#5046E5;--ai-primary-light:#B0A8FF;--ai-primary-bg:rgba(115,100,255,0.06);--ai-primary-shadow:rgba(115,100,255,0.22);--ai-success:#10B981;--ai-error:#F43F5E;--ai-info:#818CF8;--ai-warning:#F59E0B;--ai-text:#181233;--ai-text-secondary:#38305A;--ai-text-muted:#868199;--ai-text-light:#BEB8D0;--ai-border:#E4DDF5;--ai-border-light:#F0EAFA;--ai-border-lighter:#F9F7FF;--ai-bg:#fff;--ai-bg-secondary:#F9F7FF;--ai-bg-tertiary:#F0EAFA;--ai-bg-hover:rgba(115,100,255,0.04);--ai-header-gradient:linear-gradient(135deg,#7364FF,#9B59F6,#7364FF);--ai-modal-backdrop:rgba(24,18,51,0.58);--ai-input-bg:#fff;--ai-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--ai-z-float:2147483640;--ai-z-panel:2147483641;--ai-z-modal:2147483645;--ai-z-particle:2147483646;--ai-radius-xs:6px;--ai-radius-sm:8px;--ai-radius-md:10px;--ai-radius-lg:14px;--ai-radius-xl:18px;--ai-transition:0.25s cubic-bezier(0.4,0,0.2,1);--ai-transition-slow:0.4s cubic-bezier(0.16,1,0.3,1);--ai-scrollbar:#BEB8D0;--ai-scrollbar-hover:#868199;--ai-cat-detail-bg:#F9F7FF;--ai-separator:#E4DDF5;--ai-glow-color:rgba(115,100,255,0.07);--ai-badge-new-bg:#F43F5E;--ai-badge-existing-bg:#10B981;--ai-vid-odd-bg:rgba(24,18,51,0.012);--ai-vid-hover-bg:rgba(115,100,255,0.05);--ai-spring:cubic-bezier(0.32,1.48,0.62,1);--ai-spring-gentle:cubic-bezier(0.20,1.04,0.42,1);--ai-spring-bouncy:cubic-bezier(0.165,0.84,0.28,1.18);--ai-spring-silk:cubic-bezier(0.20,1.10,0.36,1);--ai-ease-out-expo:cubic-bezier(0.14,1,0.28,1);--ai-ease-smooth:cubic-bezier(0.38,0,0,1);--ai-ease-fluid:cubic-bezier(0.22,0.78,0.22,1);--ai-ease-ios:cubic-bezier(0.20,0.98,0.28,1);--ai-ease-magnetic:cubic-bezier(0.18,0.88,0.28,1.08);--ai-ease-butterfly:cubic-bezier(0.13,0.94,0.22,1.03);--ai-ease-ethereal:cubic-bezier(0.08,0.92,0.16,1);--ai-spring-flux:cubic-bezier(0.22,1.36,0.42,1);--ai-ease-aurora:cubic-bezier(0.12,0.88,0.20,1.04);--ai-ease-dreamy:cubic-bezier(0.06,0.96,0.14,1);--ai-spring-firefly:cubic-bezier(0.28,1.68,0.48,1);--ai-spring-velvet:cubic-bezier(0.17,1.32,0.40,1);--ai-spring-jelly:cubic-bezier(0.22,1.52,0.38,1);--ai-ease-silk-out:cubic-bezier(0.08,0.90,0.15,1.02);--ai-spring-marshmallow:cubic-bezier(0.19,1.42,0.37,1);--ai-spring-droplet:cubic-bezier(0.26,1.58,0.44,1);--ai-spring-silk-bounce:cubic-bezier(0.14,1.28,0.34,1.02);--ai-ease-gossamer:cubic-bezier(0.08,0.96,0.18,1);--ai-spring-pudding:cubic-bezier(0.21,1.46,0.40,1);--ai-ease-dewdrop:cubic-bezier(0.04,0.88,0.10,1.03);}
             #ai-float-btn{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-float);background:linear-gradient(135deg,#7364FF,#9B59F6,#B0A8FF,#7364FF);background-size:300% 300%;color:#fff;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 14px rgba(115,100,255,0.18),0 0 28px rgba(155,89,246,0.08);border:2px solid rgba(255,255,255,0.28);transition:transform 0.7s var(--ai-spring-silk);}
             #ai-float-btn [data-lucide]{width:24px;height:24px;}
             #ai-sort-wrapper{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-panel);width:min(400px,calc(100vw - 60px));display:flex;flex-direction:column;background:var(--ai-bg,#fff);color:var(--ai-text,#181233);box-shadow:0 24px 68px rgba(0,0,0,0.11),0 10px 28px rgba(0,0,0,0.07);border-radius:28px;overflow:hidden;font-family:var(--ai-font);}
@@ -1140,11 +1140,13 @@
         if (!logDiv) return;
         const div = document.createElement('div');
         div.className = 'ai-log-entry';
-        // 根据内容自动着色
-        if (msg.includes('❌') || msg.includes('失败')) div.classList.add('ai-log-error');
-        else if (msg.includes('⚠️') || msg.includes('警告')) div.classList.add('ai-log-warning');
-        else if (msg.includes('✅') || msg.includes('完成') || msg.includes('🎉')) div.classList.add('ai-log-success');
-        else if (msg.includes('🧠') || msg.includes('📥') || msg.includes('🚚')) div.classList.add('ai-log-info');
+        // 根据内容自动着色 + 呼吸脉冲状态联动
+        const dot = document.getElementById('ai-breathing-dot');
+        if (msg.includes('❌') || msg.includes('失败')) { div.classList.add('ai-log-error'); if (dot) { dot.className = 'ai-breathing-dot error'; } }
+        else if (msg.includes('⚠️') || msg.includes('警告')) { div.classList.add('ai-log-warning'); if (dot) { dot.className = 'ai-breathing-dot active'; } }
+        else if (msg.includes('✅') || msg.includes('完成') || msg.includes('🎉')) { div.classList.add('ai-log-success'); if (dot) { dot.className = 'ai-breathing-dot idle'; } }
+        else if (msg.includes('🧠') || msg.includes('📥') || msg.includes('🚚')) { div.classList.add('ai-log-info'); if (dot) { dot.className = 'ai-breathing-dot active'; } }
+        else { if (dot) { dot.className = 'ai-breathing-dot active'; } }
         const time = new Date().toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
         const safeMsg = escapeHtml(msg);
         div.innerHTML = `<span class="ai-log-time">${time}</span><span class="ai-log-msg">${safeMsg}</span>`;
@@ -4119,7 +4121,7 @@ ${topUps.length > 0 ? `<div class="section">
                     </div>
 
                     <div id="ai-status-log" class="ai-status-log">
-                        等待指令...
+                        <span style="display:flex;align-items:center"><span id="ai-breathing-dot" class="ai-breathing-dot idle"></span>等待指令...</span>
                     </div>
 
                     <!-- 工具结果区（清理失效/重复检测用） -->
@@ -4226,6 +4228,13 @@ ${topUps.length > 0 ? `<div class="section">
         // === 液态流光边框 ===
         panel.classList.add('ai-liquid-border');
 
+        // === Silk Cascade v0.0.7 — 流光扫掠层 ===
+        (() => {
+            const shimmer = document.createElement('div');
+            shimmer.className = 'ai-shimmer-sweep';
+            panel.insertBefore(shimmer, panel.firstChild);
+        })();
+
         // === 悬浮按钮星尘粒子 ===
         (() => {
             const ring = document.createElement('div');
@@ -4268,6 +4277,8 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'lavender', label: '薰衣草' },
                 { id: 'inkwash', label: '水墨' },
                 { id: 'rosegold', label: '玫瑰金' },
+                { id: 'midnight', label: '午夜蓝' },
+                { id: 'matcha', label: '抹茶' },
                 { id: 'custom', label: '自定义' }
             ];
 
@@ -5067,16 +5078,16 @@ ${topUps.length > 0 ? `<div class="section">
                 floatBtn.style.opacity = '';
                 floatBtn.style.filter = '';
             });
-            // 面板立即弹出，与按钮淡出同步
+            // 面板立即弹出，与按钮淡出同步 — Silk Curtain v0.0.7
             panel.classList.remove('ai-panel-closing');
             panel.style.animation = 'none';
             panel.style.display = 'flex';
             panel.style.opacity = '1';
             panel.style.transform = 'none';
             panel.style.filter = 'none';
-            // 强制 reflow 后触发丝绒弹簧入场动画
+            // 强制 reflow 后触发丝绸帷幕入场动画
             void panel.offsetHeight;
-            panel.style.animation = 'ai-velvet-spring-in 0.55s cubic-bezier(0.20, 1.10, 0.36, 1)';
+            panel.style.animation = 'ai-silk-curtain-in 0.6s cubic-bezier(0.14, 1.28, 0.34, 1.02)';
             clampPanelPosition();
         };
 
@@ -5090,8 +5101,8 @@ ${topUps.length > 0 ? `<div class="section">
                 // 悬浮按钮丝绒弹簧回场
                 floatBtn.style.animation = 'none';
                 void floatBtn.offsetHeight;
-                floatBtn.style.animation = 'ai-velvet-spring-in 0.5s cubic-bezier(0.20, 1.10, 0.36, 1)';
-            }, 380);
+                floatBtn.style.animation = 'ai-velvet-spring-in 0.5s cubic-bezier(0.14, 1.28, 0.34, 1.02)';
+            }, 420);
         };
 
         // 主题切换
@@ -6359,6 +6370,11 @@ ${topUps.length > 0 ? `<div class="section">
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
         }
+
+        // v0.0.7: 工具按钮弹性交错入场索引
+        panel.querySelectorAll('.ai-btn-tool').forEach((btn, i) => {
+            btn.style.setProperty('--btn-i', i);
+        });
 
         // 首次使用提示
         if (!settings.apiKey) {
