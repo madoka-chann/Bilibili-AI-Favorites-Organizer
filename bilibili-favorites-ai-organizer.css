@@ -1,8 +1,8 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v0.1.1
+   B站 AI 收藏夹整理助理 — 完整样式表 v0.1.2
    Velvet Nebula · 天鹅绒星云 · Refined Glass Morphism
    Indigo-Nebula 双色系统 · Restrained Aurora Palette
-   Velvet Dynamics 14.0 · Silky Spring Micro-interactions
+   Velvet Dynamics 15.0 · Silky Spring Micro-interactions
    Stellar Abyss Dark Theme · Living Glass Surfaces
    Multi-Accent Color Themes · Ambient Light Motes · Liquid Borders
    Magnetic Tilt · Cursor-Reactive Particles · Fluid Morphing
@@ -15,6 +15,7 @@
    Phantom Silk · Morphic Flow · Depth Parallax · Living Luminance
    Velvet Bloom · Ripple Interference · Magnetic Trail · Mist & Twilight
    Velvet Breath · Silk Thread Canvas · Slate & Mocha Themes
+   Lucid Drift · Firefly Canvas · Aurora Ribbon · Cloud & Cedar Themes
    ================================================================ */
 
 /* === 1. CSS 变量 (双主题系统) === */
@@ -10677,5 +10678,433 @@ input[type="checkbox"]:active {
   }
   .ai-log-entry {
     animation: ai-fade-in 0.15s ease !important;
+  }
+}
+
+/* ================================================================
+   Lucid Drift v0.1.2 — 流光清梦 新增特性
+   Firefly Canvas · Aurora Ribbon · Elastic Morph Open/Close
+   Velvet Dynamics 15.0 · Cloud & Cedar Themes
+   Scroll Momentum · Jelly Ripple · Living Pulse Ring
+   ================================================================ */
+
+/* === 449. Velvet Dynamics 15.0 — 流光清梦运动曲线系统 === */
+:root {
+  --ai-spring-lucid: cubic-bezier(0.14, 1.22, 0.32, 1.01);
+  --ai-ease-drift: cubic-bezier(0.06, 0.90, 0.12, 1.00);
+  --ai-spring-elastic-soft: cubic-bezier(0.18, 1.48, 0.36, 0.98);
+  --ai-ease-river: cubic-bezier(0.04, 0.86, 0.10, 1.02);
+  --ai-spring-bounce-light: cubic-bezier(0.22, 1.32, 0.40, 1.00);
+  --ai-ease-fog: cubic-bezier(0.02, 0.94, 0.08, 1.00);
+  --ai-ease-glide: cubic-bezier(0.08, 0.78, 0.16, 1.00);
+}
+
+/* === 450. Cloud Theme — 云岫 (淡雅清透) === */
+[data-accent="cloud"] {
+  --ai-primary: #8BA4B8;
+  --ai-primary-dark: #6A8699;
+  --ai-primary-light: #AEBFCC;
+  --ai-primary-bg: rgba(139, 164, 184, 0.06);
+  --ai-primary-shadow: rgba(139, 164, 184, 0.16);
+  --ai-aurora-1: #8BA4B8;
+  --ai-aurora-2: #97AFBF;
+  --ai-aurora-3: #7A95AA;
+  --ai-aurora-4: #A3B8C8;
+  --ai-aurora-5: #AEBFCC;
+  --ai-aurora-6: #6A8699;
+  --ai-aurora-7: #BCC9D4;
+  --ai-aurora-8: #7D98AC;
+  --ai-header-gradient: linear-gradient(135deg, #6A8699, #8BA4B8, #6A8699);
+  --ai-float-gradient: linear-gradient(135deg, #8BA4B8, #7A95AA, #A3B8C8, #8BA4B8);
+  --ai-neon-glow: 0 0 14px rgba(139, 164, 184, 0.14),
+                  0 0 28px rgba(106, 134, 153, 0.06),
+                  0 0 42px rgba(139, 164, 184, 0.02);
+  --ai-interaction-glow: rgba(139, 164, 184, 0.05);
+  --ai-glow-color: rgba(139, 164, 184, 0.03);
+  --ai-chromatic-border: linear-gradient(135deg, rgba(139,164,184,0.18), rgba(106,134,153,0.14), rgba(163,184,200,0.12), rgba(174,191,204,0.14));
+}
+
+.ai-accent-dot[data-accent="cloud"] {
+  background: linear-gradient(135deg, #6A8699, #8BA4B8);
+}
+
+[data-theme="dark"][data-accent="cloud"] #ai-float-btn {
+  border-color: rgba(139, 164, 184, 0.25);
+}
+
+[data-theme="dark"][data-accent="cloud"] .ai-nebula-particle {
+  background: radial-gradient(circle, #AEBFCC 0%, rgba(174,191,204,0.05) 50%, transparent 70%);
+}
+
+/* === 451. Cedar Theme — 雪松 (温暖深绿棕) === */
+[data-accent="cedar"] {
+  --ai-primary: #7A8B6A;
+  --ai-primary-dark: #5C6B50;
+  --ai-primary-light: #9AAC8A;
+  --ai-primary-bg: rgba(122, 139, 106, 0.06);
+  --ai-primary-shadow: rgba(122, 139, 106, 0.16);
+  --ai-aurora-1: #7A8B6A;
+  --ai-aurora-2: #8A9A7A;
+  --ai-aurora-3: #6B7C5C;
+  --ai-aurora-4: #96A886;
+  --ai-aurora-5: #9AAC8A;
+  --ai-aurora-6: #5C6B50;
+  --ai-aurora-7: #AAB89C;
+  --ai-aurora-8: #6E7F60;
+  --ai-header-gradient: linear-gradient(135deg, #5C6B50, #7A8B6A, #5C6B50);
+  --ai-float-gradient: linear-gradient(135deg, #7A8B6A, #6B7C5C, #96A886, #7A8B6A);
+  --ai-neon-glow: 0 0 14px rgba(122, 139, 106, 0.14),
+                  0 0 28px rgba(92, 107, 80, 0.06),
+                  0 0 42px rgba(122, 139, 106, 0.02);
+  --ai-interaction-glow: rgba(122, 139, 106, 0.05);
+  --ai-glow-color: rgba(122, 139, 106, 0.03);
+  --ai-chromatic-border: linear-gradient(135deg, rgba(122,139,106,0.18), rgba(92,107,80,0.14), rgba(150,168,134,0.12), rgba(154,172,138,0.14));
+}
+
+.ai-accent-dot[data-accent="cedar"] {
+  background: linear-gradient(135deg, #5C6B50, #7A8B6A);
+}
+
+[data-theme="dark"][data-accent="cedar"] #ai-float-btn {
+  border-color: rgba(122, 139, 106, 0.25);
+}
+
+[data-theme="dark"][data-accent="cedar"] .ai-nebula-particle {
+  background: radial-gradient(circle, #9AAC8A 0%, rgba(154,172,138,0.05) 50%, transparent 70%);
+}
+
+/* === 452. Firefly Canvas — 萤火画布 (持续漂浮发光粒子) === */
+.ai-firefly-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.ai-firefly {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform, opacity;
+  mix-blend-mode: screen;
+}
+
+[data-theme="light"] .ai-firefly {
+  mix-blend-mode: soft-light;
+}
+
+/* === 453. Aurora Ribbon — 极光丝带 (标题栏流动极光) === */
+.ai-aurora-ribbon {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  opacity: 0.18;
+  mix-blend-mode: soft-light;
+}
+
+.ai-aurora-ribbon canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+[data-theme="dark"] .ai-aurora-ribbon {
+  opacity: 0.14;
+  mix-blend-mode: screen;
+}
+
+/* === 454. Elastic Panel Open — 弹力面板展开 === */
+@keyframes ai-elastic-open {
+  0% {
+    transform: scale(0.88, 0.92) translateY(24px);
+    opacity: 0;
+    filter: blur(8px);
+  }
+  25% {
+    opacity: 1;
+    filter: blur(1px);
+  }
+  42% {
+    transform: scale(1.025, 0.98) translateY(-4px);
+    filter: blur(0px);
+  }
+  58% {
+    transform: scale(0.993, 1.008) translateY(2px);
+  }
+  72% {
+    transform: scale(1.005, 0.998) translateY(-0.8px);
+  }
+  86% {
+    transform: scale(0.999, 1.001) translateY(0.3px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    filter: blur(0px);
+  }
+}
+
+/* === 455. Elastic Panel Close — 弹力面板收起 === */
+@keyframes ai-elastic-close {
+  0% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    filter: blur(0px);
+  }
+  15% {
+    transform: scale(1.015, 0.99) translateY(-3px);
+  }
+  40% {
+    transform: scale(0.96, 0.98) translateY(6px);
+    opacity: 0.8;
+    filter: blur(1px);
+  }
+  100% {
+    transform: scale(0.88, 0.94) translateY(28px);
+    opacity: 0;
+    filter: blur(6px);
+  }
+}
+
+/* === 456. Living Pulse Ring — 浮动按钮脉冲光环 === */
+@keyframes ai-pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(115, 100, 255, 0.22);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(115, 100, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(115, 100, 255, 0);
+  }
+}
+
+#ai-float-btn:not(:hover):not(:active)::after {
+  animation: ai-float-gradient-shift 14s ease-in-out infinite,
+             ai-pulse-ring 3.5s var(--ai-ease-drift) infinite;
+}
+
+/* === 457. Jelly Ripple Click — 果冻涟漪点击反馈 === */
+@keyframes ai-jelly-ripple {
+  0% {
+    transform: scale(1);
+  }
+  15% {
+    transform: scale(0.94, 0.97);
+  }
+  30% {
+    transform: scale(1.03, 0.98);
+  }
+  45% {
+    transform: scale(0.99, 1.01);
+  }
+  60% {
+    transform: scale(1.008, 0.997);
+  }
+  75% {
+    transform: scale(0.998, 1.002);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.ai-btn-primary:active {
+  animation: ai-jelly-ripple 0.5s var(--ai-spring-lucid);
+}
+
+/* === 458. Scroll Indicator Fade — 滚动提示渐隐 === */
+.ai-panel-content {
+  mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
+}
+
+.ai-panel-content:not(:hover) {
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+
+/* === 459. Category Row Stagger — 分类行交错入场增强 === */
+.ai-cat-block {
+  animation: ai-slide-in-lucid 0.55s var(--ai-spring-lucid) both;
+  animation-delay: calc(var(--i, 0) * 0.04s);
+}
+
+@keyframes ai-slide-in-lucid {
+  0% {
+    transform: translateX(28px) scale(0.95);
+    opacity: 0;
+    filter: blur(3px);
+  }
+  35% {
+    transform: translateX(-3px) scale(1.01);
+    opacity: 1;
+    filter: blur(0);
+  }
+  55% {
+    transform: translateX(1.5px) scale(0.998);
+  }
+  75% {
+    transform: translateX(-0.5px) scale(1.001);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* === 460. Log Entry Slide — 日志条目滑入增强 === */
+@keyframes ai-log-slide {
+  0% {
+    transform: translateX(16px);
+    opacity: 0;
+    filter: blur(2px);
+  }
+  40% {
+    transform: translateX(-2px);
+    opacity: 1;
+    filter: blur(0);
+  }
+  65% {
+    transform: translateX(0.8px);
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.ai-log-entry {
+  animation: ai-log-slide 0.4s var(--ai-spring-lucid) both;
+}
+
+/* === 461. Filter Button Elastic — 过滤按钮弹性增强 === */
+.ai-filter-btn {
+  transition: all 0.4s var(--ai-spring-bounce-light);
+}
+
+.ai-filter-btn:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+
+.ai-filter-btn:active {
+  transform: scale(0.92);
+  transition-duration: 0.06s;
+}
+
+.ai-filter-btn.active {
+  transition: all 0.45s var(--ai-spring-elastic-soft);
+}
+
+/* === 462. Video Item Hover Polish — 视频项悬停精修 === */
+.ai-vid-rich {
+  transition: background 0.3s var(--ai-ease-drift),
+              transform 0.4s var(--ai-spring-lucid);
+}
+
+.ai-vid-rich:hover {
+  background: var(--ai-vid-hover-bg);
+  transform: translateX(3px);
+}
+
+.ai-vid-cover {
+  transition: transform 0.45s var(--ai-spring-elastic-soft),
+              box-shadow 0.35s var(--ai-ease-drift);
+}
+
+.ai-vid-rich:hover .ai-vid-cover {
+  transform: scale(1.06);
+  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+/* === 463. Header Shimmer Polish — 标题栏流光精修 === */
+.ai-header::after {
+  animation: ai-shimmer 10s var(--ai-ease-river) infinite;
+}
+
+/* === 464. Toast Exit Smooth — 通知退场平滑 === */
+@keyframes ai-toast-exit {
+  0% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(24px) scale(0.94);
+    filter: blur(3px);
+  }
+}
+
+.ai-toast.ai-toast-exit {
+  animation: ai-toast-exit 0.35s var(--ai-ease-drift) forwards;
+}
+
+/* === 465. Modal Close Smooth — 弹窗关闭柔化 === */
+@keyframes ai-modal-exit {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.94) translateY(12px);
+    filter: blur(4px);
+  }
+}
+
+@keyframes ai-backdrop-exit {
+  0% {
+    backdrop-filter: blur(16px) saturate(1.4);
+    opacity: 1;
+  }
+  100% {
+    backdrop-filter: blur(0px) saturate(1);
+    opacity: 0;
+  }
+}
+
+/* === 466. Checkbox Label Highlight — 勾选标签高亮过渡 === */
+.ai-behavior-option {
+  transition: all 0.35s var(--ai-spring-lucid);
+}
+
+.ai-behavior-option:has(input:checked) {
+  background: var(--ai-primary-bg);
+  border-color: var(--ai-primary-light);
+  box-shadow: 0 1px 6px var(--ai-primary-bg);
+}
+
+/* === 467. GPU Performance Hints v0.1.2 === */
+.ai-firefly-canvas,
+.ai-firefly,
+.ai-aurora-ribbon,
+.ai-aurora-ribbon canvas {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* === 468. Reduced Motion v0.1.2 === */
+@media (prefers-reduced-motion: reduce) {
+  .ai-firefly-canvas,
+  .ai-aurora-ribbon {
+    display: none !important;
+  }
+  .ai-cat-block {
+    animation: ai-fade-in 0.15s ease !important;
+  }
+  .ai-btn-primary:active {
+    animation: none !important;
+  }
+  #ai-float-btn:not(:hover):not(:active)::after {
+    animation: none !important;
   }
 }
