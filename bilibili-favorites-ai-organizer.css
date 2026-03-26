@@ -1,13 +1,14 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v0.0.5
+   B站 AI 收藏夹整理助理 — 完整样式表 v0.0.6
    Velvet Nebula · 天鹅绒星云 · Refined Glass Morphism
    Indigo-Nebula 双色系统 · Restrained Aurora Palette
-   Velvet Dynamics 8.0 · Silky Spring Micro-interactions
+   Velvet Dynamics 9.0 · Silky Spring Micro-interactions
    Stellar Abyss Dark Theme · Living Glass Surfaces
    Multi-Accent Color Themes · Ambient Light Motes · Liquid Borders
    Magnetic Tilt · Cursor-Reactive Particles · Fluid Morphing
    Velvet Tide · Ambient Flow · Living Surfaces
    Nebula Drift · Silk Pulse · Graphite & Lavender Themes
+   Luminous Flow Border · Lava Lamp Particles · Ink Wash & Rose Gold
    ================================================================ */
 
 /* === 1. CSS 变量 (双主题系统) === */
@@ -7459,6 +7460,378 @@
 .ai-panel-content {
   animation: ai-mesh-breathe 8s ease-in-out infinite,
              ai-nebula-ambient-breathe 10s var(--ai-ease-breath) infinite;
+}
+
+/* === 332. Ink Wash Theme — 水墨丹青 (素雅东方韵) === */
+[data-accent="inkwash"] {
+  --ai-primary: #5B6770;
+  --ai-primary-dark: #3D4A52;
+  --ai-primary-light: #97A5AE;
+  --ai-primary-bg: rgba(91, 103, 112, 0.06);
+  --ai-primary-shadow: rgba(91, 103, 112, 0.20);
+  --ai-aurora-1: #5B6770;
+  --ai-aurora-2: #8A9BA5;
+  --ai-aurora-3: #6B7D87;
+  --ai-aurora-4: #4A5C66;
+  --ai-aurora-5: #A0B0B8;
+  --ai-aurora-6: #7A8C96;
+  --ai-aurora-7: #B0BEC5;
+  --ai-aurora-8: #546E7A;
+  --ai-header-gradient: linear-gradient(135deg, #5B6770, #8A9BA5, #5B6770);
+  --ai-float-gradient: linear-gradient(135deg, #5B6770, #6B7D87, #8A9BA5, #5B6770);
+  --ai-neon-glow: 0 0 16px rgba(91, 103, 112, 0.18),
+                  0 0 32px rgba(138, 155, 165, 0.08),
+                  0 0 48px rgba(91, 103, 112, 0.03);
+  --ai-interaction-glow: rgba(91, 103, 112, 0.08);
+  --ai-glow-color: rgba(91, 103, 112, 0.05);
+}
+
+.ai-accent-dot[data-accent="inkwash"] {
+  background: linear-gradient(135deg, #5B6770, #B0BEC5);
+}
+
+[data-theme="dark"][data-accent="inkwash"] #ai-float-btn {
+  border-color: rgba(138, 155, 165, 0.28);
+}
+
+[data-theme="dark"][data-accent="inkwash"] .ai-nebula-particle {
+  background: radial-gradient(circle, #97A5AE 0%, rgba(151,165,174,0.05) 50%, transparent 70%);
+}
+
+/* === 333. Rose Gold Theme — 玫瑰金韵 (温柔奢华) === */
+[data-accent="rosegold"] {
+  --ai-primary: #C9968E;
+  --ai-primary-dark: #A87068;
+  --ai-primary-light: #E8C4BD;
+  --ai-primary-bg: rgba(201, 150, 142, 0.06);
+  --ai-primary-shadow: rgba(201, 150, 142, 0.20);
+  --ai-aurora-1: #C9968E;
+  --ai-aurora-2: #D4A89F;
+  --ai-aurora-3: #B88A82;
+  --ai-aurora-4: #E0B4AD;
+  --ai-aurora-5: #C4A49E;
+  --ai-aurora-6: #D9A099;
+  --ai-aurora-7: #EAC9C3;
+  --ai-aurora-8: #A87068;
+  --ai-header-gradient: linear-gradient(135deg, #C9968E, #D4A89F, #C9968E);
+  --ai-float-gradient: linear-gradient(135deg, #C9968E, #D4A89F, #E0B4AD, #C9968E);
+  --ai-neon-glow: 0 0 16px rgba(201, 150, 142, 0.22),
+                  0 0 32px rgba(212, 168, 159, 0.10),
+                  0 0 48px rgba(201, 150, 142, 0.04);
+  --ai-interaction-glow: rgba(201, 150, 142, 0.08);
+  --ai-glow-color: rgba(201, 150, 142, 0.05);
+}
+
+.ai-accent-dot[data-accent="rosegold"] {
+  background: linear-gradient(135deg, #C9968E, #EAC9C3);
+}
+
+[data-theme="dark"][data-accent="rosegold"] #ai-float-btn {
+  border-color: rgba(201, 150, 142, 0.28);
+}
+
+[data-theme="dark"][data-accent="rosegold"] .ai-nebula-particle {
+  background: radial-gradient(circle, #E8C4BD 0%, rgba(232,196,189,0.05) 50%, transparent 70%);
+}
+
+/* === 334. Luminous Flow Border — 流光呼吸边框 (面板始终有生命力的边缘) === */
+@keyframes ai-luminous-border-flow {
+  0% {
+    --ai-border-angle: 0deg;
+    opacity: 0.3;
+  }
+  25% {
+    opacity: 0.55;
+  }
+  50% {
+    --ai-border-angle: 180deg;
+    opacity: 0.3;
+  }
+  75% {
+    opacity: 0.5;
+  }
+  100% {
+    --ai-border-angle: 360deg;
+    opacity: 0.3;
+  }
+}
+
+@property --ai-border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+#ai-sort-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border-radius: 29px;
+  background: conic-gradient(
+    from var(--ai-border-angle, 0deg),
+    transparent 0%,
+    var(--ai-aurora-1) 8%,
+    transparent 16%,
+    transparent 40%,
+    var(--ai-aurora-3) 48%,
+    transparent 56%,
+    transparent 75%,
+    var(--ai-aurora-4) 83%,
+    transparent 91%
+  );
+  z-index: -1;
+  pointer-events: none;
+  animation: ai-luminous-border-flow 8s linear infinite;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  padding: 1.5px;
+  opacity: 0.35;
+  filter: blur(0.5px);
+  transition: opacity 0.6s var(--ai-ease-fluid);
+}
+
+#ai-sort-wrapper:hover::after {
+  opacity: 0.7;
+  filter: blur(0);
+}
+
+/* === 335. Lava Lamp Particle System — 熔岩灯粒子容器 === */
+.ai-lava-field {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.ai-lava-blob {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform;
+  mix-blend-mode: soft-light;
+  filter: blur(30px);
+  opacity: 0;
+  transition: opacity 1.2s var(--ai-ease-fluid);
+}
+
+[data-theme="dark"] .ai-lava-blob {
+  mix-blend-mode: screen;
+  filter: blur(35px);
+}
+
+/* === 336. Float Button Idle Morph — 悬浮按钮灵动待机 === */
+@keyframes ai-idle-morph-dance {
+  0%, 100% {
+    border-radius: 50%;
+    transform: rotate(0deg) scale(1);
+  }
+  8% {
+    border-radius: 48% 52% 50% 50% / 52% 48% 52% 48%;
+    transform: rotate(0.5deg) scale(1.01);
+  }
+  16% {
+    border-radius: 46% 54% 52% 48% / 48% 52% 48% 52%;
+    transform: rotate(-0.3deg) scale(0.995);
+  }
+  25% {
+    border-radius: 50% 50% 46% 54% / 54% 46% 50% 50%;
+    transform: rotate(0.8deg) scale(1.008);
+  }
+  33% {
+    border-radius: 52% 48% 48% 52% / 50% 50% 52% 48%;
+    transform: rotate(-0.5deg) scale(0.997);
+  }
+  42% {
+    border-radius: 48% 52% 54% 46% / 46% 54% 48% 52%;
+    transform: rotate(0.3deg) scale(1.005);
+  }
+  50% {
+    border-radius: 54% 46% 50% 50% / 52% 48% 46% 54%;
+    transform: rotate(-0.7deg) scale(0.998);
+  }
+  58% {
+    border-radius: 50% 50% 48% 52% / 48% 52% 54% 46%;
+    transform: rotate(0.4deg) scale(1.006);
+  }
+  67% {
+    border-radius: 46% 54% 50% 50% / 54% 46% 50% 50%;
+    transform: rotate(-0.2deg) scale(0.996);
+  }
+  75% {
+    border-radius: 52% 48% 52% 48% / 50% 50% 48% 52%;
+    transform: rotate(0.6deg) scale(1.003);
+  }
+  83% {
+    border-radius: 48% 52% 46% 54% / 52% 48% 52% 48%;
+    transform: rotate(-0.4deg) scale(1.001);
+  }
+  92% {
+    border-radius: 50% 50% 52% 48% / 48% 52% 50% 50%;
+    transform: rotate(0.2deg) scale(0.999);
+  }
+}
+
+#ai-float-btn:not(:hover):not(:active) {
+  animation: ai-float-gradient-shift 16s ease-in-out infinite,
+             ai-float-levitate 10s ease-in-out infinite,
+             ai-idle-morph-dance 20s var(--ai-ease-fluid) infinite;
+}
+
+/* === 337. Velvet Bounce Enhancement — 天鹅绒弹力增强 v9.0 === */
+/* Ultra-smooth spring curves for all interactive elements */
+:root {
+  --ai-spring-velvet: cubic-bezier(0.17, 1.32, 0.40, 1);
+  --ai-spring-jelly: cubic-bezier(0.22, 1.52, 0.38, 1);
+  --ai-ease-silk-out: cubic-bezier(0.08, 0.90, 0.15, 1.02);
+}
+
+/* Category row enhanced spring hover */
+.ai-cat-row {
+  transition: transform 0.55s var(--ai-spring-velvet),
+              background 0.35s ease,
+              box-shadow 0.45s var(--ai-ease-silk-out);
+}
+
+.ai-cat-row:hover {
+  transform: translateX(6px) scale(1.012);
+  background: var(--ai-bg-hover);
+  box-shadow: inset 3px 0 0 var(--ai-primary),
+              0 4px 20px rgba(115, 100, 255, 0.06);
+}
+
+.ai-cat-row:active {
+  transform: translateX(2px) scale(0.985);
+  transition: transform 0.06s;
+}
+
+/* Tool button bounce */
+.ai-btn-tool {
+  transition: transform 0.5s var(--ai-spring-velvet),
+              background-color 0.3s ease,
+              box-shadow 0.4s var(--ai-ease-silk-out);
+}
+
+.ai-btn-tool:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 24px rgba(115, 100, 255, 0.10);
+}
+
+.ai-btn-tool:active {
+  transform: translateY(1px) scale(0.90);
+  transition: transform 0.06s;
+}
+
+/* Header button extra spring */
+.ai-header-btn {
+  transition: all 0.45s var(--ai-spring-jelly);
+}
+
+.ai-header-btn:hover {
+  transform: scale(1.14) translateY(-2px);
+  background: rgba(255,255,255,0.28);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.ai-header-btn:active {
+  transform: scale(0.82);
+  transition: transform 0.06s;
+}
+
+/* Input focus spring glow */
+.ai-input:focus,
+.ai-select:focus {
+  border-color: var(--ai-primary);
+  box-shadow: 0 0 0 3.5px var(--ai-primary-bg),
+              0 0 16px var(--ai-glow-color);
+  transform: scale(1.01);
+  transition: all 0.4s var(--ai-spring-velvet);
+}
+
+/* === 338. Smooth Detail Unfold — 丝滑详情展开 (弹性阻尼) === */
+.ai-cat-detail {
+  transition: max-height 0.55s var(--ai-ease-silk-out),
+              opacity 0.4s var(--ai-ease-silk-out),
+              padding 0.4s var(--ai-ease-silk-out);
+}
+
+.ai-cat-detail.open {
+  animation: ai-detail-spring-open 0.5s var(--ai-spring-velvet);
+}
+
+@keyframes ai-detail-spring-open {
+  0% { opacity: 0; transform: scaleY(0.8); transform-origin: top; }
+  30% { opacity: 1; transform: scaleY(1.02); }
+  50% { transform: scaleY(0.995); }
+  70% { transform: scaleY(1.005); }
+  100% { transform: scaleY(1); }
+}
+
+/* === 339. Accent Picker Smooth Entrance — 主题选择器丝滑入场 === */
+#ai-accent-picker {
+  transition: opacity 0.3s var(--ai-ease-silk-out),
+              transform 0.4s var(--ai-spring-velvet);
+  transform-origin: top right;
+}
+
+#ai-accent-picker[style*="display: block"],
+#ai-accent-picker[style*="display:block"] {
+  animation: ai-picker-spring-in 0.4s var(--ai-spring-velvet);
+}
+
+@keyframes ai-picker-spring-in {
+  0% { opacity: 0; transform: scale(0.85) translateY(-8px); }
+  40% { opacity: 1; transform: scale(1.03) translateY(1px); }
+  65% { transform: scale(0.99) translateY(-0.5px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+/* === 340. Video Item Hover Silk — 视频项丝滑悬浮 === */
+.ai-vid-item {
+  transition: background 0.3s var(--ai-ease-silk-out),
+              transform 0.4s var(--ai-spring-velvet),
+              padding-left 0.35s var(--ai-ease-silk-out);
+}
+
+.ai-vid-item:hover {
+  background: var(--ai-vid-hover-bg);
+  transform: translateX(3px);
+  padding-left: calc(48px + 3px);
+}
+
+.ai-vid-rich:hover {
+  transform: translateX(3px);
+  padding-left: calc(40px + 3px) !important;
+}
+
+/* === 341. Settings Group Fold Spring — 设置组折叠弹簧 === */
+.ai-group-header [data-lucide]:last-child {
+  transition: transform 0.45s var(--ai-spring-velvet);
+}
+
+/* === 342. Scroll Glow Edge — 滚动发光边缘 === */
+.ai-panel-content::before,
+.ai-panel-content::after {
+  content: '';
+  position: sticky;
+  display: block;
+  height: 24px;
+  z-index: 2;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.ai-panel-content::before {
+  top: 0;
+  background: linear-gradient(to bottom, var(--ai-bg), transparent);
+}
+
+.ai-panel-content::after {
+  bottom: 0;
+  background: linear-gradient(to top, var(--ai-bg), transparent);
 }
 
 /* === 330. GPU Performance Hints v0.0.5 === */
