@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.4.9
+// @version      1.5.0
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -4342,6 +4342,8 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'monsoon', label: '季风' },
                 { id: 'dew', label: '清露' },
                 { id: 'ember', label: '暮烬' },
+                { id: 'opal', label: '蛋白石' },
+                { id: 'driftwood', label: '漂木' },
                 { id: 'custom', label: '自定义' }
             ];
 
@@ -5990,6 +5992,143 @@ ${topUps.length > 0 ? `<div class="section">
             orbObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startOrbs();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') orbResize(); });
+        })();
+
+        // === Velvet Pulse v0.1.9 — Pulse Web Canvas 脉冲丝网画布 ===
+        (() => {
+            const cvs = document.createElement('canvas');
+            cvs.className = 'ai-pulse-web-canvas';
+            panel.insertBefore(cvs, panel.firstChild);
+            const ctx = cvs.getContext('2d');
+            let pwRaf = null;
+            let pwTime = 0;
+
+            const NODE_COUNT = 12;
+            const CONNECT_DIST = 0.28;
+            const nodes = [];
+            for (let i = 0; i < NODE_COUNT; i++) {
+                nodes.push({
+                    x: Math.random(),
+                    y: Math.random(),
+                    vx: (Math.random() - 0.5) * 0.0006,
+                    vy: (Math.random() - 0.5) * 0.0006,
+                    phase: Math.random() * Math.PI * 2,
+                    pulseSpeed: 0.4 + Math.random() * 0.6,
+                    baseR: 1.5 + Math.random() * 2.5
+                });
+            }
+
+            function pwResize() {
+                const rect = panel.getBoundingClientRect();
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                cvs.width = rect.width * dpr;
+                cvs.height = rect.height * dpr;
+                cvs.style.width = rect.width + 'px';
+                cvs.style.height = rect.height + 'px';
+                ctx.scale(dpr, dpr);
+            }
+
+            function getPWColors() {
+                const s = getComputedStyle(panel);
+                return [
+                    s.getPropertyValue('--ai-aurora-1').trim() || '#7364FF',
+                    s.getPropertyValue('--ai-aurora-3').trim() || '#9B59F6',
+                    s.getPropertyValue('--ai-aurora-2').trim() || '#FF6B9D'
+                ];
+            }
+
+            function renderPulseWeb() {
+                pwTime += 0.006;
+                const w = parseFloat(cvs.style.width) || panel.offsetWidth;
+                const h = parseFloat(cvs.style.height) || panel.offsetHeight;
+                ctx.clearRect(0, 0, w, h);
+
+                const colors = getPWColors();
+
+                // Update node positions with organic drift
+                nodes.forEach(node => {
+                    node.x += node.vx + Math.sin(pwTime * 0.3 + node.phase) * 0.0002;
+                    node.y += node.vy + Math.cos(pwTime * 0.25 + node.phase * 1.3) * 0.0002;
+
+                    // Soft boundary wrap
+                    if (node.x < -0.05) { node.x = -0.05; node.vx = Math.abs(node.vx) * 0.7; }
+                    if (node.x > 1.05) { node.x = 1.05; node.vx = -Math.abs(node.vx) * 0.7; }
+                    if (node.y < -0.05) { node.y = -0.05; node.vy = Math.abs(node.vy) * 0.7; }
+                    if (node.y > 1.05) { node.y = 1.05; node.vy = -Math.abs(node.vy) * 0.7; }
+
+                    node.vx *= 0.999;
+                    node.vy *= 0.999;
+                });
+
+                // Draw connections
+                for (let i = 0; i < NODE_COUNT; i++) {
+                    for (let j = i + 1; j < NODE_COUNT; j++) {
+                        const a = nodes[i], b = nodes[j];
+                        const dx = a.x - b.x, dy = a.y - b.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < CONNECT_DIST) {
+                            const alpha = (1 - dist / CONNECT_DIST) * 0.35;
+                            // Pulsing line width
+                            const pulse = 0.5 + Math.sin(pwTime * 2 + (a.phase + b.phase) * 0.5) * 0.3;
+
+                            ctx.beginPath();
+                            ctx.moveTo(a.x * w, a.y * h);
+
+                            // Curved connections for organic feel
+                            const midX = (a.x + b.x) / 2 + Math.sin(pwTime + i) * 0.015;
+                            const midY = (a.y + b.y) / 2 + Math.cos(pwTime + j) * 0.015;
+                            ctx.quadraticCurveTo(midX * w, midY * h, b.x * w, b.y * h);
+
+                            ctx.strokeStyle = colors[0];
+                            ctx.globalAlpha = alpha;
+                            ctx.lineWidth = pulse;
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                // Draw nodes with pulsing glow
+                nodes.forEach((node, i) => {
+                    const pulse = 1 + Math.sin(pwTime * node.pulseSpeed + node.phase) * 0.4;
+                    const r = node.baseR * pulse;
+                    const cx = node.x * w;
+                    const cy = node.y * h;
+                    const color = colors[i % colors.length];
+
+                    // Glow halo
+                    const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r * 4);
+                    grad.addColorStop(0, color);
+                    grad.addColorStop(0.3, color + '60');
+                    grad.addColorStop(1, 'transparent');
+                    ctx.globalAlpha = 0.25 * pulse;
+                    ctx.fillStyle = grad;
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, r * 4, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Core dot
+                    ctx.globalAlpha = 0.6 + 0.3 * Math.sin(pwTime * node.pulseSpeed + node.phase);
+                    ctx.fillStyle = color;
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+
+                ctx.globalAlpha = 1;
+                pwRaf = requestAnimationFrame(renderPulseWeb);
+            }
+
+            const startPW = () => { if (!pwRaf) { pwResize(); renderPulseWeb(); } };
+            const stopPW = () => { if (pwRaf) { cancelAnimationFrame(pwRaf); pwRaf = null; } };
+
+            const pwObs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startPW();
+                else stopPW();
+            });
+            pwObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startPW();
+            window.addEventListener('resize', () => { if (panel.style.display !== 'none') pwResize(); });
         })();
 
         // === Velvet Ripple v0.1.8 — Header Particle Drift 头部粒子漂流 ===
