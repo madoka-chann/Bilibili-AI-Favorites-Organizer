@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.5.6
+// @version      1.5.7
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -4359,6 +4359,9 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'parchment', label: '羊皮纸' },
                 { id: 'graphene', label: '石墨烯' },
                 { id: 'celadon-rain', label: '青瓷雨' },
+                { id: 'ink-cloud', label: '墨云' },
+                { id: 'warm-wool', label: '暖绒' },
+                { id: 'still-water', label: '静水' },
                 { id: 'custom', label: '自定义' }
             ];
 
@@ -6978,6 +6981,120 @@ ${topUps.length > 0 ? `<div class="section">
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') vortexResize(); });
         })();
 
+        // === Velvet Zen Flow v0.2.6 — Zen Ripple Canvas 禅意涟漪画布 ===
+        (() => {
+            const zenWrap = document.createElement('div');
+            zenWrap.className = 'ai-zen-ripple-canvas';
+            const zCanvas = document.createElement('canvas');
+            zenWrap.appendChild(zCanvas);
+            panel.insertBefore(zenWrap, panel.firstChild);
+
+            let zenRaf = null;
+            let zTime = 0;
+
+            const zenResize = () => {
+                const r = panel.getBoundingClientRect();
+                zCanvas.width = Math.round(r.width * 0.3);
+                zCanvas.height = Math.round(r.height * 0.3);
+            };
+
+            const getColors = () => {
+                const cs = getComputedStyle(document.documentElement);
+                return [
+                    cs.getPropertyValue('--ai-aurora-1').trim() || '#7364FF',
+                    cs.getPropertyValue('--ai-aurora-3').trim() || '#9B59F6',
+                    cs.getPropertyValue('--ai-aurora-5').trim() || '#20E3B2',
+                    cs.getPropertyValue('--ai-aurora-7').trim() || '#FFB347',
+                ];
+            };
+
+            const hexToRgb = (hex) => {
+                hex = hex.replace('#', '');
+                if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+                const n = parseInt(hex, 16);
+                return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+            };
+
+            // Zen ripple: concentric expanding rings from drifting focal points
+            const renderZen = () => {
+                const ctx = zCanvas.getContext('2d');
+                if (!ctx || !zCanvas.width) { zenRaf = requestAnimationFrame(renderZen); return; }
+                const w = zCanvas.width, h = zCanvas.height;
+                ctx.clearRect(0, 0, w, h);
+                zTime += 0.003;
+
+                const colors = getColors();
+                const rgbs = colors.map(hexToRgb);
+
+                // 3 ripple sources drifting slowly
+                const sources = [
+                    { x: 0.3 + Math.sin(zTime * 0.4) * 0.15, y: 0.4 + Math.cos(zTime * 0.3) * 0.2 },
+                    { x: 0.7 + Math.cos(zTime * 0.35 + 1.8) * 0.12, y: 0.6 + Math.sin(zTime * 0.25 + 1.2) * 0.15 },
+                    { x: 0.5 + Math.sin(zTime * 0.5 + 3.0) * 0.18, y: 0.3 + Math.cos(zTime * 0.45 + 2.5) * 0.18 },
+                ];
+
+                const imgData = ctx.createImageData(w, h);
+                const data = imgData.data;
+                const step = 2;
+
+                for (let y = 0; y < h; y += step) {
+                    const ny = y / h;
+                    for (let x = 0; x < w; x += step) {
+                        const nx = x / w;
+
+                        let val = 0;
+                        for (let s = 0; s < sources.length; s++) {
+                            const dx = nx - sources[s].x;
+                            const dy = ny - sources[s].y;
+                            const dist = Math.sqrt(dx * dx + dy * dy);
+                            // Concentric ripple rings that expand outward
+                            const ripple = Math.sin(dist * 28 - zTime * (1.6 + s * 0.3) + s * 2.1) * 0.5 + 0.5;
+                            // Soft radial fade
+                            const fade = Math.max(0, 1 - dist * 2.2);
+                            val += ripple * fade * (1 / sources.length);
+                        }
+
+                        // Gentle interference brightening
+                        val = Math.min(1, val * 1.3);
+
+                        // Color blend
+                        const ci = val * (rgbs.length - 1);
+                        const ci0 = Math.floor(ci);
+                        const ci1 = Math.min(ci0 + 1, rgbs.length - 1);
+                        const t = ci - ci0;
+                        const r = Math.round(rgbs[ci0][0] * (1 - t) + rgbs[ci1][0] * t);
+                        const g = Math.round(rgbs[ci0][1] * (1 - t) + rgbs[ci1][1] * t);
+                        const b = Math.round(rgbs[ci0][2] * (1 - t) + rgbs[ci1][2] * t);
+                        const alpha = Math.round(4 + val * 18);
+
+                        for (let dy = 0; dy < step && (y + dy) < h; dy++) {
+                            for (let ddx = 0; ddx < step && (x + ddx) < w; ddx++) {
+                                const idx = ((y + dy) * w + (x + ddx)) * 4;
+                                data[idx] = r;
+                                data[idx + 1] = g;
+                                data[idx + 2] = b;
+                                data[idx + 3] = alpha;
+                            }
+                        }
+                    }
+                }
+
+                ctx.putImageData(imgData, 0, 0);
+                zenRaf = requestAnimationFrame(renderZen);
+            };
+
+            const startZen = () => { zenResize(); if (!zenRaf) renderZen(); };
+            const stopZen = () => { if (zenRaf) { cancelAnimationFrame(zenRaf); zenRaf = null; } };
+
+            const zenObs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startZen();
+                else stopZen();
+            });
+            zenObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startZen();
+            window.addEventListener('resize', () => { if (panel.style.display !== 'none') zenResize(); });
+        })();
+
         // === Velvet Zephyr Flow v0.2.4 — Float Button Idle Shimmer 悬浮按钮闲置微光 ===
         (() => {
             let shimmerRaf = null;
@@ -7743,7 +7860,7 @@ ${topUps.length > 0 ? `<div class="section">
             morph.style.setProperty('--morph-y', cy + '%');
             document.body.appendChild(morph);
 
-            // 主题图标弹性旋转 — Velvet Silk Vortex 丝涡弹簧曲线 v0.2.5
+            // 主题图标弹性旋转 — Velvet Zen Flow 禅流弹簧曲线 v0.2.6
             const icon = btn.querySelector('[data-lucide]');
             if (icon) {
                 icon.style.transition = 'transform 0.45s cubic-bezier(0.14, 1.40, 0.30, 1.00)';

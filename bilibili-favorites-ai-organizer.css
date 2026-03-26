@@ -1,6 +1,6 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v0.2.5
-   Velvet Silk Vortex · 天鹅绒丝涡 · Refined Glass Morphism
+   B站 AI 收藏夹整理助理 — 完整样式表 v0.2.6
+   Velvet Zen Flow · 天鹅绒禅流 · Refined Glass Morphism
    Indigo-Nebula 双色系统 · Restrained Aurora Palette
    Velvet Dynamics 28.0 · Ultra-Smooth Spring Micro-interactions
    Stellar Abyss Dark Theme · Living Glass Surfaces
@@ -29,9 +29,10 @@
    Velvet Tidal · Fluid Tidal Canvas · Breathing Halo · TwilightMist & DeepSea & WarmSand Themes
    Velvet Zephyr Flow · Ripple Weave Canvas · Living Header · MistyWave & Bronze & MintNight Themes
    Velvet Silk Vortex · Silk Vortex Canvas · Idle Sway · Parchment & Graphene & CeladonRain Themes
+   Velvet Zen Flow · Zen Ripple Canvas · Liquid Morph Idle · InkCloud & WarmWool & StillWater Themes
    ================================================================ */
 
-/* === 1. CSS 变量 (双主题系统) v0.2.5 === */
+/* === 1. CSS 变量 (双主题系统) v0.2.6 === */
 
 /* 亮色主题（默认） — 星潮·晨曦琉璃 Astral Glasstide */
 :root, [data-theme="light"] {
@@ -17713,7 +17714,480 @@ input[type="checkbox"]:active {
   background: linear-gradient(135deg, #6B9E8A, #A8CBBC) !important;
 }
 
-/* === 716. Enhanced Reduced Motion v0.2.5 === */
+/* ================================================================
+   Velvet Zen Flow v0.2.6 — 天鹅绒禅流
+   Zen Ripple Canvas + Ink Cloud & Warm Wool & Still Water Themes
+   Liquid Morph Hover + Silk Breath Idle + Jelly Micro-press
+   Velvet Dynamics 29.0 · Ultra-Smooth Zen Spring System
+   ================================================================ */
+
+/* === 717. Ink Cloud Theme (墨云) v0.2.6 — 水墨意境，温润如玉 === */
+[data-accent="ink-cloud"] {
+  --ai-primary: #5A6B7A;
+  --ai-primary-dark: #3D4E5C;
+  --ai-primary-light: #8FA4B5;
+  --ai-primary-bg: rgba(90, 107, 122, 0.05);
+  --ai-primary-shadow: rgba(90, 107, 122, 0.16);
+  --ai-aurora-1: #5A6B7A;
+  --ai-aurora-2: #748999;
+  --ai-aurora-3: #6A7D8C;
+  --ai-aurora-4: #8FA4B5;
+  --ai-aurora-5: #4A5B6A;
+  --ai-aurora-6: #647888;
+  --ai-aurora-7: #A3B5C2;
+  --ai-aurora-8: #C1CED8;
+  --ai-header-gradient: linear-gradient(135deg, #5A6B7A, #748999, #5A6B7A);
+  --ai-float-gradient: linear-gradient(135deg, #5A6B7A, #748999, #8FA4B5, #5A6B7A);
+  --ai-neon-glow: 0 0 12px rgba(90, 107, 122, 0.14), 0 0 24px rgba(90, 107, 122, 0.05);
+  --ai-glow-color: rgba(90, 107, 122, 0.05);
+  --ai-scrollbar: #8FA4B5;
+  --ai-scrollbar-hover: #5A6B7A;
+}
+[data-theme="dark"][data-accent="ink-cloud"] {
+  --ai-primary: #8FA4B5;
+  --ai-primary-dark: #5A6B7A;
+  --ai-primary-light: #C1CED8;
+  --ai-header-gradient: linear-gradient(135deg, #3D4E5C, #5A6B7A);
+  --ai-float-gradient: linear-gradient(135deg, #8FA4B5, #748999, #6A7D8C, #8FA4B5);
+}
+
+/* === 718. Warm Wool Theme (暖绒) v0.2.6 — 毛绒触感，温暖安宁 === */
+[data-accent="warm-wool"] {
+  --ai-primary: #A08672;
+  --ai-primary-dark: #82695A;
+  --ai-primary-light: #C9B5A3;
+  --ai-primary-bg: rgba(160, 134, 114, 0.05);
+  --ai-primary-shadow: rgba(160, 134, 114, 0.16);
+  --ai-aurora-1: #A08672;
+  --ai-aurora-2: #B49A88;
+  --ai-aurora-3: #C4AC9A;
+  --ai-aurora-4: #D6C4B4;
+  --ai-aurora-5: #8E7662;
+  --ai-aurora-6: #AA9280;
+  --ai-aurora-7: #DACCC0;
+  --ai-aurora-8: #EDE4DB;
+  --ai-header-gradient: linear-gradient(135deg, #A08672, #B49A88, #A08672);
+  --ai-float-gradient: linear-gradient(135deg, #A08672, #B49A88, #C4AC9A, #A08672);
+  --ai-neon-glow: 0 0 12px rgba(160, 134, 114, 0.14), 0 0 24px rgba(160, 134, 114, 0.05);
+  --ai-glow-color: rgba(160, 134, 114, 0.05);
+  --ai-scrollbar: #C9B5A3;
+  --ai-scrollbar-hover: #A08672;
+}
+[data-theme="dark"][data-accent="warm-wool"] {
+  --ai-primary: #C9B5A3;
+  --ai-primary-dark: #A08672;
+  --ai-primary-light: #EDE4DB;
+  --ai-header-gradient: linear-gradient(135deg, #82695A, #A08672);
+  --ai-float-gradient: linear-gradient(135deg, #C9B5A3, #B49A88, #C4AC9A, #C9B5A3);
+}
+
+/* === 719. Still Water Theme (静水) v0.2.6 — 镜湖秋水，宁静致远 === */
+[data-accent="still-water"] {
+  --ai-primary: #5E8B8A;
+  --ai-primary-dark: #43706F;
+  --ai-primary-light: #8FB5B4;
+  --ai-primary-bg: rgba(94, 139, 138, 0.05);
+  --ai-primary-shadow: rgba(94, 139, 138, 0.16);
+  --ai-aurora-1: #5E8B8A;
+  --ai-aurora-2: #78A2A1;
+  --ai-aurora-3: #6C9796;
+  --ai-aurora-4: #8FB5B4;
+  --ai-aurora-5: #4E7B7A;
+  --ai-aurora-6: #68928F;
+  --ai-aurora-7: #A5C5C4;
+  --ai-aurora-8: #C2D9D8;
+  --ai-header-gradient: linear-gradient(135deg, #5E8B8A, #78A2A1, #5E8B8A);
+  --ai-float-gradient: linear-gradient(135deg, #5E8B8A, #78A2A1, #8FB5B4, #5E8B8A);
+  --ai-neon-glow: 0 0 12px rgba(94, 139, 138, 0.14), 0 0 24px rgba(94, 139, 138, 0.05);
+  --ai-glow-color: rgba(94, 139, 138, 0.05);
+  --ai-scrollbar: #8FB5B4;
+  --ai-scrollbar-hover: #5E8B8A;
+}
+[data-theme="dark"][data-accent="still-water"] {
+  --ai-primary: #8FB5B4;
+  --ai-primary-dark: #5E8B8A;
+  --ai-primary-light: #C2D9D8;
+  --ai-header-gradient: linear-gradient(135deg, #43706F, #5E8B8A);
+  --ai-float-gradient: linear-gradient(135deg, #8FB5B4, #78A2A1, #6C9796, #8FB5B4);
+}
+
+/* === 720. Accent Dot Preview for New Themes v0.2.6 === */
+.ai-accent-dot[data-accent="ink-cloud"] {
+  background: linear-gradient(135deg, #5A6B7A, #8FA4B5) !important;
+}
+.ai-accent-dot[data-accent="warm-wool"] {
+  background: linear-gradient(135deg, #A08672, #C9B5A3) !important;
+}
+.ai-accent-dot[data-accent="still-water"] {
+  background: linear-gradient(135deg, #5E8B8A, #8FB5B4) !important;
+}
+
+/* === 721. Zen Ripple Canvas Container v0.2.6 === */
+.ai-zen-ripple-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  opacity: 0.6;
+  mix-blend-mode: soft-light;
+}
+[data-theme="dark"] .ai-zen-ripple-canvas {
+  opacity: 0.45;
+  mix-blend-mode: screen;
+}
+.ai-zen-ripple-canvas canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* === 722. Liquid Morph Hover v0.2.6 — 液态形变悬浮 === */
+@keyframes ai-liquid-morph-idle {
+  0%, 100% {
+    border-radius: 28px;
+  }
+  25% {
+    border-radius: 30px 26px 28px 27px;
+  }
+  50% {
+    border-radius: 26px 28px 30px 26px;
+  }
+  75% {
+    border-radius: 27px 30px 26px 29px;
+  }
+}
+#ai-sort-wrapper:not(.ai-panel-closing) {
+  animation: ai-liquid-morph-idle 12s var(--ai-ease-breath-deep, ease-in-out) infinite,
+             ai-border-glow-pulse 5s var(--ai-ease-breath-deep, ease-in-out) infinite;
+}
+
+/* === 723. Silk Breath Idle v0.2.6 — 丝绸呼吸闲置态 === */
+@keyframes ai-silk-breath-idle {
+  0%, 100% {
+    box-shadow: 0 24px 68px rgba(0,0,0,0.09), 0 10px 28px rgba(0,0,0,0.06);
+  }
+  50% {
+    box-shadow: 0 26px 72px rgba(0,0,0,0.11), 0 12px 32px rgba(0,0,0,0.07),
+                0 0 40px var(--ai-glow-color, rgba(115, 100, 255, 0.04));
+  }
+}
+#ai-sort-wrapper {
+  animation: ai-silk-breath-idle 6s var(--ai-ease-breath-deep, ease-in-out) infinite,
+             ai-liquid-morph-idle 12s var(--ai-ease-breath-deep, ease-in-out) infinite,
+             ai-border-glow-pulse 5s var(--ai-ease-breath-deep, ease-in-out) infinite;
+}
+
+/* === 724. Jelly Micro-press v0.2.6 — 果冻微压反馈 === */
+.ai-btn:active,
+.ai-header-btn:active,
+.ai-btn-tool:active {
+  transform: scale(0.91) !important;
+  transition: transform 0.08s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+.ai-btn:not(:active),
+.ai-header-btn:not(:active),
+.ai-btn-tool:not(:active) {
+  transition: transform 0.5s var(--ai-spring-mochi, cubic-bezier(0.21, 1.46, 0.40, 1)),
+              background 0.3s ease,
+              box-shadow 0.4s ease,
+              border-color 0.3s ease !important;
+}
+
+/* === 725. Zen Float Button Breathing v0.2.6 — 禅意悬浮按钮呼吸 === */
+@keyframes ai-zen-float-breathe {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 0 14px rgba(115, 100, 255, 0.16), 0 0 28px rgba(155, 89, 246, 0.06);
+  }
+  33% {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 0 18px rgba(115, 100, 255, 0.22), 0 0 36px rgba(155, 89, 246, 0.09);
+  }
+  66% {
+    transform: translateY(-1px) scale(1.005);
+    box-shadow: 0 0 12px rgba(115, 100, 255, 0.14), 0 0 24px rgba(155, 89, 246, 0.05);
+  }
+}
+#ai-float-btn {
+  animation: ai-zen-float-breathe 5s var(--ai-ease-breath-deep, ease-in-out) infinite,
+             ai-float-gradient-shift 7s ease infinite;
+}
+
+/* === 726. Silk Cascade Unfold v0.2.6 — 丝瀑展开动画 === */
+@keyframes ai-silk-cascade-unfold {
+  0% {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+    filter: blur(4px);
+  }
+  40% {
+    opacity: 0.8;
+    transform: translateY(-3px) scale(1.01);
+    filter: blur(0.5px);
+  }
+  70% {
+    opacity: 0.95;
+    transform: translateY(1px) scale(0.998);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* === 727. Ambient Shadow Drift v0.2.6 — 环境阴影漂移 === */
+@keyframes ai-shadow-drift {
+  0%, 100% {
+    box-shadow: 0 24px 68px rgba(0,0,0,0.09), 0 10px 28px rgba(0,0,0,0.06),
+                -2px 0 30px var(--ai-glow-color, rgba(115, 100, 255, 0.03));
+  }
+  33% {
+    box-shadow: 0 26px 72px rgba(0,0,0,0.10), 0 12px 30px rgba(0,0,0,0.065),
+                2px 2px 34px var(--ai-glow-color, rgba(115, 100, 255, 0.04));
+  }
+  66% {
+    box-shadow: 0 22px 64px rgba(0,0,0,0.085), 0 9px 26px rgba(0,0,0,0.055),
+                -1px -1px 28px var(--ai-glow-color, rgba(115, 100, 255, 0.035));
+  }
+}
+
+/* === 728. Velvet Group Expand v0.2.6 — 天鹅绒分组展开 === */
+@keyframes ai-zen-group-expand {
+  0% {
+    opacity: 0;
+    max-height: 0;
+    transform: translateY(-6px);
+    filter: blur(2px);
+  }
+  50% {
+    opacity: 0.7;
+    filter: blur(0.3px);
+  }
+  100% {
+    opacity: 1;
+    max-height: 1200px;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+.ai-group-body {
+  overflow: hidden;
+  animation: ai-zen-group-expand 0.45s var(--ai-spring-silk, cubic-bezier(0.20, 1.10, 0.36, 1)) both;
+}
+
+/* === 729. Toast Zen Slide v0.2.6 — 通知禅意滑入 === */
+@keyframes ai-toast-zen-slide {
+  0% {
+    opacity: 0;
+    transform: translateX(60px) scale(0.92);
+    filter: blur(3px);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translateX(-4px) scale(1.01);
+    filter: blur(0);
+  }
+  70% {
+    transform: translateX(1.5px) scale(0.998);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    filter: blur(0);
+  }
+}
+.ai-toast {
+  animation: ai-toast-zen-slide 0.55s var(--ai-spring-silk, cubic-bezier(0.20, 1.10, 0.36, 1)) both !important;
+}
+
+/* === 730. Header Shimmer Wave v0.2.6 — 头部微光波 === */
+@keyframes ai-header-zen-shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+.ai-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.04) 30%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.04) 70%,
+    transparent 100%);
+  background-size: 200% 100%;
+  animation: ai-header-zen-shimmer 8s ease infinite;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+}
+
+/* === 731. Category Row Silk Hover v0.2.6 — 分类行丝滑悬浮 === */
+.ai-cat-row {
+  transition: all 0.45s var(--ai-spring-silk, cubic-bezier(0.20, 1.10, 0.36, 1)) !important;
+}
+.ai-cat-row:hover {
+  transform: translateX(4px) scale(1.005) !important;
+  box-shadow: inset 3px 0 0 var(--ai-primary, #7364FF),
+              0 2px 12px rgba(0, 0, 0, 0.03) !important;
+}
+.ai-cat-row:active {
+  transform: translateX(2px) scale(0.995) !important;
+  transition-duration: 0.1s !important;
+}
+
+/* === 732. Settings Zen Reveal v0.2.6 — 设置面板禅意展现 === */
+@keyframes ai-settings-zen-reveal {
+  0% {
+    opacity: 0;
+    max-height: 0;
+    transform: scaleY(0.92);
+    transform-origin: top center;
+    filter: blur(3px);
+  }
+  60% {
+    opacity: 0.85;
+    transform: scaleY(1.01);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    max-height: 2000px;
+    transform: scaleY(1);
+    filter: blur(0);
+  }
+}
+
+/* === 733. Input Focus Zen Glow v0.2.6 — 输入框禅意聚焦光 === */
+.ai-input:focus,
+.ai-select:focus {
+  border-color: var(--ai-primary) !important;
+  box-shadow: 0 0 0 3px var(--ai-primary-bg, rgba(115, 100, 255, 0.06)),
+              0 0 16px var(--ai-glow-color, rgba(115, 100, 255, 0.04)) !important;
+  transition: border-color 0.3s var(--ai-ease-silk, cubic-bezier(0.14, 0.86, 0.20, 1)),
+              box-shadow 0.4s var(--ai-spring-gentle, cubic-bezier(0.20, 1.04, 0.42, 1)) !important;
+}
+
+/* === 734. Modal Zen Enter v0.2.6 — 弹窗禅意入场 === */
+@keyframes ai-modal-zen-enter {
+  0% {
+    opacity: 0;
+    transform: scale(0.88) translateY(20px);
+    filter: blur(6px) saturate(0.7);
+  }
+  40% {
+    opacity: 0.85;
+    transform: scale(1.015) translateY(-3px);
+    filter: blur(0.5px) saturate(1);
+  }
+  70% {
+    transform: scale(0.997) translateY(1px);
+    filter: blur(0) saturate(1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0) saturate(1);
+  }
+}
+@keyframes ai-backdrop-zen-in {
+  0% {
+    opacity: 0;
+    backdrop-filter: blur(0) saturate(1);
+  }
+  100% {
+    opacity: 1;
+    backdrop-filter: blur(16px) saturate(1.4);
+  }
+}
+
+/* === 735. Scroll Momentum Overscroll v0.2.6 — 滚动惯性过冲 === */
+.ai-panel-content,
+.ai-modal-body,
+.ai-status-log {
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+}
+.ai-panel-content::-webkit-scrollbar-thumb,
+.ai-modal-body::-webkit-scrollbar-thumb,
+.ai-status-log::-webkit-scrollbar-thumb {
+  transition: background 0.3s ease, width 0.3s ease;
+}
+
+/* === 736. Video Row Zen Stagger v0.2.6 — 视频列表禅意交错入场 === */
+@keyframes ai-vid-zen-stagger {
+  0% {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  60% {
+    opacity: 0.9;
+    transform: translateX(-1.5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* === 737. Progress Bar Silk Flow v0.2.6 — 进度条丝滑流动 === */
+@keyframes ai-progress-zen-flow {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
+/* === 738. Panel Open Zen Spring v0.2.6 — 面板展开禅意弹簧 === */
+@keyframes ai-panel-zen-open {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.92);
+    filter: blur(8px);
+  }
+  35% {
+    opacity: 0.7;
+    transform: translateY(-6px) scale(1.02);
+    filter: blur(1px);
+  }
+  60% {
+    opacity: 0.92;
+    transform: translateY(2px) scale(0.998);
+    filter: blur(0);
+  }
+  80% {
+    transform: translateY(-0.5px) scale(1.001);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* === 739. Zen Easing Functions v0.2.6 — 禅意缓动曲线 === */
+:root {
+  --ai-ease-zen: cubic-bezier(0.06, 0.88, 0.12, 1.01);
+  --ai-ease-zen-out: cubic-bezier(0.04, 0.90, 0.08, 1.00);
+  --ai-spring-zen: cubic-bezier(0.16, 1.18, 0.34, 1.01);
+  --ai-spring-zen-soft: cubic-bezier(0.12, 1.08, 0.30, 1.00);
+  --ai-ease-ink: cubic-bezier(0.08, 0.82, 0.16, 1.02);
+  --ai-ease-wool: cubic-bezier(0.14, 0.92, 0.22, 1.00);
+  --ai-spring-still: cubic-bezier(0.10, 1.12, 0.28, 1.01);
+  --ai-ease-ripple-zen: cubic-bezier(0.05, 0.86, 0.10, 1.00);
+}
+
+/* === 740. Enhanced Reduced Motion v0.2.6 === */
 @media (prefers-reduced-motion: reduce) {
   #ai-float-btn {
     animation: none !important;
@@ -17721,10 +18195,19 @@ input[type="checkbox"]:active {
   #ai-sort-wrapper:not(.ai-panel-closing):not(:hover) {
     animation: none !important;
   }
-  .ai-silk-vortex-canvas {
+  .ai-silk-vortex-canvas,
+  .ai-zen-ripple-canvas {
     display: none !important;
   }
   .ai-header-particle {
     animation: ai-header-particle-float var(--hp-dur, 8s) ease var(--hp-delay, 0s) infinite !important;
+  }
+  .ai-header::after {
+    animation: none !important;
+  }
+  .ai-btn:not(:active),
+  .ai-header-btn:not(:active),
+  .ai-btn-tool:not(:active) {
+    transition: background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease !important;
   }
 }
