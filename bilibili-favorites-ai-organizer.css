@@ -1,8 +1,8 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v0.1.4
-   Velvet Flux · 天鹅绒流韵 · Refined Glass Morphism
+   B站 AI 收藏夹整理助理 — 完整样式表 v0.1.5
+   Velvet Aether · 天鹅绒以太 · Refined Glass Morphism
    Indigo-Nebula 双色系统 · Restrained Aurora Palette
-   Velvet Dynamics 17.0 · Silky Spring Micro-interactions
+   Velvet Dynamics 18.0 · Silky Spring Micro-interactions
    Stellar Abyss Dark Theme · Living Glass Surfaces
    Multi-Accent Color Themes · Ambient Light Motes · Liquid Borders
    Magnetic Tilt · Cursor-Reactive Particles · Fluid Morphing
@@ -18,6 +18,7 @@
    Lucid Drift · Firefly Canvas · Aurora Ribbon · Cloud & Cedar Themes
    Velvet Prism · Gravity Orb Canvas · Breath Sync · Birch & Tide Themes
    Velvet Flux · Plasma Vein Canvas · Harmonic Pulse · Volcanic & Glacier
+   Velvet Aether · Harmonic Ripple Canvas · Kinetic Glow · Spring Scroll
    ================================================================ */
 
 /* === 1. CSS 变量 (双主题系统) === */
@@ -12217,4 +12218,551 @@ input[type="checkbox"]:active {
               0 0 80px rgba(0, 212, 170, 0.025),
               inset 0 1px 0 rgba(255,255,255,0.08),
               inset 0 -1px 0 rgba(0,0,0,0.32);
+}
+
+/* === 520. Velvet Aether v0.1.5 — 新增运动曲线 === */
+:root, [data-theme="light"] {
+  --ai-spring-aether: cubic-bezier(0.12, 1.24, 0.28, 1.02);
+  --ai-ease-silk-flow: cubic-bezier(0.05, 0.88, 0.12, 1.00);
+  --ai-spring-feather: cubic-bezier(0.15, 1.18, 0.32, 1.00);
+  --ai-ease-water: cubic-bezier(0.03, 0.84, 0.10, 1.01);
+  --ai-spring-cloud: cubic-bezier(0.14, 1.30, 0.30, 0.99);
+}
+[data-theme="dark"] {
+  --ai-spring-aether: cubic-bezier(0.12, 1.24, 0.28, 1.02);
+  --ai-ease-silk-flow: cubic-bezier(0.05, 0.88, 0.12, 1.00);
+  --ai-spring-feather: cubic-bezier(0.15, 1.18, 0.32, 1.00);
+  --ai-ease-water: cubic-bezier(0.03, 0.84, 0.10, 1.01);
+  --ai-spring-cloud: cubic-bezier(0.14, 1.30, 0.30, 0.99);
+}
+
+/* === 521. Harmonic Ripple Canvas — 谐波涟漪画布 === */
+.ai-harmonic-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+  z-index: 0;
+}
+
+.ai-harmonic-canvas canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.ai-harmonic-canvas {
+  opacity: 0.18;
+  mix-blend-mode: soft-light;
+  transition: opacity 0.6s var(--ai-ease-silk-flow);
+}
+
+[data-theme="dark"] .ai-harmonic-canvas {
+  opacity: 0.12;
+  mix-blend-mode: screen;
+}
+
+#ai-sort-wrapper:hover .ai-harmonic-canvas {
+  opacity: 0.24;
+}
+
+[data-theme="dark"] #ai-sort-wrapper:hover .ai-harmonic-canvas {
+  opacity: 0.16;
+}
+
+/* === 522. Kinetic Border Glow — 动态边框微光 (始终流动) === */
+@keyframes ai-kinetic-border {
+  0% {
+    background-position: 0% 50%;
+    opacity: 0.5;
+  }
+  25% {
+    background-position: 50% 100%;
+    opacity: 0.7;
+  }
+  50% {
+    background-position: 100% 50%;
+    opacity: 0.5;
+  }
+  75% {
+    background-position: 50% 0%;
+    opacity: 0.7;
+  }
+  100% {
+    background-position: 0% 50%;
+    opacity: 0.5;
+  }
+}
+
+#ai-sort-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    270deg,
+    rgba(115, 100, 255, 0.15),
+    rgba(0, 212, 170, 0.10),
+    rgba(155, 89, 246, 0.12),
+    rgba(115, 100, 255, 0.15)
+  );
+  background-size: 400% 400%;
+  animation: ai-kinetic-border 12s ease-in-out infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.5s var(--ai-ease-silk-flow);
+}
+
+[data-theme="dark"] #ai-sort-wrapper::before {
+  background: linear-gradient(
+    270deg,
+    rgba(176, 168, 255, 0.12),
+    rgba(46, 232, 192, 0.08),
+    rgba(192, 132, 252, 0.10),
+    rgba(176, 168, 255, 0.12)
+  );
+  background-size: 400% 400%;
+  animation: ai-kinetic-border 12s ease-in-out infinite;
+}
+
+#ai-sort-wrapper:hover::before {
+  opacity: 1;
+}
+
+/* === 523. Spring Scroll Momentum — 弹簧滚动惯性 === */
+.ai-panel-content {
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+}
+
+@keyframes ai-overscroll-bounce {
+  0% { transform: translateY(0); }
+  40% { transform: translateY(-6px); }
+  70% { transform: translateY(2px); }
+  100% { transform: translateY(0); }
+}
+
+.ai-panel-content.overscroll-top {
+  animation: ai-overscroll-bounce 0.5s var(--ai-spring-feather);
+}
+
+.ai-panel-content.overscroll-bottom {
+  animation: ai-overscroll-bounce 0.5s var(--ai-spring-feather);
+}
+
+/* === 524. Enhanced Category Row Transition — 增强分类行过渡 === */
+.ai-cat-row {
+  transition: all 0.45s var(--ai-spring-aether),
+              background 0.3s var(--ai-ease-silk-flow),
+              border-left-color 0.4s var(--ai-ease-water);
+}
+
+.ai-cat-row:hover {
+  transform: translateX(4px);
+  background: var(--ai-bg-hover);
+  border-left-color: var(--ai-primary);
+}
+
+.ai-cat-row:active {
+  transform: translateX(2px) scale(0.995);
+  transition-duration: 0.1s;
+}
+
+/* === 525. Silk Button Spring — 丝绸按钮弹簧 v18.0 === */
+.ai-btn {
+  transition: all 0.4s var(--ai-spring-aether),
+              box-shadow 0.35s var(--ai-ease-silk-flow),
+              background 0.3s var(--ai-ease-water);
+}
+
+.ai-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(115, 100, 255, 0.08),
+              0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.ai-btn:active {
+  transform: translateY(0) scale(0.96);
+  transition: all 0.08s var(--ai-ease-water);
+}
+
+.ai-btn-primary:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 10px 28px rgba(115, 100, 255, 0.22),
+              0 4px 12px rgba(155, 89, 246, 0.12);
+}
+
+.ai-btn-primary:active {
+  transform: translateY(0) scale(0.94);
+  transition: all 0.06s ease;
+}
+
+.ai-btn-tool {
+  transition: all 0.4s var(--ai-spring-aether),
+              box-shadow 0.35s var(--ai-ease-silk-flow);
+}
+
+.ai-btn-tool:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 8px 24px rgba(115, 100, 255, 0.10);
+}
+
+.ai-btn-tool:active {
+  transform: translateY(-1px) scale(0.97);
+  transition: all 0.06s ease;
+}
+
+/* === 526. Float Button Kinetic Idle — 悬浮按钮动态静息 (始终运动) === */
+@keyframes ai-float-kinetic {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+    box-shadow: 0 0 14px rgba(115, 100, 255, 0.18),
+                0 0 28px rgba(155, 89, 246, 0.08);
+  }
+  15% {
+    transform: translateY(-3px) rotate(0.5deg);
+  }
+  30% {
+    transform: translateY(-1px) rotate(-0.3deg);
+    box-shadow: 0 0 18px rgba(115, 100, 255, 0.22),
+                0 0 36px rgba(155, 89, 246, 0.10);
+  }
+  50% {
+    transform: translateY(-4px) rotate(0.2deg);
+  }
+  65% {
+    transform: translateY(-2px) rotate(-0.5deg);
+    box-shadow: 0 0 14px rgba(115, 100, 255, 0.16),
+                0 0 24px rgba(155, 89, 246, 0.06);
+  }
+  80% {
+    transform: translateY(-1px) rotate(0.3deg);
+  }
+}
+
+#ai-float-btn {
+  animation: ai-float-kinetic 6s var(--ai-ease-silk-flow) infinite,
+             ai-float-gradient-shift 16s linear infinite;
+}
+
+#ai-float-btn:hover {
+  animation-play-state: paused, running;
+  transform: scale(1.12) translateY(-3px);
+  transition: transform 0.5s var(--ai-spring-aether);
+}
+
+/* === 527. Header Flowing Light — 头部流光呼吸 (始终流动) === */
+@keyframes ai-header-flow-breathe {
+  0%, 100% {
+    background-position: 0% 50%;
+    filter: brightness(1);
+  }
+  33% {
+    background-position: 50% 50%;
+    filter: brightness(1.03);
+  }
+  66% {
+    background-position: 100% 50%;
+    filter: brightness(0.98);
+  }
+}
+
+.ai-header {
+  background-size: 600% 600%;
+  animation: ai-header-flow-breathe 10s ease-in-out infinite;
+}
+
+/* === 528. Panel Ambient Pulse — 面板环境脉搏 (始终跳动) === */
+@keyframes ai-panel-ambient-pulse {
+  0%, 100% {
+    box-shadow: 0 24px 68px rgba(0, 0, 0, 0.11),
+                0 10px 28px rgba(0, 0, 0, 0.07),
+                0 0 0 1px var(--ai-glass-border),
+                0 0 80px rgba(115, 100, 255, 0.02);
+  }
+  50% {
+    box-shadow: 0 26px 72px rgba(0, 0, 0, 0.12),
+                0 11px 30px rgba(0, 0, 0, 0.07),
+                0 0 0 1px var(--ai-glass-border),
+                0 0 90px rgba(115, 100, 255, 0.035);
+  }
+}
+
+#ai-sort-wrapper {
+  animation: ai-panel-ambient-pulse 5s var(--ai-ease-silk-flow) infinite;
+}
+
+[data-theme="dark"] #ai-sort-wrapper {
+  animation: ai-panel-ambient-pulse 5s var(--ai-ease-silk-flow) infinite;
+}
+
+/* === 529. Enhanced Modal Spring Entrance — 增强模态框弹簧入场 === */
+@keyframes ai-modal-spring-enter {
+  0% {
+    opacity: 0;
+    transform: scale(0.88) translateY(20px);
+    filter: blur(6px);
+  }
+  40% {
+    opacity: 0.8;
+    transform: scale(1.02) translateY(-4px);
+    filter: blur(1px);
+  }
+  60% {
+    opacity: 0.95;
+    transform: scale(0.995) translateY(1px);
+    filter: blur(0);
+  }
+  80% {
+    transform: scale(1.003) translateY(-0.5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
+}
+
+.ai-modal {
+  animation: ai-modal-spring-enter 0.55s var(--ai-spring-aether) both;
+}
+
+/* === 530. Enhanced Backdrop Dissolve — 增强背景溶解 === */
+@keyframes ai-backdrop-silk-in {
+  0% {
+    opacity: 0;
+    backdrop-filter: blur(0) saturate(1);
+  }
+  40% {
+    opacity: 0.6;
+    backdrop-filter: blur(8px) saturate(1.2);
+  }
+  100% {
+    opacity: 1;
+    backdrop-filter: blur(16px) saturate(1.4);
+  }
+}
+
+.ai-modal-backdrop {
+  animation: ai-backdrop-silk-in 0.4s var(--ai-ease-silk-flow) both;
+}
+
+/* === 531. Theme Morph Enhanced — 增强主题变形过渡 === */
+.ai-theme-morph {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  pointer-events: none;
+  border-radius: 50%;
+  transform-origin: var(--morph-x, 50%) var(--morph-y, 50%);
+}
+
+.ai-theme-morph.to-dark {
+  background: radial-gradient(circle at var(--morph-x, 50%) var(--morph-y, 50%),
+    #06061A 0%, rgba(6, 6, 26, 0.95) 30%, rgba(6, 6, 26, 0.7) 60%, transparent 75%);
+  animation: ai-theme-morph-expand 0.65s var(--ai-ease-silk-flow, cubic-bezier(0.05, 0.88, 0.12, 1)) both;
+}
+
+.ai-theme-morph.to-light {
+  background: radial-gradient(circle at var(--morph-x, 50%) var(--morph-y, 50%),
+    #ffffff 0%, rgba(255, 255, 255, 0.95) 30%, rgba(255, 255, 255, 0.7) 60%, transparent 75%);
+  animation: ai-theme-morph-expand 0.65s var(--ai-ease-silk-flow, cubic-bezier(0.05, 0.88, 0.12, 1)) both;
+}
+
+@keyframes ai-theme-morph-expand {
+  0% {
+    clip-path: circle(0% at var(--morph-x, 50%) var(--morph-y, 50%));
+    opacity: 1;
+  }
+  60% {
+    clip-path: circle(80% at var(--morph-x, 50%) var(--morph-y, 50%));
+    opacity: 0.9;
+  }
+  100% {
+    clip-path: circle(150% at var(--morph-x, 50%) var(--morph-y, 50%));
+    opacity: 0;
+  }
+}
+
+/* === 532. Log Entry Spring Stagger — 日志条目弹簧交错 === */
+@keyframes ai-log-spring-in {
+  0% {
+    opacity: 0;
+    transform: translateX(-12px) scale(0.95);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateX(2px) scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.ai-log-entry {
+  animation: ai-log-spring-in 0.4s var(--ai-spring-aether) both;
+}
+
+/* === 533. Settings Panel Silk Unfold — 设置面板丝绸展开 === */
+.ai-settings {
+  transition: all 0.45s var(--ai-spring-feather);
+}
+
+.ai-settings[style*="display: block"],
+.ai-settings[style*="display:block"] {
+  animation: ai-settings-silk-unfold 0.45s var(--ai-spring-feather) both;
+}
+
+@keyframes ai-settings-silk-unfold {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scaleY(0.96);
+    filter: blur(2px);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateY(1px) scaleY(1.005);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+    filter: blur(0);
+  }
+}
+
+/* === 534. Input Focus Aether Ring — 输入框以太聚焦环 === */
+.ai-input:focus {
+  border-color: var(--ai-primary);
+  box-shadow: 0 0 0 3px rgba(115, 100, 255, 0.10),
+              0 0 12px rgba(115, 100, 255, 0.06);
+  transition: all 0.35s var(--ai-spring-aether);
+}
+
+.ai-select:focus {
+  border-color: var(--ai-primary);
+  box-shadow: 0 0 0 3px rgba(115, 100, 255, 0.10),
+              0 0 12px rgba(115, 100, 255, 0.06);
+  transition: all 0.35s var(--ai-spring-aether);
+}
+
+/* === 535. Group Header Silk Hover — 分组标题丝绸悬浮 === */
+.ai-group-header {
+  transition: all 0.4s var(--ai-spring-aether),
+              background 0.3s var(--ai-ease-silk-flow);
+}
+
+.ai-group-header:hover {
+  transform: translateX(3px);
+  background: linear-gradient(135deg, var(--ai-primary-bg), rgba(0, 212, 170, 0.03));
+}
+
+.ai-group-header:active {
+  transform: translateX(1px) scale(0.99);
+  transition-duration: 0.08s;
+}
+
+/* === 536. Header Button Silk Spring — 头部按钮丝绸弹簧 === */
+.ai-header-btn {
+  transition: all 0.4s var(--ai-spring-aether),
+              background 0.25s var(--ai-ease-silk-flow);
+}
+
+.ai-header-btn:hover {
+  background: rgba(255, 255, 255, 0.24);
+  transform: scale(1.10) translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+.ai-header-btn:active {
+  transform: scale(0.92);
+  transition: all 0.06s ease;
+}
+
+/* === 537. Toast Silk Entry — 通知丝绸入场 === */
+@keyframes ai-toast-silk-in {
+  0% {
+    opacity: 0;
+    transform: translateX(40px) scale(0.9);
+    filter: blur(4px);
+  }
+  40% {
+    opacity: 0.85;
+    transform: translateX(-4px) scale(1.02);
+    filter: blur(0);
+  }
+  65% {
+    transform: translateX(1px) scale(0.998);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes ai-toast-silk-out {
+  0% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(30px) scale(0.92);
+    filter: blur(3px);
+  }
+}
+
+/* === 538. Harmonic Canvas GPU Optimization === */
+.ai-harmonic-canvas {
+  will-change: opacity;
+  contain: strict;
+}
+
+.ai-harmonic-canvas canvas {
+  will-change: contents;
+}
+
+/* === 539. Panel Content Scroll Spring CSS === */
+.ai-panel-content {
+  scroll-snap-type: y proximity;
+}
+
+.ai-cat-block {
+  scroll-snap-align: start;
+}
+
+/* === 540. Enhanced Reduced Motion — 无障碍动画降级 === */
+@media (prefers-reduced-motion: reduce) {
+  #ai-float-btn {
+    animation: none !important;
+  }
+  .ai-header {
+    animation: none !important;
+  }
+  #ai-sort-wrapper {
+    animation: none !important;
+  }
+  #ai-sort-wrapper::before {
+    animation: none !important;
+  }
+  .ai-harmonic-canvas {
+    display: none !important;
+  }
+  .ai-modal {
+    animation-duration: 0.15s !important;
+  }
+  .ai-modal-backdrop {
+    animation-duration: 0.15s !important;
+  }
+  .ai-cat-row {
+    transition-duration: 0.15s !important;
+  }
+  .ai-btn {
+    transition-duration: 0.1s !important;
+  }
 }

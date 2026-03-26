@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.4.5
+// @version      1.4.6
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -5445,6 +5445,156 @@ ${topUps.length > 0 ? `<div class="section">
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') veinResize(); });
         })();
 
+        // === Velvet Aether v0.1.5 — Harmonic Ripple Canvas 谐波涟漪画布 ===
+        (() => {
+            const hWrap = document.createElement('div');
+            hWrap.className = 'ai-harmonic-canvas';
+            const hCanvas = document.createElement('canvas');
+            hWrap.appendChild(hCanvas);
+            panel.insertBefore(hWrap, panel.firstChild);
+
+            let hAnimId = null;
+            let hTime = 0;
+
+            const hResize = () => {
+                const r = panel.getBoundingClientRect();
+                hCanvas.width = Math.round(r.width * 0.35);
+                hCanvas.height = Math.round(r.height * 0.35);
+            };
+
+            const getHColors = () => {
+                const cs = getComputedStyle(document.documentElement);
+                return [
+                    cs.getPropertyValue('--ai-aurora-1').trim() || '#7364FF',
+                    cs.getPropertyValue('--ai-aurora-3').trim() || '#9B59F6',
+                    cs.getPropertyValue('--ai-aurora-4').trim() || '#00D4AA',
+                ];
+            };
+
+            const hexRgb = (hex) => {
+                hex = hex.replace('#', '');
+                if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+                const n = parseInt(hex, 16);
+                return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+            };
+
+            // Ripple source points — slow-drifting centers that emit concentric waves
+            const SOURCES = 4;
+            const sources = [];
+            for (let i = 0; i < SOURCES; i++) {
+                sources.push({
+                    bx: 0.15 + Math.random() * 0.7,
+                    by: 0.15 + Math.random() * 0.7,
+                    freq: 0.4 + Math.random() * 0.3,
+                    driftX: 0.3 + Math.random() * 0.4,
+                    driftY: 0.2 + Math.random() * 0.3,
+                    phaseX: Math.random() * Math.PI * 2,
+                    phaseY: Math.random() * Math.PI * 2,
+                    waveLen: 18 + Math.random() * 14,
+                    amplitude: 0.5 + Math.random() * 0.5
+                });
+            }
+
+            const renderHarmonic = () => {
+                const ctx = hCanvas.getContext('2d');
+                if (!ctx || !hCanvas.width) { hAnimId = requestAnimationFrame(renderHarmonic); return; }
+                const w = hCanvas.width, h = hCanvas.height;
+                const imgData = ctx.createImageData(w, h);
+                const data = imgData.data;
+                hTime += 0.005;
+
+                const colors = getHColors();
+                const rgbs = colors.map(hexRgb);
+
+                // Compute current source positions (gentle drift)
+                const curSources = sources.map(s => ({
+                    x: (s.bx + Math.sin(hTime * s.driftX + s.phaseX) * 0.15) * w,
+                    y: (s.by + Math.cos(hTime * s.driftY + s.phaseY) * 0.15) * h,
+                    waveLen: s.waveLen,
+                    amplitude: s.amplitude,
+                    freq: s.freq
+                }));
+
+                for (let py = 0; py < h; py++) {
+                    for (let px = 0; px < w; px++) {
+                        let val = 0;
+                        // Sum sine waves from each source (interference pattern)
+                        for (let si = 0; si < curSources.length; si++) {
+                            const s = curSources[si];
+                            const dx = px - s.x;
+                            const dy = py - s.y;
+                            const dist = Math.sqrt(dx * dx + dy * dy);
+                            val += Math.sin(dist / s.waveLen - hTime * s.freq * 6) * s.amplitude;
+                        }
+                        // Normalize to 0-1
+                        const norm = (val / curSources.length + 1) * 0.5;
+                        // Blend between colors based on interference value
+                        const ci = norm * (rgbs.length - 1);
+                        const ci0 = Math.floor(ci);
+                        const ci1 = Math.min(ci0 + 1, rgbs.length - 1);
+                        const t = ci - ci0;
+                        const r = rgbs[ci0][0] + (rgbs[ci1][0] - rgbs[ci0][0]) * t;
+                        const g = rgbs[ci0][1] + (rgbs[ci1][1] - rgbs[ci0][1]) * t;
+                        const b = rgbs[ci0][2] + (rgbs[ci1][2] - rgbs[ci0][2]) * t;
+                        // Very subtle alpha — emphasize interference peaks
+                        const alpha = Math.pow(Math.abs(norm - 0.5) * 2, 1.5) * 80;
+                        const idx = (py * w + px) * 4;
+                        data[idx] = r;
+                        data[idx + 1] = g;
+                        data[idx + 2] = b;
+                        data[idx + 3] = alpha;
+                    }
+                }
+                ctx.putImageData(imgData, 0, 0);
+                hAnimId = requestAnimationFrame(renderHarmonic);
+            };
+
+            const startHarmonic = () => { hResize(); if (!hAnimId) renderHarmonic(); };
+            const stopHarmonic = () => { if (hAnimId) { cancelAnimationFrame(hAnimId); hAnimId = null; } };
+
+            const hObs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startHarmonic();
+                else stopHarmonic();
+            });
+            hObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startHarmonic();
+            window.addEventListener('resize', () => { if (panel.style.display !== 'none') hResize(); });
+        })();
+
+        // === Velvet Aether v0.1.5 — Spring Scroll Physics 弹簧滚动物理 ===
+        (() => {
+            const content = panel.querySelector('.ai-panel-content');
+            if (!content) return;
+
+            let scrollVelocity = 0;
+            let lastScrollTop = 0;
+            let springRaf = null;
+            let isScrolling = false;
+            let scrollTimer = null;
+
+            content.addEventListener('scroll', () => {
+                const currentTop = content.scrollTop;
+                scrollVelocity = currentTop - lastScrollTop;
+                lastScrollTop = currentTop;
+                isScrolling = true;
+
+                clearTimeout(scrollTimer);
+                scrollTimer = setTimeout(() => {
+                    isScrolling = false;
+                    // Check overscroll at boundaries
+                    if (currentTop <= 0 && scrollVelocity < -3) {
+                        content.classList.add('overscroll-top');
+                        setTimeout(() => content.classList.remove('overscroll-top'), 500);
+                    }
+                    const maxScroll = content.scrollHeight - content.clientHeight;
+                    if (currentTop >= maxScroll - 1 && scrollVelocity > 3) {
+                        content.classList.add('overscroll-bottom');
+                        setTimeout(() => content.classList.remove('overscroll-bottom'), 500);
+                    }
+                }, 80);
+            }, { passive: true });
+        })();
+
         // === Velvet Bloom v0.1.0 — Magnetic Cursor Trail 磁性光标拖尾 ===
         (() => {
             const trailWrap = document.createElement('div');
@@ -5997,7 +6147,7 @@ ${topUps.length > 0 ? `<div class="section">
             const current = document.documentElement.getAttribute('data-theme');
             const next = current === 'dark' ? 'light' : 'dark';
 
-            // 液态融合过渡效果 v0.0.8
+            // 液态融合过渡效果 v0.1.5 — Velvet Aether 以太涟漪过渡
             const morph = document.createElement('div');
             morph.className = `ai-theme-morph to-${next}`;
             const btn = document.getElementById('ai-theme-toggle');
@@ -6008,25 +6158,29 @@ ${topUps.length > 0 ? `<div class="section">
             morph.style.setProperty('--morph-y', cy + '%');
             document.body.appendChild(morph);
 
-            // 主题图标弹性旋转
+            // 主题图标弹性旋转 — 增强弹簧曲线
             const icon = btn.querySelector('[data-lucide]');
             if (icon) {
-                icon.style.transition = 'transform 0.55s cubic-bezier(0.18, 1.34, 0.36, 1)';
-                icon.style.transform = 'rotate(360deg) scale(0.7)';
-                setTimeout(() => { icon.style.transform = ''; }, 400);
+                icon.style.transition = 'transform 0.6s cubic-bezier(0.12, 1.24, 0.28, 1.02)';
+                icon.style.transform = 'rotate(360deg) scale(0.6)';
+                setTimeout(() => {
+                    icon.style.transition = 'transform 0.45s cubic-bezier(0.12, 1.24, 0.28, 1.02)';
+                    icon.style.transform = 'rotate(720deg) scale(1)';
+                    setTimeout(() => { icon.style.transform = ''; icon.style.transition = ''; }, 450);
+                }, 300);
             }
 
-            // 延迟切换以配合液态动画
+            // 延迟切换以配合液态动画 — 更精确的时机
             requestAnimationFrame(() => {
                 setTimeout(() => {
                     document.documentElement.setAttribute('data-theme', next);
                     GM_setValue('bfao_theme', next);
                     updateThemeIcon();
-                }, 150);
+                }, 120);
             });
 
             morph.addEventListener('animationend', () => morph.remove());
-            setTimeout(() => morph.remove(), 1000); // fallback cleanup
+            setTimeout(() => morph.remove(), 800); // fallback cleanup
         };
 
         document.getElementById('ai-settings-toggle').onclick = () => {
