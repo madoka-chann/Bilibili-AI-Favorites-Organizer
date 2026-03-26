@@ -1,8 +1,8 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v0.1.3
-   Velvet Prism · 天鹅绒棱镜 · Refined Glass Morphism
+   B站 AI 收藏夹整理助理 — 完整样式表 v0.1.4
+   Velvet Flux · 天鹅绒流韵 · Refined Glass Morphism
    Indigo-Nebula 双色系统 · Restrained Aurora Palette
-   Velvet Dynamics 16.0 · Silky Spring Micro-interactions
+   Velvet Dynamics 17.0 · Silky Spring Micro-interactions
    Stellar Abyss Dark Theme · Living Glass Surfaces
    Multi-Accent Color Themes · Ambient Light Motes · Liquid Borders
    Magnetic Tilt · Cursor-Reactive Particles · Fluid Morphing
@@ -17,6 +17,7 @@
    Velvet Breath · Silk Thread Canvas · Slate & Mocha Themes
    Lucid Drift · Firefly Canvas · Aurora Ribbon · Cloud & Cedar Themes
    Velvet Prism · Gravity Orb Canvas · Breath Sync · Birch & Tide Themes
+   Velvet Flux · Plasma Vein Canvas · Harmonic Pulse · Volcanic & Glacier
    ================================================================ */
 
 /* === 1. CSS 变量 (双主题系统) === */
@@ -11624,7 +11625,8 @@ input[type="checkbox"]:active {
 
 /* === 493. Reduced Motion v0.1.3 === */
 @media (prefers-reduced-motion: reduce) {
-  .ai-gravity-canvas {
+  .ai-gravity-canvas,
+  .ai-plasma-vein-canvas {
     display: none !important;
   }
   #ai-float-btn:not(:hover):not(:active) {
@@ -11639,4 +11641,580 @@ input[type="checkbox"]:active {
   #ai-sort-wrapper {
     animation: none !important;
   }
+}
+
+/* ================================================================
+   Velvet Flux v0.1.4 — 天鹅绒流韵 · Velvet Dynamics 17.0
+   Plasma Vein Canvas · Harmonic Pulse · Volcanic & Glacier Themes
+   ================================================================ */
+
+/* === 494. Plasma Vein Canvas 等离子脉络画布 === */
+.ai-plasma-vein-canvas {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.45;
+  mix-blend-mode: screen;
+  overflow: hidden;
+}
+
+.ai-plasma-vein-canvas canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+[data-theme="dark"] .ai-plasma-vein-canvas {
+  opacity: 0.65;
+}
+
+[data-theme="light"] .ai-plasma-vein-canvas {
+  mix-blend-mode: multiply;
+  opacity: 0.25;
+}
+
+/* === 495. Velvet Dynamics 17.0 — 新增动画曲线 === */
+:root {
+  --ai-spring-plasma: cubic-bezier(0.16, 1.38, 0.36, 1.01);
+  --ai-ease-vein: cubic-bezier(0.04, 0.88, 0.12, 1.01);
+  --ai-spring-flux: cubic-bezier(0.22, 1.36, 0.42, 1);
+  --ai-ease-harmonic: cubic-bezier(0.08, 0.82, 0.18, 1.04);
+}
+
+/* === 496. Harmonic Pulse — 全局谐振脉冲系统 === */
+@property --ai-harmonic {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+#ai-sort-wrapper {
+  animation: ai-global-breath 6s ease-in-out infinite,
+             ai-harmonic-pulse 3.5s ease-in-out infinite;
+}
+
+@keyframes ai-harmonic-pulse {
+  0%, 100% { --ai-harmonic: 0; }
+  50% { --ai-harmonic: 1; }
+}
+
+/* === 497. Harmonic Pulse on float button — synchronized micro-scale === */
+#ai-float-btn {
+  animation:
+    ai-float-gradient-shift 14s ease-in-out infinite,
+    ai-float-levitate 8s ease-in-out infinite,
+    ai-float-morph 14s ease-in-out infinite,
+    ai-float-energy-ring 4s ease-in-out infinite,
+    ai-idle-wobble 10s ease-in-out infinite,
+    ai-harmonic-float-pulse 3.5s ease-in-out infinite;
+}
+
+@keyframes ai-harmonic-float-pulse {
+  0%, 100% {
+    filter: brightness(1) saturate(1);
+  }
+  50% {
+    filter: brightness(1.04) saturate(1.06);
+  }
+}
+
+/* === 498. Enhanced panel open animation — Velvet Flux spring === */
+@keyframes ai-velvet-flux-in {
+  0% {
+    transform: translateY(44px) scale(0.88) rotateX(1deg);
+    opacity: 0;
+    filter: blur(12px) brightness(1.05) saturate(0.7);
+  }
+  12% {
+    transform: translateY(-6px) scale(1.02) rotateX(-0.2deg);
+    opacity: 1;
+    filter: blur(0.2px) brightness(1.01) saturate(1.04);
+  }
+  24% {
+    transform: translateY(3px) scale(0.994) rotateX(0.08deg);
+    filter: blur(0) brightness(1);
+  }
+  36% {
+    transform: translateY(-1.5px) scale(1.004) rotateX(-0.03deg);
+  }
+  48% {
+    transform: translateY(0.6px) scale(0.998) rotateX(0.01deg);
+  }
+  60% {
+    transform: translateY(-0.2px) scale(1.001);
+  }
+  75% {
+    transform: translateY(0.05px) scale(0.9998);
+  }
+  100% {
+    transform: translateY(0) scale(1) rotateX(0deg);
+    opacity: 1;
+    filter: blur(0) brightness(1) saturate(1);
+  }
+}
+
+/* === 499. Enhanced toast entrance — smoother spring === */
+@keyframes ai-toast-flux-in {
+  0% {
+    transform: translateX(120%) scale(0.65) rotate(2deg);
+    opacity: 0;
+    filter: blur(10px) saturate(0.6);
+  }
+  14% {
+    transform: translateX(-4%) scale(1.03) rotate(-0.25deg);
+    opacity: 1;
+    filter: blur(0) saturate(1.05);
+  }
+  26% {
+    transform: translateX(2%) scale(0.986) rotate(0.1deg);
+    filter: saturate(1);
+  }
+  38% {
+    transform: translateX(-0.8%) scale(1.005) rotate(-0.04deg);
+  }
+  50% {
+    transform: translateX(0.3%) scale(0.998);
+  }
+  65% {
+    transform: translateX(-0.08%) scale(1.001);
+  }
+  100% {
+    transform: translateX(0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.ai-toast {
+  animation: ai-toast-flux-in 0.7s var(--ai-ease-harmonic);
+}
+
+/* === 500. Enhanced modal entrance — Velvet Flux dynamics === */
+@keyframes ai-modal-flux-enter {
+  0% {
+    transform: scale(0.82) translateY(36px) rotateX(1.5deg);
+    opacity: 0;
+    filter: blur(14px) brightness(1.06) saturate(0.68);
+  }
+  10% {
+    transform: scale(1.03) translateY(-8px) rotateX(-0.3deg);
+    opacity: 1;
+    filter: blur(0.3px) brightness(1.02) saturate(1.06);
+  }
+  20% {
+    transform: scale(0.988) translateY(3px) rotateX(0.12deg);
+    filter: blur(0) brightness(1);
+  }
+  32% {
+    transform: scale(1.008) translateY(-1.5px) rotateX(-0.04deg);
+  }
+  44% {
+    transform: scale(0.997) translateY(0.5px);
+  }
+  56% {
+    transform: scale(1.002) translateY(-0.15px);
+  }
+  70% {
+    transform: scale(0.9995) translateY(0.04px);
+  }
+  100% {
+    transform: scale(1) translateY(0) rotateX(0deg);
+    opacity: 1;
+    filter: blur(0) brightness(1) saturate(1);
+  }
+}
+
+.ai-modal {
+  animation: ai-modal-flux-enter 0.65s var(--ai-ease-vein);
+}
+
+/* === 501. Category row enhanced hover — harmonic glow pulse === */
+.ai-cat-row:hover {
+  box-shadow: inset 0 0 48px var(--ai-glow-color),
+              0 3px 16px rgba(115, 100, 255, 0.06);
+  transition: all 0.35s var(--ai-ease-vein),
+              transform 0.45s var(--ai-spring-plasma),
+              background 0.3s ease;
+}
+
+/* === 502. Enhanced settings reveal — smoother unfold === */
+@keyframes ai-settings-flux-reveal {
+  0% {
+    opacity: 0;
+    max-height: 0;
+    filter: blur(4px);
+    transform: translateY(-6px) scaleY(0.95);
+  }
+  40% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0.5px) scaleY(1.005);
+  }
+  65% {
+    transform: translateY(-0.2px) scaleY(0.999);
+  }
+  100% {
+    opacity: 1;
+    max-height: 600px;
+    filter: blur(0);
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+.ai-settings[style*="display: block"], .ai-settings[style*="display:block"] {
+  animation: ai-settings-flux-reveal 0.5s var(--ai-ease-vein) both;
+}
+
+/* === 503. Video detail unfold — Velvet Flux smooth === */
+.ai-cat-detail.open {
+  animation: ai-detail-flux-unfold 0.5s var(--ai-ease-vein) both;
+}
+
+@keyframes ai-detail-flux-unfold {
+  0% {
+    max-height: 0;
+    opacity: 0;
+    filter: blur(3px);
+    transform: scaleY(0.96);
+    transform-origin: top;
+  }
+  35% {
+    opacity: 1;
+    filter: blur(0);
+    transform: scaleY(1.005);
+  }
+  60% {
+    transform: scaleY(0.999);
+  }
+  100% {
+    max-height: 2000px;
+    opacity: 1;
+    filter: blur(0);
+    transform: scaleY(1);
+  }
+}
+
+/* === 504. Group body unfold — Velvet Flux dynamics === */
+.ai-group-body {
+  animation: ai-group-flux-unfold 0.42s var(--ai-ease-vein);
+}
+
+@keyframes ai-group-flux-unfold {
+  0% {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+    filter: blur(1.5px);
+  }
+  40% {
+    opacity: 1;
+    transform: translateY(0.4px) scale(1.003);
+    filter: blur(0);
+  }
+  65% {
+    transform: translateY(-0.1px) scale(0.9995);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* === 505. Log entry entrance — Velvet Flux stagger === */
+.ai-log-entry {
+  animation: ai-log-flux-in 0.45s var(--ai-ease-harmonic) both;
+}
+
+@keyframes ai-log-flux-in {
+  0% {
+    opacity: 0;
+    transform: translateX(-10px) scale(0.97);
+    filter: blur(3px);
+  }
+  35% {
+    opacity: 1;
+    transform: translateX(1px) scale(1.004);
+    filter: blur(0);
+  }
+  60% {
+    transform: translateX(-0.3px) scale(0.999);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* === 506. Volcanic 火山主题 === */
+[data-accent="volcanic"] {
+  --ai-primary: #DC5734;
+  --ai-primary-dark: #B8371A;
+  --ai-primary-light: #F0A08C;
+  --ai-primary-bg: rgba(220, 87, 52, 0.06);
+  --ai-primary-shadow: rgba(220, 87, 52, 0.24);
+  --ai-aurora-1: #DC5734;
+  --ai-aurora-2: #F59E0B;
+  --ai-aurora-3: #C2410C;
+  --ai-aurora-4: #EA580C;
+  --ai-aurora-5: #FB923C;
+  --ai-aurora-6: #D97706;
+  --ai-aurora-7: #F87171;
+  --ai-aurora-8: #FCA5A5;
+  --ai-header-gradient: linear-gradient(135deg, #DC5734, #F59E0B, #C2410C);
+  --ai-float-gradient: linear-gradient(135deg, #DC5734, #C2410C, #F59E0B, #EA580C, #FB923C, #D97706);
+  --ai-neon-glow: 0 0 20px rgba(220, 87, 52, 0.30),
+                  0 0 40px rgba(245, 158, 11, 0.16),
+                  0 0 60px rgba(194, 65, 12, 0.08),
+                  0 0 80px rgba(234, 88, 12, 0.04);
+  --ai-interaction-glow: rgba(220, 87, 52, 0.10);
+  --ai-glow-color: rgba(220, 87, 52, 0.07);
+  --ai-chromatic-border: linear-gradient(135deg, rgba(220,87,52,0.35), rgba(245,158,11,0.30), rgba(194,65,12,0.28), rgba(251,146,60,0.26));
+}
+
+.ai-accent-dot[data-accent="volcanic"] {
+  background: linear-gradient(135deg, #DC5734, #F59E0B);
+}
+
+/* === 507. Glacier 冰川主题 === */
+[data-accent="glacier"] {
+  --ai-primary: #7DD3E8;
+  --ai-primary-dark: #1E8AA0;
+  --ai-primary-light: #BFF0FA;
+  --ai-primary-bg: rgba(125, 211, 232, 0.06);
+  --ai-primary-shadow: rgba(125, 211, 232, 0.24);
+  --ai-aurora-1: #7DD3E8;
+  --ai-aurora-2: #94A3B8;
+  --ai-aurora-3: #38BDF8;
+  --ai-aurora-4: #67E8F9;
+  --ai-aurora-5: #A5F3FC;
+  --ai-aurora-6: #BAE6FD;
+  --ai-aurora-7: #E0F2FE;
+  --ai-aurora-8: #CFFAFE;
+  --ai-header-gradient: linear-gradient(135deg, #7DD3E8, #38BDF8, #94A3B8);
+  --ai-float-gradient: linear-gradient(135deg, #7DD3E8, #38BDF8, #67E8F9, #94A3B8, #A5F3FC, #BAE6FD);
+  --ai-neon-glow: 0 0 20px rgba(125, 211, 232, 0.28),
+                  0 0 40px rgba(56, 189, 248, 0.15),
+                  0 0 60px rgba(103, 232, 249, 0.08),
+                  0 0 80px rgba(148, 163, 184, 0.04);
+  --ai-interaction-glow: rgba(125, 211, 232, 0.10);
+  --ai-glow-color: rgba(125, 211, 232, 0.07);
+  --ai-chromatic-border: linear-gradient(135deg, rgba(125,211,232,0.32), rgba(56,189,248,0.28), rgba(103,232,249,0.26), rgba(148,163,184,0.24));
+}
+
+.ai-accent-dot[data-accent="glacier"] {
+  background: linear-gradient(135deg, #7DD3E8, #38BDF8);
+}
+
+/* === 508. Enhanced button micro-interactions — Velvet Flux spring v17 === */
+.ai-btn-tool {
+  transition: all 0.45s var(--ai-spring-plasma) !important;
+}
+
+.ai-btn-tool:hover {
+  transform: translateY(-3px) scale(1.04);
+  transition: all 0.5s var(--ai-spring-plasma) !important;
+}
+
+.ai-btn-tool:active {
+  transform: translateY(0) scale(0.93);
+  transition-duration: 0.08s !important;
+}
+
+/* === 509. Enhanced filter button spring — Velvet Flux === */
+.ai-filter-btn {
+  transition: all 0.4s var(--ai-spring-plasma);
+}
+
+.ai-filter-btn:hover {
+  transform: translateY(-2px) scale(1.04);
+}
+
+.ai-filter-btn.active {
+  transition: all 0.35s var(--ai-spring-plasma);
+}
+
+.ai-filter-btn:active {
+  transform: scale(0.88);
+  transition-duration: 0.08s;
+}
+
+/* === 510. Header button enhanced hover — Velvet Flux === */
+.ai-header-btn {
+  transition: all 0.35s var(--ai-spring-plasma);
+}
+
+.ai-header-btn:hover {
+  transform: scale(1.14) translateY(-1px);
+  transition: all 0.4s var(--ai-spring-plasma);
+}
+
+.ai-header-btn:active {
+  transform: scale(0.88);
+  transition-duration: 0.08s;
+}
+
+/* === 511. Panel close — Velvet Flux silk exit === */
+@keyframes ai-velvet-flux-out {
+  0% {
+    transform: translateY(0) scale(1) rotateX(0deg);
+    opacity: 1;
+    filter: blur(0);
+  }
+  25% {
+    transform: translateY(6px) scale(0.98) rotateX(0.3deg);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(28px) scale(0.92) rotateX(0.8deg);
+    opacity: 0;
+    filter: blur(5px);
+  }
+}
+
+#ai-sort-wrapper.ai-panel-closing {
+  animation: ai-velvet-flux-out 0.38s var(--ai-ease-vein) forwards;
+}
+
+/* === 512. Plasma Vein GPU hints === */
+.ai-plasma-vein-canvas,
+.ai-plasma-vein-canvas canvas {
+  will-change: transform;
+  backface-visibility: hidden;
+  contain: layout style;
+}
+
+/* === 513. Enhanced category slide-in — Velvet Flux v17 stagger === */
+@keyframes ai-cat-flux-slide-in {
+  0% {
+    transform: translateX(32px) scale(0.94);
+    opacity: 0;
+    filter: blur(2px);
+  }
+  28% {
+    transform: translateX(-4px) scale(1.012);
+    opacity: 1;
+    filter: blur(0);
+  }
+  48% {
+    transform: translateX(1.5px) scale(0.998);
+  }
+  66% {
+    transform: translateX(-0.4px) scale(1.001);
+  }
+  82% {
+    transform: translateX(0.08px) scale(0.9998);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.ai-cat-block {
+  animation: ai-cat-flux-slide-in 0.5s var(--ai-ease-vein) both;
+  animation-delay: calc(var(--i, 0) * 0.04s);
+}
+
+/* === 514. Enhanced video item stagger — Velvet Flux === */
+.ai-cat-detail.open .ai-vid-item {
+  animation: ai-vid-flux-stagger 0.32s var(--ai-ease-harmonic) both;
+  animation-delay: calc(var(--vid-i, 0) * 0.025s);
+}
+
+@keyframes ai-vid-flux-stagger {
+  0% {
+    opacity: 0;
+    transform: translateX(-6px) scale(0.98);
+    filter: blur(1px);
+  }
+  45% {
+    opacity: 1;
+    transform: translateX(0.5px) scale(1.003);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* === 515. Enhanced theme toggle — Velvet Flux spring === */
+.ai-theme-toggle {
+  transition: background 0.55s var(--ai-ease-vein), box-shadow 0.35s ease;
+}
+
+.ai-theme-toggle::after {
+  transition: transform 0.55s var(--ai-spring-plasma), background 0.35s, box-shadow 0.35s;
+}
+
+.ai-theme-toggle:hover {
+  box-shadow: 0 0 16px rgba(115, 100, 255, 0.24);
+}
+
+.ai-theme-toggle:active::after {
+  transform: scale(0.85);
+  transition-duration: 0.1s;
+}
+
+[data-theme="dark"] .ai-theme-toggle:active::after {
+  transform: translateX(16px) scale(0.85);
+  transition-duration: 0.1s;
+}
+
+/* === 516. Enhanced progress bar — Velvet Flux glow === */
+#ai-progress-bar:not([style*="width: 0"]):not(.complete) {
+  box-shadow: 0 0 16px rgba(115, 100, 255, 0.22),
+              0 0 32px rgba(0, 212, 170, 0.10);
+}
+
+#ai-progress-bar.complete {
+  box-shadow: 0 0 22px rgba(32, 227, 178, 0.34),
+              0 0 44px rgba(115, 100, 255, 0.16);
+}
+
+/* === 517. Enhanced ambient glow orb — Velvet Flux === */
+.ai-ambient-glow-orb {
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle,
+    rgba(115, 100, 255, 0.18) 0%,
+    rgba(0, 212, 170, 0.06) 30%,
+    rgba(255, 107, 157, 0.04) 50%,
+    transparent 70%);
+  filter: blur(52px);
+  transition: left 0.35s var(--ai-ease-vein),
+              top 0.35s var(--ai-ease-vein),
+              opacity 0.5s ease;
+}
+
+#ai-sort-wrapper:hover .ai-ambient-glow-orb {
+  opacity: 0.55;
+}
+
+/* === 518. Enhanced header shimmer — subtle and refined === */
+.ai-header::after {
+  animation: ai-header-nebula-pulse 7s ease-in-out infinite;
+}
+
+/* === 519. Enhanced panel hover shadow — Velvet Flux === */
+#ai-sort-wrapper:hover {
+  box-shadow: 0 32px 78px rgba(0, 0, 0, 0.12),
+              0 14px 34px rgba(0, 0, 0, 0.07),
+              0 0 0 1px var(--ai-glass-border),
+              0 0 100px rgba(115, 100, 255, 0.035),
+              0 0 60px rgba(0, 212, 170, 0.015),
+              inset 0 1px 0 rgba(255,255,255,0.28),
+              inset 0 -1px 0 rgba(0,0,0,0.02);
+}
+
+[data-theme="dark"] #ai-sort-wrapper:hover {
+  box-shadow: 0 34px 86px rgba(0, 0, 0, 0.60),
+              0 16px 38px rgba(0, 0, 0, 0.42),
+              0 0 0 1px rgba(255, 255, 255, 0.06),
+              0 0 130px rgba(115, 100, 255, 0.06),
+              0 0 80px rgba(0, 212, 170, 0.025),
+              inset 0 1px 0 rgba(255,255,255,0.08),
+              inset 0 -1px 0 rgba(0,0,0,0.32);
 }

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.4.4
+// @version      1.4.5
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -46,7 +46,7 @@
         // Fallback: 直接注入关键 CSS（确保 z-index 和基本布局正常）
         const fallbackCSS = document.createElement('style');
         fallbackCSS.textContent = `
-            :root{--ai-primary:#7364FF;--ai-primary-dark:#5046E5;--ai-primary-light:#B0A8FF;--ai-primary-bg:rgba(115,100,255,0.06);--ai-primary-shadow:rgba(115,100,255,0.22);--ai-success:#10B981;--ai-error:#F43F5E;--ai-info:#818CF8;--ai-warning:#F59E0B;--ai-text:#181233;--ai-text-secondary:#38305A;--ai-text-muted:#868199;--ai-text-light:#BEB8D0;--ai-border:#E4DDF5;--ai-border-light:#F0EAFA;--ai-border-lighter:#F9F7FF;--ai-bg:#fff;--ai-bg-secondary:#F9F7FF;--ai-bg-tertiary:#F0EAFA;--ai-bg-hover:rgba(115,100,255,0.04);--ai-header-gradient:linear-gradient(135deg,#7364FF,#9B59F6,#7364FF);--ai-modal-backdrop:rgba(24,18,51,0.58);--ai-input-bg:#fff;--ai-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--ai-z-float:2147483640;--ai-z-panel:2147483641;--ai-z-modal:2147483645;--ai-z-particle:2147483646;--ai-radius-xs:6px;--ai-radius-sm:8px;--ai-radius-md:10px;--ai-radius-lg:14px;--ai-radius-xl:18px;--ai-transition:0.25s cubic-bezier(0.4,0,0.2,1);--ai-transition-slow:0.4s cubic-bezier(0.16,1,0.3,1);--ai-scrollbar:#BEB8D0;--ai-scrollbar-hover:#868199;--ai-cat-detail-bg:#F9F7FF;--ai-separator:#E4DDF5;--ai-glow-color:rgba(115,100,255,0.07);--ai-badge-new-bg:#F43F5E;--ai-badge-existing-bg:#10B981;--ai-vid-odd-bg:rgba(24,18,51,0.012);--ai-vid-hover-bg:rgba(115,100,255,0.05);--ai-spring:cubic-bezier(0.32,1.48,0.62,1);--ai-spring-gentle:cubic-bezier(0.20,1.04,0.42,1);--ai-spring-bouncy:cubic-bezier(0.165,0.84,0.28,1.18);--ai-spring-silk:cubic-bezier(0.20,1.10,0.36,1);--ai-ease-out-expo:cubic-bezier(0.14,1,0.28,1);--ai-ease-smooth:cubic-bezier(0.38,0,0,1);--ai-ease-fluid:cubic-bezier(0.22,0.78,0.22,1);--ai-ease-ios:cubic-bezier(0.20,0.98,0.28,1);--ai-ease-magnetic:cubic-bezier(0.18,0.88,0.28,1.08);--ai-ease-butterfly:cubic-bezier(0.13,0.94,0.22,1.03);--ai-ease-ethereal:cubic-bezier(0.08,0.92,0.16,1);--ai-spring-flux:cubic-bezier(0.22,1.36,0.42,1);--ai-ease-aurora:cubic-bezier(0.12,0.88,0.20,1.04);--ai-ease-dreamy:cubic-bezier(0.06,0.96,0.14,1);--ai-spring-firefly:cubic-bezier(0.28,1.68,0.48,1);--ai-spring-velvet:cubic-bezier(0.17,1.32,0.40,1);--ai-spring-jelly:cubic-bezier(0.22,1.52,0.38,1);--ai-ease-silk-out:cubic-bezier(0.08,0.90,0.15,1.02);--ai-spring-marshmallow:cubic-bezier(0.19,1.42,0.37,1);--ai-spring-droplet:cubic-bezier(0.26,1.58,0.44,1);--ai-spring-silk-bounce:cubic-bezier(0.14,1.28,0.34,1.02);--ai-ease-gossamer:cubic-bezier(0.08,0.96,0.18,1);--ai-spring-pudding:cubic-bezier(0.21,1.46,0.40,1);--ai-ease-dewdrop:cubic-bezier(0.04,0.88,0.10,1.03);--ai-spring-bloom:cubic-bezier(0.14,1.34,0.32,1.01);--ai-spring-petal:cubic-bezier(0.18,1.52,0.38,0.98);--ai-ease-bloom:cubic-bezier(0.04,0.90,0.10,1.02);--ai-ease-mist:cubic-bezier(0.06,0.88,0.14,1);--ai-spring-dew:cubic-bezier(0.12,1.42,0.28,1.01);--ai-ease-twilight:cubic-bezier(0.10,0.94,0.16,1.01);--ai-spring-ripple:cubic-bezier(0.20,1.28,0.36,1);--ai-ease-breath-deep:cubic-bezier(0.45,0,0.55,1);--ai-spring-lucid:cubic-bezier(0.14,1.22,0.32,1.01);--ai-ease-drift:cubic-bezier(0.06,0.90,0.12,1.00);--ai-spring-elastic-soft:cubic-bezier(0.18,1.48,0.36,0.98);--ai-ease-river:cubic-bezier(0.04,0.86,0.10,1.02);--ai-spring-bounce-light:cubic-bezier(0.22,1.32,0.40,1.00);--ai-ease-fog:cubic-bezier(0.02,0.94,0.08,1.00);--ai-ease-glide:cubic-bezier(0.08,0.78,0.16,1.00);--ai-spring-prism:cubic-bezier(0.16,1.34,0.30,1.00);--ai-ease-velvet:cubic-bezier(0.04,0.92,0.10,1.01);--ai-spring-gravity:cubic-bezier(0.20,1.56,0.36,0.97);--ai-ease-satin:cubic-bezier(0.03,0.90,0.08,1.00);--ai-spring-taffy:cubic-bezier(0.18,1.62,0.34,0.96);--ai-ease-pond:cubic-bezier(0.05,0.82,0.12,1.01);}
+            :root{--ai-primary:#7364FF;--ai-primary-dark:#5046E5;--ai-primary-light:#B0A8FF;--ai-primary-bg:rgba(115,100,255,0.06);--ai-primary-shadow:rgba(115,100,255,0.22);--ai-success:#10B981;--ai-error:#F43F5E;--ai-info:#818CF8;--ai-warning:#F59E0B;--ai-text:#181233;--ai-text-secondary:#38305A;--ai-text-muted:#868199;--ai-text-light:#BEB8D0;--ai-border:#E4DDF5;--ai-border-light:#F0EAFA;--ai-border-lighter:#F9F7FF;--ai-bg:#fff;--ai-bg-secondary:#F9F7FF;--ai-bg-tertiary:#F0EAFA;--ai-bg-hover:rgba(115,100,255,0.04);--ai-header-gradient:linear-gradient(135deg,#7364FF,#9B59F6,#7364FF);--ai-modal-backdrop:rgba(24,18,51,0.58);--ai-input-bg:#fff;--ai-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--ai-z-float:2147483640;--ai-z-panel:2147483641;--ai-z-modal:2147483645;--ai-z-particle:2147483646;--ai-radius-xs:6px;--ai-radius-sm:8px;--ai-radius-md:10px;--ai-radius-lg:14px;--ai-radius-xl:18px;--ai-transition:0.25s cubic-bezier(0.4,0,0.2,1);--ai-transition-slow:0.4s cubic-bezier(0.16,1,0.3,1);--ai-scrollbar:#BEB8D0;--ai-scrollbar-hover:#868199;--ai-cat-detail-bg:#F9F7FF;--ai-separator:#E4DDF5;--ai-glow-color:rgba(115,100,255,0.07);--ai-badge-new-bg:#F43F5E;--ai-badge-existing-bg:#10B981;--ai-vid-odd-bg:rgba(24,18,51,0.012);--ai-vid-hover-bg:rgba(115,100,255,0.05);--ai-spring:cubic-bezier(0.32,1.48,0.62,1);--ai-spring-gentle:cubic-bezier(0.20,1.04,0.42,1);--ai-spring-bouncy:cubic-bezier(0.165,0.84,0.28,1.18);--ai-spring-silk:cubic-bezier(0.20,1.10,0.36,1);--ai-ease-out-expo:cubic-bezier(0.14,1,0.28,1);--ai-ease-smooth:cubic-bezier(0.38,0,0,1);--ai-ease-fluid:cubic-bezier(0.22,0.78,0.22,1);--ai-ease-ios:cubic-bezier(0.20,0.98,0.28,1);--ai-ease-magnetic:cubic-bezier(0.18,0.88,0.28,1.08);--ai-ease-butterfly:cubic-bezier(0.13,0.94,0.22,1.03);--ai-ease-ethereal:cubic-bezier(0.08,0.92,0.16,1);--ai-spring-flux:cubic-bezier(0.22,1.36,0.42,1);--ai-ease-aurora:cubic-bezier(0.12,0.88,0.20,1.04);--ai-ease-dreamy:cubic-bezier(0.06,0.96,0.14,1);--ai-spring-firefly:cubic-bezier(0.28,1.68,0.48,1);--ai-spring-velvet:cubic-bezier(0.17,1.32,0.40,1);--ai-spring-jelly:cubic-bezier(0.22,1.52,0.38,1);--ai-ease-silk-out:cubic-bezier(0.08,0.90,0.15,1.02);--ai-spring-marshmallow:cubic-bezier(0.19,1.42,0.37,1);--ai-spring-droplet:cubic-bezier(0.26,1.58,0.44,1);--ai-spring-silk-bounce:cubic-bezier(0.14,1.28,0.34,1.02);--ai-ease-gossamer:cubic-bezier(0.08,0.96,0.18,1);--ai-spring-pudding:cubic-bezier(0.21,1.46,0.40,1);--ai-ease-dewdrop:cubic-bezier(0.04,0.88,0.10,1.03);--ai-spring-bloom:cubic-bezier(0.14,1.34,0.32,1.01);--ai-spring-petal:cubic-bezier(0.18,1.52,0.38,0.98);--ai-ease-bloom:cubic-bezier(0.04,0.90,0.10,1.02);--ai-ease-mist:cubic-bezier(0.06,0.88,0.14,1);--ai-spring-dew:cubic-bezier(0.12,1.42,0.28,1.01);--ai-ease-twilight:cubic-bezier(0.10,0.94,0.16,1.01);--ai-spring-ripple:cubic-bezier(0.20,1.28,0.36,1);--ai-ease-breath-deep:cubic-bezier(0.45,0,0.55,1);--ai-spring-lucid:cubic-bezier(0.14,1.22,0.32,1.01);--ai-ease-drift:cubic-bezier(0.06,0.90,0.12,1.00);--ai-spring-elastic-soft:cubic-bezier(0.18,1.48,0.36,0.98);--ai-ease-river:cubic-bezier(0.04,0.86,0.10,1.02);--ai-spring-bounce-light:cubic-bezier(0.22,1.32,0.40,1.00);--ai-ease-fog:cubic-bezier(0.02,0.94,0.08,1.00);--ai-ease-glide:cubic-bezier(0.08,0.78,0.16,1.00);--ai-spring-prism:cubic-bezier(0.16,1.34,0.30,1.00);--ai-ease-velvet:cubic-bezier(0.04,0.92,0.10,1.01);--ai-spring-gravity:cubic-bezier(0.20,1.56,0.36,0.97);--ai-ease-satin:cubic-bezier(0.03,0.90,0.08,1.00);--ai-spring-taffy:cubic-bezier(0.18,1.62,0.34,0.96);--ai-ease-pond:cubic-bezier(0.05,0.82,0.12,1.01);--ai-spring-plasma:cubic-bezier(0.16,1.38,0.36,1.01);--ai-ease-vein:cubic-bezier(0.04,0.88,0.12,1.01);--ai-ease-harmonic:cubic-bezier(0.08,0.82,0.18,1.04);}
             #ai-float-btn{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-float);background:linear-gradient(135deg,#7364FF,#9B59F6,#B0A8FF,#7364FF);background-size:300% 300%;color:#fff;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 14px rgba(115,100,255,0.18),0 0 28px rgba(155,89,246,0.08);border:2px solid rgba(255,255,255,0.28);transition:transform 0.7s var(--ai-spring-silk);}
             #ai-float-btn [data-lucide]{width:24px;height:24px;}
             #ai-sort-wrapper{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-panel);width:min(400px,calc(100vw - 60px));display:flex;flex-direction:column;background:var(--ai-bg,#fff);color:var(--ai-text,#181233);box-shadow:0 24px 68px rgba(0,0,0,0.11),0 10px 28px rgba(0,0,0,0.07);border-radius:28px;overflow:hidden;font-family:var(--ai-font);}
@@ -4334,6 +4334,8 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'cedar', label: '雪松' },
                 { id: 'birch', label: '白桦' },
                 { id: 'tide', label: '潮汐' },
+                { id: 'volcanic', label: '火山' },
+                { id: 'glacier', label: '冰川' },
                 { id: 'custom', label: '自定义' }
             ];
 
@@ -5301,6 +5303,146 @@ ${topUps.length > 0 ? `<div class="section">
             });
             gObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startGravity();
+        })();
+
+        // === Velvet Flux v0.1.4 — Plasma Vein Canvas 等离子脉络画布 ===
+        (() => {
+            const veinWrap = document.createElement('div');
+            veinWrap.className = 'ai-plasma-vein-canvas';
+            const vCanvas = document.createElement('canvas');
+            veinWrap.appendChild(vCanvas);
+            panel.insertBefore(veinWrap, panel.firstChild);
+
+            let veinAnimId = null;
+            let veinTime = 0;
+
+            const veinResize = () => {
+                const r = panel.getBoundingClientRect();
+                vCanvas.width = Math.round(r.width * 0.3);
+                vCanvas.height = Math.round(r.height * 0.3);
+            };
+
+            const getColors = () => {
+                const cs = getComputedStyle(document.documentElement);
+                return [
+                    cs.getPropertyValue('--ai-aurora-1').trim() || '#7364FF',
+                    cs.getPropertyValue('--ai-aurora-3').trim() || '#9B59F6',
+                    cs.getPropertyValue('--ai-aurora-4').trim() || '#00D4AA',
+                    cs.getPropertyValue('--ai-aurora-2').trim() || '#FF6B9D',
+                ];
+            };
+
+            const hexToRgb = (hex) => {
+                hex = hex.replace('#', '');
+                if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+                const n = parseInt(hex, 16);
+                return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+            };
+
+            // Vein node system — organic tendrils that pulse and drift
+            const VEIN_COUNT = 5;
+            const veins = [];
+            for (let i = 0; i < VEIN_COUNT; i++) {
+                const pts = [];
+                const ptCount = 6 + Math.floor(Math.random() * 4);
+                for (let j = 0; j < ptCount; j++) {
+                    pts.push({
+                        bx: Math.random(),
+                        by: Math.random(),
+                        freq: 0.3 + Math.random() * 0.5,
+                        amp: 0.03 + Math.random() * 0.06,
+                        phase: Math.random() * Math.PI * 2
+                    });
+                }
+                veins.push({
+                    points: pts,
+                    speed: 0.2 + Math.random() * 0.3,
+                    width: 0.6 + Math.random() * 1.0,
+                    pulse: Math.random() * Math.PI * 2
+                });
+            }
+
+            const renderVein = () => {
+                const ctx = vCanvas.getContext('2d');
+                if (!ctx || !vCanvas.width) { veinAnimId = requestAnimationFrame(renderVein); return; }
+                const w = vCanvas.width, h = vCanvas.height;
+                ctx.clearRect(0, 0, w, h);
+                veinTime += 0.004;
+
+                const colors = getColors();
+
+                veins.forEach((vein, vi) => {
+                    const rgb = hexToRgb(colors[vi % colors.length]);
+                    const pulseAlpha = 0.10 + Math.sin(veinTime * 1.2 + vein.pulse) * 0.06;
+
+                    // Compute current point positions with organic drift
+                    const curPts = vein.points.map(p => ({
+                        x: (p.bx + Math.sin(veinTime * p.freq + p.phase) * p.amp) * w,
+                        y: (p.by + Math.cos(veinTime * p.freq * 0.8 + p.phase * 1.3) * p.amp) * h
+                    }));
+
+                    // Draw smooth spline through points
+                    if (curPts.length < 2) return;
+                    ctx.beginPath();
+                    ctx.strokeStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]}, ${pulseAlpha.toFixed(3)})`;
+                    ctx.lineWidth = vein.width * (1 + Math.sin(veinTime * 0.8 + vein.pulse) * 0.3);
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+
+                    ctx.moveTo(curPts[0].x, curPts[0].y);
+                    for (let i = 0; i < curPts.length - 1; i++) {
+                        const cp = {
+                            x: (curPts[i].x + curPts[i + 1].x) / 2,
+                            y: (curPts[i].y + curPts[i + 1].y) / 2
+                        };
+                        ctx.quadraticCurveTo(curPts[i].x, curPts[i].y, cp.x, cp.y);
+                    }
+                    const last = curPts[curPts.length - 1];
+                    ctx.lineTo(last.x, last.y);
+                    ctx.stroke();
+
+                    // Glow echo
+                    ctx.beginPath();
+                    ctx.strokeStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]}, ${(pulseAlpha * 0.3).toFixed(3)})`;
+                    ctx.lineWidth = vein.width * 4;
+                    ctx.moveTo(curPts[0].x, curPts[0].y);
+                    for (let i = 0; i < curPts.length - 1; i++) {
+                        const cp = {
+                            x: (curPts[i].x + curPts[i + 1].x) / 2,
+                            y: (curPts[i].y + curPts[i + 1].y) / 2
+                        };
+                        ctx.quadraticCurveTo(curPts[i].x, curPts[i].y, cp.x, cp.y);
+                    }
+                    ctx.lineTo(last.x, last.y);
+                    ctx.stroke();
+
+                    // Pulse nodes at each point
+                    curPts.forEach((p, pi) => {
+                        const nodeAlpha = 0.15 + Math.sin(veinTime * 2 + pi * 1.5 + vein.pulse) * 0.10;
+                        const nodeSize = 2 + Math.sin(veinTime * 1.5 + pi * 0.8) * 1.5;
+                        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, nodeSize * 3);
+                        grad.addColorStop(0, `rgba(${rgb[0]},${rgb[1]},${rgb[2]}, ${nodeAlpha.toFixed(3)})`);
+                        grad.addColorStop(1, `rgba(${rgb[0]},${rgb[1]},${rgb[2]}, 0)`);
+                        ctx.fillStyle = grad;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, nodeSize * 3, 0, Math.PI * 2);
+                        ctx.fill();
+                    });
+                });
+
+                veinAnimId = requestAnimationFrame(renderVein);
+            };
+
+            const startVein = () => { veinResize(); if (!veinAnimId) renderVein(); };
+            const stopVein = () => { if (veinAnimId) { cancelAnimationFrame(veinAnimId); veinAnimId = null; } };
+
+            const veinObs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startVein();
+                else stopVein();
+            });
+            veinObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startVein();
+            window.addEventListener('resize', () => { if (panel.style.display !== 'none') veinResize(); });
         })();
 
         // === Velvet Bloom v0.1.0 — Magnetic Cursor Trail 磁性光标拖尾 ===
