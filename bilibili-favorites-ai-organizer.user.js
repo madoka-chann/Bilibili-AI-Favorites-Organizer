@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.5.7
+// @version      1.5.8
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -46,7 +46,7 @@
         // Fallback: 直接注入关键 CSS（确保 z-index 和基本布局正常）
         const fallbackCSS = document.createElement('style');
         fallbackCSS.textContent = `
-            :root{--ai-primary:#7364FF;--ai-primary-dark:#5046E5;--ai-primary-light:#B0A8FF;--ai-primary-bg:rgba(115,100,255,0.06);--ai-primary-shadow:rgba(115,100,255,0.22);--ai-success:#10B981;--ai-error:#F43F5E;--ai-info:#818CF8;--ai-warning:#F59E0B;--ai-text:#181233;--ai-text-secondary:#38305A;--ai-text-muted:#868199;--ai-text-light:#BEB8D0;--ai-border:#E4DDF5;--ai-border-light:#F0EAFA;--ai-border-lighter:#F9F7FF;--ai-bg:#fff;--ai-bg-secondary:#F9F7FF;--ai-bg-tertiary:#F0EAFA;--ai-bg-hover:rgba(115,100,255,0.04);--ai-header-gradient:linear-gradient(135deg,#7364FF,#9B59F6,#7364FF);--ai-modal-backdrop:rgba(24,18,51,0.58);--ai-input-bg:#fff;--ai-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--ai-z-float:2147483640;--ai-z-panel:2147483641;--ai-z-modal:2147483645;--ai-z-particle:2147483646;--ai-radius-xs:6px;--ai-radius-sm:8px;--ai-radius-md:10px;--ai-radius-lg:14px;--ai-radius-xl:18px;--ai-transition:0.25s cubic-bezier(0.4,0,0.2,1);--ai-transition-slow:0.4s cubic-bezier(0.16,1,0.3,1);--ai-scrollbar:#BEB8D0;--ai-scrollbar-hover:#868199;--ai-cat-detail-bg:#F9F7FF;--ai-separator:#E4DDF5;--ai-glow-color:rgba(115,100,255,0.07);--ai-badge-new-bg:#F43F5E;--ai-badge-existing-bg:#10B981;--ai-vid-odd-bg:rgba(24,18,51,0.012);--ai-vid-hover-bg:rgba(115,100,255,0.05);--ai-spring:cubic-bezier(0.32,1.48,0.62,1);--ai-spring-gentle:cubic-bezier(0.20,1.04,0.42,1);--ai-spring-bouncy:cubic-bezier(0.165,0.84,0.28,1.18);--ai-spring-silk:cubic-bezier(0.20,1.10,0.36,1);--ai-ease-out-expo:cubic-bezier(0.14,1,0.28,1);--ai-ease-smooth:cubic-bezier(0.38,0,0,1);--ai-ease-fluid:cubic-bezier(0.22,0.78,0.22,1);--ai-ease-ios:cubic-bezier(0.20,0.98,0.28,1);--ai-ease-magnetic:cubic-bezier(0.18,0.88,0.28,1.08);--ai-ease-butterfly:cubic-bezier(0.13,0.94,0.22,1.03);--ai-ease-ethereal:cubic-bezier(0.08,0.92,0.16,1);--ai-spring-flux:cubic-bezier(0.22,1.36,0.42,1);--ai-ease-aurora:cubic-bezier(0.12,0.88,0.20,1.04);--ai-ease-dreamy:cubic-bezier(0.06,0.96,0.14,1);--ai-spring-firefly:cubic-bezier(0.28,1.68,0.48,1);--ai-spring-velvet:cubic-bezier(0.17,1.32,0.40,1);--ai-spring-jelly:cubic-bezier(0.22,1.52,0.38,1);--ai-ease-silk-out:cubic-bezier(0.08,0.90,0.15,1.02);--ai-spring-marshmallow:cubic-bezier(0.19,1.42,0.37,1);--ai-spring-droplet:cubic-bezier(0.26,1.58,0.44,1);--ai-spring-silk-bounce:cubic-bezier(0.14,1.28,0.34,1.02);--ai-ease-gossamer:cubic-bezier(0.08,0.96,0.18,1);--ai-spring-pudding:cubic-bezier(0.21,1.46,0.40,1);--ai-ease-dewdrop:cubic-bezier(0.04,0.88,0.10,1.03);--ai-spring-bloom:cubic-bezier(0.14,1.34,0.32,1.01);--ai-spring-petal:cubic-bezier(0.18,1.52,0.38,0.98);--ai-ease-bloom:cubic-bezier(0.04,0.90,0.10,1.02);--ai-ease-mist:cubic-bezier(0.06,0.88,0.14,1);--ai-spring-dew:cubic-bezier(0.12,1.42,0.28,1.01);--ai-ease-twilight:cubic-bezier(0.10,0.94,0.16,1.01);--ai-spring-ripple:cubic-bezier(0.20,1.28,0.36,1);--ai-ease-breath-deep:cubic-bezier(0.45,0,0.55,1);--ai-spring-lucid:cubic-bezier(0.14,1.22,0.32,1.01);--ai-ease-drift:cubic-bezier(0.06,0.90,0.12,1.00);--ai-spring-elastic-soft:cubic-bezier(0.18,1.48,0.36,0.98);--ai-ease-river:cubic-bezier(0.04,0.86,0.10,1.02);--ai-spring-bounce-light:cubic-bezier(0.22,1.32,0.40,1.00);--ai-ease-fog:cubic-bezier(0.02,0.94,0.08,1.00);--ai-ease-glide:cubic-bezier(0.08,0.78,0.16,1.00);--ai-spring-prism:cubic-bezier(0.16,1.34,0.30,1.00);--ai-ease-velvet:cubic-bezier(0.04,0.92,0.10,1.01);--ai-spring-gravity:cubic-bezier(0.20,1.56,0.36,0.97);--ai-ease-satin:cubic-bezier(0.03,0.90,0.08,1.00);--ai-spring-taffy:cubic-bezier(0.18,1.62,0.34,0.96);--ai-ease-pond:cubic-bezier(0.05,0.82,0.12,1.01);--ai-spring-plasma:cubic-bezier(0.16,1.38,0.36,1.01);--ai-ease-vein:cubic-bezier(0.04,0.88,0.12,1.01);--ai-ease-harmonic:cubic-bezier(0.08,0.82,0.18,1.04);--ai-spring-silk-vortex:cubic-bezier(0.14,1.40,0.30,1.00);--ai-ease-silk-flow:cubic-bezier(0.06,0.92,0.12,1.01);--ai-spring-cloud:cubic-bezier(0.18,1.24,0.36,1.02);--ai-ease-tidal-out:cubic-bezier(0.04,0.86,0.08,1.00);--ai-spring-whip:cubic-bezier(0.24,1.64,0.42,0.96);--ai-ease-feather:cubic-bezier(0.02,0.90,0.06,1.00);--ai-spring-gelatin:cubic-bezier(0.20,1.56,0.34,0.98);--ai-ease-nectar:cubic-bezier(0.08,0.84,0.14,1.02);}
+            :root{--ai-primary:#7364FF;--ai-primary-dark:#5046E5;--ai-primary-light:#B0A8FF;--ai-primary-bg:rgba(115,100,255,0.06);--ai-primary-shadow:rgba(115,100,255,0.22);--ai-success:#10B981;--ai-error:#F43F5E;--ai-info:#818CF8;--ai-warning:#F59E0B;--ai-text:#181233;--ai-text-secondary:#38305A;--ai-text-muted:#868199;--ai-text-light:#BEB8D0;--ai-border:#E4DDF5;--ai-border-light:#F0EAFA;--ai-border-lighter:#F9F7FF;--ai-bg:#fff;--ai-bg-secondary:#F9F7FF;--ai-bg-tertiary:#F0EAFA;--ai-bg-hover:rgba(115,100,255,0.04);--ai-header-gradient:linear-gradient(135deg,#7364FF,#9B59F6,#7364FF);--ai-modal-backdrop:rgba(24,18,51,0.58);--ai-input-bg:#fff;--ai-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--ai-z-float:2147483640;--ai-z-panel:2147483641;--ai-z-modal:2147483645;--ai-z-particle:2147483646;--ai-radius-xs:6px;--ai-radius-sm:8px;--ai-radius-md:10px;--ai-radius-lg:14px;--ai-radius-xl:18px;--ai-transition:0.25s cubic-bezier(0.4,0,0.2,1);--ai-transition-slow:0.4s cubic-bezier(0.16,1,0.3,1);--ai-scrollbar:#BEB8D0;--ai-scrollbar-hover:#868199;--ai-cat-detail-bg:#F9F7FF;--ai-separator:#E4DDF5;--ai-glow-color:rgba(115,100,255,0.07);--ai-badge-new-bg:#F43F5E;--ai-badge-existing-bg:#10B981;--ai-vid-odd-bg:rgba(24,18,51,0.012);--ai-vid-hover-bg:rgba(115,100,255,0.05);--ai-spring:cubic-bezier(0.32,1.48,0.62,1);--ai-spring-gentle:cubic-bezier(0.20,1.04,0.42,1);--ai-spring-bouncy:cubic-bezier(0.165,0.84,0.28,1.18);--ai-spring-silk:cubic-bezier(0.20,1.10,0.36,1);--ai-ease-out-expo:cubic-bezier(0.14,1,0.28,1);--ai-ease-smooth:cubic-bezier(0.38,0,0,1);--ai-ease-fluid:cubic-bezier(0.22,0.78,0.22,1);--ai-ease-ios:cubic-bezier(0.20,0.98,0.28,1);--ai-ease-magnetic:cubic-bezier(0.18,0.88,0.28,1.08);--ai-ease-butterfly:cubic-bezier(0.13,0.94,0.22,1.03);--ai-ease-ethereal:cubic-bezier(0.08,0.92,0.16,1);--ai-spring-flux:cubic-bezier(0.22,1.36,0.42,1);--ai-ease-aurora:cubic-bezier(0.12,0.88,0.20,1.04);--ai-ease-dreamy:cubic-bezier(0.06,0.96,0.14,1);--ai-spring-firefly:cubic-bezier(0.28,1.68,0.48,1);--ai-spring-velvet:cubic-bezier(0.17,1.32,0.40,1);--ai-spring-jelly:cubic-bezier(0.22,1.52,0.38,1);--ai-ease-silk-out:cubic-bezier(0.08,0.90,0.15,1.02);--ai-spring-marshmallow:cubic-bezier(0.19,1.42,0.37,1);--ai-spring-droplet:cubic-bezier(0.26,1.58,0.44,1);--ai-spring-silk-bounce:cubic-bezier(0.14,1.28,0.34,1.02);--ai-ease-gossamer:cubic-bezier(0.08,0.96,0.18,1);--ai-spring-pudding:cubic-bezier(0.21,1.46,0.40,1);--ai-ease-dewdrop:cubic-bezier(0.04,0.88,0.10,1.03);--ai-spring-bloom:cubic-bezier(0.14,1.34,0.32,1.01);--ai-spring-petal:cubic-bezier(0.18,1.52,0.38,0.98);--ai-ease-bloom:cubic-bezier(0.04,0.90,0.10,1.02);--ai-ease-mist:cubic-bezier(0.06,0.88,0.14,1);--ai-spring-dew:cubic-bezier(0.12,1.42,0.28,1.01);--ai-ease-twilight:cubic-bezier(0.10,0.94,0.16,1.01);--ai-spring-ripple:cubic-bezier(0.20,1.28,0.36,1);--ai-ease-breath-deep:cubic-bezier(0.45,0,0.55,1);--ai-spring-lucid:cubic-bezier(0.14,1.22,0.32,1.01);--ai-ease-drift:cubic-bezier(0.06,0.90,0.12,1.00);--ai-spring-elastic-soft:cubic-bezier(0.18,1.48,0.36,0.98);--ai-ease-river:cubic-bezier(0.04,0.86,0.10,1.02);--ai-spring-bounce-light:cubic-bezier(0.22,1.32,0.40,1.00);--ai-ease-fog:cubic-bezier(0.02,0.94,0.08,1.00);--ai-ease-glide:cubic-bezier(0.08,0.78,0.16,1.00);--ai-spring-prism:cubic-bezier(0.16,1.34,0.30,1.00);--ai-ease-velvet:cubic-bezier(0.04,0.92,0.10,1.01);--ai-spring-gravity:cubic-bezier(0.20,1.56,0.36,0.97);--ai-ease-satin:cubic-bezier(0.03,0.90,0.08,1.00);--ai-spring-taffy:cubic-bezier(0.18,1.62,0.34,0.96);--ai-ease-pond:cubic-bezier(0.05,0.82,0.12,1.01);--ai-spring-plasma:cubic-bezier(0.16,1.38,0.36,1.01);--ai-ease-vein:cubic-bezier(0.04,0.88,0.12,1.01);--ai-ease-harmonic:cubic-bezier(0.08,0.82,0.18,1.04);--ai-spring-silk-vortex:cubic-bezier(0.14,1.40,0.30,1.00);--ai-ease-silk-flow:cubic-bezier(0.06,0.92,0.12,1.01);--ai-spring-cloud:cubic-bezier(0.18,1.24,0.36,1.02);--ai-ease-tidal-out:cubic-bezier(0.04,0.86,0.08,1.00);--ai-spring-whip:cubic-bezier(0.24,1.64,0.42,0.96);--ai-ease-feather:cubic-bezier(0.02,0.90,0.06,1.00);--ai-spring-gelatin:cubic-bezier(0.20,1.56,0.34,0.98);--ai-ease-nectar:cubic-bezier(0.08,0.84,0.14,1.02);--ai-ease-aura:cubic-bezier(0.05,0.90,0.10,1.01);--ai-spring-aura:cubic-bezier(0.14,1.26,0.32,1.00);--ai-ease-filament:cubic-bezier(0.08,0.84,0.14,1.02);--ai-spring-magnetic:cubic-bezier(0.18,1.38,0.34,0.99);--ai-ease-lotus:cubic-bezier(0.06,0.92,0.12,1.00);--ai-spring-frost:cubic-bezier(0.12,1.18,0.28,1.02);}
             #ai-float-btn{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-float);background:linear-gradient(135deg,#7364FF,#9B59F6,#B0A8FF,#7364FF);background-size:300% 300%;color:#fff;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 14px rgba(115,100,255,0.18),0 0 28px rgba(155,89,246,0.08);border:2px solid rgba(255,255,255,0.28);transition:transform 0.7s var(--ai-spring-silk);}
             #ai-float-btn [data-lucide]{width:24px;height:24px;}
             #ai-sort-wrapper{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-panel);width:min(400px,calc(100vw - 60px));display:flex;flex-direction:column;background:var(--ai-bg,#fff);color:var(--ai-text,#181233);box-shadow:0 24px 68px rgba(0,0,0,0.11),0 10px 28px rgba(0,0,0,0.07);border-radius:28px;overflow:hidden;font-family:var(--ai-font);}
@@ -4362,6 +4362,9 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'ink-cloud', label: '墨云' },
                 { id: 'warm-wool', label: '暖绒' },
                 { id: 'still-water', label: '静水' },
+                { id: 'lotus', label: '莲' },
+                { id: 'amber-mist', label: '琥珀雾' },
+                { id: 'frozen-lake', label: '冰湖' },
                 { id: 'custom', label: '自定义' }
             ];
 
@@ -7095,6 +7098,188 @@ ${topUps.length > 0 ? `<div class="section">
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') zenResize(); });
         })();
 
+        // === Velvet Aura Flow v0.2.7 — Aura Filament Canvas 光韵丝缕画布 ===
+        (() => {
+            const auraWrap = document.createElement('div');
+            auraWrap.className = 'ai-aura-flow-canvas';
+            const aCanvas = document.createElement('canvas');
+            auraWrap.appendChild(aCanvas);
+            panel.insertBefore(auraWrap, panel.firstChild);
+
+            let auraRaf = null;
+            let aTime = 0;
+
+            const auraResize = () => {
+                const r = panel.getBoundingClientRect();
+                aCanvas.width = Math.round(r.width * 0.25);
+                aCanvas.height = Math.round(r.height * 0.25);
+            };
+
+            const getAuraColors = () => {
+                const cs = getComputedStyle(document.documentElement);
+                return [
+                    cs.getPropertyValue('--ai-aurora-1').trim() || '#7364FF',
+                    cs.getPropertyValue('--ai-aurora-2').trim() || '#FF6B9D',
+                    cs.getPropertyValue('--ai-aurora-4').trim() || '#00D4AA',
+                    cs.getPropertyValue('--ai-aurora-6').trim() || '#E056CF',
+                ];
+            };
+
+            const hexToRgbA = (hex) => {
+                hex = hex.replace('#', '');
+                if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+                const n = parseInt(hex, 16);
+                return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+            };
+
+            // Filament system: flowing luminous threads that drift and undulate
+            const FILAMENTS = 6;
+            const filaments = [];
+            for (let i = 0; i < FILAMENTS; i++) {
+                filaments.push({
+                    phase: Math.random() * Math.PI * 2,
+                    speed: 0.3 + Math.random() * 0.4,
+                    amplitude: 0.08 + Math.random() * 0.12,
+                    yBase: 0.15 + (i / FILAMENTS) * 0.7,
+                    thickness: 1.5 + Math.random() * 1.5,
+                    colorIdx: i % 4,
+                    drift: Math.random() * 0.01 - 0.005,
+                });
+            }
+
+            const renderAura = () => {
+                const ctx = aCanvas.getContext('2d');
+                if (!ctx || !aCanvas.width) { auraRaf = requestAnimationFrame(renderAura); return; }
+                const w = aCanvas.width, h = aCanvas.height;
+
+                // Soft fade trail for ghosting effect
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+                ctx.fillRect(0, 0, w, h);
+                ctx.globalCompositeOperation = 'lighter';
+
+                aTime += 0.008;
+                const colors = getAuraColors();
+                const rgbs = colors.map(hexToRgbA);
+
+                for (let f = 0; f < filaments.length; f++) {
+                    const fil = filaments[f];
+                    const rgb = rgbs[fil.colorIdx];
+                    const alpha = 0.12 + Math.sin(aTime * 0.5 + fil.phase) * 0.06;
+
+                    ctx.beginPath();
+                    ctx.strokeStyle = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`;
+                    ctx.lineWidth = fil.thickness;
+                    ctx.lineCap = 'round';
+
+                    const segments = 32;
+                    for (let s = 0; s <= segments; s++) {
+                        const t = s / segments;
+                        const x = t * w;
+                        // Multi-frequency undulation for organic feel
+                        const wave1 = Math.sin(t * Math.PI * 2 + aTime * fil.speed + fil.phase) * fil.amplitude;
+                        const wave2 = Math.sin(t * Math.PI * 3.7 + aTime * fil.speed * 0.7 + fil.phase * 1.3) * fil.amplitude * 0.4;
+                        const wave3 = Math.sin(t * Math.PI * 1.3 + aTime * fil.speed * 1.4 + fil.phase * 0.7) * fil.amplitude * 0.2;
+                        const y = (fil.yBase + wave1 + wave2 + wave3 + fil.drift * aTime) * h;
+
+                        if (s === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.stroke();
+
+                    // Gentle drift over time with wrap-around
+                    fil.yBase += fil.drift * 0.001;
+                    if (fil.yBase > 1.1) fil.yBase = -0.1;
+                    if (fil.yBase < -0.1) fil.yBase = 1.1;
+                }
+
+                // Soft glow nodes at intersections
+                for (let i = 0; i < 3; i++) {
+                    const nx = (0.25 + i * 0.25 + Math.sin(aTime * 0.3 + i * 2.1) * 0.1) * w;
+                    const ny = (0.3 + Math.cos(aTime * 0.4 + i * 1.7) * 0.2) * h;
+                    const rgb = rgbs[i % rgbs.length];
+                    const grad = ctx.createRadialGradient(nx, ny, 0, nx, ny, w * 0.08);
+                    grad.addColorStop(0, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.10)`);
+                    grad.addColorStop(1, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0)`);
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(nx - w * 0.08, ny - w * 0.08, w * 0.16, w * 0.16);
+                }
+
+                ctx.globalCompositeOperation = 'source-over';
+                auraRaf = requestAnimationFrame(renderAura);
+            };
+
+            const startAura = () => { auraResize(); if (!auraRaf) renderAura(); };
+            const stopAura = () => { if (auraRaf) { cancelAnimationFrame(auraRaf); auraRaf = null; } };
+
+            const auraObs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startAura();
+                else stopAura();
+            });
+            auraObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startAura();
+            window.addEventListener('resize', () => { if (panel.style.display !== 'none') auraResize(); });
+        })();
+
+        // === Velvet Aura Flow v0.2.7 — Magnetic Parallax 磁场视差效果 ===
+        (() => {
+            let parallaxRaf = null;
+            let targetTiltX = 0, targetTiltY = 0;
+            let currentTiltX = 0, currentTiltY = 0;
+
+            const handleMouseMove = (e) => {
+                if (panel.style.display === 'none') return;
+                const rect = panel.getBoundingClientRect();
+                const cx = rect.left + rect.width / 2;
+                const cy = rect.top + rect.height / 2;
+                const dx = (e.clientX - cx) / (rect.width / 2);
+                const dy = (e.clientY - cy) / (rect.height / 2);
+                // Clamp to subtle range
+                targetTiltX = Math.max(-1, Math.min(1, dx)) * 0.6;
+                targetTiltY = Math.max(-1, Math.min(1, dy)) * 0.4;
+            };
+
+            const handleMouseLeave = () => {
+                targetTiltX = 0;
+                targetTiltY = 0;
+            };
+
+            const updateParallax = () => {
+                // Smooth lerp for silk-like following
+                currentTiltX += (targetTiltX - currentTiltX) * 0.06;
+                currentTiltY += (targetTiltY - currentTiltY) * 0.06;
+
+                if (Math.abs(currentTiltX) > 0.001 || Math.abs(currentTiltY) > 0.001) {
+                    const content = panel.querySelector('.ai-panel-content');
+                    if (content) {
+                        content.style.transform = `perspective(1600px) rotateY(${currentTiltX * 0.5}deg) rotateX(${-currentTiltY * 0.5}deg) translateZ(0)`;
+                    }
+                }
+                parallaxRaf = requestAnimationFrame(updateParallax);
+            };
+
+            const startParallax = () => {
+                document.addEventListener('mousemove', handleMouseMove);
+                panel.addEventListener('mouseleave', handleMouseLeave);
+                if (!parallaxRaf) updateParallax();
+            };
+
+            const stopParallax = () => {
+                document.removeEventListener('mousemove', handleMouseMove);
+                panel.removeEventListener('mouseleave', handleMouseLeave);
+                if (parallaxRaf) { cancelAnimationFrame(parallaxRaf); parallaxRaf = null; }
+                const content = panel.querySelector('.ai-panel-content');
+                if (content) content.style.transform = '';
+            };
+
+            const pObs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startParallax();
+                else stopParallax();
+            });
+            pObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startParallax();
+        })();
+
         // === Velvet Zephyr Flow v0.2.4 — Float Button Idle Shimmer 悬浮按钮闲置微光 ===
         (() => {
             let shimmerRaf = null;
@@ -7810,7 +7995,7 @@ ${topUps.length > 0 ? `<div class="section">
             panel.style.filter = 'none';
             // 强制 reflow 后触发弹性形变入场动画
             void panel.offsetHeight;
-            panel.style.animation = 'ai-vortex-panel-in 0.72s cubic-bezier(0.14, 1.40, 0.30, 1.00) forwards';
+            panel.style.animation = 'ai-panel-aura-open 0.78s cubic-bezier(0.14, 1.26, 0.32, 1.00) forwards';
             clampPanelPosition();
         };
 
@@ -7819,7 +8004,7 @@ ${topUps.length > 0 ? `<div class="section">
             // 弹性形变关闭 — Velvet Bloom v0.1.0
             panel.style.animation = 'none';
             void panel.offsetHeight;
-            panel.style.animation = 'ai-vortex-panel-out 0.40s cubic-bezier(0.04, 0.86, 0.08, 1.00) forwards';
+            panel.style.animation = 'ai-panel-aura-close 0.42s cubic-bezier(0.04, 0.90, 0.10, 1.01) forwards';
             setTimeout(() => {
                 panel.style.display = 'none';
                 panel.style.animation = 'none';
@@ -7860,20 +8045,20 @@ ${topUps.length > 0 ? `<div class="section">
             morph.style.setProperty('--morph-y', cy + '%');
             document.body.appendChild(morph);
 
-            // 主题图标弹性旋转 — Velvet Zen Flow 禅流弹簧曲线 v0.2.6
+            // 主题图标弹性旋转 — Velvet Aura Flow 光韵弹簧曲线 v0.2.7
             const icon = btn.querySelector('[data-lucide]');
             if (icon) {
-                icon.style.transition = 'transform 0.45s cubic-bezier(0.14, 1.40, 0.30, 1.00)';
-                icon.style.transform = 'rotate(360deg) scale(0.35)';
+                icon.style.transition = 'transform 0.5s cubic-bezier(0.14, 1.26, 0.32, 1.00)';
+                icon.style.transform = 'rotate(360deg) scale(0.3)';
                 setTimeout(() => {
-                    icon.style.transition = 'transform 0.38s cubic-bezier(0.20, 1.56, 0.34, 0.98)';
-                    icon.style.transform = 'rotate(720deg) scale(1.12)';
+                    icon.style.transition = 'transform 0.42s cubic-bezier(0.18, 1.38, 0.34, 0.99)';
+                    icon.style.transform = 'rotate(720deg) scale(1.1)';
                     setTimeout(() => {
-                        icon.style.transition = 'transform 0.25s cubic-bezier(0.06, 0.92, 0.12, 1.01)';
+                        icon.style.transition = 'transform 0.28s cubic-bezier(0.05, 0.90, 0.10, 1.01)';
                         icon.style.transform = 'rotate(720deg) scale(1)';
-                        setTimeout(() => { icon.style.transform = ''; icon.style.transition = ''; }, 260);
-                    }, 320);
-                }, 220);
+                        setTimeout(() => { icon.style.transform = ''; icon.style.transition = ''; }, 280);
+                    }, 340);
+                }, 240);
             }
 
             // 延迟切换以配合液态动画 — 更精确的时机
