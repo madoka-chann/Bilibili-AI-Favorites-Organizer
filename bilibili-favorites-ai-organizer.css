@@ -1,6 +1,6 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v0.1.6
-   Velvet Zephyr · 天鹅绒和风 · Refined Glass Morphism
+   B站 AI 收藏夹整理助理 — 完整样式表 v0.1.7
+   Velvet Cascade · 天鹅绒瀑流 · Refined Glass Morphism
    Indigo-Nebula 双色系统 · Restrained Aurora Palette
    Velvet Dynamics 19.0 · Silky Spring Micro-interactions
    Stellar Abyss Dark Theme · Living Glass Surfaces
@@ -20,6 +20,7 @@
    Velvet Flux · Plasma Vein Canvas · Harmonic Pulse · Volcanic & Glacier
    Velvet Aether · Harmonic Ripple Canvas · Kinetic Glow · Spring Scroll
    Velvet Zephyr · Luminous Membrane Canvas · Pearl & Northlight Themes
+   Velvet Cascade · Silk Waterfall Canvas · Sandstone & Monsoon Themes
    ================================================================ */
 
 /* === 1. CSS 变量 (双主题系统) === */
@@ -13249,6 +13250,595 @@ input[type="checkbox"]:active {
   }
 }
 
+/* ================================================================
+   Velvet Cascade v0.1.7 — 天鹅绒瀑流 · Velvet Dynamics 20.0
+   Silk Waterfall Canvas · Cascade Stagger · Global Breath Sync
+   Sandstone & Monsoon Accent Themes · Liquid Momentum Curves
+   ================================================================ */
+
+/* === 562. Velvet Cascade 运动曲线 v0.1.7 === */
+:root, [data-theme="light"] {
+  --ai-spring-cascade: cubic-bezier(0.16, 1.44, 0.38, 0.96);
+  --ai-spring-waterfall: cubic-bezier(0.12, 1.36, 0.32, 1.02);
+  --ai-ease-cascade-in: cubic-bezier(0.06, 0.82, 0.14, 1.04);
+  --ai-ease-cascade-out: cubic-bezier(0.38, 0.02, 0.08, 1);
+  --ai-ease-liquid-momentum: cubic-bezier(0.04, 0.86, 0.10, 1.00);
+  --ai-spring-silk-drop: cubic-bezier(0.14, 1.58, 0.36, 0.94);
+  --ai-ease-breath-sync: cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+/* === 563. Sandstone 砂岩 Accent Theme v0.1.7 === */
+[data-accent="sandstone"] {
+  --ai-primary: #A89078;
+  --ai-primary-dark: #8C7460;
+  --ai-primary-light: #C8B8A8;
+  --ai-primary-bg: rgba(168, 144, 120, 0.06);
+  --ai-primary-shadow: rgba(168, 144, 120, 0.22);
+  --ai-header-gradient: linear-gradient(135deg, #A89078, #BCA08A, #A89078);
+  --ai-aurora-1: #A89078;
+  --ai-aurora-2: #C4A882;
+  --ai-aurora-3: #B09880;
+  --ai-aurora-4: #9C8A6E;
+  --ai-aurora-5: #D0BC9C;
+  --ai-aurora-6: #B4A08A;
+  --ai-aurora-7: #C8B498;
+  --ai-aurora-8: #A09484;
+  --ai-float-gradient: linear-gradient(135deg, #A89078 0%, #BCA08A 40%, #C8B8A8 70%, #A89078 100%);
+  --ai-neon-glow: 0 0 14px rgba(168, 144, 120, 0.18), 0 0 28px rgba(188, 160, 138, 0.08);
+}
+[data-accent="sandstone"][data-theme="dark"] {
+  --ai-primary: #C8B8A8;
+  --ai-primary-dark: #A89078;
+  --ai-primary-light: #DED2C6;
+  --ai-header-gradient: linear-gradient(135deg, #8C7460, #A89078);
+  --ai-float-gradient: linear-gradient(135deg, #C8B8A8 0%, #D0C0B0 40%, #DED2C6 70%, #C8B8A8 100%);
+}
+
+/* === 564. Monsoon 季风 Accent Theme v0.1.7 === */
+[data-accent="monsoon"] {
+  --ai-primary: #6B8FA3;
+  --ai-primary-dark: #567888;
+  --ai-primary-light: #9CB8C8;
+  --ai-primary-bg: rgba(107, 143, 163, 0.06);
+  --ai-primary-shadow: rgba(107, 143, 163, 0.22);
+  --ai-header-gradient: linear-gradient(135deg, #6B8FA3, #82A4B6, #6B8FA3);
+  --ai-aurora-1: #6B8FA3;
+  --ai-aurora-2: #84A8B8;
+  --ai-aurora-3: #7898AA;
+  --ai-aurora-4: #5C8090;
+  --ai-aurora-5: #92B4C4;
+  --ai-aurora-6: #7CA0B2;
+  --ai-aurora-7: #A0C0CE;
+  --ai-aurora-8: #6A8898;
+  --ai-float-gradient: linear-gradient(135deg, #6B8FA3 0%, #82A4B6 40%, #9CB8C8 70%, #6B8FA3 100%);
+  --ai-neon-glow: 0 0 14px rgba(107, 143, 163, 0.18), 0 0 28px rgba(130, 164, 182, 0.08);
+}
+[data-accent="monsoon"][data-theme="dark"] {
+  --ai-primary: #9CB8C8;
+  --ai-primary-dark: #6B8FA3;
+  --ai-primary-light: #BCD0DA;
+  --ai-header-gradient: linear-gradient(135deg, #567888, #6B8FA3);
+  --ai-float-gradient: linear-gradient(135deg, #9CB8C8 0%, #A8C4D2 40%, #BCD0DA 70%, #9CB8C8 100%);
+}
+
+/* === 565. Silk Waterfall Canvas 丝瀑画布 v0.1.7 === */
+.ai-silk-waterfall-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  opacity: 0.12;
+  mix-blend-mode: soft-light;
+  will-change: opacity;
+  transition: opacity 0.8s var(--ai-ease-breath-sync, ease);
+}
+[data-theme="dark"] .ai-silk-waterfall-canvas {
+  opacity: 0.08;
+  mix-blend-mode: screen;
+}
+#ai-sort-wrapper:hover .ai-silk-waterfall-canvas {
+  opacity: 0.18;
+  transition: opacity 1.2s var(--ai-ease-cascade-in, ease);
+}
+[data-theme="dark"] #ai-sort-wrapper:hover .ai-silk-waterfall-canvas {
+  opacity: 0.12;
+}
+
+/* === 566. Cascade Stagger Entrance 瀑布级联入场 v0.1.7 === */
+@keyframes ai-cascade-fall {
+  0% {
+    opacity: 0;
+    transform: translateY(-18px) scale(0.97);
+    filter: blur(4px);
+  }
+  40% {
+    opacity: 0.7;
+    transform: translateY(3px) scale(1.005);
+    filter: blur(0.5px);
+  }
+  70% {
+    opacity: 0.95;
+    transform: translateY(-1px) scale(1.0);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes ai-cascade-ripple {
+  0% {
+    opacity: 0;
+    transform: translateX(-12px) scale(0.96);
+    filter: blur(3px);
+  }
+  50% {
+    opacity: 0.85;
+    transform: translateX(2px) scale(1.003);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* Apply cascade to category blocks */
+.ai-cat-block {
+  animation: ai-cascade-fall 0.6s var(--ai-spring-waterfall, cubic-bezier(0.12, 1.36, 0.32, 1.02)) both;
+  animation-delay: calc(var(--i, 0) * 0.055s);
+}
+
+/* Apply cascade ripple to log entries */
+.ai-log-entry {
+  animation: ai-cascade-ripple 0.5s var(--ai-ease-cascade-in, ease) both;
+}
+
+/* === 567. Global Breath Sync 全局呼吸同步 v0.1.7 === */
+@keyframes ai-global-breath {
+  0%, 100% {
+    --breath-phase: 0;
+    --breath-scale: 1;
+    --breath-glow: 0;
+  }
+  25% {
+    --breath-phase: 0.25;
+    --breath-scale: 1.002;
+    --breath-glow: 0.3;
+  }
+  50% {
+    --breath-phase: 0.5;
+    --breath-scale: 1.004;
+    --breath-glow: 1;
+  }
+  75% {
+    --breath-phase: 0.75;
+    --breath-scale: 1.002;
+    --breath-glow: 0.5;
+  }
+}
+
+#ai-sort-wrapper {
+  animation: ai-global-breath 8s var(--ai-ease-breath-sync, ease) infinite;
+}
+
+/* Sync panel border breathing to global rhythm */
+@keyframes ai-cascade-border-breathe {
+  0%, 100% {
+    box-shadow: 0 0 0 1px rgba(var(--ai-primary), 0.00),
+                0 24px 68px rgba(0,0,0,0.11),
+                0 10px 28px rgba(0,0,0,0.07);
+  }
+  50% {
+    box-shadow: 0 0 0 1px rgba(115, 100, 255, 0.06),
+                0 24px 68px rgba(0,0,0,0.11),
+                0 10px 28px rgba(0,0,0,0.07),
+                0 0 40px rgba(115, 100, 255, 0.04);
+  }
+}
+
+#ai-sort-wrapper:not(:hover) {
+  animation: ai-global-breath 8s var(--ai-ease-breath-sync) infinite,
+             ai-cascade-border-breathe 8s var(--ai-ease-breath-sync) infinite;
+}
+
+/* === 568. Liquid Momentum Hover 液态动量悬停 v0.1.7 === */
+.ai-cat-row {
+  transition: all 0.45s var(--ai-ease-cascade-in, ease),
+              transform 0.55s var(--ai-spring-waterfall, ease),
+              box-shadow 0.6s var(--ai-ease-liquid-momentum, ease);
+}
+
+.ai-cat-row:hover {
+  transform: translateX(4px);
+  box-shadow: inset 0 0 0 0 transparent,
+              -4px 0 20px -8px rgba(115, 100, 255, 0.08);
+  transition: all 0.35s var(--ai-spring-cascade, ease),
+              transform 0.4s var(--ai-spring-cascade, ease);
+}
+
+.ai-cat-row:active {
+  transform: translateX(2px) scale(0.995);
+  transition-duration: 0.08s !important;
+}
+
+/* === 569. Silk Waterfall Ambient Shimmer 丝瀑环境微光 v0.1.7 === */
+@keyframes ai-waterfall-shimmer {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 0% 200%;
+  }
+}
+
+#ai-sort-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(115, 100, 255, 0.015) 20%,
+    transparent 40%,
+    rgba(155, 89, 246, 0.01) 60%,
+    transparent 80%,
+    rgba(115, 100, 255, 0.012) 100%
+  );
+  background-size: 100% 200%;
+  animation: ai-waterfall-shimmer 14s linear infinite;
+  opacity: 0.6;
+  transition: opacity 1s var(--ai-ease-breath-sync, ease);
+}
+
+[data-theme="dark"] #ai-sort-wrapper::after {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(155, 142, 255, 0.02) 20%,
+    transparent 40%,
+    rgba(192, 132, 252, 0.015) 60%,
+    transparent 80%,
+    rgba(155, 142, 255, 0.018) 100%
+  );
+  background-size: 100% 200%;
+}
+
+#ai-sort-wrapper:hover::after {
+  opacity: 1;
+}
+
+/* === 570. Enhanced Button Micro-interactions 按钮微交互升级 v0.1.7 === */
+.ai-btn {
+  transition: all 0.35s var(--ai-spring-waterfall, ease),
+              transform 0.4s var(--ai-spring-cascade, ease),
+              box-shadow 0.5s var(--ai-ease-liquid-momentum, ease);
+  position: relative;
+  overflow: hidden;
+}
+
+.ai-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(115, 100, 255, 0.08) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s var(--ai-ease-cascade-in, ease);
+  pointer-events: none;
+}
+
+.ai-btn:hover::after {
+  opacity: 1;
+}
+
+.ai-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  transition: all 0.3s var(--ai-spring-cascade, ease);
+}
+
+.ai-btn:active {
+  transform: translateY(0) scale(0.96);
+  transition-duration: 0.06s !important;
+}
+
+.ai-btn-primary:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 14px 36px rgba(115, 100, 255, 0.28),
+              0 6px 18px rgba(155, 89, 246, 0.14);
+}
+
+.ai-btn-primary:active {
+  transform: translateY(-1px) scale(0.97);
+}
+
+/* === 571. Cascade Toast Entrance 瀑布 Toast 入场 v0.1.7 === */
+@keyframes ai-cascade-toast-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.92);
+    filter: blur(6px);
+  }
+  35% {
+    opacity: 0.8;
+    transform: translateY(4px) scale(1.01);
+    filter: blur(0.5px);
+  }
+  60% {
+    transform: translateY(-1.5px) scale(1.002);
+    filter: blur(0);
+  }
+  80% {
+    transform: translateY(0.5px) scale(0.999);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes ai-cascade-toast-out {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-14px) scale(0.94);
+    filter: blur(4px);
+  }
+}
+
+/* === 572. Cascade Modal Entrance 瀑布模态入场 v0.1.7 === */
+@keyframes ai-cascade-modal-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.94) perspective(800px) rotateX(3deg);
+    filter: blur(8px);
+  }
+  40% {
+    opacity: 0.85;
+    transform: translateY(6px) scale(1.005) perspective(800px) rotateX(-0.5deg);
+    filter: blur(1px);
+  }
+  70% {
+    transform: translateY(-2px) scale(1.001) perspective(800px) rotateX(0.2deg);
+    filter: blur(0);
+  }
+  85% {
+    transform: translateY(0.5px) scale(1.0) perspective(800px) rotateX(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) perspective(800px) rotateX(0);
+    filter: blur(0);
+  }
+}
+
+.ai-modal {
+  animation: ai-cascade-modal-enter 0.7s var(--ai-spring-waterfall, cubic-bezier(0.12, 1.36, 0.32, 1.02)) both;
+}
+
+/* === 573. Cascade Settings Reveal 瀑布设置展开 v0.1.7 === */
+@keyframes ai-cascade-settings-reveal {
+  0% {
+    opacity: 0;
+    max-height: 0;
+    transform: translateY(-8px);
+    filter: blur(3px);
+  }
+  50% {
+    opacity: 0.8;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    max-height: 800px;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* === 574. Enhanced Header Flow 头部流动升级 v0.1.7 === */
+@keyframes ai-cascade-header-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  33% {
+    background-position: 100% 50%;
+  }
+  66% {
+    background-position: 50% 100%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.ai-header {
+  background-size: 400% 400%;
+  animation: ai-cascade-header-flow 12s var(--ai-ease-breath-sync, ease) infinite;
+}
+
+/* === 575. Floating Button Cascade Pulse 悬浮按钮瀑流脉冲 v0.1.7 === */
+@keyframes ai-cascade-float-pulse {
+  0%, 100% {
+    box-shadow: 0 0 14px rgba(115, 100, 255, 0.18),
+                0 0 28px rgba(155, 89, 246, 0.08),
+                0 0 0 0 rgba(115, 100, 255, 0);
+    transform: scale(1) translateY(0);
+  }
+  30% {
+    box-shadow: 0 0 18px rgba(115, 100, 255, 0.22),
+                0 0 36px rgba(155, 89, 246, 0.10),
+                0 0 0 4px rgba(115, 100, 255, 0.04);
+    transform: scale(1.02) translateY(-2px);
+  }
+  60% {
+    box-shadow: 0 0 14px rgba(115, 100, 255, 0.20),
+                0 0 28px rgba(155, 89, 246, 0.09),
+                0 0 0 2px rgba(115, 100, 255, 0.02);
+    transform: scale(1.005) translateY(-1px);
+  }
+}
+
+#ai-float-btn {
+  animation: ai-cascade-float-pulse 6s var(--ai-ease-breath-sync, ease) infinite,
+             ai-float-gradient-shift 16s ease-in-out infinite;
+}
+
+/* === 576. Cascade Scrollbar 瀑流滚动条 v0.1.7 === */
+.ai-panel-content::-webkit-scrollbar {
+  width: 5px;
+}
+
+.ai-panel-content::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 4px 0;
+}
+
+.ai-panel-content::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--ai-scrollbar, #BEB8D0), rgba(115, 100, 255, 0.2));
+  border-radius: 10px;
+  transition: background 0.4s ease;
+}
+
+.ai-panel-content::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--ai-scrollbar-hover, #868199), rgba(115, 100, 255, 0.35));
+}
+
+/* === 577. Input Focus Cascade Glow 输入框聚焦瀑流光 v0.1.7 === */
+.ai-input:focus {
+  border-color: var(--ai-primary);
+  box-shadow: 0 0 0 3px rgba(115, 100, 255, 0.10),
+              0 0 16px rgba(115, 100, 255, 0.06);
+  transition: all 0.4s var(--ai-spring-waterfall, ease),
+              box-shadow 0.6s var(--ai-ease-cascade-in, ease);
+}
+
+.ai-select:focus {
+  border-color: var(--ai-primary);
+  box-shadow: 0 0 0 3px rgba(115, 100, 255, 0.10),
+              0 0 16px rgba(115, 100, 255, 0.06);
+  transition: all 0.4s var(--ai-spring-waterfall, ease);
+}
+
+/* === 578. Cascade Detail Unfold 瀑流详情展开 v0.1.7 === */
+@keyframes ai-cascade-detail-unfold {
+  0% {
+    opacity: 0;
+    max-height: 0;
+    transform: scaleY(0.92) translateY(-6px);
+    transform-origin: top center;
+    filter: blur(2px);
+  }
+  40% {
+    opacity: 0.7;
+    transform: scaleY(1.01) translateY(1px);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    max-height: 2000px;
+    transform: scaleY(1) translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* === 579. Cascade Group Unfold 瀑流分组展开 v0.1.7 === */
+@keyframes ai-cascade-group-unfold {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) scaleY(0.95);
+    transform-origin: top;
+  }
+  45% {
+    opacity: 0.85;
+    transform: translateY(2px) scaleY(1.005);
+  }
+  75% {
+    transform: translateY(-0.5px) scaleY(1.0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+/* === 580. Progress Bar Cascade Flow 进度条瀑流 v0.1.7 === */
+@keyframes ai-cascade-progress-flow {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes ai-cascade-progress-glow {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(115, 100, 255, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(115, 100, 255, 0.35),
+                0 0 28px rgba(155, 89, 246, 0.12);
+  }
+}
+
+/* === 581. Velvet Cascade Panel Idle 面板待机呼吸 v0.1.7 === */
+@keyframes ai-cascade-idle-drift {
+  0%, 100% {
+    filter: brightness(1) saturate(1);
+  }
+  50% {
+    filter: brightness(1.006) saturate(1.01);
+  }
+}
+
+#ai-sort-wrapper {
+  animation: ai-cascade-idle-drift 10s var(--ai-ease-breath-sync, ease) infinite;
+}
+
+/* === 582. Cascade Checkbox Spring 复选框弹簧 v0.1.7 === */
+@keyframes ai-cascade-check {
+  0% {
+    transform: scale(1);
+  }
+  20% {
+    transform: scale(0.85);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  70% {
+    transform: scale(0.97);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* === 583. Waterfall Canvas Mobile — 丝瀑移动端 v0.1.7 === */
+@media (max-width: 500px) {
+  .ai-silk-waterfall-canvas {
+    display: none !important;
+  }
+  #ai-sort-wrapper::after {
+    animation-duration: 20s;
+    opacity: 0.3;
+  }
+}
+
 /* === 540. Enhanced Reduced Motion — 无障碍动画降级 === */
 @media (prefers-reduced-motion: reduce) {
   #ai-float-btn {
@@ -13265,8 +13855,12 @@ input[type="checkbox"]:active {
   }
   .ai-harmonic-canvas,
   .ai-membrane-canvas,
-  .ai-zephyr-field {
+  .ai-zephyr-field,
+  .ai-silk-waterfall-canvas {
     display: none !important;
+  }
+  #ai-sort-wrapper::after {
+    animation: none !important;
   }
   .ai-modal {
     animation-duration: 0.15s !important;

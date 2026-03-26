@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.4.7
+// @version      1.4.8
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -4338,6 +4338,8 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'glacier', label: '冰川' },
                 { id: 'pearl', label: '珍珠白' },
                 { id: 'northlight', label: '北极光' },
+                { id: 'sandstone', label: '砂岩' },
+                { id: 'monsoon', label: '季风' },
                 { id: 'custom', label: '自定义' }
             ];
 
@@ -5749,6 +5751,108 @@ ${topUps.length > 0 ? `<div class="section">
             if (panel.style.display !== 'none') startZephyr();
         })();
 
+        // === Velvet Cascade v0.1.7 — Silk Waterfall Canvas 丝瀑画布 ===
+        (() => {
+            const cvs = document.createElement('canvas');
+            cvs.className = 'ai-silk-waterfall-canvas';
+            panel.insertBefore(cvs, panel.firstChild);
+            const ctx = cvs.getContext('2d');
+            let wRaf = null;
+            let wTime = 0;
+
+            const STRAND_COUNT = 7;
+            const strands = [];
+            for (let i = 0; i < STRAND_COUNT; i++) {
+                strands.push({
+                    x: (i + 0.5) / STRAND_COUNT,
+                    speed: 0.3 + Math.random() * 0.5,
+                    amplitude: 8 + Math.random() * 16,
+                    phase: Math.random() * Math.PI * 2,
+                    freq: 1.2 + Math.random() * 1.8,
+                    width: 1.5 + Math.random() * 2.5,
+                    opacity: 0.15 + Math.random() * 0.25
+                });
+            }
+
+            function wResize() {
+                const rect = panel.getBoundingClientRect();
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                cvs.width = rect.width * dpr;
+                cvs.height = rect.height * dpr;
+                cvs.style.width = rect.width + 'px';
+                cvs.style.height = rect.height + 'px';
+                ctx.scale(dpr, dpr);
+            }
+
+            function getAuroraColors() {
+                const s = getComputedStyle(panel);
+                return [
+                    s.getPropertyValue('--ai-aurora-1').trim() || '#7364FF',
+                    s.getPropertyValue('--ai-aurora-3').trim() || '#9B59F6',
+                    s.getPropertyValue('--ai-aurora-5').trim() || '#20E3B2'
+                ];
+            }
+
+            function renderWaterfall() {
+                wTime += 0.006;
+                const w = cvs.style.width ? parseFloat(cvs.style.width) : panel.offsetWidth;
+                const h = cvs.style.height ? parseFloat(cvs.style.height) : panel.offsetHeight;
+                ctx.clearRect(0, 0, w, h);
+
+                const colors = getAuroraColors();
+
+                strands.forEach((s, i) => {
+                    const color = colors[i % colors.length];
+                    ctx.beginPath();
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = s.width;
+                    ctx.globalAlpha = s.opacity * (0.7 + 0.3 * Math.sin(wTime * 0.4 + s.phase));
+                    ctx.lineCap = 'round';
+
+                    const baseX = s.x * w;
+                    const segments = 32;
+                    for (let j = 0; j <= segments; j++) {
+                        const t = j / segments;
+                        const y = t * h;
+                        // Cascading sine waves with vertical flow
+                        const wave1 = Math.sin(t * s.freq * Math.PI + wTime * s.speed + s.phase) * s.amplitude;
+                        const wave2 = Math.sin(t * s.freq * 0.6 * Math.PI + wTime * s.speed * 0.7 + s.phase * 1.3) * s.amplitude * 0.4;
+                        // Gentle drift that makes strands breathe
+                        const drift = Math.sin(wTime * 0.2 + i * 0.8) * 6;
+                        const x = baseX + wave1 + wave2 + drift;
+
+                        if (j === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.stroke();
+
+                    // Subtle glow pass
+                    ctx.globalAlpha = s.opacity * 0.15 * (0.5 + 0.5 * Math.sin(wTime * 0.3 + s.phase));
+                    ctx.lineWidth = s.width * 4;
+                    ctx.filter = 'blur(6px)';
+                    ctx.stroke();
+                    ctx.filter = 'none';
+                });
+                ctx.globalAlpha = 1;
+                wRaf = requestAnimationFrame(renderWaterfall);
+            }
+
+            const startWaterfall = () => {
+                if (!wRaf) { wResize(); renderWaterfall(); }
+            };
+            const stopWaterfall = () => {
+                if (wRaf) { cancelAnimationFrame(wRaf); wRaf = null; }
+            };
+
+            const wObs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startWaterfall();
+                else stopWaterfall();
+            });
+            wObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startWaterfall();
+            window.addEventListener('resize', () => { if (panel.style.display !== 'none') wResize(); });
+        })();
+
         // === Velvet Zephyr v0.1.6 — Spring Scroll Physics 弹簧滚动物理 ===
         (() => {
             const content = panel.querySelector('.ai-panel-content');
@@ -6003,6 +6107,19 @@ ${topUps.length > 0 ? `<div class="section">
                 btn.style.overflow = 'hidden';
                 btn.appendChild(pulse);
                 pulse.addEventListener('animationend', () => pulse.remove());
+            });
+        })();
+
+        // === Velvet Cascade v0.1.7 — Button Radial Glow Tracking 按钮径向光追踪 ===
+        (() => {
+            panel.addEventListener('mousemove', (e) => {
+                const btn = e.target.closest('.ai-btn, .ai-header-btn, .ai-filter-btn, .ai-modal-btn');
+                if (!btn) return;
+                const rect = btn.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
+                const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
+                btn.style.setProperty('--mouse-x', x + '%');
+                btn.style.setProperty('--mouse-y', y + '%');
             });
         })();
 
