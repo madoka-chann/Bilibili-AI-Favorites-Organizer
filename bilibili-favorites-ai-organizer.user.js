@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.5.5
+// @version      1.5.6
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -46,7 +46,7 @@
         // Fallback: 直接注入关键 CSS（确保 z-index 和基本布局正常）
         const fallbackCSS = document.createElement('style');
         fallbackCSS.textContent = `
-            :root{--ai-primary:#7364FF;--ai-primary-dark:#5046E5;--ai-primary-light:#B0A8FF;--ai-primary-bg:rgba(115,100,255,0.06);--ai-primary-shadow:rgba(115,100,255,0.22);--ai-success:#10B981;--ai-error:#F43F5E;--ai-info:#818CF8;--ai-warning:#F59E0B;--ai-text:#181233;--ai-text-secondary:#38305A;--ai-text-muted:#868199;--ai-text-light:#BEB8D0;--ai-border:#E4DDF5;--ai-border-light:#F0EAFA;--ai-border-lighter:#F9F7FF;--ai-bg:#fff;--ai-bg-secondary:#F9F7FF;--ai-bg-tertiary:#F0EAFA;--ai-bg-hover:rgba(115,100,255,0.04);--ai-header-gradient:linear-gradient(135deg,#7364FF,#9B59F6,#7364FF);--ai-modal-backdrop:rgba(24,18,51,0.58);--ai-input-bg:#fff;--ai-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--ai-z-float:2147483640;--ai-z-panel:2147483641;--ai-z-modal:2147483645;--ai-z-particle:2147483646;--ai-radius-xs:6px;--ai-radius-sm:8px;--ai-radius-md:10px;--ai-radius-lg:14px;--ai-radius-xl:18px;--ai-transition:0.25s cubic-bezier(0.4,0,0.2,1);--ai-transition-slow:0.4s cubic-bezier(0.16,1,0.3,1);--ai-scrollbar:#BEB8D0;--ai-scrollbar-hover:#868199;--ai-cat-detail-bg:#F9F7FF;--ai-separator:#E4DDF5;--ai-glow-color:rgba(115,100,255,0.07);--ai-badge-new-bg:#F43F5E;--ai-badge-existing-bg:#10B981;--ai-vid-odd-bg:rgba(24,18,51,0.012);--ai-vid-hover-bg:rgba(115,100,255,0.05);--ai-spring:cubic-bezier(0.32,1.48,0.62,1);--ai-spring-gentle:cubic-bezier(0.20,1.04,0.42,1);--ai-spring-bouncy:cubic-bezier(0.165,0.84,0.28,1.18);--ai-spring-silk:cubic-bezier(0.20,1.10,0.36,1);--ai-ease-out-expo:cubic-bezier(0.14,1,0.28,1);--ai-ease-smooth:cubic-bezier(0.38,0,0,1);--ai-ease-fluid:cubic-bezier(0.22,0.78,0.22,1);--ai-ease-ios:cubic-bezier(0.20,0.98,0.28,1);--ai-ease-magnetic:cubic-bezier(0.18,0.88,0.28,1.08);--ai-ease-butterfly:cubic-bezier(0.13,0.94,0.22,1.03);--ai-ease-ethereal:cubic-bezier(0.08,0.92,0.16,1);--ai-spring-flux:cubic-bezier(0.22,1.36,0.42,1);--ai-ease-aurora:cubic-bezier(0.12,0.88,0.20,1.04);--ai-ease-dreamy:cubic-bezier(0.06,0.96,0.14,1);--ai-spring-firefly:cubic-bezier(0.28,1.68,0.48,1);--ai-spring-velvet:cubic-bezier(0.17,1.32,0.40,1);--ai-spring-jelly:cubic-bezier(0.22,1.52,0.38,1);--ai-ease-silk-out:cubic-bezier(0.08,0.90,0.15,1.02);--ai-spring-marshmallow:cubic-bezier(0.19,1.42,0.37,1);--ai-spring-droplet:cubic-bezier(0.26,1.58,0.44,1);--ai-spring-silk-bounce:cubic-bezier(0.14,1.28,0.34,1.02);--ai-ease-gossamer:cubic-bezier(0.08,0.96,0.18,1);--ai-spring-pudding:cubic-bezier(0.21,1.46,0.40,1);--ai-ease-dewdrop:cubic-bezier(0.04,0.88,0.10,1.03);--ai-spring-bloom:cubic-bezier(0.14,1.34,0.32,1.01);--ai-spring-petal:cubic-bezier(0.18,1.52,0.38,0.98);--ai-ease-bloom:cubic-bezier(0.04,0.90,0.10,1.02);--ai-ease-mist:cubic-bezier(0.06,0.88,0.14,1);--ai-spring-dew:cubic-bezier(0.12,1.42,0.28,1.01);--ai-ease-twilight:cubic-bezier(0.10,0.94,0.16,1.01);--ai-spring-ripple:cubic-bezier(0.20,1.28,0.36,1);--ai-ease-breath-deep:cubic-bezier(0.45,0,0.55,1);--ai-spring-lucid:cubic-bezier(0.14,1.22,0.32,1.01);--ai-ease-drift:cubic-bezier(0.06,0.90,0.12,1.00);--ai-spring-elastic-soft:cubic-bezier(0.18,1.48,0.36,0.98);--ai-ease-river:cubic-bezier(0.04,0.86,0.10,1.02);--ai-spring-bounce-light:cubic-bezier(0.22,1.32,0.40,1.00);--ai-ease-fog:cubic-bezier(0.02,0.94,0.08,1.00);--ai-ease-glide:cubic-bezier(0.08,0.78,0.16,1.00);--ai-spring-prism:cubic-bezier(0.16,1.34,0.30,1.00);--ai-ease-velvet:cubic-bezier(0.04,0.92,0.10,1.01);--ai-spring-gravity:cubic-bezier(0.20,1.56,0.36,0.97);--ai-ease-satin:cubic-bezier(0.03,0.90,0.08,1.00);--ai-spring-taffy:cubic-bezier(0.18,1.62,0.34,0.96);--ai-ease-pond:cubic-bezier(0.05,0.82,0.12,1.01);--ai-spring-plasma:cubic-bezier(0.16,1.38,0.36,1.01);--ai-ease-vein:cubic-bezier(0.04,0.88,0.12,1.01);--ai-ease-harmonic:cubic-bezier(0.08,0.82,0.18,1.04);}
+            :root{--ai-primary:#7364FF;--ai-primary-dark:#5046E5;--ai-primary-light:#B0A8FF;--ai-primary-bg:rgba(115,100,255,0.06);--ai-primary-shadow:rgba(115,100,255,0.22);--ai-success:#10B981;--ai-error:#F43F5E;--ai-info:#818CF8;--ai-warning:#F59E0B;--ai-text:#181233;--ai-text-secondary:#38305A;--ai-text-muted:#868199;--ai-text-light:#BEB8D0;--ai-border:#E4DDF5;--ai-border-light:#F0EAFA;--ai-border-lighter:#F9F7FF;--ai-bg:#fff;--ai-bg-secondary:#F9F7FF;--ai-bg-tertiary:#F0EAFA;--ai-bg-hover:rgba(115,100,255,0.04);--ai-header-gradient:linear-gradient(135deg,#7364FF,#9B59F6,#7364FF);--ai-modal-backdrop:rgba(24,18,51,0.58);--ai-input-bg:#fff;--ai-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--ai-z-float:2147483640;--ai-z-panel:2147483641;--ai-z-modal:2147483645;--ai-z-particle:2147483646;--ai-radius-xs:6px;--ai-radius-sm:8px;--ai-radius-md:10px;--ai-radius-lg:14px;--ai-radius-xl:18px;--ai-transition:0.25s cubic-bezier(0.4,0,0.2,1);--ai-transition-slow:0.4s cubic-bezier(0.16,1,0.3,1);--ai-scrollbar:#BEB8D0;--ai-scrollbar-hover:#868199;--ai-cat-detail-bg:#F9F7FF;--ai-separator:#E4DDF5;--ai-glow-color:rgba(115,100,255,0.07);--ai-badge-new-bg:#F43F5E;--ai-badge-existing-bg:#10B981;--ai-vid-odd-bg:rgba(24,18,51,0.012);--ai-vid-hover-bg:rgba(115,100,255,0.05);--ai-spring:cubic-bezier(0.32,1.48,0.62,1);--ai-spring-gentle:cubic-bezier(0.20,1.04,0.42,1);--ai-spring-bouncy:cubic-bezier(0.165,0.84,0.28,1.18);--ai-spring-silk:cubic-bezier(0.20,1.10,0.36,1);--ai-ease-out-expo:cubic-bezier(0.14,1,0.28,1);--ai-ease-smooth:cubic-bezier(0.38,0,0,1);--ai-ease-fluid:cubic-bezier(0.22,0.78,0.22,1);--ai-ease-ios:cubic-bezier(0.20,0.98,0.28,1);--ai-ease-magnetic:cubic-bezier(0.18,0.88,0.28,1.08);--ai-ease-butterfly:cubic-bezier(0.13,0.94,0.22,1.03);--ai-ease-ethereal:cubic-bezier(0.08,0.92,0.16,1);--ai-spring-flux:cubic-bezier(0.22,1.36,0.42,1);--ai-ease-aurora:cubic-bezier(0.12,0.88,0.20,1.04);--ai-ease-dreamy:cubic-bezier(0.06,0.96,0.14,1);--ai-spring-firefly:cubic-bezier(0.28,1.68,0.48,1);--ai-spring-velvet:cubic-bezier(0.17,1.32,0.40,1);--ai-spring-jelly:cubic-bezier(0.22,1.52,0.38,1);--ai-ease-silk-out:cubic-bezier(0.08,0.90,0.15,1.02);--ai-spring-marshmallow:cubic-bezier(0.19,1.42,0.37,1);--ai-spring-droplet:cubic-bezier(0.26,1.58,0.44,1);--ai-spring-silk-bounce:cubic-bezier(0.14,1.28,0.34,1.02);--ai-ease-gossamer:cubic-bezier(0.08,0.96,0.18,1);--ai-spring-pudding:cubic-bezier(0.21,1.46,0.40,1);--ai-ease-dewdrop:cubic-bezier(0.04,0.88,0.10,1.03);--ai-spring-bloom:cubic-bezier(0.14,1.34,0.32,1.01);--ai-spring-petal:cubic-bezier(0.18,1.52,0.38,0.98);--ai-ease-bloom:cubic-bezier(0.04,0.90,0.10,1.02);--ai-ease-mist:cubic-bezier(0.06,0.88,0.14,1);--ai-spring-dew:cubic-bezier(0.12,1.42,0.28,1.01);--ai-ease-twilight:cubic-bezier(0.10,0.94,0.16,1.01);--ai-spring-ripple:cubic-bezier(0.20,1.28,0.36,1);--ai-ease-breath-deep:cubic-bezier(0.45,0,0.55,1);--ai-spring-lucid:cubic-bezier(0.14,1.22,0.32,1.01);--ai-ease-drift:cubic-bezier(0.06,0.90,0.12,1.00);--ai-spring-elastic-soft:cubic-bezier(0.18,1.48,0.36,0.98);--ai-ease-river:cubic-bezier(0.04,0.86,0.10,1.02);--ai-spring-bounce-light:cubic-bezier(0.22,1.32,0.40,1.00);--ai-ease-fog:cubic-bezier(0.02,0.94,0.08,1.00);--ai-ease-glide:cubic-bezier(0.08,0.78,0.16,1.00);--ai-spring-prism:cubic-bezier(0.16,1.34,0.30,1.00);--ai-ease-velvet:cubic-bezier(0.04,0.92,0.10,1.01);--ai-spring-gravity:cubic-bezier(0.20,1.56,0.36,0.97);--ai-ease-satin:cubic-bezier(0.03,0.90,0.08,1.00);--ai-spring-taffy:cubic-bezier(0.18,1.62,0.34,0.96);--ai-ease-pond:cubic-bezier(0.05,0.82,0.12,1.01);--ai-spring-plasma:cubic-bezier(0.16,1.38,0.36,1.01);--ai-ease-vein:cubic-bezier(0.04,0.88,0.12,1.01);--ai-ease-harmonic:cubic-bezier(0.08,0.82,0.18,1.04);--ai-spring-silk-vortex:cubic-bezier(0.14,1.40,0.30,1.00);--ai-ease-silk-flow:cubic-bezier(0.06,0.92,0.12,1.01);--ai-spring-cloud:cubic-bezier(0.18,1.24,0.36,1.02);--ai-ease-tidal-out:cubic-bezier(0.04,0.86,0.08,1.00);--ai-spring-whip:cubic-bezier(0.24,1.64,0.42,0.96);--ai-ease-feather:cubic-bezier(0.02,0.90,0.06,1.00);--ai-spring-gelatin:cubic-bezier(0.20,1.56,0.34,0.98);--ai-ease-nectar:cubic-bezier(0.08,0.84,0.14,1.02);}
             #ai-float-btn{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-float);background:linear-gradient(135deg,#7364FF,#9B59F6,#B0A8FF,#7364FF);background-size:300% 300%;color:#fff;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 14px rgba(115,100,255,0.18),0 0 28px rgba(155,89,246,0.08);border:2px solid rgba(255,255,255,0.28);transition:transform 0.7s var(--ai-spring-silk);}
             #ai-float-btn [data-lucide]{width:24px;height:24px;}
             #ai-sort-wrapper{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-panel);width:min(400px,calc(100vw - 60px));display:flex;flex-direction:column;background:var(--ai-bg,#fff);color:var(--ai-text,#181233);box-shadow:0 24px 68px rgba(0,0,0,0.11),0 10px 28px rgba(0,0,0,0.07);border-radius:28px;overflow:hidden;font-family:var(--ai-font);}
@@ -4356,6 +4356,9 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'misty-wave', label: '烟波' },
                 { id: 'bronze', label: '青铜' },
                 { id: 'mint-night', label: '薄荷夜' },
+                { id: 'parchment', label: '羊皮纸' },
+                { id: 'graphene', label: '石墨烯' },
+                { id: 'celadon-rain', label: '青瓷雨' },
                 { id: 'custom', label: '自定义' }
             ];
 
@@ -6859,6 +6862,122 @@ ${topUps.length > 0 ? `<div class="section">
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') weaveResize(); });
         })();
 
+        // === Velvet Silk Vortex v0.2.5 — 丝涡流场画布 Silk Vortex Flow Canvas ===
+        (() => {
+            const vortexWrap = document.createElement('div');
+            vortexWrap.className = 'ai-silk-vortex-canvas';
+            const vCanvas = document.createElement('canvas');
+            vortexWrap.appendChild(vCanvas);
+            panel.insertBefore(vortexWrap, panel.firstChild);
+
+            let vortexRaf = null;
+            let vTime = 0;
+
+            const vortexResize = () => {
+                const r = panel.getBoundingClientRect();
+                vCanvas.width = Math.round(r.width * 0.25);
+                vCanvas.height = Math.round(r.height * 0.25);
+            };
+
+            const getColors = () => {
+                const cs = getComputedStyle(document.documentElement);
+                return [
+                    cs.getPropertyValue('--ai-aurora-1').trim() || '#7364FF',
+                    cs.getPropertyValue('--ai-aurora-3').trim() || '#9B59F6',
+                    cs.getPropertyValue('--ai-aurora-5').trim() || '#20E3B2',
+                ];
+            };
+
+            const hexToRgb = (hex) => {
+                hex = hex.replace('#', '');
+                if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+                const n = parseInt(hex, 16);
+                return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+            };
+
+            // Silk vortex: layered spiral flow fields with smooth blending
+            const renderVortex = () => {
+                const ctx = vCanvas.getContext('2d');
+                if (!ctx || !vCanvas.width) { vortexRaf = requestAnimationFrame(renderVortex); return; }
+                const w = vCanvas.width, h = vCanvas.height;
+                ctx.clearRect(0, 0, w, h);
+                vTime += 0.003;
+
+                const colors = getColors();
+                const rgbs = colors.map(hexToRgb);
+                const imgData = ctx.createImageData(w, h);
+                const data = imgData.data;
+                const step = 2;
+
+                // Two vortex centers that drift slowly
+                const cx1 = 0.35 + Math.sin(vTime * 0.7) * 0.15;
+                const cy1 = 0.45 + Math.cos(vTime * 0.5) * 0.2;
+                const cx2 = 0.65 + Math.cos(vTime * 0.6 + 2.0) * 0.15;
+                const cy2 = 0.55 + Math.sin(vTime * 0.4 + 1.5) * 0.18;
+
+                for (let y = 0; y < h; y += step) {
+                    const ny = y / h;
+                    for (let x = 0; x < w; x += step) {
+                        const nx = x / w;
+
+                        // Distance and angle to each vortex center
+                        const dx1 = nx - cx1, dy1 = ny - cy1;
+                        const dist1 = Math.sqrt(dx1 * dx1 + dy1 * dy1);
+                        const angle1 = Math.atan2(dy1, dx1);
+
+                        const dx2 = nx - cx2, dy2 = ny - cy2;
+                        const dist2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+                        const angle2 = Math.atan2(dy2, dx2);
+
+                        // Spiral pattern: angle + distance creates spiral arms
+                        const spiral1 = Math.sin(angle1 * 3 + dist1 * 12 - vTime * 1.8) * 0.5 + 0.5;
+                        const spiral2 = Math.sin(angle2 * 2 - dist2 * 10 + vTime * 1.4 + 1.0) * 0.5 + 0.5;
+
+                        // Radial fade for softness
+                        const fade1 = Math.max(0, 1 - dist1 * 1.8);
+                        const fade2 = Math.max(0, 1 - dist2 * 1.8);
+
+                        // Combine spirals with gentle interference
+                        const v = spiral1 * fade1 * 0.55 + spiral2 * fade2 * 0.45;
+
+                        // Color blend
+                        const ci = v * (rgbs.length - 1);
+                        const ci0 = Math.floor(ci);
+                        const ci1 = Math.min(ci0 + 1, rgbs.length - 1);
+                        const t = ci - ci0;
+                        const r = Math.round(rgbs[ci0][0] * (1 - t) + rgbs[ci1][0] * t);
+                        const g = Math.round(rgbs[ci0][1] * (1 - t) + rgbs[ci1][1] * t);
+                        const b = Math.round(rgbs[ci0][2] * (1 - t) + rgbs[ci1][2] * t);
+                        const alpha = Math.round(6 + v * 20);
+
+                        for (let dy = 0; dy < step && (y + dy) < h; dy++) {
+                            for (let ddx = 0; ddx < step && (x + ddx) < w; ddx++) {
+                                const idx = ((y + dy) * w + (x + ddx)) * 4;
+                                data[idx] = r;
+                                data[idx + 1] = g;
+                                data[idx + 2] = b;
+                                data[idx + 3] = alpha;
+                            }
+                        }
+                    }
+                }
+
+                ctx.putImageData(imgData, 0, 0);
+                vortexRaf = requestAnimationFrame(renderVortex);
+            };
+
+            const startVortex = () => { vortexResize(); if (!vortexRaf) renderVortex(); };
+            const stopVortex = () => { if (vortexRaf) { cancelAnimationFrame(vortexRaf); vortexRaf = null; } };
+
+            const vortexObs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startVortex();
+                else stopVortex();
+            });
+            vortexObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startVortex();
+            window.addEventListener('resize', () => { if (panel.style.display !== 'none') vortexResize(); });
+        })();
+
         // === Velvet Zephyr Flow v0.2.4 — Float Button Idle Shimmer 悬浮按钮闲置微光 ===
         (() => {
             let shimmerRaf = null;
@@ -7554,10 +7673,10 @@ ${topUps.length > 0 ? `<div class="section">
         floatBtn.onclick = (e) => {
             if (_dragState.moved) { _dragState.moved = false; return; }
             // 悬浮按钮丝绒缩放退场（不阻塞面板弹出）
-            floatBtn.style.transition = 'transform 0.38s cubic-bezier(0.18, 1.38, 0.34, 1.00), opacity 0.30s cubic-bezier(0.06, 0.82, 0.14, 1.01), filter 0.30s ease';
-            floatBtn.style.transform = 'scale(0.55) rotate(12deg)';
+            floatBtn.style.transition = 'transform 0.35s cubic-bezier(0.14, 1.40, 0.30, 1.00), opacity 0.28s cubic-bezier(0.04, 0.86, 0.08, 1.00), filter 0.28s ease';
+            floatBtn.style.transform = 'scale(0.5) rotate(15deg)';
             floatBtn.style.opacity = '0';
-            floatBtn.style.filter = 'blur(5px)';
+            floatBtn.style.filter = 'blur(6px)';
             floatBtn.addEventListener('transitionend', function hide() {
                 floatBtn.removeEventListener('transitionend', hide);
                 floatBtn.style.display = 'none';
@@ -7574,7 +7693,7 @@ ${topUps.length > 0 ? `<div class="section">
             panel.style.filter = 'none';
             // 强制 reflow 后触发弹性形变入场动画
             void panel.offsetHeight;
-            panel.style.animation = 'ai-zephyr-panel-in 0.78s cubic-bezier(0.15, 1.36, 0.32, 1.00) forwards';
+            panel.style.animation = 'ai-vortex-panel-in 0.72s cubic-bezier(0.14, 1.40, 0.30, 1.00) forwards';
             clampPanelPosition();
         };
 
@@ -7583,7 +7702,7 @@ ${topUps.length > 0 ? `<div class="section">
             // 弹性形变关闭 — Velvet Bloom v0.1.0
             panel.style.animation = 'none';
             void panel.offsetHeight;
-            panel.style.animation = 'ai-zephyr-panel-out 0.42s cubic-bezier(0.06, 0.92, 0.14, 1.01) forwards';
+            panel.style.animation = 'ai-vortex-panel-out 0.40s cubic-bezier(0.04, 0.86, 0.08, 1.00) forwards';
             setTimeout(() => {
                 panel.style.display = 'none';
                 panel.style.animation = 'none';
@@ -7592,7 +7711,7 @@ ${topUps.length > 0 ? `<div class="section">
                 // 悬浮按钮丝绒弹簧回场
                 floatBtn.style.animation = 'none';
                 void floatBtn.offsetHeight;
-                floatBtn.style.animation = 'ai-velvet-spring-in 0.58s cubic-bezier(0.15, 1.36, 0.32, 1.00)';
+                floatBtn.style.animation = 'ai-velvet-spring-in 0.55s cubic-bezier(0.14, 1.40, 0.30, 1.00)';
             }, 400);
         };
 
@@ -7624,20 +7743,20 @@ ${topUps.length > 0 ? `<div class="section">
             morph.style.setProperty('--morph-y', cy + '%');
             document.body.appendChild(morph);
 
-            // 主题图标弹性旋转 — Velvet Tidal 潮汐弹簧曲线
+            // 主题图标弹性旋转 — Velvet Silk Vortex 丝涡弹簧曲线 v0.2.5
             const icon = btn.querySelector('[data-lucide]');
             if (icon) {
-                icon.style.transition = 'transform 0.5s cubic-bezier(0.16, 1.38, 0.34, 0.98)';
-                icon.style.transform = 'rotate(360deg) scale(0.4)';
+                icon.style.transition = 'transform 0.45s cubic-bezier(0.14, 1.40, 0.30, 1.00)';
+                icon.style.transform = 'rotate(360deg) scale(0.35)';
                 setTimeout(() => {
-                    icon.style.transition = 'transform 0.4s cubic-bezier(0.20, 1.52, 0.40, 0.97)';
-                    icon.style.transform = 'rotate(720deg) scale(1.1)';
+                    icon.style.transition = 'transform 0.38s cubic-bezier(0.20, 1.56, 0.34, 0.98)';
+                    icon.style.transform = 'rotate(720deg) scale(1.12)';
                     setTimeout(() => {
-                        icon.style.transition = 'transform 0.3s cubic-bezier(0.04, 0.88, 0.10, 1.01)';
+                        icon.style.transition = 'transform 0.25s cubic-bezier(0.06, 0.92, 0.12, 1.01)';
                         icon.style.transform = 'rotate(720deg) scale(1)';
-                        setTimeout(() => { icon.style.transform = ''; icon.style.transition = ''; }, 300);
-                    }, 350);
-                }, 250);
+                        setTimeout(() => { icon.style.transform = ''; icon.style.transition = ''; }, 260);
+                    }, 320);
+                }, 220);
             }
 
             // 延迟切换以配合液态动画 — 更精确的时机
