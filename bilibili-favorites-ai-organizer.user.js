@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.3.9
+// @version      1.4.0
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -4648,6 +4648,114 @@ ${topUps.length > 0 ? `<div class="section">
             const refract = document.createElement('div');
             refract.className = 'ai-refraction-layer';
             panel.insertBefore(refract, panel.children[2]);
+        })();
+
+        // === Phantom Silk v0.0.9 — Morphic Flow Canvas 形态流体画布 ===
+        (() => {
+            const morphWrap = document.createElement('div');
+            morphWrap.className = 'ai-morphic-canvas';
+            const canvas = document.createElement('canvas');
+            morphWrap.appendChild(canvas);
+            panel.insertBefore(morphWrap, panel.firstChild);
+
+            let animId = null;
+            let time = 0;
+
+            const resize = () => {
+                const r = panel.getBoundingClientRect();
+                canvas.width = Math.round(r.width * 0.35);
+                canvas.height = Math.round(r.height * 0.35);
+            };
+
+            const getColors = () => {
+                const cs = getComputedStyle(document.documentElement);
+                return [
+                    cs.getPropertyValue('--ai-aurora-1').trim() || '#7364FF',
+                    cs.getPropertyValue('--ai-aurora-3').trim() || '#9B59F6',
+                    cs.getPropertyValue('--ai-aurora-4').trim() || '#00D4AA',
+                ];
+            };
+
+            const hexToRgb = (hex) => {
+                hex = hex.replace('#', '');
+                if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+                const n = parseInt(hex, 16);
+                return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+            };
+
+            // Simplex-inspired noise for smooth organic flow
+            const noise2D = (x, y) => {
+                const ix = Math.floor(x), iy = Math.floor(y);
+                const fx = x - ix, fy = y - iy;
+                const sx = fx * fx * (3 - 2 * fx), sy = fy * fy * (3 - 2 * fy);
+                const hash = (a, b) => {
+                    let h = (a * 374761393 + b * 668265263 + 1274126177) & 0x7fffffff;
+                    h = ((h ^ (h >> 13)) * 1103515245 + 12345) & 0x7fffffff;
+                    return (h & 255) / 255;
+                };
+                const n00 = hash(ix, iy), n10 = hash(ix + 1, iy);
+                const n01 = hash(ix, iy + 1), n11 = hash(ix + 1, iy + 1);
+                return n00 * (1 - sx) * (1 - sy) + n10 * sx * (1 - sy) + n01 * (1 - sx) * sy + n11 * sx * sy;
+            };
+
+            const render = () => {
+                const ctx = canvas.getContext('2d');
+                if (!ctx || !canvas.width) { animId = requestAnimationFrame(render); return; }
+                const w = canvas.width, h = canvas.height;
+                ctx.clearRect(0, 0, w, h);
+                time += 0.003;
+
+                const colors = getColors();
+                const numBlobs = 5;
+                for (let b = 0; b < numBlobs; b++) {
+                    const rgb = hexToRgb(colors[b % colors.length]);
+                    const phase = b * 2.1;
+                    const cx = w * (0.2 + 0.6 * noise2D(time * 0.4 + phase, b * 3.7));
+                    const cy = h * (0.2 + 0.6 * noise2D(b * 5.3, time * 0.3 + phase));
+                    const radius = Math.max(w, h) * (0.25 + 0.15 * Math.sin(time * 0.7 + phase));
+
+                    const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
+                    grad.addColorStop(0, `rgba(${rgb[0]},${rgb[1]},${rgb[2]}, 0.14)`);
+                    grad.addColorStop(0.4, `rgba(${rgb[0]},${rgb[1]},${rgb[2]}, 0.06)`);
+                    grad.addColorStop(1, `rgba(${rgb[0]},${rgb[1]},${rgb[2]}, 0)`);
+                    ctx.fillStyle = grad;
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                animId = requestAnimationFrame(render);
+            };
+
+            const startMorphic = () => { resize(); if (!animId) render(); };
+            const stopMorphic = () => { if (animId) { cancelAnimationFrame(animId); animId = null; } };
+
+            const obs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startMorphic();
+                else stopMorphic();
+            });
+            obs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startMorphic();
+            window.addEventListener('resize', () => { if (panel.style.display !== 'none') resize(); });
+        })();
+
+        // === Phantom Silk v0.0.9 — Depth Parallax Layer 深度视差层 ===
+        (() => {
+            const depthLayer = document.createElement('div');
+            depthLayer.className = 'ai-depth-layer';
+            const inner = document.createElement('div');
+            inner.className = 'ai-depth-layer-inner';
+            depthLayer.appendChild(inner);
+            panel.insertBefore(depthLayer, panel.firstChild);
+
+            // Scroll-based parallax offset
+            const content = panel.querySelector('.ai-panel-content');
+            if (content) {
+                content.addEventListener('scroll', () => {
+                    const scrollFrac = content.scrollTop / (content.scrollHeight - content.clientHeight || 1);
+                    const offsetY = -scrollFrac * 12;
+                    depthLayer.style.transform = `translateY(${offsetY}px)`;
+                }, { passive: true });
+            }
         })();
 
         // === Lava Lamp Particle System 熔岩灯实时渲染粒子 v0.0.6 ===

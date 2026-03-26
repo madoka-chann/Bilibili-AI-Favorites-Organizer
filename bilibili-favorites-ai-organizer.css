@@ -1,8 +1,8 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v0.0.8
+   B站 AI 收藏夹整理助理 — 完整样式表 v0.0.9
    Velvet Nebula · 天鹅绒星云 · Refined Glass Morphism
    Indigo-Nebula 双色系统 · Restrained Aurora Palette
-   Velvet Dynamics 11.0 · Silky Spring Micro-interactions
+   Velvet Dynamics 12.0 · Silky Spring Micro-interactions
    Stellar Abyss Dark Theme · Living Glass Surfaces
    Multi-Accent Color Themes · Ambient Light Motes · Liquid Borders
    Magnetic Tilt · Cursor-Reactive Particles · Fluid Morphing
@@ -12,6 +12,7 @@
    Silk Cascade · Shimmer Sweep · Midnight & Matcha Themes
    Elastic Rebound · Jelly Stagger · Breathing Pulse
    Liquid Mirage · Aurora Weave · Obsidian & Porcelain Themes
+   Phantom Silk · Morphic Flow · Depth Parallax · Living Luminance
    ================================================================ */
 
 /* === 1. CSS 变量 (双主题系统) === */
@@ -9024,5 +9025,813 @@ input[type="checkbox"]:active {
   }
   #ai-sort-wrapper {
     animation: none !important;
+  }
+}
+
+/* ================================================================
+   Phantom Silk v0.0.9 — 幻影丝绸 新增特性
+   Morphic Flow Canvas · Depth Parallax · Living Luminance
+   Velvet Dynamics 12.0 · Phantom Spring System
+   Smooth Momentum · Magnetic Snap · Elastic Continuity
+   ================================================================ */
+
+/* === 377. Velvet Dynamics 12.0 — 幻影丝绸运动曲线系统 === */
+:root {
+  --ai-spring-phantom: cubic-bezier(0.16, 1.22, 0.34, 1.01);
+  --ai-spring-silk-whip: cubic-bezier(0.10, 1.48, 0.30, 1);
+  --ai-ease-phantom: cubic-bezier(0.05, 0.92, 0.12, 1.01);
+  --ai-ease-mercury: cubic-bezier(0.08, 0.86, 0.14, 1.03);
+  --ai-spring-tension: cubic-bezier(0.20, 1.38, 0.38, 1);
+  --ai-ease-vapor: cubic-bezier(0.03, 0.94, 0.10, 1);
+  --ai-spring-membrane: cubic-bezier(0.14, 1.30, 0.32, 1.02);
+  --ai-ease-laminar: cubic-bezier(0.12, 0.80, 0.18, 1.06);
+}
+
+/* === 378. Morphic Flow Canvas — 形态流体画布 (实时渲染流体背景) === */
+.ai-morphic-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  opacity: 0.22;
+  mix-blend-mode: soft-light;
+}
+
+.ai-morphic-canvas canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+[data-theme="dark"] .ai-morphic-canvas {
+  opacity: 0.14;
+  mix-blend-mode: screen;
+}
+
+/* === 379. Depth Parallax — 深度视差层 (面板滚动时背景微移) === */
+.ai-depth-layer {
+  position: absolute;
+  inset: -20px;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  transition: transform 0.8s var(--ai-ease-vapor);
+  will-change: transform;
+}
+
+.ai-depth-layer-inner {
+  position: absolute;
+  inset: 0;
+  background: var(--ai-mesh-gradient);
+  background-size: 250% 250%;
+  animation: ai-depth-drift 40s var(--ai-ease-breath) infinite;
+  opacity: 0.5;
+}
+
+@keyframes ai-depth-drift {
+  0%, 100% { background-position: 0% 0%; transform: translate(0, 0); }
+  25% { background-position: 50% 30%; transform: translate(-3px, -2px); }
+  50% { background-position: 100% 60%; transform: translate(2px, -4px); }
+  75% { background-position: 40% 90%; transform: translate(-1px, 3px); }
+}
+
+/* === 380. Living Luminance — 活体光度 (面板始终有微妙的光度呼吸) === */
+@keyframes ai-luminance-breathe {
+  0%, 100% {
+    filter: brightness(1) saturate(1);
+  }
+  30% {
+    filter: brightness(1.008) saturate(1.01);
+  }
+  60% {
+    filter: brightness(0.997) saturate(1.005);
+  }
+}
+
+#ai-sort-wrapper:not(.ai-panel-closing) {
+  animation: ai-luminance-breathe 8s var(--ai-ease-vapor) infinite,
+             ai-living-canvas 20s var(--ai-ease-breath) infinite;
+}
+
+[data-theme="dark"] #ai-sort-wrapper:not(.ai-panel-closing) {
+  animation: ai-luminance-breathe 6s var(--ai-ease-vapor) infinite,
+             ai-living-canvas 20s var(--ai-ease-breath) infinite;
+}
+
+/* === 381. Phantom Silk Hover — 幻影丝绸悬浮 (所有交互元素的超丝滑回弹) === */
+.ai-cat-row {
+  transition: transform 0.5s var(--ai-spring-phantom),
+              background 0.4s var(--ai-ease-phantom),
+              box-shadow 0.45s var(--ai-ease-mercury);
+}
+
+.ai-cat-row:hover {
+  transform: translateX(5px) scale(1.01);
+  box-shadow: inset 3px 0 0 var(--ai-primary),
+              0 3px 14px var(--ai-glow-color);
+  transition: transform 0.35s var(--ai-spring-tension),
+              background 0.3s var(--ai-ease-phantom),
+              box-shadow 0.3s var(--ai-ease-mercury);
+}
+
+.ai-cat-row:active {
+  transform: translateX(2px) scale(0.992);
+  transition: transform 0.06s var(--ai-spring-silk-whip);
+}
+
+/* === 382. Magnetic Snap Buttons — 磁性吸附按钮 (松手回弹极度Q弹) === */
+.ai-btn-primary {
+  transition: transform 0.55s var(--ai-spring-phantom),
+              box-shadow 0.45s var(--ai-ease-phantom),
+              filter 0.3s ease;
+}
+
+.ai-btn-primary:hover {
+  transform: translateY(-3px) scale(1.03);
+  filter: brightness(1.04);
+  box-shadow: 0 8px 24px var(--ai-primary-shadow),
+              0 3px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.4s var(--ai-spring-tension);
+}
+
+.ai-btn-primary:active {
+  transform: scale(0.90) !important;
+  filter: brightness(0.97);
+  transition: transform 0.06s var(--ai-spring-silk-whip) !important;
+}
+
+.ai-btn-primary:not(:active):not(:hover) {
+  transition: transform 0.65s var(--ai-spring-membrane),
+              box-shadow 0.5s var(--ai-ease-mercury),
+              filter 0.3s ease;
+}
+
+/* === 383. Tool Button Phantom Spring — 工具按钮幻影弹簧 === */
+.ai-btn-tool {
+  transition: all 0.5s var(--ai-spring-phantom) !important;
+}
+
+.ai-btn-tool:hover {
+  transform: translateY(-4px) scale(1.05) !important;
+  box-shadow: 0 10px 28px var(--ai-glow-color),
+              0 3px 10px rgba(0, 0, 0, 0.05) !important;
+  transition: all 0.35s var(--ai-spring-tension) !important;
+}
+
+.ai-btn-tool:active {
+  transform: translateY(1px) scale(0.88) !important;
+  transition: transform 0.06s var(--ai-spring-silk-whip) !important;
+}
+
+.ai-btn-tool:not(:active):not(:hover) {
+  transition: all 0.6s var(--ai-spring-membrane) !important;
+}
+
+/* === 384. Header Button Phantom Jelly — 标题按钮幻影果冻 === */
+.ai-header-btn {
+  transition: all 0.45s var(--ai-spring-phantom);
+}
+
+.ai-header-btn:hover {
+  transform: scale(1.16) translateY(-2px);
+  background: rgba(255, 255, 255, 0.30);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
+  transition: all 0.3s var(--ai-spring-tension);
+}
+
+.ai-header-btn:active {
+  transform: scale(0.78) !important;
+  transition: transform 0.06s var(--ai-spring-silk-whip) !important;
+}
+
+.ai-header-btn:not(:active):not(:hover) {
+  transition: all 0.55s var(--ai-spring-membrane);
+}
+
+/* === 385. Filter Button Phantom Bounce — 筛选按钮幻影回弹 === */
+.ai-filter-btn {
+  transition: all 0.5s var(--ai-spring-phantom);
+}
+
+.ai-filter-btn:hover {
+  transform: translateY(-3px) scale(1.06);
+  transition: all 0.35s var(--ai-spring-tension);
+}
+
+.ai-filter-btn:active {
+  transform: scale(0.86) !important;
+  transition: transform 0.06s var(--ai-spring-silk-whip) !important;
+}
+
+.ai-filter-btn.active {
+  animation: ai-phantom-select 0.55s var(--ai-spring-phantom);
+}
+
+@keyframes ai-phantom-select {
+  0% { transform: scale(1); }
+  16% { transform: scale(0.84) rotate(-2deg); }
+  36% { transform: scale(1.14) rotate(1.5deg); }
+  54% { transform: scale(0.96) rotate(-0.5deg); }
+  70% { transform: scale(1.04) rotate(0.2deg); }
+  84% { transform: scale(0.99); }
+  100% { transform: scale(1.05) rotate(0deg); }
+}
+
+/* === 386. Phantom Checkbox — 幻影复选框 (极致Q弹) === */
+#ai-sort-wrapper input[type="checkbox"] {
+  transition: transform 0.5s var(--ai-spring-phantom);
+}
+
+#ai-sort-wrapper input[type="checkbox"]:active {
+  transform: scale(0.55);
+  transition: transform 0.06s;
+}
+
+#ai-sort-wrapper input[type="checkbox"]:checked {
+  animation: ai-phantom-check 0.6s var(--ai-spring-silk-whip);
+}
+
+@keyframes ai-phantom-check {
+  0% { transform: scale(1) rotate(0deg); }
+  12% { transform: scale(0.55) rotate(-10deg); }
+  28% { transform: scale(1.38) rotate(7deg); }
+  42% { transform: scale(0.86) rotate(-3deg); }
+  56% { transform: scale(1.14) rotate(2deg); }
+  70% { transform: scale(0.95) rotate(-0.5deg); }
+  84% { transform: scale(1.04); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+/* === 387. Float Button Phantom Idle — 悬浮按钮幻影待机 (始终微动) === */
+@keyframes ai-phantom-idle {
+  0%, 100% {
+    border-radius: 50%;
+    transform: translateY(0) scale(1);
+    filter: brightness(1);
+  }
+  7% {
+    border-radius: 48% 52% 51% 49% / 52% 48% 50% 50%;
+    transform: translateY(-2px) rotate(0.6deg) scale(1.01);
+  }
+  15% {
+    border-radius: 46% 54% 49% 51% / 48% 52% 53% 47%;
+    transform: translateY(-5px) rotate(-0.4deg) scale(1.018);
+    filter: brightness(1.03);
+  }
+  24% {
+    border-radius: 52% 48% 53% 47% / 54% 46% 48% 52%;
+    transform: translateY(-3px) rotate(0.3deg) scale(0.995);
+  }
+  33% {
+    border-radius: 44% 56% 47% 53% / 50% 50% 53% 47%;
+    transform: translateY(-6px) rotate(-0.6deg) scale(1.008);
+  }
+  42% {
+    border-radius: 53% 47% 55% 45% / 47% 53% 45% 55%;
+    transform: translateY(-2px) rotate(0.2deg) scale(0.998);
+    filter: brightness(1.02);
+  }
+  52% {
+    border-radius: 47% 53% 45% 55% / 55% 45% 53% 47%;
+    transform: translateY(-5px) rotate(-0.3deg) scale(1.012);
+  }
+  62% {
+    border-radius: 55% 45% 52% 48% / 48% 52% 46% 54%;
+    transform: translateY(-1px) rotate(0.15deg) scale(0.997);
+  }
+  72% {
+    border-radius: 49% 51% 47% 53% / 53% 47% 55% 45%;
+    transform: translateY(-4px) rotate(-0.1deg) scale(1.005);
+    filter: brightness(1.025);
+  }
+  82% {
+    border-radius: 51% 49% 53% 47% / 47% 53% 49% 51%;
+    transform: translateY(-2px) rotate(0.05deg) scale(1.002);
+  }
+  92% {
+    border-radius: 50% 50% 51% 49% / 51% 49% 50% 50%;
+    transform: translateY(-0.5px) rotate(-0.02deg) scale(1);
+  }
+}
+
+#ai-float-btn:not(:hover):not(:active) {
+  animation: ai-phantom-idle 12s var(--ai-ease-vapor) infinite,
+             ai-float-gradient-shift 14s ease-in-out infinite,
+             ai-float-breath-ring 4s var(--ai-ease-vapor) infinite !important;
+}
+
+#ai-float-btn {
+  transition: transform 0.6s var(--ai-spring-phantom),
+              box-shadow 0.5s var(--ai-ease-mercury),
+              border-color 0.45s ease,
+              border-radius 1s var(--ai-ease-laminar);
+}
+
+#ai-float-btn:hover {
+  transform: scale(1.22) translateY(-12px) rotate(-3deg);
+  border-radius: 36% 64% 52% 48% / 42% 50% 50% 58%;
+  box-shadow: 0 0 36px rgba(115, 100, 255, 0.52),
+              0 0 68px rgba(255, 107, 157, 0.26),
+              0 0 100px rgba(155, 89, 246, 0.12),
+              0 28px 64px rgba(24, 18, 51, 0.24);
+  transition: transform 0.6s var(--ai-spring-silk-whip),
+              box-shadow 0.5s var(--ai-ease-mercury),
+              border-radius 0.8s var(--ai-spring-phantom);
+}
+
+#ai-float-btn:active {
+  transform: scale(0.78);
+  transition: transform 0.06s;
+  border-radius: 50%;
+}
+
+/* === 388. Phantom Panel Entrance — 幻影面板入场 === */
+@keyframes ai-phantom-panel-in {
+  0% {
+    opacity: 0;
+    transform: translateY(32px) scale(0.88);
+    filter: blur(12px) saturate(0.5);
+    clip-path: inset(30% 4% 0% 4% round 28px);
+  }
+  6% {
+    clip-path: inset(8% 1% 0% 1% round 28px);
+    filter: blur(3px) saturate(0.8);
+  }
+  14% {
+    transform: translateY(-5px) scale(1.022);
+    opacity: 1;
+    filter: blur(0) saturate(1.04);
+    clip-path: inset(0% 0% 0% 0% round 28px);
+  }
+  24% {
+    transform: translateY(2.5px) scale(0.994);
+  }
+  34% {
+    transform: translateY(-1.2px) scale(1.005);
+  }
+  44% {
+    transform: translateY(0.5px) scale(0.998);
+  }
+  56% {
+    transform: translateY(-0.2px) scale(1.002);
+  }
+  70% {
+    transform: translateY(0.06px) scale(0.9998);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    filter: blur(0) saturate(1);
+    clip-path: inset(0% 0% 0% 0% round 28px);
+  }
+}
+
+/* === 389. Phantom Panel Exit — 幻影面板退场 === */
+@keyframes ai-phantom-panel-out {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+    clip-path: inset(0% 0% 0% 0% round 28px);
+  }
+  20% {
+    transform: translateY(-4px) scale(1.012);
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(28px) scale(0.90);
+    filter: blur(8px) brightness(0.96);
+    clip-path: inset(0% 3% 25% 3% round 28px);
+  }
+}
+
+.ai-panel-closing {
+  animation: ai-phantom-panel-out 0.38s var(--ai-ease-phantom) forwards !important;
+}
+
+/* === 390. Phantom Modal — 幻影弹窗入场 === */
+.ai-modal {
+  animation: ai-phantom-modal-in 0.65s var(--ai-ease-mercury);
+}
+
+@keyframes ai-phantom-modal-in {
+  0% {
+    transform: scale(0.82) translateY(24px);
+    opacity: 0;
+    filter: blur(16px) saturate(0.4);
+    border-radius: 44px;
+  }
+  14% {
+    border-radius: 32px;
+    filter: blur(2px) saturate(1.08);
+  }
+  26% {
+    transform: scale(1.025) translateY(-6px);
+    opacity: 1;
+    filter: blur(0) saturate(1.04);
+  }
+  38% {
+    transform: scale(0.993) translateY(2.5px);
+    border-radius: 30px;
+  }
+  50% {
+    transform: scale(1.006) translateY(-1px);
+  }
+  62% {
+    transform: scale(0.998) translateY(0.4px);
+    filter: saturate(1);
+  }
+  76% {
+    transform: scale(1.002) translateY(-0.12px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    filter: blur(0) saturate(1);
+    border-radius: 30px;
+  }
+}
+
+/* === 391. Phantom Toast — 幻影通知入场 === */
+.ai-toast {
+  animation: ai-phantom-toast-in 0.65s var(--ai-spring-phantom);
+  transition: transform 0.5s var(--ai-spring-phantom),
+              opacity 0.3s var(--ai-ease-phantom) !important;
+}
+
+@keyframes ai-phantom-toast-in {
+  0% {
+    transform: translateX(150%) scale(0.7) rotate(3deg);
+    opacity: 0;
+    filter: blur(6px);
+  }
+  16% {
+    transform: translateX(-8px) scale(1.05) rotate(-0.8deg);
+    opacity: 1;
+    filter: blur(0);
+  }
+  30% {
+    transform: translateX(4px) scale(0.97) rotate(0.4deg);
+  }
+  42% {
+    transform: translateX(-1.5px) scale(1.015) rotate(-0.15deg);
+  }
+  54% {
+    transform: translateX(0.6px) scale(0.996);
+  }
+  66% {
+    transform: translateX(-0.2px) scale(1.003);
+  }
+  80% {
+    transform: translateX(0.05px) scale(0.999);
+  }
+  100% {
+    transform: translateX(0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+/* === 392. Phantom Log Entry — 幻影日志入场 === */
+.ai-log-entry {
+  animation: ai-phantom-log-in 0.5s var(--ai-spring-phantom) both;
+}
+
+@keyframes ai-phantom-log-in {
+  0% {
+    transform: translateX(24px) scale(0.92);
+    opacity: 0;
+    filter: blur(2px);
+  }
+  28% {
+    transform: translateX(-3px) scale(1.02);
+    opacity: 1;
+    filter: blur(0);
+  }
+  48% {
+    transform: translateX(1.2px) scale(0.996);
+  }
+  66% {
+    transform: translateX(-0.4px) scale(1.003);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* === 393. Phantom Category Stagger — 幻影分类交错入场 === */
+.ai-cat-block {
+  animation: ai-phantom-cat-in 0.55s var(--ai-ease-mercury) both;
+  animation-delay: calc(var(--i, 0) * 0.04s);
+}
+
+@keyframes ai-phantom-cat-in {
+  0% {
+    transform: translateX(36px) scale(0.91);
+    opacity: 0;
+    filter: blur(3px);
+  }
+  24% {
+    transform: translateX(-5px) scale(1.018);
+    opacity: 1;
+    filter: blur(0);
+  }
+  42% {
+    transform: translateX(2px) scale(0.996);
+  }
+  58% {
+    transform: translateX(-0.6px) scale(1.003);
+  }
+  74% {
+    transform: translateX(0.15px) scale(0.999);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* === 394. Phantom Group Unfold — 幻影分组展开 === */
+.ai-group-body {
+  animation: ai-phantom-unfold 0.45s var(--ai-ease-mercury) both;
+}
+
+@keyframes ai-phantom-unfold {
+  0% {
+    opacity: 0;
+    transform: translateY(-6px) scaleY(0.88);
+    transform-origin: top;
+    filter: blur(3px);
+  }
+  28% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0.8px) scaleY(1.01);
+  }
+  48% {
+    transform: translateY(-0.3px) scaleY(0.998);
+  }
+  68% {
+    transform: translateY(0.1px) scaleY(1.002);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+    filter: blur(0);
+  }
+}
+
+/* === 395. Phantom Detail Unfold — 幻影详情展开 === */
+.ai-cat-detail.open {
+  animation: ai-phantom-detail-open 0.5s var(--ai-spring-phantom);
+}
+
+@keyframes ai-phantom-detail-open {
+  0% { opacity: 0; transform: scaleY(0.82); transform-origin: top; filter: blur(4px); }
+  25% { opacity: 1; filter: blur(0); transform: scaleY(1.018); }
+  44% { transform: scaleY(0.995); }
+  62% { transform: scaleY(1.004); }
+  80% { transform: scaleY(0.999); }
+  100% { transform: scaleY(1); }
+}
+
+/* === 396. Phantom Settings Reveal — 幻影设置展开 === */
+.ai-settings[style*="display: block"], .ai-settings[style*="display:block"] {
+  animation: ai-phantom-settings-in 0.5s var(--ai-ease-mercury) both;
+}
+
+@keyframes ai-phantom-settings-in {
+  0% {
+    opacity: 0;
+    filter: blur(6px);
+    transform: translateY(-8px) scaleY(0.92);
+    transform-origin: top;
+  }
+  30% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(1px) scaleY(1.008);
+  }
+  55% {
+    transform: translateY(-0.3px) scaleY(0.998);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+/* === 397. Phantom Video Cover — 幻影封面3D悬浮 === */
+.ai-vid-cover {
+  transition: transform 0.55s var(--ai-spring-phantom),
+              box-shadow 0.45s var(--ai-ease-mercury);
+}
+
+.ai-vid-rich:hover .ai-vid-cover {
+  transform: scale(1.12) translateY(-3px) perspective(300px) rotateY(-3deg) rotateX(1.5deg);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.18),
+              0 6px 14px rgba(0, 0, 0, 0.10);
+  transition: transform 0.5s var(--ai-spring-silk-whip),
+              box-shadow 0.4s var(--ai-ease-mercury);
+}
+
+/* === 398. Phantom Video Item Hover — 幻影视频项悬浮 === */
+.ai-vid-item {
+  transition: background 0.3s var(--ai-ease-phantom),
+              transform 0.4s var(--ai-spring-phantom),
+              padding-left 0.35s var(--ai-ease-mercury);
+}
+
+.ai-vid-item:hover {
+  background: var(--ai-vid-hover-bg);
+  transform: translateX(3px);
+}
+
+/* === 399. Smooth Momentum Scroll — 丝滑动量滚动 === */
+.ai-panel-content,
+.ai-modal-body {
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* === 400. Living Title Shimmer — 活体标题微光 (始终流淌) === */
+.ai-header-title {
+  background: linear-gradient(
+    90deg,
+    #fff 0%,
+    rgba(255, 255, 255, 0.72) 20%,
+    #fff 40%,
+    rgba(255, 255, 255, 0.78) 60%,
+    #fff 80%,
+    rgba(255, 255, 255, 0.75) 100%
+  );
+  background-size: 500% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: ai-phantom-title-flow 7s var(--ai-ease-vapor) infinite;
+}
+
+@keyframes ai-phantom-title-flow {
+  0% { background-position: 500% 0; }
+  100% { background-position: -500% 0; }
+}
+
+/* === 401. Phantom Header Flow — 幻影标题极光流淌 === */
+.ai-header {
+  background-size: 700% 700% !important;
+  animation: ai-phantom-header-flow 10s var(--ai-ease-vapor) infinite !important;
+}
+
+@keyframes ai-phantom-header-flow {
+  0%, 100% { background-position: 0% 50%; }
+  15% { background-position: 30% 20%; }
+  30% { background-position: 60% 60%; }
+  45% { background-position: 90% 35%; }
+  60% { background-position: 70% 75%; }
+  75% { background-position: 40% 45%; }
+  90% { background-position: 10% 65%; }
+}
+
+/* === 402. Phantom Input Focus — 幻影输入框聚焦 === */
+.ai-input:focus-visible,
+.ai-select:focus-visible {
+  border-color: var(--ai-primary);
+  box-shadow: 0 0 0 3.5px var(--ai-primary-bg),
+              0 0 16px var(--ai-glow-color);
+  transform: scale(1.01);
+  transition: all 0.4s var(--ai-spring-phantom);
+}
+
+.ai-input:not(:focus-visible),
+.ai-select:not(:focus-visible) {
+  transition: all 0.5s var(--ai-spring-membrane);
+}
+
+/* === 403. Enhanced Theme Transition — 增强主题切换流畅度 === */
+#ai-sort-wrapper,
+#ai-sort-wrapper > *,
+.ai-modal,
+.ai-modal > * {
+  transition-property: background-color, color, border-color, box-shadow, backdrop-filter;
+  transition-duration: 0.6s;
+  transition-timing-function: var(--ai-ease-phantom);
+}
+
+.ai-btn, .ai-btn-tool, .ai-header-btn, .ai-filter-btn, .ai-input, .ai-select {
+  transition-duration: 0.3s;
+}
+
+/* === 404. Phantom Accent Picker — 幻影主题选择器入场 === */
+#ai-accent-picker[style*="display: block"],
+#ai-accent-picker[style*="display:block"] {
+  animation: ai-phantom-picker-in 0.4s var(--ai-spring-phantom);
+}
+
+@keyframes ai-phantom-picker-in {
+  0% { opacity: 0; transform: scale(0.85) translateY(-8px); filter: blur(4px); }
+  40% { opacity: 1; transform: scale(1.03) translateY(1px); filter: blur(0); }
+  65% { transform: scale(0.99) translateY(-0.5px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+.ai-accent-dot {
+  transition: transform 0.5s var(--ai-spring-silk-whip),
+              border-color 0.3s ease,
+              box-shadow 0.3s ease;
+}
+
+.ai-accent-dot:active {
+  transform: scale(0.75);
+  transition: transform 0.06s;
+}
+
+.ai-accent-dot.active {
+  animation: ai-phantom-dot-select 0.5s var(--ai-spring-silk-whip);
+}
+
+@keyframes ai-phantom-dot-select {
+  0% { transform: scale(1); }
+  25% { transform: scale(0.65); }
+  50% { transform: scale(1.3); }
+  72% { transform: scale(1.05); }
+  100% { transform: scale(1.15); }
+}
+
+/* === 405. Phantom Group Header — 幻影分组标题悬浮 === */
+.ai-group-header {
+  transition: background 0.35s var(--ai-ease-phantom),
+              transform 0.4s var(--ai-spring-phantom);
+}
+
+.ai-group-header:hover {
+  transform: translateX(3px);
+  background: var(--ai-bg-hover);
+  transition: all 0.3s var(--ai-spring-tension);
+}
+
+.ai-group-header:active {
+  transform: scale(0.98) translateX(1px);
+  transition: transform 0.06s;
+}
+
+.ai-group-header [data-lucide]:last-child {
+  transition: transform 0.45s var(--ai-spring-phantom);
+}
+
+/* === 406. Phantom Theme Toggle — 幻影主题切换按钮 === */
+#ai-theme-toggle [data-lucide] {
+  transition: transform 0.55s var(--ai-spring-silk-whip),
+              opacity 0.3s ease;
+}
+
+#ai-theme-toggle:hover [data-lucide] {
+  transform: rotate(30deg) scale(1.18);
+}
+
+[data-theme="dark"] #ai-theme-toggle:hover [data-lucide] {
+  transform: rotate(-30deg) scale(1.18);
+}
+
+/* === 407. GPU Performance Hints v0.0.9 === */
+.ai-morphic-canvas,
+.ai-morphic-canvas canvas,
+.ai-depth-layer,
+.ai-depth-layer-inner {
+  will-change: transform;
+  backface-visibility: hidden;
+  contain: layout style;
+}
+
+/* === 408. Reduced Motion v0.0.9 — 无障碍适配 === */
+@media (prefers-reduced-motion: reduce) {
+  .ai-morphic-canvas,
+  .ai-depth-layer {
+    display: none !important;
+  }
+  #ai-sort-wrapper:not(.ai-panel-closing) {
+    animation: none !important;
+  }
+  .ai-header {
+    animation: none !important;
+  }
+  #ai-float-btn:not(:hover):not(:active) {
+    animation: none !important;
+    border-radius: 50% !important;
+  }
+  .ai-toast {
+    animation: ai-fade-in 0.2s ease !important;
+  }
+  .ai-modal {
+    animation: ai-fade-in 0.2s ease !important;
+  }
+  .ai-cat-block {
+    animation: ai-fade-in 0.15s ease !important;
   }
 }
