@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.4.1
+// @version      1.4.2
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -4328,6 +4328,8 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'porcelain', label: '青瓷' },
                 { id: 'mist', label: '清雾' },
                 { id: 'twilight', label: '薄暮' },
+                { id: 'slate', label: '岩灰' },
+                { id: 'mocha', label: '摩卡' },
                 { id: 'custom', label: '自定义' }
             ];
 
@@ -4865,6 +4867,119 @@ ${topUps.length > 0 ? `<div class="section">
             ripObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startRipple();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') ripResize(); });
+        })();
+
+        // === Velvet Breath v0.1.1 — Silk Thread Canvas 丝线织流画布 ===
+        (() => {
+            const silkWrap = document.createElement('div');
+            silkWrap.className = 'ai-silk-thread-canvas';
+            const sCanvas = document.createElement('canvas');
+            silkWrap.appendChild(sCanvas);
+            panel.insertBefore(silkWrap, panel.firstChild);
+
+            let silkAnimId = null;
+            let silkTime = 0;
+
+            const silkResize = () => {
+                const r = panel.getBoundingClientRect();
+                sCanvas.width = Math.round(r.width * 0.4);
+                sCanvas.height = Math.round(r.height * 0.4);
+            };
+
+            const getColors = () => {
+                const cs = getComputedStyle(document.documentElement);
+                return [
+                    cs.getPropertyValue('--ai-aurora-1').trim() || '#7364FF',
+                    cs.getPropertyValue('--ai-aurora-2').trim() || '#FF6B9D',
+                    cs.getPropertyValue('--ai-aurora-3').trim() || '#9B59F6',
+                ];
+            };
+
+            const hexToRgb = (hex) => {
+                hex = hex.replace('#', '');
+                if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+                const n = parseInt(hex, 16);
+                return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+            };
+
+            // Silk thread parameters - persistent flowing curves
+            const threads = [];
+            const THREAD_COUNT = 6;
+            for (let i = 0; i < THREAD_COUNT; i++) {
+                threads.push({
+                    yBase: (i + 0.5) / THREAD_COUNT,
+                    amplitude: 0.06 + Math.random() * 0.08,
+                    frequency: 1.5 + Math.random() * 2,
+                    speed: 0.3 + Math.random() * 0.4,
+                    phase: Math.random() * Math.PI * 2,
+                    thickness: 0.8 + Math.random() * 1.2,
+                    drift: 0.002 + Math.random() * 0.003
+                });
+            }
+
+            const renderSilk = () => {
+                const ctx = sCanvas.getContext('2d');
+                if (!ctx || !sCanvas.width) { silkAnimId = requestAnimationFrame(renderSilk); return; }
+                const w = sCanvas.width, h = sCanvas.height;
+                ctx.clearRect(0, 0, w, h);
+                silkTime += 0.006;
+
+                const colors = getColors();
+
+                threads.forEach((t, idx) => {
+                    const rgb = hexToRgb(colors[idx % colors.length]);
+                    ctx.beginPath();
+                    ctx.strokeStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]}, 0.18)`;
+                    ctx.lineWidth = t.thickness;
+                    ctx.lineCap = 'round';
+
+                    // Flowing Bezier curve with multiple sine harmonics
+                    const yDrift = Math.sin(silkTime * t.drift * 80 + t.phase) * 0.04;
+                    const baseY = (t.yBase + yDrift) * h;
+
+                    ctx.moveTo(0, baseY + Math.sin(t.phase + silkTime * t.speed) * t.amplitude * h);
+
+                    for (let x = 2; x <= w; x += 2) {
+                        const nx = x / w;
+                        const y = baseY
+                            + Math.sin(nx * t.frequency * Math.PI + silkTime * t.speed + t.phase) * t.amplitude * h
+                            + Math.sin(nx * t.frequency * Math.PI * 2.3 - silkTime * t.speed * 0.7 + t.phase * 1.5) * t.amplitude * h * 0.3
+                            + Math.cos(nx * t.frequency * Math.PI * 0.8 + silkTime * t.speed * 0.4) * t.amplitude * h * 0.15;
+                        ctx.lineTo(x, y);
+                    }
+
+                    ctx.stroke();
+
+                    // Ghost echo line (slightly offset, lower opacity)
+                    ctx.beginPath();
+                    ctx.strokeStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]}, 0.06)`;
+                    ctx.lineWidth = t.thickness * 2.5;
+                    const echoOffset = 4 + Math.sin(silkTime * 0.3 + t.phase) * 2;
+
+                    ctx.moveTo(0, baseY + echoOffset + Math.sin(t.phase + silkTime * t.speed) * t.amplitude * h);
+                    for (let x = 2; x <= w; x += 3) {
+                        const nx = x / w;
+                        const y = baseY + echoOffset
+                            + Math.sin(nx * t.frequency * Math.PI + silkTime * t.speed + t.phase) * t.amplitude * h
+                            + Math.sin(nx * t.frequency * Math.PI * 2.3 - silkTime * t.speed * 0.7 + t.phase * 1.5) * t.amplitude * h * 0.3;
+                        ctx.lineTo(x, y);
+                    }
+                    ctx.stroke();
+                });
+
+                silkAnimId = requestAnimationFrame(renderSilk);
+            };
+
+            const startSilk = () => { silkResize(); if (!silkAnimId) renderSilk(); };
+            const stopSilk = () => { if (silkAnimId) { cancelAnimationFrame(silkAnimId); silkAnimId = null; } };
+
+            const silkObs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startSilk();
+                else stopSilk();
+            });
+            silkObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startSilk();
+            window.addEventListener('resize', () => { if (panel.style.display !== 'none') silkResize(); });
         })();
 
         // === Velvet Bloom v0.1.0 — Magnetic Cursor Trail 磁性光标拖尾 ===
