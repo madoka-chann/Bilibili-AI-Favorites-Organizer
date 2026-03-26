@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.5.1
+// @version      1.5.2
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -4346,6 +4346,8 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'driftwood', label: '漂木' },
                 { id: 'aurora', label: '极光' },
                 { id: 'bamboo', label: '竹韵' },
+                { id: 'fossil', label: '化石' },
+                { id: 'rainstorm', label: '骤雨' },
                 { id: 'custom', label: '自定义' }
             ];
 
@@ -6293,6 +6295,119 @@ ${topUps.length > 0 ? `<div class="section">
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') cResize(); });
         })();
 
+        // === Velvet Mirage v0.2.1 — Liquid Aurora Canvas 液态极光画布 ===
+        (() => {
+            const laWrap = document.createElement('div');
+            laWrap.className = 'ai-liquid-aurora-canvas';
+            const laCvs = document.createElement('canvas');
+            laWrap.appendChild(laCvs);
+            panel.insertBefore(laWrap, panel.firstChild);
+
+            let laRaf = null;
+            let laTime = 0;
+
+            // 6 aurora orbs with organic motion
+            const ORB_COUNT = 6;
+            const orbs = [];
+            for (let i = 0; i < ORB_COUNT; i++) {
+                orbs.push({
+                    x: Math.random(),
+                    y: Math.random(),
+                    phase: Math.random() * Math.PI * 2,
+                    speedX: 0.15 + Math.random() * 0.25,
+                    speedY: 0.12 + Math.random() * 0.2,
+                    radius: 0.15 + Math.random() * 0.2,
+                    breathSpeed: 0.3 + Math.random() * 0.4,
+                    breathPhase: Math.random() * Math.PI * 2
+                });
+            }
+
+            function laResize() {
+                const rect = panel.getBoundingClientRect();
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                laCvs.width = rect.width * dpr * 0.35;
+                laCvs.height = rect.height * dpr * 0.35;
+                laCvs.style.width = rect.width + 'px';
+                laCvs.style.height = rect.height + 'px';
+            }
+
+            function getLAColors() {
+                const s = getComputedStyle(document.documentElement);
+                return [
+                    s.getPropertyValue('--ai-aurora-1').trim() || '#7364FF',
+                    s.getPropertyValue('--ai-aurora-3').trim() || '#9B59F6',
+                    s.getPropertyValue('--ai-aurora-5').trim() || '#20E3B2',
+                    s.getPropertyValue('--ai-aurora-2').trim() || '#FF6B9D',
+                    s.getPropertyValue('--ai-aurora-4').trim() || '#00D4AA',
+                    s.getPropertyValue('--ai-aurora-6').trim() || '#E056CF',
+                ];
+            }
+
+            const hexToRgba = (hex, a) => {
+                hex = hex.replace('#', '');
+                if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+                const n = parseInt(hex, 16);
+                return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;
+            };
+
+            function renderLA() {
+                const ctx = laCvs.getContext('2d');
+                if (!ctx || !laCvs.width) { laRaf = requestAnimationFrame(renderLA); return; }
+                const w = laCvs.width, h = laCvs.height;
+
+                // Fade previous frame — creates trailing motion blur
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.fillStyle = 'rgba(0,0,0,0.04)';
+                ctx.fillRect(0, 0, w, h);
+                ctx.globalCompositeOperation = 'lighter';
+
+                laTime += 0.003;
+                const colors = getLAColors();
+
+                orbs.forEach((orb, i) => {
+                    // Organic Lissajous drift
+                    const ox = 0.5 + Math.sin(laTime * orb.speedX + orb.phase) * 0.38
+                                   + Math.sin(laTime * orb.speedX * 0.6 + orb.phase * 1.3) * 0.12;
+                    const oy = 0.5 + Math.cos(laTime * orb.speedY + orb.phase * 0.7) * 0.35
+                                   + Math.cos(laTime * orb.speedY * 0.5 + orb.phase * 1.6) * 0.10;
+
+                    // Breathing radius
+                    const breath = 1 + Math.sin(laTime * orb.breathSpeed + orb.breathPhase) * 0.25;
+                    const r = orb.radius * breath;
+
+                    const cx = ox * w;
+                    const cy = oy * h;
+                    const rPx = r * Math.min(w, h);
+
+                    // Draw soft radial gradient orb
+                    const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, rPx);
+                    const alpha = 0.025 + Math.sin(laTime * orb.breathSpeed * 0.8 + orb.breathPhase) * 0.015;
+                    grad.addColorStop(0, hexToRgba(colors[i % colors.length], alpha * 1.5));
+                    grad.addColorStop(0.4, hexToRgba(colors[i % colors.length], alpha * 0.8));
+                    grad.addColorStop(0.7, hexToRgba(colors[(i + 1) % colors.length], alpha * 0.3));
+                    grad.addColorStop(1, 'transparent');
+
+                    ctx.fillStyle = grad;
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, rPx, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+
+                laRaf = requestAnimationFrame(renderLA);
+            }
+
+            const startLA = () => { laResize(); if (!laRaf) renderLA(); };
+            const stopLA = () => { if (laRaf) { cancelAnimationFrame(laRaf); laRaf = null; } };
+
+            const laObs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startLA();
+                else stopLA();
+            });
+            laObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startLA();
+            window.addEventListener('resize', () => { if (panel.style.display !== 'none') laResize(); });
+        })();
+
         // === Velvet Ripple v0.1.8 — Header Particle Drift 头部粒子漂流 ===
         (() => {
             const header = panel.querySelector('.ai-header');
@@ -6914,10 +7029,10 @@ ${topUps.length > 0 ? `<div class="section">
         floatBtn.onclick = (e) => {
             if (_dragState.moved) { _dragState.moved = false; return; }
             // 悬浮按钮丝绒缩放退场（不阻塞面板弹出）
-            floatBtn.style.transition = 'transform 0.35s cubic-bezier(0.20, 1.10, 0.36, 1), opacity 0.28s cubic-bezier(0.38, 0, 0, 1), filter 0.28s ease';
-            floatBtn.style.transform = 'scale(0.6) rotate(8deg)';
+            floatBtn.style.transition = 'transform 0.38s cubic-bezier(0.18, 1.38, 0.34, 1.00), opacity 0.30s cubic-bezier(0.06, 0.82, 0.14, 1.01), filter 0.30s ease';
+            floatBtn.style.transform = 'scale(0.55) rotate(12deg)';
             floatBtn.style.opacity = '0';
-            floatBtn.style.filter = 'blur(4px)';
+            floatBtn.style.filter = 'blur(5px)';
             floatBtn.addEventListener('transitionend', function hide() {
                 floatBtn.removeEventListener('transitionend', hide);
                 floatBtn.style.display = 'none';
@@ -6934,7 +7049,7 @@ ${topUps.length > 0 ? `<div class="section">
             panel.style.filter = 'none';
             // 强制 reflow 后触发弹性形变入场动画
             void panel.offsetHeight;
-            panel.style.animation = 'ai-elastic-open 0.72s cubic-bezier(0.14, 1.34, 0.32, 1.01) forwards';
+            panel.style.animation = 'ai-silk-morph-open 0.68s cubic-bezier(0.18, 1.38, 0.34, 1.00) forwards';
             clampPanelPosition();
         };
 
@@ -6943,7 +7058,7 @@ ${topUps.length > 0 ? `<div class="section">
             // 弹性形变关闭 — Velvet Bloom v0.1.0
             panel.style.animation = 'none';
             void panel.offsetHeight;
-            panel.style.animation = 'ai-elastic-close 0.45s cubic-bezier(0.04, 0.90, 0.10, 1.02) forwards';
+            panel.style.animation = 'ai-silk-morph-close 0.42s cubic-bezier(0.06, 0.82, 0.14, 1.01) forwards';
             setTimeout(() => {
                 panel.style.display = 'none';
                 panel.style.animation = 'none';
@@ -6952,8 +7067,8 @@ ${topUps.length > 0 ? `<div class="section">
                 // 悬浮按钮丝绒弹簧回场
                 floatBtn.style.animation = 'none';
                 void floatBtn.offsetHeight;
-                floatBtn.style.animation = 'ai-velvet-spring-in 0.5s cubic-bezier(0.14, 1.28, 0.34, 1.02)';
-            }, 450);
+                floatBtn.style.animation = 'ai-velvet-spring-in 0.5s cubic-bezier(0.18, 1.38, 0.34, 1.00)';
+            }, 420);
         };
 
         // 主题切换
@@ -6984,16 +7099,20 @@ ${topUps.length > 0 ? `<div class="section">
             morph.style.setProperty('--morph-y', cy + '%');
             document.body.appendChild(morph);
 
-            // 主题图标弹性旋转 — 增强弹簧曲线
+            // 主题图标弹性旋转 — Velvet Mirage 丝绒幻境弹簧曲线
             const icon = btn.querySelector('[data-lucide]');
             if (icon) {
-                icon.style.transition = 'transform 0.6s cubic-bezier(0.12, 1.24, 0.28, 1.02)';
-                icon.style.transform = 'rotate(360deg) scale(0.6)';
+                icon.style.transition = 'transform 0.55s cubic-bezier(0.18, 1.38, 0.34, 1.00)';
+                icon.style.transform = 'rotate(360deg) scale(0.5)';
                 setTimeout(() => {
-                    icon.style.transition = 'transform 0.45s cubic-bezier(0.12, 1.24, 0.28, 1.02)';
-                    icon.style.transform = 'rotate(720deg) scale(1)';
-                    setTimeout(() => { icon.style.transform = ''; icon.style.transition = ''; }, 450);
-                }, 300);
+                    icon.style.transition = 'transform 0.42s cubic-bezier(0.24, 1.72, 0.42, 0.96)';
+                    icon.style.transform = 'rotate(720deg) scale(1.08)';
+                    setTimeout(() => {
+                        icon.style.transition = 'transform 0.25s cubic-bezier(0.06, 0.82, 0.14, 1.01)';
+                        icon.style.transform = 'rotate(720deg) scale(1)';
+                        setTimeout(() => { icon.style.transform = ''; icon.style.transition = ''; }, 250);
+                    }, 380);
+                }, 280);
             }
 
             // 延迟切换以配合液态动画 — 更精确的时机
@@ -7329,7 +7448,7 @@ ${topUps.length > 0 ? `<div class="section">
                 </div>
                 <div class="ai-modal-footer" style="justify-content:space-between;font-size:11px;color:var(--ai-text-muted);">
                     <span>快捷键：Alt+B 开关面板 · ESC 关闭 · Ctrl+Enter 开始</span>
-                    <span>v1.0</span>
+                    <span>v1.1</span>
                 </div>
             </div>`;
 

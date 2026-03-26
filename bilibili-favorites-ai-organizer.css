@@ -1,8 +1,8 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v0.2.0
-   Velvet Nebula · 天鹅绒星云 · Refined Glass Morphism
+   B站 AI 收藏夹整理助理 — 完整样式表 v0.2.1
+   Velvet Mirage · 天鹅绒幻境 · Refined Glass Morphism
    Indigo-Nebula 双色系统 · Restrained Aurora Palette
-   Velvet Dynamics 23.0 · Ultra-Smooth Spring Micro-interactions
+   Velvet Dynamics 24.0 · Ultra-Smooth Spring Micro-interactions
    Stellar Abyss Dark Theme · Living Glass Surfaces
    Multi-Accent Color Themes · Ambient Light Motes · Liquid Borders
    Magnetic Tilt · Cursor-Reactive Particles · Fluid Morphing
@@ -24,9 +24,10 @@
    Velvet Ripple · Luminous Orb Field · Header Particles · Dew & Ember
    Velvet Pulse · Pulse Web Canvas · Jelly Physics · Opal & Driftwood Themes
    Velvet Nebula · Constellation Canvas · Living Border · Aurora & Bamboo Themes
+   Velvet Mirage · Liquid Aurora Canvas · Silk Morph · Fossil & Rainstorm Themes
    ================================================================ */
 
-/* === 1. CSS 变量 (双主题系统) v0.2.0 === */
+/* === 1. CSS 变量 (双主题系统) v0.2.1 === */
 
 /* 亮色主题（默认） — 星潮·晨曦琉璃 Astral Glasstide */
 :root, [data-theme="light"] {
@@ -15157,4 +15158,571 @@ input[type="checkbox"]:active {
   .ai-constellation-canvas {
     display: none !important;
   }
+}
+
+/* ================================================================
+   Velvet Mirage v0.2.1 — 天鹅绒幻境
+   Liquid Aurora Canvas · Silk Morph Transitions
+   Fossil & Rainstorm Themes · Enhanced Micro-interactions
+   Velvet Dynamics 24.0 Motion System
+   ================================================================ */
+
+/* === 608. Fossil 化石主题 v0.2.1 === */
+[data-accent="fossil"] {
+  --ai-primary: #8C7A6B;
+  --ai-primary-dark: #6B5D51;
+  --ai-primary-light: #B8A99A;
+  --ai-primary-bg: rgba(140, 122, 107, 0.06);
+  --ai-primary-shadow: rgba(140, 122, 107, 0.20);
+  --ai-aurora-1: #8C7A6B;
+  --ai-aurora-2: #A69484;
+  --ai-aurora-3: #7A6B5E;
+  --ai-aurora-4: #9E8E7E;
+  --ai-aurora-5: #B0A090;
+  --ai-aurora-6: #887868;
+  --ai-aurora-7: #A89888;
+  --ai-aurora-8: #786858;
+  --ai-header-gradient: linear-gradient(135deg, #8C7A6B, #A69484, #8C7A6B);
+  --ai-float-gradient: linear-gradient(135deg, #8C7A6B, #A69484, #9E8E7E, #8C7A6B);
+  --ai-neon-glow: 0 0 16px rgba(140, 122, 107, 0.20),
+                  0 0 32px rgba(166, 148, 132, 0.08),
+                  0 0 52px rgba(140, 122, 107, 0.03);
+  --ai-interaction-glow: rgba(140, 122, 107, 0.08);
+  --ai-glow-color: rgba(140, 122, 107, 0.05);
+}
+.ai-accent-dot[data-accent="fossil"] { background: linear-gradient(135deg, #8C7A6B, #B8A99A); }
+[data-theme="dark"][data-accent="fossil"] #ai-float-btn {
+  --ai-float-gradient: linear-gradient(135deg, #9C8A7B, #B6A494, #A8988A, #9C8A7B);
+}
+[data-theme="dark"][data-accent="fossil"] .ai-nebula-particle {
+  background: radial-gradient(circle, rgba(140, 122, 107, 0.28), transparent 70%);
+}
+
+/* === 609. Rainstorm 骤雨主题 v0.2.1 === */
+[data-accent="rainstorm"] {
+  --ai-primary: #5A6B7A;
+  --ai-primary-dark: #3E4F5E;
+  --ai-primary-light: #8A9BAA;
+  --ai-primary-bg: rgba(90, 107, 122, 0.06);
+  --ai-primary-shadow: rgba(90, 107, 122, 0.20);
+  --ai-aurora-1: #5A6B7A;
+  --ai-aurora-2: #748494;
+  --ai-aurora-3: #4A5C6C;
+  --ai-aurora-4: #6A7C8C;
+  --ai-aurora-5: #8494A4;
+  --ai-aurora-6: #607080;
+  --ai-aurora-7: #7E8E9E;
+  --ai-aurora-8: #506070;
+  --ai-header-gradient: linear-gradient(135deg, #5A6B7A, #748494, #5A6B7A);
+  --ai-float-gradient: linear-gradient(135deg, #5A6B7A, #748494, #6A7C8C, #5A6B7A);
+  --ai-neon-glow: 0 0 16px rgba(90, 107, 122, 0.22),
+                  0 0 32px rgba(116, 132, 148, 0.09),
+                  0 0 52px rgba(90, 107, 122, 0.04);
+  --ai-interaction-glow: rgba(90, 107, 122, 0.08);
+  --ai-glow-color: rgba(90, 107, 122, 0.05);
+}
+.ai-accent-dot[data-accent="rainstorm"] { background: linear-gradient(135deg, #5A6B7A, #8A9BAA); }
+[data-theme="dark"][data-accent="rainstorm"] #ai-float-btn {
+  --ai-float-gradient: linear-gradient(135deg, #6A7B8A, #8E9EAE, #7A8C9C, #6A7B8A);
+}
+[data-theme="dark"][data-accent="rainstorm"] .ai-nebula-particle {
+  background: radial-gradient(circle, rgba(90, 107, 122, 0.28), transparent 70%);
+}
+
+/* === 610. Liquid Aurora Canvas 液态极光画布 v0.2.1 === */
+.ai-liquid-aurora-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+  opacity: 0.5;
+  mix-blend-mode: soft-light;
+  transition: opacity 0.8s var(--ai-ease-silk, ease);
+}
+.ai-liquid-aurora-canvas canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  image-rendering: auto;
+}
+[data-theme="dark"] .ai-liquid-aurora-canvas {
+  opacity: 0.35;
+  mix-blend-mode: screen;
+}
+
+/* === 611. Velvet Dynamics 24.0 — Enhanced Motion Curves v0.2.1 === */
+:root {
+  --ai-spring-whip: cubic-bezier(0.16, 1.64, 0.32, 0.98);
+  --ai-ease-honey: cubic-bezier(0.06, 0.82, 0.14, 1.01);
+  --ai-spring-mochi: cubic-bezier(0.24, 1.72, 0.42, 0.96);
+  --ai-ease-cloud: cubic-bezier(0.04, 0.88, 0.08, 1.00);
+  --ai-spring-quartz: cubic-bezier(0.18, 1.38, 0.34, 1.00);
+  --ai-ease-linen: cubic-bezier(0.10, 0.76, 0.20, 1.02);
+  --ai-spring-bubble: cubic-bezier(0.20, 1.82, 0.38, 0.94);
+  --ai-ease-silk-flow: cubic-bezier(0.02, 0.86, 0.06, 1.00);
+}
+
+/* === 612. Silk Morph Panel Open/Close v0.2.1 === */
+@keyframes ai-silk-morph-open {
+  0% {
+    transform: scale(0.88, 0.92) translateY(14px);
+    opacity: 0;
+    filter: blur(6px);
+    border-radius: 40px;
+  }
+  25% {
+    transform: scale(1.02, 0.97) translateY(-3px);
+    opacity: 0.85;
+    filter: blur(1px);
+    border-radius: 30px;
+  }
+  50% {
+    transform: scale(0.99, 1.015) translateY(1px);
+    opacity: 1;
+    filter: blur(0);
+    border-radius: 28px;
+  }
+  72% {
+    transform: scale(1.005, 0.998) translateY(-0.5px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    filter: blur(0);
+    border-radius: 28px;
+  }
+}
+
+@keyframes ai-silk-morph-close {
+  0% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    filter: blur(0);
+  }
+  30% {
+    transform: scale(1.02, 0.97) translateY(-4px);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(0.86, 0.94) translateY(18px);
+    opacity: 0;
+    filter: blur(8px);
+    border-radius: 42px;
+  }
+}
+
+/* === 613. Float Button Breathing Pulse v0.2.1 === */
+@keyframes ai-float-breath-pulse {
+  0%, 100% {
+    box-shadow: 0 0 14px rgba(var(--ai-pulse-rgb, 115, 100, 255), 0.18),
+                0 0 28px rgba(var(--ai-pulse-rgb, 115, 100, 255), 0.08),
+                0 0 0 0 rgba(var(--ai-pulse-rgb, 115, 100, 255), 0.12);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(var(--ai-pulse-rgb, 115, 100, 255), 0.24),
+                0 0 36px rgba(var(--ai-pulse-rgb, 115, 100, 255), 0.12),
+                0 0 0 6px rgba(var(--ai-pulse-rgb, 115, 100, 255), 0.00);
+  }
+}
+
+#ai-float-btn {
+  animation: ai-float-gradient-shift 16s ease infinite,
+             ai-jellyfish-idle 14s var(--ai-ease-silk, ease) infinite,
+             ai-float-breath-pulse 4s ease-in-out infinite !important;
+}
+
+/* === 614. Enhanced Hover Micro-interactions v0.2.1 === */
+
+/* Button silk press — improved squish feel */
+.ai-btn:active,
+.ai-btn-tool:active {
+  transform: scale(0.93, 0.96) !important;
+  transition-duration: 0.06s !important;
+  transition-timing-function: var(--ai-spring-mochi) !important;
+}
+
+/* Button hover — float up with magnetic ease */
+.ai-btn-tool:hover {
+  transform: translateY(-3px) scale(1.04) !important;
+  transition: all 0.5s var(--ai-spring-quartz) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04) !important;
+}
+
+/* Primary button hover — enhanced glow lift */
+.ai-btn-primary:hover {
+  transform: translateY(-2px) scale(1.02) !important;
+  transition: all 0.45s var(--ai-spring-quartz) !important;
+}
+
+/* Category row — smoother hover slide */
+.ai-cat-row {
+  transition: all 0.5s var(--ai-ease-honey, ease),
+              background 0.35s ease,
+              box-shadow 0.45s ease !important;
+}
+.ai-cat-row:hover {
+  transform: translateX(4px) !important;
+  transition: all 0.4s var(--ai-spring-quartz, ease) !important;
+}
+
+/* Input focus — silk glow expansion */
+.ai-input:focus,
+.ai-select:focus {
+  border-color: var(--ai-primary) !important;
+  box-shadow: 0 0 0 3.5px rgba(var(--ai-pulse-rgb, 115, 100, 255), 0.10),
+              0 2px 12px rgba(var(--ai-pulse-rgb, 115, 100, 255), 0.06) !important;
+  transition: all 0.4s var(--ai-spring-quartz) !important;
+}
+
+/* Group header — elastic hover */
+.ai-group-header {
+  transition: all 0.4s var(--ai-ease-honey, ease) !important;
+}
+.ai-group-header:hover {
+  transform: translateX(2px) !important;
+  transition: all 0.35s var(--ai-spring-quartz, ease) !important;
+}
+
+/* Header buttons — bouncy hover */
+.ai-header-btn {
+  transition: all 0.4s var(--ai-spring-quartz, ease) !important;
+}
+.ai-header-btn:hover {
+  transform: scale(1.14) translateY(-1px) !important;
+  transition: all 0.35s var(--ai-spring-mochi, ease) !important;
+}
+.ai-header-btn:active {
+  transform: scale(0.88) !important;
+  transition-duration: 0.08s !important;
+}
+
+/* === 615. Modal Silk Entrance v0.2.1 === */
+@keyframes ai-modal-silk-enter {
+  0% {
+    transform: scale(0.90, 0.94) translateY(24px);
+    opacity: 0;
+    filter: blur(8px);
+  }
+  30% {
+    transform: scale(1.015, 0.985) translateY(-4px);
+    opacity: 0.9;
+    filter: blur(1px);
+  }
+  55% {
+    transform: scale(0.997, 1.006) translateY(1px);
+    opacity: 1;
+    filter: blur(0);
+  }
+  75% {
+    transform: scale(1.002, 0.999) translateY(-0.3px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes ai-modal-silk-exit {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.92, 0.96) translateY(20px);
+    opacity: 0;
+    filter: blur(6px);
+  }
+}
+
+/* === 616. Toast Silk Entrance v0.2.1 === */
+@keyframes ai-toast-mirage-in {
+  0% {
+    transform: translateX(40px) scale(0.92, 0.96);
+    opacity: 0;
+    filter: blur(4px);
+  }
+  35% {
+    transform: translateX(-4px) scale(1.015, 0.99);
+    opacity: 0.95;
+    filter: blur(0);
+  }
+  60% {
+    transform: translateX(1.5px) scale(0.998, 1.003);
+    opacity: 1;
+  }
+  80% {
+    transform: translateX(-0.5px) scale(1.001, 0.999);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes ai-toast-mirage-out {
+  0% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(50px) scale(0.90, 0.95);
+    opacity: 0;
+    filter: blur(3px);
+  }
+}
+
+/* Apply mirage toast animation */
+.ai-toast {
+  animation: ai-toast-mirage-in 0.55s var(--ai-spring-quartz, ease) forwards !important;
+}
+.ai-toast.removing {
+  animation: ai-toast-mirage-out 0.35s var(--ai-ease-honey, ease) forwards !important;
+}
+
+/* === 617. Log Entry Silk Slide v0.2.1 === */
+@keyframes ai-log-silk-slide {
+  0% {
+    transform: translateY(-6px) scale(0.97, 0.99);
+    opacity: 0;
+    filter: blur(2px);
+  }
+  45% {
+    transform: translateY(1px) scale(1.005, 0.998);
+    opacity: 1;
+    filter: blur(0);
+  }
+  70% {
+    transform: translateY(-0.3px) scale(0.999, 1.001);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.ai-status-log > div {
+  animation: ai-log-silk-slide 0.4s var(--ai-spring-quartz, ease) !important;
+}
+
+/* === 618. Settings Reveal Silk v0.2.1 === */
+@keyframes ai-settings-silk-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(-6px) scaleY(0.95);
+    filter: blur(2px);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(1px) scaleY(1.005);
+    filter: blur(0);
+  }
+  75% {
+    transform: translateY(-0.3px) scaleY(0.999);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+.ai-settings[style*="display: block"],
+.ai-settings[style*="display:block"] {
+  animation: ai-settings-silk-reveal 0.45s var(--ai-spring-quartz, ease) !important;
+  transform-origin: top center;
+}
+
+/* === 619. Category Block Silk Stagger v0.2.1 === */
+@keyframes ai-cat-silk-stagger {
+  0% {
+    transform: translateY(8px) translateX(-3px) scale(0.97);
+    opacity: 0;
+    filter: blur(1.5px);
+  }
+  40% {
+    transform: translateY(-1px) translateX(0.5px) scale(1.008);
+    opacity: 1;
+    filter: blur(0);
+  }
+  65% {
+    transform: translateY(0.3px) translateX(-0.2px) scale(0.999);
+  }
+  100% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.ai-cat-block {
+  animation: ai-cat-silk-stagger 0.5s var(--ai-spring-quartz, ease) both !important;
+  animation-delay: calc(var(--i, 0) * 0.04s) !important;
+}
+
+/* === 620. Checkbox Mochi Bounce v0.2.1 === */
+@keyframes ai-checkbox-mochi-bounce {
+  0% { transform: scale(1); }
+  20% { transform: scale(0.82, 1.12); }
+  45% { transform: scale(1.14, 0.88); }
+  65% { transform: scale(0.97, 1.04); }
+  80% { transform: scale(1.02, 0.99); }
+  100% { transform: scale(1); }
+}
+
+.ai-cat-row input[type="checkbox"]:checked {
+  animation: ai-checkbox-mochi-bounce 0.5s var(--ai-spring-whip, ease) !important;
+}
+
+/* === 621. Progress Bar Silk Flow v0.2.1 === */
+#ai-progress-bar {
+  transition: width 0.9s var(--ai-ease-honey, ease) !important;
+}
+
+/* === 622. Ambient Breathing Mesh v0.2.1 — always-on subtle mesh animation */
+@keyframes ai-ambient-mesh-breathe {
+  0%, 100% {
+    background-position: 0% 50%, 100% 50%, 50% 50%;
+    opacity: 1;
+  }
+  33% {
+    background-position: 30% 70%, 70% 30%, 40% 60%;
+    opacity: 0.92;
+  }
+  66% {
+    background-position: 60% 40%, 40% 70%, 70% 30%;
+    opacity: 0.96;
+  }
+}
+
+#ai-sort-wrapper {
+  animation: ai-ambient-mesh-breathe 20s ease-in-out infinite !important;
+  background-size: 200% 200%, 200% 200%, 200% 200% !important;
+}
+
+/* === 623. Scroll Velocity Shadow v0.2.1 — directional scroll shadows */
+.ai-panel-content.scrolled-top::before {
+  content: '';
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  display: block;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
+  z-index: 5;
+  pointer-events: none;
+  transition: box-shadow 0.5s var(--ai-ease-honey, ease);
+}
+[data-theme="dark"] .ai-panel-content.scrolled-top::before {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.30), 0 1px 6px rgba(0,0,0,0.20);
+}
+
+/* === 624. Theme Switch Ripple v0.2.1 — enhanced liquid morph */
+@keyframes ai-theme-mirage-ripple {
+  0% {
+    clip-path: circle(0% at var(--morph-x, 50%) var(--morph-y, 50%));
+    opacity: 1;
+  }
+  60% {
+    clip-path: circle(85% at var(--morph-x, 50%) var(--morph-y, 50%));
+    opacity: 0.9;
+  }
+  100% {
+    clip-path: circle(150% at var(--morph-x, 50%) var(--morph-y, 50%));
+    opacity: 0;
+  }
+}
+
+/* === 625. Float Button Idle Wobble v0.2.1 — subtle always-on organic motion */
+@keyframes ai-float-idle-wobble {
+  0%, 100% {
+    border-radius: 50%;
+  }
+  15% {
+    border-radius: 47% 53% 51% 49% / 48% 52% 48% 52%;
+  }
+  30% {
+    border-radius: 52% 48% 49% 51% / 51% 49% 52% 48%;
+  }
+  45% {
+    border-radius: 49% 51% 52% 48% / 50% 48% 51% 49%;
+  }
+  60% {
+    border-radius: 51% 49% 48% 52% / 49% 51% 50% 50%;
+  }
+  75% {
+    border-radius: 48% 52% 50% 50% / 52% 50% 49% 51%;
+  }
+  90% {
+    border-radius: 50% 50% 51% 49% / 49% 51% 50% 50%;
+  }
+}
+
+#ai-float-btn {
+  animation: ai-float-gradient-shift 16s ease infinite,
+             ai-float-idle-wobble 12s ease-in-out infinite,
+             ai-float-breath-pulse 4s ease-in-out infinite !important;
+}
+
+/* === 626. Liquid Aurora Canvas — Reduced Motion & Mobile v0.2.1 === */
+@media (prefers-reduced-motion: reduce) {
+  .ai-liquid-aurora-canvas {
+    display: none !important;
+  }
+  #ai-float-btn {
+    animation: none !important;
+  }
+  #ai-sort-wrapper {
+    animation: none !important;
+  }
+  .ai-cat-block {
+    animation: none !important;
+  }
+}
+@media (max-width: 500px) {
+  .ai-liquid-aurora-canvas {
+    display: none !important;
+  }
+}
+
+/* === 627. Global Transition Smoothing v0.2.1 — silk theme transitions */
+#ai-sort-wrapper *,
+.ai-modal *,
+.ai-toast * {
+  transition-timing-function: var(--ai-ease-honey, ease);
+}
+
+/* === 628. Accent Dot Hover v0.2.1 — bouncy scale for color picker */
+.ai-accent-dot {
+  transition: all 0.4s var(--ai-spring-quartz, ease) !important;
+}
+.ai-accent-dot:hover {
+  transform: scale(1.25) !important;
+  transition: all 0.3s var(--ai-spring-mochi, ease) !important;
+}
+.ai-accent-dot:active {
+  transform: scale(0.9) !important;
+  transition-duration: 0.08s !important;
+}
+.ai-accent-dot.active {
+  transform: scale(1.18) !important;
+  box-shadow: 0 0 0 3px var(--ai-bg, #fff), 0 0 0 5px var(--ai-primary, #7364FF) !important;
+}
+
+/* === 629. Panel Border Glow Breathing v0.2.1 — living border */
+@keyframes ai-border-glow-breathe {
+  0%, 100% {
+    opacity: 0.5;
+    filter: blur(0px);
+  }
+  50% {
+    opacity: 0.8;
+    filter: blur(0.5px);
+  }
+}
+
+#ai-sort-wrapper::before {
+  animation: ai-border-flow 12s ease-in-out infinite,
+             ai-border-glow-breathe 6s ease-in-out infinite !important;
 }
