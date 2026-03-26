@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.5.4
+// @version      1.5.5
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -4353,6 +4353,9 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'twilight-mist', label: '暮霭' },
                 { id: 'deep-sea', label: '深海' },
                 { id: 'warm-sand', label: '暖沙' },
+                { id: 'misty-wave', label: '烟波' },
+                { id: 'bronze', label: '青铜' },
+                { id: 'mint-night', label: '薄荷夜' },
                 { id: 'custom', label: '自定义' }
             ];
 
@@ -6634,7 +6637,7 @@ ${topUps.length > 0 ? `<div class="section">
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') swResize(); });
         })();
 
-        // === Velvet Tidal v0.2.3 — Fluid Tidal Canvas 潮汐流体画布 ===
+        // === Velvet Tidal v0.2.3/v0.2.4 — Fluid Tidal Canvas 潮汐流体画布 ===
         (() => {
             const tidalWrap = document.createElement('div');
             tidalWrap.className = 'ai-tidal-canvas';
@@ -6756,6 +6759,160 @@ ${topUps.length > 0 ? `<div class="section">
             tidalObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startTidal();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') tidalResize(); });
+        })();
+
+        // === Velvet Zephyr Flow v0.2.4 — 涟漪织流画布 Ripple Weave Canvas ===
+        (() => {
+            const weaveWrap = document.createElement('div');
+            weaveWrap.className = 'ai-weave-canvas';
+            const wCanvas = document.createElement('canvas');
+            weaveWrap.appendChild(wCanvas);
+            panel.insertBefore(weaveWrap, panel.firstChild);
+
+            let weaveRaf = null;
+            let wTime = 0;
+
+            const weaveResize = () => {
+                const r = panel.getBoundingClientRect();
+                wCanvas.width = Math.round(r.width * 0.3);
+                wCanvas.height = Math.round(r.height * 0.3);
+            };
+
+            const getColors = () => {
+                const cs = getComputedStyle(document.documentElement);
+                return [
+                    cs.getPropertyValue('--ai-aurora-1').trim() || '#7364FF',
+                    cs.getPropertyValue('--ai-aurora-2').trim() || '#FF6B9D',
+                    cs.getPropertyValue('--ai-aurora-4').trim() || '#00D4AA',
+                ];
+            };
+
+            const hexToRgb = (hex) => {
+                hex = hex.replace('#', '');
+                if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+                const n = parseInt(hex, 16);
+                return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+            };
+
+            // Interference pattern: overlapping sine waves create moiré-like weave
+            const renderWeave = () => {
+                const ctx = wCanvas.getContext('2d');
+                if (!ctx || !wCanvas.width) { weaveRaf = requestAnimationFrame(renderWeave); return; }
+                const w = wCanvas.width, h = wCanvas.height;
+                ctx.clearRect(0, 0, w, h);
+                wTime += 0.004;
+
+                const colors = getColors();
+                const rgbs = colors.map(hexToRgb);
+                const imgData = ctx.createImageData(w, h);
+                const data = imgData.data;
+                const step = 2;
+
+                for (let y = 0; y < h; y += step) {
+                    const ny = y / h;
+                    for (let x = 0; x < w; x += step) {
+                        const nx = x / w;
+
+                        // Three wave layers at different angles creating weave interference
+                        const w1 = Math.sin(nx * 12 + ny * 3 + wTime * 1.2) * 0.5 + 0.5;
+                        const w2 = Math.sin(nx * 4 - ny * 10 + wTime * 0.8 + 2.1) * 0.5 + 0.5;
+                        const w3 = Math.sin((nx + ny) * 7 + wTime * 1.5 - 1.3) * 0.5 + 0.5;
+
+                        // Moiré interference — multiply wave patterns
+                        const interference = w1 * w2 * 0.6 + w2 * w3 * 0.25 + w1 * w3 * 0.15;
+
+                        // Smooth color blend based on interference value
+                        const ci = interference * (rgbs.length - 1);
+                        const ci0 = Math.floor(ci);
+                        const ci1 = Math.min(ci0 + 1, rgbs.length - 1);
+                        const t = ci - ci0;
+                        const r = Math.round(rgbs[ci0][0] * (1 - t) + rgbs[ci1][0] * t);
+                        const g = Math.round(rgbs[ci0][1] * (1 - t) + rgbs[ci1][1] * t);
+                        const b = Math.round(rgbs[ci0][2] * (1 - t) + rgbs[ci1][2] * t);
+                        const alpha = Math.round(8 + interference * 22);
+
+                        for (let dy = 0; dy < step && (y + dy) < h; dy++) {
+                            for (let dx = 0; dx < step && (x + dx) < w; dx++) {
+                                const idx = ((y + dy) * w + (x + dx)) * 4;
+                                data[idx] = r;
+                                data[idx + 1] = g;
+                                data[idx + 2] = b;
+                                data[idx + 3] = alpha;
+                            }
+                        }
+                    }
+                }
+
+                ctx.putImageData(imgData, 0, 0);
+                weaveRaf = requestAnimationFrame(renderWeave);
+            };
+
+            const startWeave = () => { weaveResize(); if (!weaveRaf) renderWeave(); };
+            const stopWeave = () => { if (weaveRaf) { cancelAnimationFrame(weaveRaf); weaveRaf = null; } };
+
+            const weaveObs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startWeave();
+                else stopWeave();
+            });
+            weaveObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startWeave();
+            window.addEventListener('resize', () => { if (panel.style.display !== 'none') weaveResize(); });
+        })();
+
+        // === Velvet Zephyr Flow v0.2.4 — Float Button Idle Shimmer 悬浮按钮闲置微光 ===
+        (() => {
+            let shimmerRaf = null;
+            let shimmerTime = 0;
+            const renderShimmer = () => {
+                shimmerTime += 0.015;
+                const glow = 14 + Math.sin(shimmerTime * 0.8) * 6;
+                const glow2 = 28 + Math.sin(shimmerTime * 0.5 + 1.2) * 10;
+                const hueShift = Math.sin(shimmerTime * 0.3) * 8;
+                floatBtn.style.boxShadow = `0 0 ${glow}px rgba(115, 100, 255, ${0.18 + Math.sin(shimmerTime) * 0.06}), 0 0 ${glow2}px rgba(155, 89, 246, ${0.08 + Math.sin(shimmerTime * 0.7) * 0.04})`;
+                floatBtn.style.filter = `hue-rotate(${hueShift}deg)`;
+                shimmerRaf = requestAnimationFrame(renderShimmer);
+            };
+
+            const startShimmer = () => { if (!shimmerRaf) renderShimmer(); };
+            const stopShimmer = () => {
+                if (shimmerRaf) { cancelAnimationFrame(shimmerRaf); shimmerRaf = null; }
+                floatBtn.style.boxShadow = '';
+                floatBtn.style.filter = '';
+            };
+
+            // Run when float button is visible
+            const shimmerObs = new MutationObserver(() => {
+                if (floatBtn.style.display !== 'none') startShimmer();
+                else stopShimmer();
+            });
+            shimmerObs.observe(floatBtn, { attributes: true, attributeFilter: ['style'] });
+            if (floatBtn.style.display !== 'none') startShimmer();
+        })();
+
+        // === Velvet Zephyr Flow v0.2.4 — Header Gradient Live Drift 头部渐变实时漂移 ===
+        (() => {
+            const header = panel.querySelector('.ai-header');
+            if (!header) return;
+            let hdrRaf = null;
+            let hdrTime = 0;
+
+            const renderHdrDrift = () => {
+                hdrTime += 0.008;
+                const pos = 50 + Math.sin(hdrTime * 0.6) * 30;
+                const pos2 = 50 + Math.cos(hdrTime * 0.4 + 1.5) * 25;
+                header.style.backgroundPosition = `${pos}% ${pos2}%`;
+                hdrRaf = requestAnimationFrame(renderHdrDrift);
+            };
+
+            const startHdr = () => { if (!hdrRaf) renderHdrDrift(); };
+            const stopHdr = () => { if (hdrRaf) { cancelAnimationFrame(hdrRaf); hdrRaf = null; } };
+
+            const hdrObs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startHdr();
+                else stopHdr();
+            });
+            hdrObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startHdr();
         })();
 
         // === Velvet Tidal v0.2.3 — Scroll Velocity Blur 滚动速度模糊 ===
@@ -7417,7 +7574,7 @@ ${topUps.length > 0 ? `<div class="section">
             panel.style.filter = 'none';
             // 强制 reflow 后触发弹性形变入场动画
             void panel.offsetHeight;
-            panel.style.animation = 'ai-tidal-panel-in 0.72s cubic-bezier(0.16, 1.38, 0.34, 0.98) forwards';
+            panel.style.animation = 'ai-zephyr-panel-in 0.78s cubic-bezier(0.15, 1.36, 0.32, 1.00) forwards';
             clampPanelPosition();
         };
 
@@ -7426,7 +7583,7 @@ ${topUps.length > 0 ? `<div class="section">
             // 弹性形变关闭 — Velvet Bloom v0.1.0
             panel.style.animation = 'none';
             void panel.offsetHeight;
-            panel.style.animation = 'ai-tidal-panel-out 0.4s cubic-bezier(0.06, 0.82, 0.14, 1.01) forwards';
+            panel.style.animation = 'ai-zephyr-panel-out 0.42s cubic-bezier(0.06, 0.92, 0.14, 1.01) forwards';
             setTimeout(() => {
                 panel.style.display = 'none';
                 panel.style.animation = 'none';
@@ -7435,7 +7592,7 @@ ${topUps.length > 0 ? `<div class="section">
                 // 悬浮按钮丝绒弹簧回场
                 floatBtn.style.animation = 'none';
                 void floatBtn.offsetHeight;
-                floatBtn.style.animation = 'ai-velvet-spring-in 0.55s cubic-bezier(0.16, 1.38, 0.34, 0.98)';
+                floatBtn.style.animation = 'ai-velvet-spring-in 0.58s cubic-bezier(0.15, 1.36, 0.32, 1.00)';
             }, 400);
         };
 
