@@ -1,8 +1,8 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v0.1.7
-   Velvet Cascade · 天鹅绒瀑流 · Refined Glass Morphism
+   B站 AI 收藏夹整理助理 — 完整样式表 v0.1.8
+   Velvet Ripple · 天鹅绒涟漪 · Refined Glass Morphism
    Indigo-Nebula 双色系统 · Restrained Aurora Palette
-   Velvet Dynamics 19.0 · Silky Spring Micro-interactions
+   Velvet Dynamics 22.0 · Silky Spring Micro-interactions
    Stellar Abyss Dark Theme · Living Glass Surfaces
    Multi-Accent Color Themes · Ambient Light Motes · Liquid Borders
    Magnetic Tilt · Cursor-Reactive Particles · Fluid Morphing
@@ -21,6 +21,7 @@
    Velvet Aether · Harmonic Ripple Canvas · Kinetic Glow · Spring Scroll
    Velvet Zephyr · Luminous Membrane Canvas · Pearl & Northlight Themes
    Velvet Cascade · Silk Waterfall Canvas · Sandstone & Monsoon Themes
+   Velvet Ripple · Luminous Orb Field · Header Particles · Dew & Ember
    ================================================================ */
 
 /* === 1. CSS 变量 (双主题系统) === */
@@ -13839,6 +13840,355 @@ input[type="checkbox"]:active {
   }
 }
 
+/* ================================================================
+   Velvet Ripple v0.1.8 — 天鹅绒涟漪 · Velvet Dynamics 22.0
+   Luminous Orb Field · Header Particles · Dew & Ember Themes
+   Enhanced Elastic Micro-interactions · Silky Transition Curves
+   ================================================================ */
+
+/* === 584. New Easing Curves 涟漪曲线 v0.1.8 === */
+:root, [data-theme="light"], [data-theme="dark"] {
+  --ai-spring-ripple-soft: cubic-bezier(0.16, 1.18, 0.36, 1.01);
+  --ai-ease-ripple-out: cubic-bezier(0.06, 0.92, 0.14, 1.00);
+  --ai-spring-elastic-ripple: cubic-bezier(0.22, 1.42, 0.40, 0.98);
+  --ai-ease-silk-fade: cubic-bezier(0.10, 0.86, 0.18, 1.00);
+  --ai-ease-gentle-wave: cubic-bezier(0.04, 0.78, 0.12, 1.02);
+}
+
+/* === 585. Accent Theme: Dew 清露 v0.1.8 === */
+[data-accent="dew"] {
+  --ai-primary: #6BA89A;
+  --ai-primary-dark: #4E877A;
+  --ai-primary-light: #96C4B8;
+  --ai-primary-bg: rgba(107, 168, 154, 0.06);
+  --ai-primary-shadow: rgba(107, 168, 154, 0.22);
+  --ai-header-gradient: linear-gradient(135deg, #6BA89A, #82B8AC, #6BA89A);
+  --ai-aurora-1: #6BA89A;
+  --ai-aurora-2: #84BEB0;
+  --ai-aurora-3: #78AEA2;
+  --ai-aurora-4: #5C9488;
+  --ai-aurora-5: #92CCC0;
+  --ai-aurora-6: #7CB4A6;
+  --ai-aurora-7: #A0D6CC;
+  --ai-aurora-8: #6A9E92;
+  --ai-float-gradient: linear-gradient(135deg, #6BA89A 0%, #82B8AC 40%, #96C4B8 70%, #6BA89A 100%);
+  --ai-neon-glow: 0 0 14px rgba(107, 168, 154, 0.18), 0 0 28px rgba(130, 184, 172, 0.08);
+}
+[data-accent="dew"][data-theme="dark"] {
+  --ai-primary: #96C4B8;
+  --ai-primary-dark: #6BA89A;
+  --ai-primary-light: #B8D8CE;
+  --ai-header-gradient: linear-gradient(135deg, #4E877A, #6BA89A);
+  --ai-float-gradient: linear-gradient(135deg, #96C4B8 0%, #A4CEC4 40%, #B8D8CE 70%, #96C4B8 100%);
+}
+
+/* === 586. Accent Theme: Ember 暮烬 v0.1.8 === */
+[data-accent="ember"] {
+  --ai-primary: #B07856;
+  --ai-primary-dark: #8E6044;
+  --ai-primary-light: #CCA088;
+  --ai-primary-bg: rgba(176, 120, 86, 0.06);
+  --ai-primary-shadow: rgba(176, 120, 86, 0.22);
+  --ai-header-gradient: linear-gradient(135deg, #B07856, #C4906E, #B07856);
+  --ai-aurora-1: #B07856;
+  --ai-aurora-2: #C2906C;
+  --ai-aurora-3: #BA8462;
+  --ai-aurora-4: #9A6848;
+  --ai-aurora-5: #D0A282;
+  --ai-aurora-6: #C49676;
+  --ai-aurora-7: #DAAE8E;
+  --ai-aurora-8: #A8724E;
+  --ai-float-gradient: linear-gradient(135deg, #B07856 0%, #C4906E 40%, #CCA088 70%, #B07856 100%);
+  --ai-neon-glow: 0 0 14px rgba(176, 120, 86, 0.18), 0 0 28px rgba(196, 144, 110, 0.08);
+}
+[data-accent="ember"][data-theme="dark"] {
+  --ai-primary: #CCA088;
+  --ai-primary-dark: #B07856;
+  --ai-primary-light: #E0BCA8;
+  --ai-header-gradient: linear-gradient(135deg, #8E6044, #B07856);
+  --ai-float-gradient: linear-gradient(135deg, #CCA088 0%, #D4AC94 40%, #E0BCA8 70%, #CCA088 100%);
+}
+
+/* Accent dot previews for new themes */
+.ai-accent-dot[data-accent="dew"] {
+  background: linear-gradient(135deg, #6BA89A, #96C4B8);
+}
+.ai-accent-dot[data-accent="ember"] {
+  background: linear-gradient(135deg, #B07856, #CCA088);
+}
+
+/* === 587. Luminous Orb Field Canvas 光蕴球场画布 v0.1.8 === */
+.ai-luminous-orb-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  opacity: 0.14;
+  mix-blend-mode: soft-light;
+  will-change: opacity;
+  transition: opacity 1s var(--ai-ease-silk-fade, ease);
+}
+[data-theme="dark"] .ai-luminous-orb-canvas {
+  opacity: 0.10;
+  mix-blend-mode: screen;
+}
+#ai-sort-wrapper:hover .ai-luminous-orb-canvas {
+  opacity: 0.20;
+  transition: opacity 1.4s var(--ai-ease-gentle-wave, ease);
+}
+[data-theme="dark"] #ai-sort-wrapper:hover .ai-luminous-orb-canvas {
+  opacity: 0.14;
+}
+
+/* === 588. Header Particle Drift 头部粒子漂流 v0.1.8 === */
+.ai-header-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.ai-header-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.45);
+  pointer-events: none;
+  will-change: transform, opacity;
+  animation: ai-header-particle-float var(--hp-dur, 8s) var(--ai-ease-gentle-wave, ease) infinite;
+  animation-delay: var(--hp-delay, 0s);
+}
+[data-theme="dark"] .ai-header-particle {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+@keyframes ai-header-particle-float {
+  0% {
+    transform: translate(var(--hp-x0, 0px), var(--hp-y0, 0px)) scale(0.6);
+    opacity: 0;
+  }
+  15% {
+    opacity: var(--hp-opacity, 0.5);
+  }
+  50% {
+    transform: translate(var(--hp-x1, 10px), var(--hp-y1, -8px)) scale(1);
+    opacity: var(--hp-opacity, 0.5);
+  }
+  85% {
+    opacity: var(--hp-opacity, 0.5);
+  }
+  100% {
+    transform: translate(var(--hp-x2, 20px), var(--hp-y2, 0px)) scale(0.6);
+    opacity: 0;
+  }
+}
+
+/* === 589. Ripple Ring Idle Animation 涟漪圈待机动效 v0.1.8 === */
+@keyframes ai-ripple-ring-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(115, 100, 255, 0.06),
+                0 24px 68px rgba(0,0,0,0.11),
+                0 10px 28px rgba(0,0,0,0.07);
+  }
+  25% {
+    box-shadow: 0 0 0 3px rgba(115, 100, 255, 0.03),
+                0 24px 68px rgba(0,0,0,0.11),
+                0 10px 28px rgba(0,0,0,0.07),
+                0 0 24px rgba(115, 100, 255, 0.03);
+  }
+  50% {
+    box-shadow: 0 0 0 0 rgba(115, 100, 255, 0.00),
+                0 24px 68px rgba(0,0,0,0.11),
+                0 10px 28px rgba(0,0,0,0.07),
+                0 0 40px rgba(115, 100, 255, 0.04);
+  }
+  75% {
+    box-shadow: 0 0 0 2px rgba(115, 100, 255, 0.02),
+                0 24px 68px rgba(0,0,0,0.11),
+                0 10px 28px rgba(0,0,0,0.07);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(115, 100, 255, 0.06),
+                0 24px 68px rgba(0,0,0,0.11),
+                0 10px 28px rgba(0,0,0,0.07);
+  }
+}
+
+#ai-sort-wrapper:not(:hover) {
+  animation: ai-cascade-idle-drift 10s var(--ai-ease-breath-sync, ease) infinite,
+             ai-ripple-ring-pulse 12s var(--ai-ease-ripple-out, ease) infinite;
+}
+
+/* === 590. Enhanced Elastic Button Squeeze 弹性按钮果冻挤压 v0.1.8 === */
+.ai-btn:hover {
+  transform: translateY(-2px) scale(1.025);
+  transition: all 0.38s var(--ai-spring-ripple-soft, ease),
+              transform 0.45s var(--ai-spring-elastic-ripple, ease);
+}
+.ai-btn:active {
+  transform: translateY(0) scale(0.94);
+  transition-duration: 0.06s !important;
+  transition-timing-function: var(--ai-ease-ripple-out, ease) !important;
+}
+.ai-btn-primary:hover {
+  transform: translateY(-3px) scale(1.035);
+  box-shadow: 0 16px 40px rgba(115, 100, 255, 0.24),
+              0 6px 18px rgba(155, 89, 246, 0.12);
+  transition: all 0.4s var(--ai-spring-elastic-ripple, ease);
+}
+.ai-btn-primary:active {
+  transform: translateY(-1px) scale(0.96);
+  transition-duration: 0.06s !important;
+}
+
+/* === 591. Elastic Filter Button 弹性筛选按钮 v0.1.8 === */
+.ai-filter-btn {
+  transition: all 0.4s var(--ai-spring-ripple-soft, ease),
+              transform 0.45s var(--ai-spring-elastic-ripple, ease);
+}
+.ai-filter-btn:hover {
+  transform: translateY(-1px) scale(1.04);
+}
+.ai-filter-btn:active {
+  transform: scale(0.93);
+  transition-duration: 0.06s !important;
+}
+
+/* === 592. Category Row Elastic Hover 分类行弹性悬停 v0.1.8 === */
+.ai-cat-row {
+  transition: all 0.45s var(--ai-ease-ripple-out, ease),
+              transform 0.5s var(--ai-spring-ripple-soft, ease),
+              box-shadow 0.6s var(--ai-ease-gentle-wave, ease);
+}
+.ai-cat-row:hover {
+  transform: translateX(5px) scale(1.004);
+  box-shadow: inset 0 0 0 0 transparent,
+              -5px 0 24px -8px rgba(115, 100, 255, 0.07);
+  transition: all 0.35s var(--ai-spring-elastic-ripple, ease),
+              transform 0.4s var(--ai-spring-elastic-ripple, ease);
+}
+.ai-cat-row:active {
+  transform: translateX(3px) scale(0.996);
+  transition-duration: 0.06s !important;
+}
+
+/* === 593. Smooth Detail Expand 丝滑详情展开 v0.1.8 === */
+.ai-cat-detail {
+  transition: max-height 0.55s var(--ai-spring-ripple-soft, ease),
+              opacity 0.4s var(--ai-ease-silk-fade, ease),
+              padding 0.4s var(--ai-ease-ripple-out, ease);
+}
+.ai-cat-detail.open {
+  transition: max-height 0.6s var(--ai-spring-elastic-ripple, ease),
+              opacity 0.35s var(--ai-ease-silk-fade, ease),
+              padding 0.35s var(--ai-ease-ripple-out, ease);
+}
+
+/* === 594. Header Button Jelly 头部按钮果冻 v0.1.8 === */
+.ai-header-btn {
+  transition: all 0.35s var(--ai-spring-ripple-soft, ease),
+              transform 0.4s var(--ai-spring-elastic-ripple, ease);
+}
+.ai-header-btn:hover {
+  background: rgba(255,255,255,0.28);
+  transform: scale(1.14) translateY(-1px);
+}
+.ai-header-btn:active {
+  transform: scale(0.90);
+  transition-duration: 0.06s !important;
+}
+
+/* === 595. Modal Close Button Bounce 模态关闭弹跳 v0.1.8 === */
+.ai-modal-close {
+  transition: all 0.35s var(--ai-spring-elastic-ripple, ease);
+}
+.ai-modal-close:hover {
+  transform: scale(1.18) rotate(90deg);
+  background: rgba(255,255,255,0.30);
+}
+.ai-modal-close:active {
+  transform: scale(0.88) rotate(90deg);
+  transition-duration: 0.06s !important;
+}
+
+/* === 596. Smooth Theme Toggle Spring 主题切换弹簧 v0.1.8 === */
+.ai-theme-toggle {
+  transition: background 0.5s var(--ai-ease-ripple-out, ease),
+              box-shadow 0.5s var(--ai-ease-gentle-wave, ease);
+}
+.ai-theme-toggle::after {
+  transition: transform 0.5s var(--ai-spring-elastic-ripple, ease),
+              background 0.4s var(--ai-ease-silk-fade, ease);
+}
+
+/* === 597. Float Button Ripple Pulse 悬浮按钮涟漪脉冲 v0.1.8 === */
+@keyframes ai-ripple-float-pulse {
+  0%, 100% {
+    box-shadow: 0 0 14px rgba(115, 100, 255, 0.18),
+                0 0 28px rgba(155, 89, 246, 0.08),
+                0 0 0 0 rgba(115, 100, 255, 0);
+    transform: scale(1) translateY(0);
+  }
+  20% {
+    box-shadow: 0 0 20px rgba(115, 100, 255, 0.22),
+                0 0 40px rgba(155, 89, 246, 0.10),
+                0 0 0 6px rgba(115, 100, 255, 0.03);
+    transform: scale(1.015) translateY(-1.5px);
+  }
+  40% {
+    box-shadow: 0 0 16px rgba(115, 100, 255, 0.20),
+                0 0 32px rgba(155, 89, 246, 0.09),
+                0 0 0 12px rgba(115, 100, 255, 0);
+    transform: scale(1.008) translateY(-0.5px);
+  }
+  60% {
+    box-shadow: 0 0 18px rgba(115, 100, 255, 0.19),
+                0 0 36px rgba(155, 89, 246, 0.09),
+                0 0 0 3px rgba(115, 100, 255, 0.02);
+    transform: scale(1.01) translateY(-1px);
+  }
+}
+
+#ai-float-btn {
+  animation: ai-ripple-float-pulse 8s var(--ai-ease-gentle-wave, ease) infinite,
+             ai-float-gradient-shift 16s ease-in-out infinite;
+}
+
+/* === 598. Enhanced Settings Panel Spring 设置面板弹簧升级 v0.1.8 === */
+.ai-settings {
+  transition: all 0.5s var(--ai-spring-ripple-soft, ease);
+}
+.ai-group-header {
+  transition: all 0.35s var(--ai-spring-ripple-soft, ease);
+}
+.ai-group-header:hover {
+  transform: translateX(3px);
+  transition: all 0.3s var(--ai-spring-elastic-ripple, ease);
+}
+
+/* === 599. Smooth Scroll Overscroll Indicator 弹性过滚指示器 v0.1.8 === */
+.ai-panel-content.overscroll-top {
+  box-shadow: inset 0 12px 20px -10px rgba(115, 100, 255, 0.06);
+  transition: box-shadow 0.5s var(--ai-spring-elastic-ripple, ease);
+}
+.ai-panel-content.overscroll-bottom {
+  box-shadow: inset 0 -12px 20px -10px rgba(115, 100, 255, 0.06);
+  transition: box-shadow 0.5s var(--ai-spring-elastic-ripple, ease);
+}
+
+/* === 600. Orb Field Mobile & Reduced Motion — 球场移动端 v0.1.8 === */
+@media (max-width: 500px) {
+  .ai-luminous-orb-canvas {
+    display: none !important;
+  }
+  .ai-header-particles {
+    display: none !important;
+  }
+}
+
 /* === 540. Enhanced Reduced Motion — 无障碍动画降级 === */
 @media (prefers-reduced-motion: reduce) {
   #ai-float-btn {
@@ -13856,7 +14206,9 @@ input[type="checkbox"]:active {
   .ai-harmonic-canvas,
   .ai-membrane-canvas,
   .ai-zephyr-field,
-  .ai-silk-waterfall-canvas {
+  .ai-silk-waterfall-canvas,
+  .ai-luminous-orb-canvas,
+  .ai-header-particles {
     display: none !important;
   }
   #ai-sort-wrapper::after {

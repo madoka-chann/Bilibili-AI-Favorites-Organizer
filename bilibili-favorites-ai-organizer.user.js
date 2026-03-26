@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.4.8
+// @version      1.4.9
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -4340,6 +4340,8 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'northlight', label: '北极光' },
                 { id: 'sandstone', label: '砂岩' },
                 { id: 'monsoon', label: '季风' },
+                { id: 'dew', label: '清露' },
+                { id: 'ember', label: '暮烬' },
                 { id: 'custom', label: '自定义' }
             ];
 
@@ -5851,6 +5853,224 @@ ${topUps.length > 0 ? `<div class="section">
             wObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startWaterfall();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') wResize(); });
+        })();
+
+        // === Velvet Ripple v0.1.8 — Luminous Orb Field Canvas 光蕴球场画布 ===
+        (() => {
+            const cvs = document.createElement('canvas');
+            cvs.className = 'ai-luminous-orb-canvas';
+            panel.insertBefore(cvs, panel.firstChild);
+            const ctx = cvs.getContext('2d');
+            let orbRaf = null;
+            let orbTime = 0;
+
+            const ORB_COUNT = 5;
+            const orbs = [];
+            for (let i = 0; i < ORB_COUNT; i++) {
+                orbs.push({
+                    x: Math.random(),
+                    y: Math.random(),
+                    vx: (Math.random() - 0.5) * 0.0004,
+                    vy: (Math.random() - 0.5) * 0.0004,
+                    radius: 30 + Math.random() * 50,
+                    phase: Math.random() * Math.PI * 2,
+                    breathSpeed: 0.3 + Math.random() * 0.4,
+                    breathAmp: 0.12 + Math.random() * 0.15,
+                    opacity: 0.15 + Math.random() * 0.2
+                });
+            }
+
+            function orbResize() {
+                const rect = panel.getBoundingClientRect();
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                cvs.width = rect.width * dpr;
+                cvs.height = rect.height * dpr;
+                cvs.style.width = rect.width + 'px';
+                cvs.style.height = rect.height + 'px';
+                ctx.scale(dpr, dpr);
+            }
+
+            function getOrbColors() {
+                const s = getComputedStyle(panel);
+                return [
+                    s.getPropertyValue('--ai-aurora-1').trim() || '#7364FF',
+                    s.getPropertyValue('--ai-aurora-3').trim() || '#9B59F6',
+                    s.getPropertyValue('--ai-aurora-5').trim() || '#20E3B2',
+                    s.getPropertyValue('--ai-aurora-7').trim() || '#FFB347',
+                    s.getPropertyValue('--ai-aurora-2').trim() || '#FF6B9D'
+                ];
+            }
+
+            function renderOrbs() {
+                orbTime += 0.004;
+                const w = parseFloat(cvs.style.width) || panel.offsetWidth;
+                const h = parseFloat(cvs.style.height) || panel.offsetHeight;
+                ctx.clearRect(0, 0, w, h);
+
+                const colors = getOrbColors();
+
+                orbs.forEach((orb, i) => {
+                    // Gentle drift with soft boundary bounce
+                    orb.x += orb.vx;
+                    orb.y += orb.vy;
+
+                    // Sinusoidal drift adds organic motion
+                    const driftX = Math.sin(orbTime * 0.5 + orb.phase) * 0.0003;
+                    const driftY = Math.cos(orbTime * 0.4 + orb.phase * 1.3) * 0.0003;
+                    orb.x += driftX;
+                    orb.y += driftY;
+
+                    // Soft boundary reflection
+                    if (orb.x < -0.1) { orb.x = -0.1; orb.vx = Math.abs(orb.vx) * 0.6; }
+                    if (orb.x > 1.1) { orb.x = 1.1; orb.vx = -Math.abs(orb.vx) * 0.6; }
+                    if (orb.y < -0.1) { orb.y = -0.1; orb.vy = Math.abs(orb.vy) * 0.6; }
+                    if (orb.y > 1.1) { orb.y = 1.1; orb.vy = -Math.abs(orb.vy) * 0.6; }
+
+                    // Gentle mutual repulsion between orbs
+                    for (let j = i + 1; j < ORB_COUNT; j++) {
+                        const other = orbs[j];
+                        const dx = orb.x - other.x;
+                        const dy = orb.y - other.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 0.3 && dist > 0.001) {
+                            const force = 0.00002 / (dist * dist);
+                            const fx = dx / dist * force;
+                            const fy = dy / dist * force;
+                            orb.vx += fx;
+                            orb.vy += fy;
+                            other.vx -= fx;
+                            other.vy -= fy;
+                        }
+                    }
+
+                    // Damping
+                    orb.vx *= 0.998;
+                    orb.vy *= 0.998;
+
+                    // Breathing scale
+                    const breathScale = 1 + Math.sin(orbTime * orb.breathSpeed + orb.phase) * orb.breathAmp;
+                    const r = orb.radius * breathScale;
+
+                    // Breathing opacity
+                    const alpha = orb.opacity * (0.6 + 0.4 * Math.sin(orbTime * orb.breathSpeed * 0.7 + orb.phase));
+
+                    const cx = orb.x * w;
+                    const cy = orb.y * h;
+                    const color = colors[i % colors.length];
+
+                    // Main orb — soft radial gradient
+                    const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+                    grad.addColorStop(0, color);
+                    grad.addColorStop(0.4, color + '80');
+                    grad.addColorStop(1, 'transparent');
+                    ctx.globalAlpha = alpha;
+                    ctx.fillStyle = grad;
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Subtle outer glow pass
+                    ctx.globalAlpha = alpha * 0.25;
+                    ctx.filter = 'blur(8px)';
+                    ctx.fill();
+                    ctx.filter = 'none';
+                });
+
+                ctx.globalAlpha = 1;
+                orbRaf = requestAnimationFrame(renderOrbs);
+            }
+
+            const startOrbs = () => { if (!orbRaf) { orbResize(); renderOrbs(); } };
+            const stopOrbs = () => { if (orbRaf) { cancelAnimationFrame(orbRaf); orbRaf = null; } };
+
+            const orbObs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startOrbs();
+                else stopOrbs();
+            });
+            orbObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startOrbs();
+            window.addEventListener('resize', () => { if (panel.style.display !== 'none') orbResize(); });
+        })();
+
+        // === Velvet Ripple v0.1.8 — Header Particle Drift 头部粒子漂流 ===
+        (() => {
+            const header = panel.querySelector('.ai-header');
+            if (!header) return;
+
+            const particleWrap = document.createElement('div');
+            particleWrap.className = 'ai-header-particles';
+            header.appendChild(particleWrap);
+
+            const PARTICLE_COUNT = 10;
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                const p = document.createElement('div');
+                p.className = 'ai-header-particle';
+                const size = 1.5 + Math.random() * 3;
+                const dur = 6 + Math.random() * 8;
+                const delay = -Math.random() * dur;
+                const startX = Math.random() * 100;
+                const startY = Math.random() * 100;
+                const midOffX = (Math.random() - 0.5) * 40;
+                const midOffY = (Math.random() - 0.5) * 20;
+                const endOffX = (Math.random() - 0.5) * 60;
+                const endOffY = (Math.random() - 0.5) * 24;
+                p.style.cssText = `
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${startX}%;
+                    top: ${startY}%;
+                    --hp-dur: ${dur}s;
+                    --hp-delay: ${delay}s;
+                    --hp-x0: 0px;
+                    --hp-y0: 0px;
+                    --hp-x1: ${midOffX}px;
+                    --hp-y1: ${midOffY}px;
+                    --hp-x2: ${endOffX}px;
+                    --hp-y2: ${endOffY}px;
+                    --hp-opacity: ${0.25 + Math.random() * 0.35};
+                `;
+                particleWrap.appendChild(p);
+            }
+        })();
+
+        // === Velvet Ripple v0.1.8 — Elastic Overscroll Spring 弹性过滚弹簧 ===
+        (() => {
+            const content = panel.querySelector('.ai-panel-content');
+            if (!content) return;
+            let overscrollRaf = null;
+            let overscrollOffset = 0;
+            let overscrollVelocity = 0;
+
+            content.addEventListener('wheel', (e) => {
+                const atTop = content.scrollTop <= 0;
+                const atBottom = content.scrollTop >= content.scrollHeight - content.clientHeight - 1;
+
+                if ((atTop && e.deltaY < 0) || (atBottom && e.deltaY > 0)) {
+                    overscrollVelocity += e.deltaY * 0.08;
+                    overscrollVelocity = Math.max(-30, Math.min(30, overscrollVelocity));
+                    if (!overscrollRaf) animateOverscroll();
+                }
+            }, { passive: true });
+
+            function animateOverscroll() {
+                overscrollOffset += overscrollVelocity;
+                // Spring physics: stiffness + damping
+                const spring = -overscrollOffset * 0.12;
+                const damping = -overscrollVelocity * 0.2;
+                overscrollVelocity += spring + damping;
+                overscrollOffset += overscrollVelocity;
+
+                content.style.transform = `translateY(${-overscrollOffset * 0.3}px)`;
+
+                if (Math.abs(overscrollOffset) < 0.1 && Math.abs(overscrollVelocity) < 0.05) {
+                    content.style.transform = '';
+                    overscrollOffset = 0;
+                    overscrollVelocity = 0;
+                    overscrollRaf = null;
+                    return;
+                }
+                overscrollRaf = requestAnimationFrame(animateOverscroll);
+            }
         })();
 
         // === Velvet Zephyr v0.1.6 — Spring Scroll Physics 弹簧滚动物理 ===
