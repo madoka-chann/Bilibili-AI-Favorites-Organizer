@@ -1,6 +1,6 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v0.2.7
-   Velvet Aura Flow · 天鹅绒光韵流 · Refined Glass Morphism
+   B站 AI 收藏夹整理助理 — 完整样式表 v0.2.8
+   Velvet Lumen Drift · 天鹅绒流光漂 · Refined Glass Morphism
    Indigo-Nebula 双色系统 · Restrained Aurora Palette
    Velvet Dynamics 30.0 · Ultra-Smooth Spring Micro-interactions
    Stellar Abyss Dark Theme · Living Glass Surfaces
@@ -33,7 +33,7 @@
    Velvet Aura Flow · Aura Filament Canvas · Magnetic Parallax · Lotus & AmberMist & FrozenLake Themes
    ================================================================ */
 
-/* === 1. CSS 变量 (双主题系统) v0.2.7 === */
+/* === 1. CSS 变量 (双主题系统) v0.2.8 === */
 
 /* 亮色主题（默认） — 星潮·晨曦琉璃 Astral Glasstide */
 :root, [data-theme="light"] {
@@ -18188,7 +18188,7 @@ input[type="checkbox"]:active {
   --ai-ease-ripple-zen: cubic-bezier(0.05, 0.86, 0.10, 1.00);
 }
 
-/* === 740. Enhanced Reduced Motion v0.2.7 === */
+/* === 740. Enhanced Reduced Motion v0.2.8 === */
 @media (prefers-reduced-motion: reduce) {
   #ai-float-btn {
     animation: none !important;
@@ -18215,12 +18215,12 @@ input[type="checkbox"]:active {
 }
 
 /* ================================================================
-   Velvet Aura Flow v0.2.7 — 天鹅绒光韵流
+   Velvet Aura Flow v0.2.8 — 天鹅绒光韵流
    New: Aura Filament Canvas · Magnetic Parallax · Enhanced Easing
    New Themes: Lotus (莲) · Amber Mist (琥珀雾) · Frozen Lake (冰湖)
    ================================================================ */
 
-/* === 741. Aura Flow Easing System v0.2.7 — 光韵缓动系统 === */
+/* === 741. Aura Flow Easing System v0.2.8 — 光韵缓动系统 === */
 :root {
   --ai-ease-aura: cubic-bezier(0.05, 0.90, 0.10, 1.01);
   --ai-spring-aura: cubic-bezier(0.14, 1.26, 0.32, 1.00);
@@ -18230,7 +18230,7 @@ input[type="checkbox"]:active {
   --ai-spring-frost: cubic-bezier(0.12, 1.18, 0.28, 1.02);
 }
 
-/* === 742. Accent Theme: Lotus 莲 v0.2.7 === */
+/* === 742. Accent Theme: Lotus 莲 v0.2.8 === */
 [data-accent="lotus"] {
   --ai-primary: #9B7EA8;
   --ai-primary-dark: #7A5F88;
@@ -18260,7 +18260,7 @@ input[type="checkbox"]:active {
   --ai-float-gradient: linear-gradient(135deg, #C4B0CE, #B89AAD, #A88EB4, #C4B0CE);
 }
 
-/* === 743. Accent Theme: Amber Mist 琥珀雾 v0.2.7 === */
+/* === 743. Accent Theme: Amber Mist 琥珀雾 v0.2.8 === */
 [data-accent="amber-mist"] {
   --ai-primary: #A68B5B;
   --ai-primary-dark: #886F42;
@@ -18290,7 +18290,7 @@ input[type="checkbox"]:active {
   --ai-float-gradient: linear-gradient(135deg, #C9B68E, #B8A07A, #A8926A, #C9B68E);
 }
 
-/* === 744. Accent Theme: Frozen Lake 冰湖 v0.2.7 === */
+/* === 744. Accent Theme: Frozen Lake 冰湖 v0.2.8 === */
 [data-accent="frozen-lake"] {
   --ai-primary: #6B8FA8;
   --ai-primary-dark: #4E7490;
@@ -18320,7 +18320,7 @@ input[type="checkbox"]:active {
   --ai-float-gradient: linear-gradient(135deg, #9AB8CC, #7A9EB2, #6A8EA6, #9AB8CC);
 }
 
-/* === 745. Accent Dot Preview for New Themes v0.2.7 === */
+/* === 745. Accent Dot Preview for New Themes v0.2.8 === */
 .ai-accent-dot[data-accent="lotus"] {
   background: linear-gradient(135deg, #9B7EA8, #C4B0CE) !important;
 }
@@ -18331,7 +18331,7 @@ input[type="checkbox"]:active {
   background: linear-gradient(135deg, #6B8FA8, #9AB8CC) !important;
 }
 
-/* === 746. Aura Flow Canvas Container v0.2.7 — 光韵丝缕画布 === */
+/* === 746. Aura Flow Canvas Container v0.2.8 — 光韵丝缕画布 === */
 .ai-aura-flow-canvas {
   position: absolute;
   inset: 0;
@@ -18353,7 +18353,7 @@ input[type="checkbox"]:active {
   display: block;
 }
 
-/* === 747. Enhanced Float Button Aura Ring v0.2.7 — 光韵悬浮环 === */
+/* === 747. Enhanced Float Button Aura Ring v0.2.8 — 光韵悬浮环 === */
 @keyframes ai-aura-ring-pulse {
   0%, 100% {
     box-shadow: 0 0 0 0 var(--ai-primary-shadow),
@@ -18368,7 +18368,7 @@ input[type="checkbox"]:active {
   animation: ai-rotate-gradient 8s linear infinite, ai-orbital-breathe 4s ease-in-out infinite, ai-aura-ring-pulse 4s var(--ai-ease-aura) infinite;
 }
 
-/* === 748. Magnetic Parallax Panel Hover v0.2.7 — 磁场视差悬浮 === */
+/* === 748. Magnetic Parallax Panel Hover v0.2.8 — 磁场视差悬浮 === */
 #ai-sort-wrapper {
   perspective: var(--ai-perspective, 1600px);
   transform-style: preserve-3d;
@@ -18378,7 +18378,7 @@ input[type="checkbox"]:active {
   will-change: transform;
 }
 
-/* === 749. Silk Wave Header Shimmer v0.2.7 — 丝波头部流光 === */
+/* === 749. Silk Wave Header Shimmer v0.2.8 — 丝波头部流光 === */
 @keyframes ai-silk-wave-flow {
   0% {
     background-position: -300% center, 200% center;
@@ -18407,7 +18407,7 @@ input[type="checkbox"]:active {
   animation: ai-silk-wave-flow 12s ease infinite !important;
 }
 
-/* === 750. Enhanced Category Row Hover v0.2.7 — 增强分类行悬浮 === */
+/* === 750. Enhanced Category Row Hover v0.2.8 — 增强分类行悬浮 === */
 @keyframes ai-row-glow-sweep {
   0% {
     left: -100%;
@@ -18437,7 +18437,7 @@ input[type="checkbox"]:active {
   animation: ai-row-glow-sweep 1.2s var(--ai-ease-filament) forwards;
 }
 
-/* === 751. Float Button Magnetic Field v0.2.7 — 悬浮按钮磁场效应 === */
+/* === 751. Float Button Magnetic Field v0.2.8 — 悬浮按钮磁场效应 === */
 @keyframes ai-magnetic-orbit {
   0% {
     transform: rotate(0deg) translateX(3px) rotate(0deg);
@@ -18454,7 +18454,7 @@ input[type="checkbox"]:active {
   animation: ai-float-gradient-shift 3s ease infinite !important;
 }
 
-/* === 752. Enhanced Panel Idle Breathing v0.2.7 — 增强面板闲置呼吸 === */
+/* === 752. Enhanced Panel Idle Breathing v0.2.8 — 增强面板闲置呼吸 === */
 @keyframes ai-aura-idle-breathe {
   0%, 100% {
     box-shadow: 0 24px 68px rgba(0,0,0,0.09), 0 10px 28px rgba(0,0,0,0.06),
@@ -18491,7 +18491,7 @@ input[type="checkbox"]:active {
              ai-border-glow-pulse 5s var(--ai-ease-breath-deep, ease-in-out) infinite !important;
 }
 
-/* === 753. Toast Silk Entrance v0.2.7 — 通知丝滑入场 === */
+/* === 753. Toast Silk Entrance v0.2.8 — 通知丝滑入场 === */
 @keyframes ai-toast-aura-slide {
   0% {
     opacity: 0;
@@ -18521,7 +18521,7 @@ input[type="checkbox"]:active {
   animation: ai-toast-aura-slide 0.6s var(--ai-spring-aura) both !important;
 }
 
-/* === 754. Modal Aura Entrance v0.2.7 — 弹窗光韵入场 === */
+/* === 754. Modal Aura Entrance v0.2.8 — 弹窗光韵入场 === */
 @keyframes ai-modal-aura-enter {
   0% {
     opacity: 0;
@@ -18562,7 +18562,7 @@ input[type="checkbox"]:active {
   }
 }
 
-/* === 755. Enhanced Button Hover Micro-interaction v0.2.7 — 增强按钮悬浮微交互 === */
+/* === 755. Enhanced Button Hover Micro-interaction v0.2.8 — 增强按钮悬浮微交互 === */
 .ai-btn-tool {
   transition: transform 0.45s var(--ai-spring-aura),
               background 0.35s var(--ai-ease-aura),
@@ -18575,7 +18575,7 @@ input[type="checkbox"]:active {
               0 2px 8px var(--ai-glow-color, rgba(115, 100, 255, 0.04)) !important;
 }
 
-/* === 756. Smooth Checkbox Toggle v0.2.7 — 丝滑复选框 === */
+/* === 756. Smooth Checkbox Toggle v0.2.8 — 丝滑复选框 === */
 .ai-cat-row input[type="checkbox"] {
   transition: transform 0.35s var(--ai-spring-aura),
               box-shadow 0.3s ease;
@@ -18584,7 +18584,7 @@ input[type="checkbox"]:active {
   animation: ai-checkbox-mochi-bounce 0.5s var(--ai-spring-magnetic) both;
 }
 
-/* === 757. Panel Open Aura Spring v0.2.7 — 面板展开光韵弹簧 === */
+/* === 757. Panel Open Aura Spring v0.2.8 — 面板展开光韵弹簧 === */
 @keyframes ai-panel-aura-open {
   0% {
     opacity: 0;
@@ -18633,7 +18633,7 @@ input[type="checkbox"]:active {
   }
 }
 
-/* === 758. Log Entry Silk Stagger v0.2.7 — 日志条目丝滑交错 === */
+/* === 758. Log Entry Silk Stagger v0.2.8 — 日志条目丝滑交错 === */
 @keyframes ai-log-aura-in {
   0% {
     opacity: 0;
@@ -18657,7 +18657,7 @@ input[type="checkbox"]:active {
   animation: ai-log-aura-in 0.4s var(--ai-spring-aura) both !important;
 }
 
-/* === 759. Settings Panel Silk Reveal v0.2.7 — 设置面板丝滑展现 === */
+/* === 759. Settings Panel Silk Reveal v0.2.8 — 设置面板丝滑展现 === */
 @keyframes ai-settings-aura-reveal {
   0% {
     opacity: 0;
@@ -18684,7 +18684,7 @@ input[type="checkbox"]:active {
   }
 }
 
-/* === 760. Enhanced Scrollbar v0.2.7 — 增强滚动条 === */
+/* === 760. Enhanced Scrollbar v0.2.8 — 增强滚动条 === */
 #ai-sort-wrapper ::-webkit-scrollbar,
 .ai-modal ::-webkit-scrollbar {
   width: 4px;
@@ -18706,14 +18706,14 @@ input[type="checkbox"]:active {
   width: 6px;
 }
 
-/* === 761. Category Detail Silk Unfold v0.2.7 — 分类详情丝滑展开 === */
+/* === 761. Category Detail Silk Unfold v0.2.8 — 分类详情丝滑展开 === */
 .ai-cat-detail {
   transition: max-height 0.5s var(--ai-ease-aura),
               opacity 0.4s var(--ai-ease-filament),
               padding 0.4s var(--ai-ease-lotus) !important;
 }
 
-/* === 762. Group Body Aura Expand v0.2.7 — 分组展开光韵 === */
+/* === 762. Group Body Aura Expand v0.2.8 — 分组展开光韵 === */
 @keyframes ai-aura-group-expand {
   0% {
     opacity: 0;
@@ -18742,7 +18742,7 @@ input[type="checkbox"]:active {
   animation: ai-aura-group-expand 0.5s var(--ai-spring-aura) both !important;
 }
 
-/* === 763. Video Cover Hover Lift v0.2.7 — 视频封面悬浮抬升 === */
+/* === 763. Video Cover Hover Lift v0.2.8 — 视频封面悬浮抬升 === */
 .ai-vid-cover {
   transition: transform 0.4s var(--ai-spring-aura), box-shadow 0.35s ease !important;
 }
@@ -18751,7 +18751,7 @@ input[type="checkbox"]:active {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
 }
 
-/* === 764. Filter Button Enhanced Pop v0.2.7 — 筛选按钮增强弹出 === */
+/* === 764. Filter Button Enhanced Pop v0.2.8 — 筛选按钮增强弹出 === */
 .ai-filter-btn {
   transition: all 0.4s var(--ai-spring-aura) !important;
 }
@@ -18766,7 +18766,7 @@ input[type="checkbox"]:active {
   transition: all 0.5s var(--ai-spring-magnetic) !important;
 }
 
-/* === 765. Header Title Gentle Float v0.2.7 — 头部标题轻浮效果 === */
+/* === 765. Header Title Gentle Float v0.2.8 — 头部标题轻浮效果 === */
 @keyframes ai-title-gentle-float {
   0%, 100% {
     transform: translateY(0);
@@ -18779,7 +18779,7 @@ input[type="checkbox"]:active {
   animation: ai-title-gentle-float 6s var(--ai-ease-breath-deep, ease-in-out) infinite;
 }
 
-/* === 766. Input Focus Silk Ring v0.2.7 — 输入框聚焦丝环 === */
+/* === 766. Input Focus Silk Ring v0.2.8 — 输入框聚焦丝环 === */
 .ai-input:focus,
 .ai-select:focus {
   border-color: var(--ai-primary) !important;
@@ -18788,4 +18788,627 @@ input[type="checkbox"]:active {
               0 2px 8px rgba(0, 0, 0, 0.03) !important;
   transition: border-color 0.3s var(--ai-ease-aura),
               box-shadow 0.45s var(--ai-spring-aura) !important;
+}
+
+/* ================================================================
+   Velvet Lumen Drift v0.2.8 — 天鹅绒流光漂
+   Velvet Dynamics 31.0 · Lumen Drift Canvas + Elastic Micro-interactions
+   WinterPine & Clay & SilverRain Themes
+   Silk Wave Border · Dandelion Particles · Magnetic Elastic Deform
+   ================================================================ */
+
+/* === 767. New Accent Themes v0.2.8 — 冬松 · 陶土 · 银雨 === */
+
+/* 冬松 Winter Pine — 深邃森林绿，沉静内敛 */
+[data-accent="winter-pine"] {
+  --ai-primary: #4A7C6F;
+  --ai-primary-dark: #3A6358;
+  --ai-primary-light: #7BA99A;
+  --ai-primary-bg: rgba(74, 124, 111, 0.06);
+  --ai-primary-shadow: rgba(74, 124, 111, 0.20);
+  --ai-aurora-1: #4A7C6F;
+  --ai-aurora-2: #6B9E8A;
+  --ai-aurora-3: #3A6358;
+  --ai-aurora-4: #8DBAA8;
+  --ai-aurora-5: #5C8F7E;
+  --ai-aurora-6: #A3CDB8;
+  --ai-aurora-7: #7BA99A;
+  --ai-aurora-8: #4E806F;
+  --ai-header-gradient: linear-gradient(135deg, #3A6358, #4A7C6F, #5C8F7E);
+  --ai-float-gradient: linear-gradient(135deg, #4A7C6F 0%, #5C8F7E 40%, #7BA99A 70%, #4A7C6F 100%);
+  --ai-neon-glow: 0 0 14px rgba(74, 124, 111, 0.16),
+                  0 0 28px rgba(92, 143, 126, 0.07),
+                  0 0 48px rgba(74, 124, 111, 0.03);
+  --ai-glow-color: rgba(74, 124, 111, 0.07);
+  --ai-chromatic-border: linear-gradient(135deg, rgba(74,124,111,0.30), rgba(107,158,138,0.26), rgba(141,186,168,0.24), rgba(92,143,126,0.28));
+}
+[data-theme="dark"][data-accent="winter-pine"] {
+  --ai-primary: #7BA99A;
+  --ai-primary-dark: #4A7C6F;
+  --ai-primary-light: #A3CDB8;
+  --ai-primary-bg: rgba(74, 124, 111, 0.10);
+  --ai-primary-shadow: rgba(74, 124, 111, 0.24);
+  --ai-header-gradient: linear-gradient(135deg, #3A6358, #4A7C6F);
+  --ai-float-gradient: linear-gradient(135deg, #7BA99A 0%, #8DBAA8 40%, #A3CDB8 70%, #7BA99A 100%);
+  --ai-neon-glow: 0 0 16px rgba(74, 124, 111, 0.20),
+                  0 0 32px rgba(92, 143, 126, 0.09);
+}
+
+/* 陶土 Clay — 温暖陶土色，质朴安宁 */
+[data-accent="clay"] {
+  --ai-primary: #A0735A;
+  --ai-primary-dark: #845C47;
+  --ai-primary-light: #C4A08A;
+  --ai-primary-bg: rgba(160, 115, 90, 0.06);
+  --ai-primary-shadow: rgba(160, 115, 90, 0.20);
+  --ai-aurora-1: #A0735A;
+  --ai-aurora-2: #C4946E;
+  --ai-aurora-3: #845C47;
+  --ai-aurora-4: #D4B09A;
+  --ai-aurora-5: #B8876A;
+  --ai-aurora-6: #CDA58C;
+  --ai-aurora-7: #E0C4B0;
+  --ai-aurora-8: #967060;
+  --ai-header-gradient: linear-gradient(135deg, #845C47, #A0735A, #B8876A);
+  --ai-float-gradient: linear-gradient(135deg, #A0735A 0%, #B8876A 40%, #C4A08A 70%, #A0735A 100%);
+  --ai-neon-glow: 0 0 14px rgba(160, 115, 90, 0.16),
+                  0 0 28px rgba(184, 135, 106, 0.07),
+                  0 0 48px rgba(160, 115, 90, 0.03);
+  --ai-glow-color: rgba(160, 115, 90, 0.07);
+  --ai-chromatic-border: linear-gradient(135deg, rgba(160,115,90,0.30), rgba(196,148,110,0.26), rgba(212,176,154,0.24), rgba(184,135,106,0.28));
+}
+[data-theme="dark"][data-accent="clay"] {
+  --ai-primary: #C4A08A;
+  --ai-primary-dark: #A0735A;
+  --ai-primary-light: #D4B09A;
+  --ai-primary-bg: rgba(160, 115, 90, 0.10);
+  --ai-primary-shadow: rgba(160, 115, 90, 0.24);
+  --ai-header-gradient: linear-gradient(135deg, #845C47, #A0735A);
+  --ai-float-gradient: linear-gradient(135deg, #C4A08A 0%, #CDA58C 40%, #D4B09A 70%, #C4A08A 100%);
+  --ai-neon-glow: 0 0 16px rgba(160, 115, 90, 0.20),
+                  0 0 32px rgba(184, 135, 106, 0.09);
+}
+
+/* 银雨 Silver Rain — 清冷银灰，如雨丝般柔和 */
+[data-accent="silver-rain"] {
+  --ai-primary: #7A8B99;
+  --ai-primary-dark: #5E6F7E;
+  --ai-primary-light: #A4B3BF;
+  --ai-primary-bg: rgba(122, 139, 153, 0.06);
+  --ai-primary-shadow: rgba(122, 139, 153, 0.20);
+  --ai-aurora-1: #7A8B99;
+  --ai-aurora-2: #94A5B3;
+  --ai-aurora-3: #5E6F7E;
+  --ai-aurora-4: #A4B3BF;
+  --ai-aurora-5: #8798A6;
+  --ai-aurora-6: #B0BDC8;
+  --ai-aurora-7: #9DAAB6;
+  --ai-aurora-8: #6E7F8D;
+  --ai-header-gradient: linear-gradient(135deg, #5E6F7E, #7A8B99, #8798A6);
+  --ai-float-gradient: linear-gradient(135deg, #7A8B99 0%, #8798A6 40%, #A4B3BF 70%, #7A8B99 100%);
+  --ai-neon-glow: 0 0 14px rgba(122, 139, 153, 0.16),
+                  0 0 28px rgba(135, 152, 166, 0.07),
+                  0 0 48px rgba(122, 139, 153, 0.03);
+  --ai-glow-color: rgba(122, 139, 153, 0.07);
+  --ai-chromatic-border: linear-gradient(135deg, rgba(122,139,153,0.30), rgba(148,165,179,0.26), rgba(164,179,191,0.24), rgba(135,152,166,0.28));
+}
+[data-theme="dark"][data-accent="silver-rain"] {
+  --ai-primary: #A4B3BF;
+  --ai-primary-dark: #7A8B99;
+  --ai-primary-light: #B0BDC8;
+  --ai-primary-bg: rgba(122, 139, 153, 0.10);
+  --ai-primary-shadow: rgba(122, 139, 153, 0.24);
+  --ai-header-gradient: linear-gradient(135deg, #5E6F7E, #7A8B99);
+  --ai-float-gradient: linear-gradient(135deg, #A4B3BF 0%, #B0BDC8 40%, #BCC7D0 70%, #A4B3BF 100%);
+  --ai-neon-glow: 0 0 16px rgba(122, 139, 153, 0.20),
+                  0 0 32px rgba(135, 152, 166, 0.09);
+}
+
+/* === 768. New Animation Curves v0.2.8 — Velvet Dynamics 31.0 === */
+:root, [data-theme="light"] {
+  --ai-spring-lumen: cubic-bezier(0.16, 1.30, 0.34, 1.01);
+  --ai-ease-dandelion: cubic-bezier(0.04, 0.92, 0.10, 1.00);
+  --ai-spring-elastic-drift: cubic-bezier(0.22, 1.44, 0.38, 0.99);
+  --ai-ease-silk-wave: cubic-bezier(0.06, 0.86, 0.14, 1.02);
+  --ai-spring-mochi: cubic-bezier(0.20, 1.58, 0.36, 0.97);
+}
+
+/* === 769. Lumen Drift Canvas Container v0.2.8 — 流光漂画布 === */
+.ai-lumen-drift-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+  opacity: 0.45;
+  mix-blend-mode: soft-light;
+}
+[data-theme="dark"] .ai-lumen-drift-canvas {
+  opacity: 0.30;
+  mix-blend-mode: screen;
+}
+.ai-lumen-drift-canvas canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* === 770. Silk Wave Border v0.2.8 — 丝波流光边框 === */
+@keyframes ai-silk-wave-border {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+#ai-sort-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(
+    270deg,
+    var(--ai-aurora-1, #7364FF),
+    var(--ai-aurora-3, #9B59F6),
+    var(--ai-aurora-4, #00D4AA),
+    var(--ai-aurora-2, #FF6B9D),
+    var(--ai-aurora-1, #7364FF)
+  );
+  background-size: 400% 400%;
+  animation: ai-silk-wave-border 8s var(--ai-ease-silk-wave, ease) infinite;
+  opacity: 0;
+  transition: opacity 0.6s var(--ai-ease-dandelion, ease);
+  pointer-events: none;
+}
+#ai-sort-wrapper:hover::before {
+  opacity: 0.55;
+}
+[data-theme="dark"] #ai-sort-wrapper:hover::before {
+  opacity: 0.35;
+}
+
+/* === 771. Float Button Lumen Ring v0.2.8 — 浮钮流光环 === */
+@keyframes ai-lumen-ring-spin {
+  0% {
+    transform: rotate(0deg);
+    filter: blur(3px);
+  }
+  50% {
+    filter: blur(4.5px);
+  }
+  100% {
+    transform: rotate(360deg);
+    filter: blur(3px);
+  }
+}
+@keyframes ai-lumen-idle-morph {
+  0%, 100% {
+    border-radius: 50%;
+    transform: scale(1) rotate(0deg);
+  }
+  15% {
+    border-radius: 42% 58% 54% 46% / 48% 44% 56% 52%;
+    transform: scale(1.02) rotate(2deg);
+  }
+  30% {
+    border-radius: 56% 44% 46% 54% / 52% 56% 44% 48%;
+    transform: scale(0.98) rotate(-1deg);
+  }
+  45% {
+    border-radius: 48% 52% 58% 42% / 44% 52% 48% 56%;
+    transform: scale(1.015) rotate(1.5deg);
+  }
+  60% {
+    border-radius: 52% 48% 44% 56% / 56% 48% 52% 44%;
+    transform: scale(0.99) rotate(-0.5deg);
+  }
+  75% {
+    border-radius: 46% 54% 52% 48% / 50% 54% 46% 50%;
+    transform: scale(1.01) rotate(1deg);
+  }
+}
+#ai-float-btn {
+  animation: ai-float-gradient-shift 16s ease-in-out infinite,
+             ai-lumen-idle-morph 12s var(--ai-ease-dandelion, ease-in-out) infinite,
+             ai-lumen-idle-breathe 4s var(--ai-ease-silk-wave, ease-in-out) infinite !important;
+}
+@keyframes ai-lumen-idle-breathe {
+  0%, 100% {
+    box-shadow: var(--ai-neon-glow, 0 0 14px rgba(115,100,255,0.18));
+    filter: brightness(1);
+  }
+  50% {
+    box-shadow: 0 0 18px var(--ai-primary-shadow, rgba(115,100,255,0.28)),
+                0 0 36px var(--ai-primary-shadow, rgba(115,100,255,0.12)),
+                0 0 56px var(--ai-primary-shadow, rgba(115,100,255,0.04));
+    filter: brightness(1.06);
+  }
+}
+
+/* === 772. Elastic Micro-Interactions v0.2.8 — 弹性微交互升级 === */
+
+/* Button mochi press — 按钮麻糬按压 */
+.ai-btn:active,
+.ai-header-btn:active,
+.ai-modal-btn:active {
+  transform: scale(0.88) !important;
+  transition: transform 0.06s var(--ai-spring-mochi, cubic-bezier(0.20,1.58,0.36,0.97)) !important;
+}
+.ai-btn,
+.ai-header-btn,
+.ai-modal-btn {
+  transition: all 0.4s var(--ai-spring-lumen, cubic-bezier(0.16,1.30,0.34,1.01)) !important;
+}
+
+/* Category row elastic hover — 分类行弹性悬浮 */
+.ai-cat-row {
+  transition: all 0.45s var(--ai-spring-elastic-drift, cubic-bezier(0.22,1.44,0.38,0.99)) !important;
+}
+.ai-cat-row:hover {
+  transform: translateX(5px) scale(1.008) !important;
+  box-shadow: inset 0 0 0 1px var(--ai-primary-bg, rgba(115,100,255,0.06)),
+              0 2px 12px var(--ai-glow-color, rgba(115,100,255,0.05)) !important;
+}
+
+/* Toast entrance with spring overshoot — Toast弹簧入场 */
+@keyframes ai-toast-lumen-in {
+  0% {
+    transform: translateX(120%) scale(0.8);
+    opacity: 0;
+    filter: blur(4px);
+  }
+  45% {
+    transform: translateX(-6%) scale(1.04);
+    opacity: 1;
+    filter: blur(0);
+  }
+  65% {
+    transform: translateX(2%) scale(0.99);
+  }
+  80% {
+    transform: translateX(-0.5%) scale(1.005);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+@keyframes ai-toast-lumen-out {
+  0% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(110%) scale(0.85);
+    opacity: 0;
+    filter: blur(3px);
+  }
+}
+
+/* Modal entrance with depth + elastic — 弹窗深度弹性入场 */
+@keyframes ai-modal-lumen-enter {
+  0% {
+    transform: scale(0.85) translateY(30px) rotateX(4deg);
+    opacity: 0;
+    filter: blur(8px);
+  }
+  35% {
+    transform: scale(1.03) translateY(-4px) rotateX(-0.5deg);
+    opacity: 1;
+    filter: blur(0);
+  }
+  55% {
+    transform: scale(0.995) translateY(1px) rotateX(0.2deg);
+  }
+  75% {
+    transform: scale(1.005) translateY(-0.5px) rotateX(0deg);
+  }
+  100% {
+    transform: scale(1) translateY(0) rotateX(0deg);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* Panel open/close with elastic deform — 面板弹性形变开关 */
+@keyframes ai-panel-lumen-open {
+  0% {
+    transform: translateY(40px) scale(0.88) scaleX(0.96);
+    opacity: 0;
+    filter: blur(6px);
+  }
+  30% {
+    transform: translateY(-6px) scale(1.02) scaleX(1.01);
+    opacity: 1;
+    filter: blur(0.3px);
+  }
+  50% {
+    transform: translateY(2px) scale(0.997) scaleX(0.999);
+    filter: blur(0);
+  }
+  70% {
+    transform: translateY(-1px) scale(1.003) scaleX(1.001);
+  }
+  100% {
+    transform: translateY(0) scale(1) scaleX(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+@keyframes ai-panel-lumen-close {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    transform: translateY(28px) scale(0.92) scaleX(0.97);
+    opacity: 0;
+    filter: blur(4px);
+  }
+}
+
+/* === 773. Category Cascade Stagger v0.2.8 — 分类级联交错入场 === */
+@keyframes ai-cat-lumen-cascade {
+  0% {
+    transform: translateX(30px) scale(0.94);
+    opacity: 0;
+    filter: blur(2px);
+  }
+  40% {
+    transform: translateX(-3px) scale(1.01);
+    opacity: 1;
+    filter: blur(0);
+  }
+  60% {
+    transform: translateX(1.5px) scale(0.998);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+.ai-cat-block {
+  animation: ai-cat-lumen-cascade 0.5s var(--ai-spring-lumen) both !important;
+  animation-delay: calc(var(--i, 0) * 0.04s) !important;
+}
+
+/* === 774. Log Entry Silk Slide v0.2.8 — 日志条目丝滑滑入 === */
+@keyframes ai-log-lumen-slide {
+  0% {
+    transform: translateY(8px) scale(0.96);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-1px) scale(1.01);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+.ai-log-entry {
+  animation: ai-log-lumen-slide 0.35s var(--ai-spring-lumen) both !important;
+}
+
+/* === 775. Settings Reveal v0.2.8 — 设置面板展开 === */
+@keyframes ai-settings-lumen-reveal {
+  0% {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateY(1px);
+  }
+  100% {
+    max-height: 600px;
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === 776. Checkbox Elastic Bounce v0.2.8 — 复选框弹性弹跳 === */
+@keyframes ai-checkbox-lumen-bounce {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(0.82);
+  }
+  55% {
+    transform: scale(1.14);
+  }
+  75% {
+    transform: scale(0.96);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.ai-cat-row input[type="checkbox"]:active,
+.ai-mc-check:active {
+  animation: ai-checkbox-lumen-bounce 0.4s var(--ai-spring-mochi) !important;
+}
+
+/* === 777. Group Header Hover Glow v0.2.8 — 分组头悬浮光晕 === */
+.ai-group-header {
+  transition: all 0.4s var(--ai-spring-lumen) !important;
+  position: relative;
+}
+.ai-group-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(ellipse at var(--mx, 50%) var(--my, 50%),
+    var(--ai-primary-bg, rgba(115,100,255,0.06)) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s var(--ai-ease-dandelion);
+  pointer-events: none;
+}
+.ai-group-header:hover::after {
+  opacity: 1;
+}
+
+/* === 778. Panel Ambient Shimmer v0.2.8 — 面板环境微光 === */
+@keyframes ai-ambient-shimmer-drift {
+  0%, 100% {
+    background-position: 0% 0%;
+    opacity: 0.03;
+  }
+  33% {
+    background-position: 100% 50%;
+    opacity: 0.05;
+  }
+  66% {
+    background-position: 50% 100%;
+    opacity: 0.04;
+  }
+}
+#ai-sort-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(ellipse 300px 300px at 20% 30%, var(--ai-primary-bg, rgba(115,100,255,0.04)), transparent),
+              radial-gradient(ellipse 250px 250px at 80% 70%, var(--ai-glow-color, rgba(115,100,255,0.03)), transparent);
+  background-size: 200% 200%;
+  animation: ai-ambient-shimmer-drift 12s var(--ai-ease-silk-wave, ease) infinite;
+}
+
+/* === 779. Video Item Hover Wave v0.2.8 — 视频项悬浮波纹 === */
+.ai-vid-rich {
+  transition: all 0.35s var(--ai-spring-lumen) !important;
+  position: relative;
+}
+.ai-vid-rich:hover {
+  background: var(--ai-vid-hover-bg) !important;
+  transform: translateX(2px);
+}
+.ai-vid-rich:active {
+  transform: scale(0.985) !important;
+  transition-duration: 0.06s !important;
+}
+
+/* === 780. Scrollbar Silk Transition v0.2.8 — 滚动条丝滑过渡 === */
+#ai-sort-wrapper ::-webkit-scrollbar-thumb,
+.ai-modal ::-webkit-scrollbar-thumb {
+  transition: background 0.4s var(--ai-ease-dandelion),
+              width 0.3s var(--ai-spring-lumen),
+              border-radius 0.3s ease !important;
+}
+
+/* === 781. Header Shimmer Flow v0.2.8 — 头部微光流 === */
+@keyframes ai-header-lumen-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+.ai-header {
+  background-size: 200% 200% !important;
+  animation: ai-header-lumen-flow 6s linear infinite !important;
+}
+.ai-modal-header {
+  background-size: 200% 200% !important;
+  animation: ai-header-lumen-flow 8s linear infinite !important;
+}
+
+/* === 782. Detail Open/Close Silk v0.2.8 — 详情丝滑展合 === */
+.ai-cat-detail {
+  transition: max-height 0.55s var(--ai-spring-lumen),
+              opacity 0.4s var(--ai-ease-dandelion),
+              padding 0.4s var(--ai-ease-silk-wave) !important;
+}
+.ai-cat-detail.open {
+  animation: ai-detail-lumen-unfold 0.5s var(--ai-spring-lumen) both;
+}
+@keyframes ai-detail-lumen-unfold {
+  0% {
+    opacity: 0;
+    transform: scaleY(0.92);
+    transform-origin: top;
+  }
+  45% {
+    opacity: 1;
+    transform: scaleY(1.015);
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+/* === 783. Floating Button Hover Magnetic Pull v0.2.8 — 浮钮磁吸悬浮 === */
+#ai-float-btn:hover {
+  transition: transform 0.55s var(--ai-spring-elastic-drift),
+              border-radius 0.8s var(--ai-ease-dandelion),
+              box-shadow 0.5s var(--ai-ease-silk-wave) !important;
+}
+
+/* === 784. Badge Elastic Pop v0.2.8 — 徽章弹性弹出 === */
+@keyframes ai-badge-lumen-pop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  40% {
+    transform: scale(1.18);
+    opacity: 1;
+  }
+  60% {
+    transform: scale(0.92);
+  }
+  80% {
+    transform: scale(1.04);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.ai-cat-badge,
+.ai-cat-existing {
+  animation: ai-badge-lumen-pop 0.45s var(--ai-spring-mochi) both !important;
+}
+
+/* === 785. Search Input Focus Expand v0.2.8 — 搜索框聚焦扩展 === */
+.ai-modal-search {
+  transition: all 0.4s var(--ai-spring-lumen) !important;
+}
+.ai-modal-search:focus {
+  transform: scaleX(1.01);
+  box-shadow: 0 0 0 3px var(--ai-primary-bg),
+              0 4px 16px var(--ai-glow-color),
+              0 0 24px var(--ai-glow-color) !important;
+}
+
+/* === 786. Panel Shadow Living Breath v0.2.8 — 面板阴影呼吸 === */
+@keyframes ai-panel-shadow-lumen {
+  0%, 100% {
+    box-shadow: 0 24px 68px rgba(0, 0, 0, 0.09),
+                0 10px 28px rgba(0, 0, 0, 0.05);
+  }
+  50% {
+    box-shadow: 0 28px 76px rgba(0, 0, 0, 0.11),
+                0 12px 32px rgba(0, 0, 0, 0.06),
+                0 0 40px var(--ai-glow-color, rgba(115,100,255,0.03));
+  }
+}
+#ai-sort-wrapper {
+  animation: ai-panel-shadow-lumen 8s var(--ai-ease-silk-wave, ease) infinite;
 }

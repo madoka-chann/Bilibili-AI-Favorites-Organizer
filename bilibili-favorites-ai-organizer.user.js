@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.5.8
+// @version      1.5.9
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -4365,6 +4365,9 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'lotus', label: '莲' },
                 { id: 'amber-mist', label: '琥珀雾' },
                 { id: 'frozen-lake', label: '冰湖' },
+                { id: 'winter-pine', label: '冬松' },
+                { id: 'clay', label: '陶土' },
+                { id: 'silver-rain', label: '银雨' },
                 { id: 'custom', label: '自定义' }
             ];
 
@@ -4687,6 +4690,167 @@ ${topUps.length > 0 ? `<div class="section">
             const refract = document.createElement('div');
             refract.className = 'ai-refraction-layer';
             panel.insertBefore(refract, panel.children[2]);
+        })();
+
+        // === Velvet Lumen Drift Canvas v0.2.8 — 流光漂画布 ===
+        // Dandelion-seed-like luminous particles drifting with silk threads
+        (() => {
+            const driftWrap = document.createElement('div');
+            driftWrap.className = 'ai-lumen-drift-canvas';
+            const canvas = document.createElement('canvas');
+            driftWrap.appendChild(canvas);
+            panel.insertBefore(driftWrap, panel.firstChild);
+
+            let animId = null;
+            let time = 0;
+            let mouseX = -1, mouseY = -1;
+
+            const resize = () => {
+                const r = panel.getBoundingClientRect();
+                canvas.width = Math.round(r.width * 0.4);
+                canvas.height = Math.round(r.height * 0.4);
+            };
+
+            const getColors = () => {
+                const cs = getComputedStyle(document.documentElement);
+                return [
+                    cs.getPropertyValue('--ai-aurora-1').trim() || '#7364FF',
+                    cs.getPropertyValue('--ai-aurora-2').trim() || '#FF6B9D',
+                    cs.getPropertyValue('--ai-aurora-3').trim() || '#9B59F6',
+                    cs.getPropertyValue('--ai-aurora-5').trim() || '#20E3B2'
+                ];
+            };
+
+            const hexToRgb = (hex) => {
+                hex = hex.replace('#', '');
+                if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+                const n = parseInt(hex, 16);
+                return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+            };
+
+            // Lumen motes — dandelion-seed particles
+            const MOTE_COUNT = 18;
+            const motes = [];
+            const initMotes = (w, h) => {
+                motes.length = 0;
+                for (let i = 0; i < MOTE_COUNT; i++) {
+                    motes.push({
+                        x: Math.random() * w,
+                        y: Math.random() * h,
+                        vx: (Math.random() - 0.5) * 0.3,
+                        vy: -0.15 - Math.random() * 0.25,
+                        size: 1.2 + Math.random() * 2.5,
+                        phase: Math.random() * Math.PI * 2,
+                        colorIdx: i % 4,
+                        opacity: 0.3 + Math.random() * 0.5,
+                        wobbleAmp: 0.3 + Math.random() * 0.6,
+                        wobbleFreq: 0.8 + Math.random() * 1.2
+                    });
+                }
+            };
+
+            panel.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                mouseX = (e.clientX - rect.left) * (canvas.width / rect.width);
+                mouseY = (e.clientY - rect.top) * (canvas.height / rect.height);
+            });
+            panel.addEventListener('mouseleave', () => { mouseX = -1; mouseY = -1; });
+
+            const render = () => {
+                const ctx = canvas.getContext('2d');
+                if (!ctx || !canvas.width) { animId = requestAnimationFrame(render); return; }
+                const w = canvas.width, h = canvas.height;
+                ctx.clearRect(0, 0, w, h);
+                time += 0.006;
+
+                const colors = getColors();
+
+                // Update and draw motes
+                for (let i = 0; i < motes.length; i++) {
+                    const m = motes[i];
+                    // Gentle drift with sine wobble
+                    m.x += m.vx + Math.sin(time * m.wobbleFreq + m.phase) * m.wobbleAmp * 0.3;
+                    m.y += m.vy + Math.cos(time * m.wobbleFreq * 0.7 + m.phase) * 0.1;
+
+                    // Mouse magnetic repulsion
+                    if (mouseX >= 0) {
+                        const dx = m.x - mouseX;
+                        const dy = m.y - mouseY;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 50 && dist > 0) {
+                            const force = (50 - dist) / 50 * 0.8;
+                            m.x += (dx / dist) * force;
+                            m.y += (dy / dist) * force;
+                        }
+                    }
+
+                    // Wrap around
+                    if (m.y < -10) { m.y = h + 10; m.x = Math.random() * w; }
+                    if (m.x < -10) m.x = w + 10;
+                    if (m.x > w + 10) m.x = -10;
+
+                    const rgb = hexToRgb(colors[m.colorIdx]);
+                    const pulseOpacity = m.opacity * (0.6 + Math.sin(time * 1.5 + m.phase) * 0.4);
+
+                    // Glow halo
+                    const grad = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, m.size * 4);
+                    grad.addColorStop(0, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${pulseOpacity * 0.4})`);
+                    grad.addColorStop(0.4, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${pulseOpacity * 0.15})`);
+                    grad.addColorStop(1, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0)`);
+                    ctx.beginPath();
+                    ctx.arc(m.x, m.y, m.size * 4, 0, Math.PI * 2);
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+
+                    // Core dot
+                    ctx.beginPath();
+                    ctx.arc(m.x, m.y, m.size * 0.6, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${pulseOpacity * 0.8})`;
+                    ctx.fill();
+                }
+
+                // Draw silk threads between nearby motes
+                ctx.lineWidth = 0.4;
+                for (let i = 0; i < motes.length; i++) {
+                    for (let j = i + 1; j < motes.length; j++) {
+                        const dx = motes[i].x - motes[j].x;
+                        const dy = motes[i].y - motes[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 60) {
+                            const alpha = (1 - dist / 60) * 0.18;
+                            const rgb = hexToRgb(colors[motes[i].colorIdx]);
+                            ctx.beginPath();
+                            ctx.moveTo(motes[i].x, motes[i].y);
+                            // Curved thread with slight bend
+                            const mx = (motes[i].x + motes[j].x) / 2 + Math.sin(time + i) * 3;
+                            const my = (motes[i].y + motes[j].y) / 2 + Math.cos(time + j) * 3;
+                            ctx.quadraticCurveTo(mx, my, motes[j].x, motes[j].y);
+                            ctx.strokeStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${alpha})`;
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                animId = requestAnimationFrame(render);
+            };
+
+            const startDrift = () => {
+                resize();
+                if (canvas.width > 0 && canvas.height > 0 && motes.length === 0) {
+                    initMotes(canvas.width, canvas.height);
+                }
+                if (!animId) render();
+            };
+            const stopDrift = () => { if (animId) { cancelAnimationFrame(animId); animId = null; } };
+
+            const obs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startDrift();
+                else stopDrift();
+            });
+            obs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startDrift();
+
+            window.addEventListener('resize', () => { if (panel.style.display !== 'none') resize(); });
         })();
 
         // === Phantom Silk v0.0.9 — Morphic Flow Canvas 形态流体画布 ===
