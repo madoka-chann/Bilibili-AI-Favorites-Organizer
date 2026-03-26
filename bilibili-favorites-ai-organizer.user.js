@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.5.2
+// @version      1.5.3
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -4348,6 +4348,8 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'bamboo', label: '竹韵' },
                 { id: 'fossil', label: '化石' },
                 { id: 'rainstorm', label: '骤雨' },
+                { id: 'sumi', label: '墨韵' },
+                { id: 'moonstone', label: '月石' },
                 { id: 'custom', label: '自定义' }
             ];
 
@@ -6406,6 +6408,227 @@ ${topUps.length > 0 ? `<div class="section">
             laObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startLA();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') laResize(); });
+        })();
+
+        // === Velvet Drift v0.2.2 — Nebula Ink Flow Canvas 星墨流韵画布 ===
+        (() => {
+            const nfWrap = document.createElement('div');
+            nfWrap.className = 'ai-nebula-flow-canvas';
+            const nfCvs = document.createElement('canvas');
+            nfWrap.appendChild(nfCvs);
+            panel.insertBefore(nfWrap, panel.firstChild);
+
+            let nfRaf = null;
+            let nfTime = 0;
+
+            // Metaball ink blobs with organic motion
+            const BLOB_COUNT = 7;
+            const blobs = [];
+            for (let i = 0; i < BLOB_COUNT; i++) {
+                blobs.push({
+                    x: Math.random(), y: Math.random(),
+                    vx: (Math.random() - 0.5) * 0.0008,
+                    vy: (Math.random() - 0.5) * 0.0006,
+                    phase: Math.random() * Math.PI * 2,
+                    driftX: 0.12 + Math.random() * 0.18,
+                    driftY: 0.10 + Math.random() * 0.15,
+                    radius: 0.08 + Math.random() * 0.12,
+                    breathSpeed: 0.2 + Math.random() * 0.35,
+                    breathPhase: Math.random() * Math.PI * 2
+                });
+            }
+
+            function nfResize() {
+                const rect = panel.getBoundingClientRect();
+                nfCvs.width = Math.round(rect.width * 0.3);
+                nfCvs.height = Math.round(rect.height * 0.3);
+                nfCvs.style.width = rect.width + 'px';
+                nfCvs.style.height = rect.height + 'px';
+            }
+
+            function getNFColors() {
+                const s = getComputedStyle(document.documentElement);
+                return [
+                    s.getPropertyValue('--ai-aurora-1').trim() || '#7364FF',
+                    s.getPropertyValue('--ai-aurora-3').trim() || '#9B59F6',
+                    s.getPropertyValue('--ai-aurora-5').trim() || '#20E3B2',
+                    s.getPropertyValue('--ai-aurora-2').trim() || '#FF6B9D',
+                ];
+            }
+
+            const hexRgb = (hex) => {
+                hex = hex.replace('#', '');
+                if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+                const n = parseInt(hex, 16);
+                return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+            };
+
+            function renderNF() {
+                const ctx = nfCvs.getContext('2d');
+                if (!ctx || !nfCvs.width) { nfRaf = requestAnimationFrame(renderNF); return; }
+                const w = nfCvs.width, h = nfCvs.height;
+                nfTime += 0.003;
+
+                // Fade trail for smooth ink motion
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.fillStyle = 'rgba(0,0,0,0.035)';
+                ctx.fillRect(0, 0, w, h);
+                ctx.globalCompositeOperation = 'source-over';
+
+                const colors = getNFColors();
+
+                blobs.forEach((blob, i) => {
+                    // Lissajous-like organic drift
+                    const ox = blob.x + Math.sin(nfTime * blob.driftX + blob.phase) * 0.28
+                                       + Math.sin(nfTime * blob.driftX * 0.4 + blob.phase * 1.7) * 0.08;
+                    const oy = blob.y + Math.cos(nfTime * blob.driftY + blob.phase * 0.6) * 0.25
+                                       + Math.cos(nfTime * blob.driftY * 0.3 + blob.phase * 2.1) * 0.06;
+
+                    const breath = 1 + Math.sin(nfTime * blob.breathSpeed + blob.breathPhase) * 0.3
+                                     + Math.sin(nfTime * blob.breathSpeed * 0.6 + blob.breathPhase * 1.5) * 0.1;
+                    const r = blob.radius * breath * Math.min(w, h);
+
+                    const cx = ((ox % 1 + 1) % 1) * w;
+                    const cy = ((oy % 1 + 1) % 1) * h;
+
+                    const rgb = hexRgb(colors[i % colors.length]);
+                    const alpha = 0.06 + Math.sin(nfTime * blob.breathSpeed * 0.5 + blob.breathPhase) * 0.025;
+
+                    const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+                    grad.addColorStop(0, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${(alpha * 1.8).toFixed(3)})`);
+                    grad.addColorStop(0.35, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${(alpha * 1.0).toFixed(3)})`);
+                    grad.addColorStop(0.7, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${(alpha * 0.3).toFixed(3)})`);
+                    grad.addColorStop(1, 'transparent');
+                    ctx.fillStyle = grad;
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+
+                nfRaf = requestAnimationFrame(renderNF);
+            }
+
+            const startNF = () => { nfResize(); if (!nfRaf) renderNF(); };
+            const stopNF = () => { if (nfRaf) { cancelAnimationFrame(nfRaf); nfRaf = null; } };
+
+            const nfObs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startNF();
+                else stopNF();
+            });
+            nfObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startNF();
+            window.addEventListener('resize', () => { if (panel.style.display !== 'none') nfResize(); });
+        })();
+
+        // === Velvet Drift v0.2.2 — Velvet Sine Wave Canvas 天鹅绒正弦波画布 ===
+        (() => {
+            const swWrap = document.createElement('div');
+            swWrap.className = 'ai-sine-wave-canvas';
+            const swCvs = document.createElement('canvas');
+            swWrap.appendChild(swCvs);
+            panel.insertBefore(swWrap, panel.firstChild);
+
+            let swRaf = null;
+            let swTime = 0;
+
+            const WAVE_COUNT = 5;
+            const waves = [];
+            for (let i = 0; i < WAVE_COUNT; i++) {
+                waves.push({
+                    yBase: 0.15 + i * 0.18,
+                    amplitude: 0.04 + Math.random() * 0.06,
+                    frequency: 1.0 + Math.random() * 1.5,
+                    speed: 0.4 + Math.random() * 0.5,
+                    phase: Math.random() * Math.PI * 2,
+                    thickness: 1.0 + Math.random() * 1.5
+                });
+            }
+
+            function swResize() {
+                const rect = panel.getBoundingClientRect();
+                swCvs.width = Math.round(rect.width * 0.4);
+                swCvs.height = Math.round(rect.height * 0.4);
+                swCvs.style.width = rect.width + 'px';
+                swCvs.style.height = rect.height + 'px';
+            }
+
+            function getSWColors() {
+                const s = getComputedStyle(document.documentElement);
+                return [
+                    s.getPropertyValue('--ai-aurora-1').trim() || '#7364FF',
+                    s.getPropertyValue('--ai-aurora-3').trim() || '#9B59F6',
+                    s.getPropertyValue('--ai-aurora-5').trim() || '#20E3B2',
+                    s.getPropertyValue('--ai-aurora-2').trim() || '#FF6B9D',
+                    s.getPropertyValue('--ai-aurora-4').trim() || '#00D4AA',
+                ];
+            }
+
+            const hexRgb = (hex) => {
+                hex = hex.replace('#', '');
+                if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+                const n = parseInt(hex, 16);
+                return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+            };
+
+            function renderSW() {
+                const ctx = swCvs.getContext('2d');
+                if (!ctx || !swCvs.width) { swRaf = requestAnimationFrame(renderSW); return; }
+                const w = swCvs.width, h = swCvs.height;
+                ctx.clearRect(0, 0, w, h);
+                swTime += 0.005;
+
+                const colors = getSWColors();
+
+                waves.forEach((wave, idx) => {
+                    const rgb = hexRgb(colors[idx % colors.length]);
+                    const yDrift = Math.sin(swTime * 0.15 + wave.phase) * 0.03;
+                    const baseY = (wave.yBase + yDrift) * h;
+
+                    // Main wave with 3-harmonic overlay
+                    ctx.beginPath();
+                    ctx.strokeStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]}, 0.14)`;
+                    ctx.lineWidth = wave.thickness;
+                    ctx.lineCap = 'round';
+
+                    for (let x = 0; x <= w; x += 2) {
+                        const nx = x / w;
+                        const y = baseY
+                            + Math.sin(nx * wave.frequency * Math.PI * 2 + swTime * wave.speed + wave.phase) * wave.amplitude * h
+                            + Math.sin(nx * wave.frequency * Math.PI * 3.7 - swTime * wave.speed * 0.6 + wave.phase * 2.1) * wave.amplitude * h * 0.25
+                            + Math.cos(nx * wave.frequency * Math.PI * 1.3 + swTime * wave.speed * 0.35) * wave.amplitude * h * 0.12;
+                        if (x === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.stroke();
+
+                    // Soft glow echo
+                    ctx.beginPath();
+                    ctx.strokeStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]}, 0.04)`;
+                    ctx.lineWidth = wave.thickness * 5;
+                    for (let x = 0; x <= w; x += 3) {
+                        const nx = x / w;
+                        const y = baseY
+                            + Math.sin(nx * wave.frequency * Math.PI * 2 + swTime * wave.speed + wave.phase) * wave.amplitude * h
+                            + Math.sin(nx * wave.frequency * Math.PI * 3.7 - swTime * wave.speed * 0.6 + wave.phase * 2.1) * wave.amplitude * h * 0.25;
+                        if (x === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.stroke();
+                });
+
+                swRaf = requestAnimationFrame(renderSW);
+            }
+
+            const startSW = () => { swResize(); if (!swRaf) renderSW(); };
+            const stopSW = () => { if (swRaf) { cancelAnimationFrame(swRaf); swRaf = null; } };
+
+            const swObs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startSW();
+                else stopSW();
+            });
+            swObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startSW();
+            window.addEventListener('resize', () => { if (panel.style.display !== 'none') swResize(); });
         })();
 
         // === Velvet Ripple v0.1.8 — Header Particle Drift 头部粒子漂流 ===

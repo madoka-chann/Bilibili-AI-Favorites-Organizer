@@ -1,6 +1,6 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v0.2.1
-   Velvet Mirage · 天鹅绒幻境 · Refined Glass Morphism
+   B站 AI 收藏夹整理助理 — 完整样式表 v0.2.2
+   Velvet Drift · 天鹅绒漂流 · Refined Glass Morphism
    Indigo-Nebula 双色系统 · Restrained Aurora Palette
    Velvet Dynamics 24.0 · Ultra-Smooth Spring Micro-interactions
    Stellar Abyss Dark Theme · Living Glass Surfaces
@@ -25,9 +25,10 @@
    Velvet Pulse · Pulse Web Canvas · Jelly Physics · Opal & Driftwood Themes
    Velvet Nebula · Constellation Canvas · Living Border · Aurora & Bamboo Themes
    Velvet Mirage · Liquid Aurora Canvas · Silk Morph · Fossil & Rainstorm Themes
+   Velvet Drift · Nebula Ink Flow · Sine Wave Canvas · Sumi & Moonstone Themes
    ================================================================ */
 
-/* === 1. CSS 变量 (双主题系统) v0.2.1 === */
+/* === 1. CSS 变量 (双主题系统) v0.2.2 === */
 
 /* 亮色主题（默认） — 星潮·晨曦琉璃 Astral Glasstide */
 :root, [data-theme="light"] {
@@ -15725,4 +15726,592 @@ input[type="checkbox"]:active {
 #ai-sort-wrapper::before {
   animation: ai-border-flow 12s ease-in-out infinite,
              ai-border-glow-breathe 6s ease-in-out infinite !important;
+}
+
+/* ================================================================
+   Velvet Drift v0.2.2 — 天鹅绒漂流 · Velvet Dynamics 25.0
+   Nebula Ink Flow + Sine Wave Canvas + Sumi & Moonstone Themes
+   Enhanced Transition Smoothness + Living Float Button
+   ================================================================ */
+
+/* === 630. Nebula Ink Flow Canvas 星墨流韵画布 v0.2.2 === */
+.ai-nebula-flow-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+  opacity: 0.45;
+  mix-blend-mode: soft-light;
+  transition: opacity 0.8s var(--ai-ease-silk, ease);
+}
+.ai-nebula-flow-canvas canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  image-rendering: auto;
+}
+[data-theme="dark"] .ai-nebula-flow-canvas {
+  opacity: 0.30;
+  mix-blend-mode: screen;
+}
+
+/* === 631. Velvet Sine Wave Canvas 天鹅绒正弦波画布 v0.2.2 === */
+.ai-sine-wave-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+  opacity: 0.40;
+  mix-blend-mode: soft-light;
+  transition: opacity 0.8s var(--ai-ease-silk, ease);
+}
+.ai-sine-wave-canvas canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  image-rendering: auto;
+}
+[data-theme="dark"] .ai-sine-wave-canvas {
+  opacity: 0.28;
+  mix-blend-mode: screen;
+}
+
+/* === 632. Velvet Dynamics 25.0 — Enhanced Spring Curves v0.2.2 === */
+:root {
+  --ai-spring-cotton: cubic-bezier(0.14, 1.36, 0.30, 1.00);
+  --ai-ease-cashmere: cubic-bezier(0.04, 0.86, 0.10, 1.01);
+  --ai-spring-feather: cubic-bezier(0.18, 1.52, 0.34, 0.97);
+  --ai-ease-morning: cubic-bezier(0.06, 0.90, 0.12, 1.00);
+  --ai-spring-jello: cubic-bezier(0.22, 1.68, 0.38, 0.95);
+  --ai-ease-breeze: cubic-bezier(0.08, 0.82, 0.16, 1.02);
+}
+
+/* === 633. Float Button Living Jellyfish v0.2.2 — organic idle morphing === */
+@keyframes ai-float-jellyfish-morph {
+  0%, 100% {
+    border-radius: 50%;
+    transform: scale(1) rotate(0deg);
+  }
+  8% {
+    border-radius: 46% 54% 52% 48% / 49% 51% 49% 51%;
+    transform: scale(1.02, 0.98) rotate(0.5deg);
+  }
+  16% {
+    border-radius: 52% 48% 47% 53% / 53% 47% 52% 48%;
+    transform: scale(0.98, 1.02) rotate(-0.3deg);
+  }
+  24% {
+    border-radius: 48% 52% 53% 47% / 50% 50% 50% 50%;
+    transform: scale(1.01, 0.99) rotate(0.4deg);
+  }
+  33% {
+    border-radius: 53% 47% 49% 51% / 48% 52% 48% 52%;
+    transform: scale(0.99, 1.01) rotate(-0.6deg);
+  }
+  42% {
+    border-radius: 47% 53% 51% 49% / 52% 48% 53% 47%;
+    transform: scale(1.02, 0.98) rotate(0.2deg);
+  }
+  50% {
+    border-radius: 51% 49% 48% 52% / 49% 51% 47% 53%;
+    transform: scale(0.98, 1.03) rotate(-0.4deg);
+  }
+  58% {
+    border-radius: 49% 51% 53% 47% / 51% 49% 52% 48%;
+    transform: scale(1.01, 0.99) rotate(0.5deg);
+  }
+  67% {
+    border-radius: 52% 48% 48% 52% / 47% 53% 49% 51%;
+    transform: scale(0.99, 1.01) rotate(-0.2deg);
+  }
+  75% {
+    border-radius: 48% 52% 52% 48% / 52% 48% 51% 49%;
+    transform: scale(1.02, 0.98) rotate(0.3deg);
+  }
+  83% {
+    border-radius: 51% 49% 49% 51% / 48% 52% 50% 50%;
+    transform: scale(0.99, 1.02) rotate(-0.5deg);
+  }
+  92% {
+    border-radius: 49% 51% 50% 50% / 51% 49% 50% 50%;
+    transform: scale(1.01, 0.99) rotate(0.1deg);
+  }
+}
+
+#ai-float-btn {
+  animation: ai-float-gradient-shift 16s ease infinite,
+             ai-float-jellyfish-morph 18s var(--ai-ease-cashmere, ease) infinite,
+             ai-float-breath-pulse 4s ease-in-out infinite !important;
+}
+
+/* === 634. Enhanced Hover Transitions v0.2.2 — silkier interactions === */
+
+/* All interactive elements get smooth base transition */
+.ai-btn,
+.ai-btn-tool,
+.ai-filter-btn,
+.ai-modal-btn {
+  transition: all 0.45s var(--ai-spring-cotton, ease),
+              box-shadow 0.5s var(--ai-ease-cashmere, ease),
+              background 0.35s var(--ai-ease-morning, ease) !important;
+}
+
+/* Button press — softer mochi squish with faster recovery */
+.ai-btn:active,
+.ai-btn-tool:active,
+.ai-filter-btn:active {
+  transform: scale(0.94, 0.97) !important;
+  transition-duration: 0.08s !important;
+  transition-timing-function: var(--ai-spring-jello) !important;
+}
+
+/* Button hover lift — floatier with subtle tilt */
+.ai-btn-tool:hover {
+  transform: translateY(-2.5px) scale(1.035) !important;
+  transition: all 0.5s var(--ai-spring-cotton) !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.05), 0 2px 6px rgba(0,0,0,0.03) !important;
+}
+
+/* Category row — smoother glide with spring return */
+.ai-cat-row {
+  transition: all 0.5s var(--ai-ease-cashmere, ease),
+              background 0.4s ease,
+              box-shadow 0.5s ease !important;
+}
+.ai-cat-row:hover {
+  transform: translateX(3px) !important;
+  transition: all 0.45s var(--ai-spring-cotton, ease) !important;
+}
+
+/* Input focus glow — expanded with breeze ease */
+.ai-input:focus,
+.ai-select:focus {
+  border-color: var(--ai-primary) !important;
+  box-shadow: 0 0 0 3px rgba(var(--ai-pulse-rgb, 115, 100, 255), 0.08),
+              0 2px 10px rgba(var(--ai-pulse-rgb, 115, 100, 255), 0.05) !important;
+  transition: all 0.45s var(--ai-spring-cotton) !important;
+}
+
+/* Header buttons — bouncy scale with smooth return */
+.ai-header-btn {
+  transition: all 0.45s var(--ai-spring-cotton, ease) !important;
+}
+.ai-header-btn:hover {
+  transform: scale(1.12) translateY(-1px) !important;
+  transition: all 0.35s var(--ai-spring-jello, ease) !important;
+}
+.ai-header-btn:active {
+  transform: scale(0.90) !important;
+  transition-duration: 0.06s !important;
+}
+
+/* Group header — featherweight hover */
+.ai-group-header {
+  transition: all 0.45s var(--ai-ease-cashmere, ease) !important;
+}
+.ai-group-header:hover {
+  transform: translateX(2px) !important;
+  transition: all 0.4s var(--ai-spring-cotton, ease) !important;
+}
+
+/* === 635. Enhanced Panel Open/Close v0.2.2 — 4-phase silk spring === */
+@keyframes ai-panel-drift-open {
+  0% {
+    transform: scale(0.86, 0.91) translateY(16px);
+    opacity: 0;
+    filter: blur(8px);
+    border-radius: 42px;
+  }
+  20% {
+    transform: scale(1.025, 0.97) translateY(-4px);
+    opacity: 0.8;
+    filter: blur(2px);
+    border-radius: 32px;
+  }
+  45% {
+    transform: scale(0.992, 1.012) translateY(1.5px);
+    opacity: 0.96;
+    filter: blur(0.5px);
+    border-radius: 29px;
+  }
+  65% {
+    transform: scale(1.004, 0.997) translateY(-0.5px);
+    opacity: 1;
+    filter: blur(0);
+    border-radius: 28px;
+  }
+  82% {
+    transform: scale(0.999, 1.002) translateY(0.2px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    filter: blur(0);
+    border-radius: 28px;
+  }
+}
+
+@keyframes ai-panel-drift-close {
+  0% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    filter: blur(0);
+  }
+  25% {
+    transform: scale(1.015, 0.98) translateY(-3px);
+    opacity: 0.92;
+  }
+  100% {
+    transform: scale(0.84, 0.93) translateY(20px);
+    opacity: 0;
+    filter: blur(10px);
+    border-radius: 44px;
+  }
+}
+
+/* === 636. Enhanced Modal Entrance v0.2.2 — jelly spring === */
+@keyframes ai-modal-drift-enter {
+  0% {
+    transform: scale(0.88, 0.93) translateY(28px);
+    opacity: 0;
+    filter: blur(10px);
+  }
+  22% {
+    transform: scale(1.018, 0.982) translateY(-5px);
+    opacity: 0.85;
+    filter: blur(2px);
+  }
+  44% {
+    transform: scale(0.995, 1.008) translateY(2px);
+    opacity: 0.97;
+    filter: blur(0);
+  }
+  62% {
+    transform: scale(1.003, 0.998) translateY(-0.8px);
+    opacity: 1;
+  }
+  80% {
+    transform: scale(0.999, 1.001) translateY(0.2px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* === 637. Enhanced Toast Entrance v0.2.2 — springier slide === */
+@keyframes ai-toast-drift-in {
+  0% {
+    transform: translateX(48px) scale(0.90, 0.95);
+    opacity: 0;
+    filter: blur(5px);
+  }
+  28% {
+    transform: translateX(-5px) scale(1.018, 0.988);
+    opacity: 0.92;
+    filter: blur(0.5px);
+  }
+  50% {
+    transform: translateX(2px) scale(0.997, 1.004);
+    opacity: 1;
+    filter: blur(0);
+  }
+  70% {
+    transform: translateX(-0.8px) scale(1.002, 0.999);
+  }
+  85% {
+    transform: translateX(0.3px) scale(0.999, 1.001);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes ai-toast-drift-out {
+  0% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(55px) scale(0.88, 0.94);
+    opacity: 0;
+    filter: blur(4px);
+  }
+}
+
+.ai-toast {
+  animation: ai-toast-drift-in 0.6s var(--ai-spring-cotton, ease) forwards !important;
+}
+.ai-toast.removing {
+  animation: ai-toast-drift-out 0.35s var(--ai-ease-cashmere, ease) forwards !important;
+}
+
+/* === 638. Enhanced Category Stagger v0.2.2 — spring cascade with micro-tilt === */
+@keyframes ai-cat-drift-stagger {
+  0% {
+    transform: translateY(10px) translateX(-4px) scale(0.96) rotate(-0.3deg);
+    opacity: 0;
+    filter: blur(2px);
+  }
+  30% {
+    transform: translateY(-1.5px) translateX(1px) scale(1.01) rotate(0.1deg);
+    opacity: 0.95;
+    filter: blur(0);
+  }
+  55% {
+    transform: translateY(0.5px) translateX(-0.3px) scale(0.998) rotate(-0.05deg);
+    opacity: 1;
+  }
+  75% {
+    transform: translateY(-0.2px) scale(1.001);
+  }
+  100% {
+    transform: translateY(0) translateX(0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.ai-cat-block {
+  animation: ai-cat-drift-stagger 0.55s var(--ai-spring-cotton, ease) both !important;
+  animation-delay: calc(var(--i, 0) * 0.035s) !important;
+}
+
+/* === 639. Enhanced Log Entry Slide v0.2.2 === */
+@keyframes ai-log-drift-slide {
+  0% {
+    transform: translateY(-8px) scale(0.96, 0.98);
+    opacity: 0;
+    filter: blur(2px);
+  }
+  35% {
+    transform: translateY(1.5px) scale(1.006, 0.997);
+    opacity: 0.95;
+    filter: blur(0);
+  }
+  60% {
+    transform: translateY(-0.5px) scale(0.999, 1.001);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.ai-status-log > div {
+  animation: ai-log-drift-slide 0.45s var(--ai-spring-cotton, ease) !important;
+}
+
+/* === 640. Enhanced Checkbox Bounce v0.2.2 — mochi physics === */
+@keyframes ai-checkbox-drift-bounce {
+  0% { transform: scale(1); }
+  15% { transform: scale(0.80, 1.14); }
+  35% { transform: scale(1.16, 0.86); }
+  50% { transform: scale(0.95, 1.06); }
+  65% { transform: scale(1.04, 0.97); }
+  78% { transform: scale(0.99, 1.02); }
+  90% { transform: scale(1.01, 0.99); }
+  100% { transform: scale(1); }
+}
+
+.ai-cat-row input[type="checkbox"]:checked {
+  animation: ai-checkbox-drift-bounce 0.55s var(--ai-spring-feather, ease) !important;
+}
+
+/* === 641. Accent Dot Enhanced Hover v0.2.2 — jello bounce === */
+.ai-accent-dot {
+  transition: all 0.45s var(--ai-spring-cotton, ease) !important;
+}
+.ai-accent-dot:hover {
+  transform: scale(1.22) !important;
+  transition: all 0.35s var(--ai-spring-jello, ease) !important;
+}
+.ai-accent-dot:active {
+  transform: scale(0.88) !important;
+  transition-duration: 0.06s !important;
+}
+.ai-accent-dot.active {
+  transform: scale(1.16) !important;
+  box-shadow: 0 0 0 3px var(--ai-bg, #fff), 0 0 0 5px var(--ai-primary, #7364FF) !important;
+}
+
+/* === 642. Progress Bar Silk Flow v0.2.2 — even smoother === */
+#ai-progress-bar {
+  transition: width 0.8s var(--ai-ease-cashmere, ease) !important;
+}
+
+/* === 643. Settings Reveal v0.2.2 — cascading silk unfold === */
+@keyframes ai-settings-drift-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scaleY(0.94);
+    filter: blur(3px);
+  }
+  35% {
+    opacity: 0.9;
+    transform: translateY(1.5px) scaleY(1.006);
+    filter: blur(0);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-0.4px) scaleY(0.999);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+.ai-settings[style*="display: block"],
+.ai-settings[style*="display:block"] {
+  animation: ai-settings-drift-reveal 0.5s var(--ai-spring-cotton, ease) !important;
+  transform-origin: top center;
+}
+
+/* === 644. Sumi (墨韵) Theme v0.2.2 === */
+[data-accent="sumi"] {
+  --ai-primary: #4A4A4A;
+  --ai-primary-dark: #2E2E2E;
+  --ai-primary-light: #787878;
+  --ai-primary-bg: rgba(74, 74, 74, 0.05);
+  --ai-primary-shadow: rgba(74, 74, 74, 0.18);
+  --ai-aurora-1: #4A4A4A;
+  --ai-aurora-2: #6B6B6B;
+  --ai-aurora-3: #3A3A3A;
+  --ai-aurora-4: #5C5C5C;
+  --ai-aurora-5: #7A7A7A;
+  --ai-aurora-6: #505050;
+  --ai-aurora-7: #686868;
+  --ai-aurora-8: #424242;
+  --ai-header-gradient: linear-gradient(135deg, #3A3A3A, #5A5A5A, #3A3A3A);
+  --ai-float-gradient: linear-gradient(135deg, #4A4A4A, #6A6A6A, #5A5A5A, #4A4A4A);
+  --ai-neon-glow: 0 0 14px rgba(74, 74, 74, 0.16),
+                  0 0 28px rgba(90, 90, 90, 0.06),
+                  0 0 48px rgba(74, 74, 74, 0.02);
+  --ai-interaction-glow: rgba(74, 74, 74, 0.06);
+  --ai-glow-color: rgba(74, 74, 74, 0.04);
+}
+.ai-accent-dot[data-accent="sumi"] { background: linear-gradient(135deg, #4A4A4A, #787878); }
+[data-theme="dark"][data-accent="sumi"] #ai-float-btn {
+  --ai-float-gradient: linear-gradient(135deg, #5A5A5A, #8A8A8A, #6A6A6A, #5A5A5A);
+}
+[data-theme="dark"][data-accent="sumi"] .ai-nebula-particle {
+  background: radial-gradient(circle, rgba(74, 74, 74, 0.28), transparent 70%);
+}
+
+/* === 645. Moonstone (月石) Theme v0.2.2 === */
+[data-accent="moonstone"] {
+  --ai-primary: #7B8FA8;
+  --ai-primary-dark: #5A6F88;
+  --ai-primary-light: #A8B8C8;
+  --ai-primary-bg: rgba(123, 143, 168, 0.06);
+  --ai-primary-shadow: rgba(123, 143, 168, 0.20);
+  --ai-aurora-1: #7B8FA8;
+  --ai-aurora-2: #95A5B8;
+  --ai-aurora-3: #6A7E98;
+  --ai-aurora-4: #8898AA;
+  --ai-aurora-5: #A0B0C0;
+  --ai-aurora-6: #708498;
+  --ai-aurora-7: #9AAAB8;
+  --ai-aurora-8: #607488;
+  --ai-header-gradient: linear-gradient(135deg, #6A7E98, #95A5B8, #6A7E98);
+  --ai-float-gradient: linear-gradient(135deg, #7B8FA8, #A0B0C0, #8898AA, #7B8FA8);
+  --ai-neon-glow: 0 0 16px rgba(123, 143, 168, 0.20),
+                  0 0 32px rgba(149, 165, 184, 0.08),
+                  0 0 52px rgba(123, 143, 168, 0.03);
+  --ai-interaction-glow: rgba(123, 143, 168, 0.07);
+  --ai-glow-color: rgba(123, 143, 168, 0.04);
+}
+.ai-accent-dot[data-accent="moonstone"] { background: linear-gradient(135deg, #7B8FA8, #A8B8C8); }
+[data-theme="dark"][data-accent="moonstone"] #ai-float-btn {
+  --ai-float-gradient: linear-gradient(135deg, #8A9EB8, #B0C0D0, #9AAAB8, #8A9EB8);
+}
+[data-theme="dark"][data-accent="moonstone"] .ai-nebula-particle {
+  background: radial-gradient(circle, rgba(123, 143, 168, 0.28), transparent 70%);
+}
+
+/* === 646. Global Transition Smoothing v0.2.2 — velvet dynamics 25.0 === */
+#ai-sort-wrapper *,
+.ai-modal *,
+.ai-toast * {
+  transition-timing-function: var(--ai-ease-cashmere, ease);
+}
+
+/* === 647. Canvas Reduced Motion & Mobile v0.2.2 === */
+@media (prefers-reduced-motion: reduce) {
+  .ai-nebula-flow-canvas,
+  .ai-sine-wave-canvas {
+    display: none !important;
+  }
+  #ai-float-btn {
+    animation: none !important;
+    border-radius: 50% !important;
+  }
+}
+@media (max-width: 500px) {
+  .ai-nebula-flow-canvas,
+  .ai-sine-wave-canvas {
+    display: none !important;
+  }
+}
+
+/* === 648. Enhanced Ambient Mesh Breathe v0.2.2 — smoother cycle === */
+@keyframes ai-ambient-drift-breathe {
+  0%, 100% {
+    background-position: 0% 50%, 100% 50%, 50% 50%;
+    opacity: 1;
+  }
+  20% {
+    background-position: 20% 60%, 80% 40%, 45% 55%;
+    opacity: 0.94;
+  }
+  40% {
+    background-position: 40% 70%, 60% 30%, 55% 65%;
+    opacity: 0.90;
+  }
+  60% {
+    background-position: 60% 40%, 40% 70%, 65% 35%;
+    opacity: 0.94;
+  }
+  80% {
+    background-position: 80% 55%, 20% 55%, 50% 45%;
+    opacity: 0.97;
+  }
+}
+
+#ai-sort-wrapper {
+  animation: ai-ambient-drift-breathe 24s ease-in-out infinite !important;
+  background-size: 200% 200%, 200% 200%, 200% 200% !important;
+}
+
+/* === 649. Enhanced Border Glow v0.2.2 — rhythmic pulse === */
+@keyframes ai-border-drift-breathe {
+  0%, 100% {
+    opacity: 0.45;
+    filter: blur(0px);
+  }
+  30% {
+    opacity: 0.65;
+    filter: blur(0.3px);
+  }
+  60% {
+    opacity: 0.8;
+    filter: blur(0.5px);
+  }
+  80% {
+    opacity: 0.55;
+    filter: blur(0.2px);
+  }
+}
+
+#ai-sort-wrapper::before {
+  animation: ai-border-flow 12s ease-in-out infinite,
+             ai-border-drift-breathe 8s ease-in-out infinite !important;
 }
