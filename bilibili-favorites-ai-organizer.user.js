@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.6.3
+// @version      1.6.4
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -4380,6 +4380,9 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'stone-moss', label: '苔石' },
                 { id: 'dried-rose', label: '干玫' },
                 { id: 'night-fog', label: '夜雾' },
+                { id: 'burnt-umber', label: '焦褐' },
+                { id: 'rain-glass', label: '雨玻' },
+                { id: 'ash-violet', label: '灰堇' },
                 { id: 'custom', label: '自定义' }
             ];
 
@@ -8155,6 +8158,241 @@ ${topUps.length > 0 ? `<div class="section">
             gossObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startGossamer();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') gossResize(); });
+        })();
+
+        // === Velvet Silk Tide v0.3.3 — 丝潮画布 Silk Tide Canvas ===
+        // Flowing tidal silk waves with depth layers, organic breathing, and mouse-reactive currents
+        (() => {
+            const tideWrap = document.createElement('div');
+            tideWrap.className = 'ai-silk-tide-canvas';
+            const tCanvas = document.createElement('canvas');
+            tideWrap.appendChild(tCanvas);
+            panel.insertBefore(tideWrap, panel.firstChild);
+
+            let tideRaf = null;
+            let tTime = 0;
+            let tMouseX = -1, tMouseY = -1;
+
+            // Silk wave layers — each with unique frequency/amplitude/phase
+            const WAVE_LAYERS = 5;
+            const waves = [];
+            for (let i = 0; i < WAVE_LAYERS; i++) {
+                waves.push({
+                    baseY: 0.2 + (i / WAVE_LAYERS) * 0.6,
+                    amplitude: 0.02 + Math.random() * 0.03,
+                    frequency: 0.8 + Math.random() * 1.2,
+                    speed: 0.3 + Math.random() * 0.5,
+                    phase: Math.random() * Math.PI * 2,
+                    width: 0.4 + Math.random() * 0.6,
+                    colorIdx: i % 3,
+                    breathPhase: Math.random() * Math.PI * 2,
+                    breathSpeed: 0.15 + Math.random() * 0.25,
+                    // Secondary harmonic for organic feel
+                    harmFreq: 1.5 + Math.random() * 2.0,
+                    harmAmp: 0.005 + Math.random() * 0.01,
+                });
+            }
+
+            // Floating luminous droplets that ride the waves
+            const DROP_COUNT = 10;
+            const droplets = [];
+            for (let i = 0; i < DROP_COUNT; i++) {
+                droplets.push({
+                    waveIdx: i % WAVE_LAYERS,
+                    posX: Math.random(), // 0-1 along wave
+                    speed: 0.0004 + Math.random() * 0.0008,
+                    size: 0.8 + Math.random() * 1.8,
+                    phase: Math.random() * Math.PI * 2,
+                    pulseSpeed: 0.3 + Math.random() * 0.6,
+                    colorIdx: i % 3,
+                    drift: (Math.random() - 0.5) * 0.0003,
+                });
+            }
+
+            const tideResize = () => {
+                const r = panel.getBoundingClientRect();
+                tCanvas.width = Math.round(r.width * 0.35);
+                tCanvas.height = Math.round(r.height * 0.35);
+            };
+
+            const getTideColors = () => {
+                const cs = getComputedStyle(document.documentElement);
+                return [
+                    cs.getPropertyValue('--ai-aurora-1').trim() || '#7364FF',
+                    cs.getPropertyValue('--ai-aurora-3').trim() || '#9B59F6',
+                    cs.getPropertyValue('--ai-aurora-5').trim() || '#20E3B2',
+                ];
+            };
+
+            const hexToRgbT = (hex) => {
+                hex = hex.replace('#', '');
+                if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+                const n = parseInt(hex, 16);
+                return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+            };
+
+            panel.addEventListener('mousemove', (e) => {
+                const rect = tCanvas.getBoundingClientRect();
+                if (rect.width > 0) {
+                    tMouseX = (e.clientX - rect.left) / rect.width;
+                    tMouseY = (e.clientY - rect.top) / rect.height;
+                }
+            });
+            panel.addEventListener('mouseleave', () => { tMouseX = -1; tMouseY = -1; });
+
+            const renderTide = () => {
+                const ctx = tCanvas.getContext('2d');
+                if (!ctx || !tCanvas.width) { tideRaf = requestAnimationFrame(renderTide); return; }
+                const w = tCanvas.width, h = tCanvas.height;
+                ctx.clearRect(0, 0, w, h);
+                tTime += 0.004;
+
+                const colors = getTideColors();
+                const rgbs = colors.map(hexToRgbT);
+
+                // Draw wave layers from back to front
+                for (let li = 0; li < waves.length; li++) {
+                    const wave = waves[li];
+                    const rgb = rgbs[wave.colorIdx];
+                    const breath = 1 + Math.sin(tTime * wave.breathSpeed + wave.breathPhase) * 0.3;
+                    const alpha = 0.06 + Math.sin(tTime * wave.breathSpeed * 0.7 + wave.breathPhase) * 0.03;
+
+                    ctx.beginPath();
+                    ctx.moveTo(0, h);
+
+                    // Build wave path with primary + harmonic
+                    const steps = Math.ceil(w / 2);
+                    for (let s = 0; s <= steps; s++) {
+                        const nx = s / steps;
+                        const px = nx * w;
+
+                        let waveY = wave.baseY;
+                        // Primary sine wave
+                        waveY += Math.sin(nx * Math.PI * 2 * wave.frequency + tTime * wave.speed + wave.phase) * wave.amplitude * breath;
+                        // Secondary harmonic for organic feel
+                        waveY += Math.sin(nx * Math.PI * 2 * wave.harmFreq + tTime * wave.speed * 0.7 + wave.phase * 1.3) * wave.harmAmp * breath;
+                        // Tertiary ultra-slow drift
+                        waveY += Math.cos(tTime * 0.15 + li * 0.8) * 0.008;
+
+                        // Mouse interaction — gentle push
+                        if (tMouseX >= 0) {
+                            const dx = nx - tMouseX;
+                            const dy = waveY - tMouseY;
+                            const dist = Math.sqrt(dx * dx + dy * dy);
+                            if (dist < 0.2) {
+                                const push = (0.2 - dist) / 0.2 * 0.015;
+                                waveY -= push * Math.sign(dy || 1);
+                            }
+                        }
+
+                        const py = waveY * h;
+                        if (s === 0) ctx.moveTo(0, py);
+                        else ctx.lineTo(px, py);
+                    }
+
+                    // Close path to bottom for fill
+                    ctx.lineTo(w, h);
+                    ctx.lineTo(0, h);
+                    ctx.closePath();
+
+                    // Gradient fill from wave line downward
+                    const gradient = ctx.createLinearGradient(0, wave.baseY * h - 20, 0, wave.baseY * h + 60);
+                    gradient.addColorStop(0, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${alpha * 1.2})`);
+                    gradient.addColorStop(0.4, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${alpha * 0.6})`);
+                    gradient.addColorStop(1, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0)`);
+                    ctx.fillStyle = gradient;
+                    ctx.fill();
+
+                    // Draw the wave crest line
+                    ctx.beginPath();
+                    for (let s = 0; s <= steps; s++) {
+                        const nx = s / steps;
+                        const px = nx * w;
+                        let waveY = wave.baseY;
+                        waveY += Math.sin(nx * Math.PI * 2 * wave.frequency + tTime * wave.speed + wave.phase) * wave.amplitude * breath;
+                        waveY += Math.sin(nx * Math.PI * 2 * wave.harmFreq + tTime * wave.speed * 0.7 + wave.phase * 1.3) * wave.harmAmp * breath;
+                        waveY += Math.cos(tTime * 0.15 + li * 0.8) * 0.008;
+
+                        if (tMouseX >= 0) {
+                            const dx = nx - tMouseX;
+                            const dy = waveY - tMouseY;
+                            const dist = Math.sqrt(dx * dx + dy * dy);
+                            if (dist < 0.2) {
+                                waveY -= (0.2 - dist) / 0.2 * 0.015 * Math.sign(dy || 1);
+                            }
+                        }
+
+                        if (s === 0) ctx.moveTo(0, waveY * h);
+                        else ctx.lineTo(px, waveY * h);
+                    }
+                    ctx.strokeStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${alpha * 2.5})`;
+                    ctx.lineWidth = wave.width;
+                    ctx.stroke();
+                }
+
+                // Render luminous droplets riding the waves
+                for (const drop of droplets) {
+                    drop.posX += drop.speed + drop.drift;
+                    if (drop.posX > 1) drop.posX -= 1;
+                    if (drop.posX < 0) drop.posX += 1;
+
+                    const wave = waves[drop.waveIdx];
+                    const breath = 1 + Math.sin(tTime * wave.breathSpeed + wave.breathPhase) * 0.3;
+                    let dy = wave.baseY;
+                    dy += Math.sin(drop.posX * Math.PI * 2 * wave.frequency + tTime * wave.speed + wave.phase) * wave.amplitude * breath;
+                    dy += Math.sin(drop.posX * Math.PI * 2 * wave.harmFreq + tTime * wave.speed * 0.7 + wave.phase * 1.3) * wave.harmAmp * breath;
+                    dy += Math.cos(tTime * 0.15 + drop.waveIdx * 0.8) * 0.008;
+
+                    const px = drop.posX * w;
+                    const py = dy * h;
+                    const rgb = rgbs[drop.colorIdx];
+                    const pulseAlpha = 0.25 + Math.sin(tTime * drop.pulseSpeed + drop.phase) * 0.18;
+
+                    // Glow halo
+                    const grad = ctx.createRadialGradient(px, py, 0, px, py, drop.size * 5);
+                    grad.addColorStop(0, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${pulseAlpha * 0.4})`);
+                    grad.addColorStop(0.4, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${pulseAlpha * 0.12})`);
+                    grad.addColorStop(1, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0)`);
+                    ctx.beginPath();
+                    ctx.arc(px, py, drop.size * 5, 0, Math.PI * 2);
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+
+                    // Core dot
+                    ctx.beginPath();
+                    ctx.arc(px, py, drop.size * 0.5, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${pulseAlpha * 0.8})`;
+                    ctx.fill();
+                }
+
+                tideRaf = requestAnimationFrame(renderTide);
+            };
+
+            const startTide = () => { tideResize(); if (!tideRaf) renderTide(); };
+            const stopTide = () => { if (tideRaf) { cancelAnimationFrame(tideRaf); tideRaf = null; } };
+
+            const tideObs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startTide();
+                else stopTide();
+            });
+            tideObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startTide();
+            window.addEventListener('resize', () => { if (panel.style.display !== 'none') tideResize(); });
+        })();
+
+        // === Magnetic Ripple Hover v0.3.3 — 磁性涟漪悬停 ===
+        (() => {
+            panel.addEventListener('mouseenter', (e) => {
+                if (!e.target.closest || !e.target.closest('.ai-cat-row')) return;
+                const row = e.target.closest('.ai-cat-row');
+                const rect = row.getBoundingClientRect();
+                const ripple = document.createElement('div');
+                ripple.className = 'ai-magnetic-ripple';
+                ripple.style.left = (e.clientX - rect.left) + 'px';
+                ripple.style.top = (e.clientY - rect.top) + 'px';
+                row.appendChild(ripple);
+                ripple.addEventListener('animationend', () => ripple.remove());
+            }, true);
         })();
 
         // === Velvet Zephyr Flow v0.2.4 — Float Button Idle Shimmer 悬浮按钮闲置微光 ===
