@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.6.0
+// @version      1.6.1
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -4371,6 +4371,9 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'morning-mist', label: '晨雾' },
                 { id: 'charcoal', label: '炭墨' },
                 { id: 'sea-glass', label: '海玻璃' },
+                { id: 'willow', label: '柳烟' },
+                { id: 'dusk-rose', label: '暮玫' },
+                { id: 'iron-blue', label: '铁青' },
                 { id: 'custom', label: '自定义' }
             ];
 
@@ -7637,6 +7640,137 @@ ${topUps.length > 0 ? `<div class="section">
             });
             pObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startParallax();
+        })();
+
+        // === Velvet Silk Breath v0.3.0 — 丝息画布 Silk Breath Canvas ===
+        // Always-moving luminous silk threads that drift, breathe, and undulate
+        (() => {
+            const breathWrap = document.createElement('div');
+            breathWrap.className = 'ai-silk-breath-canvas';
+            const bCanvas = document.createElement('canvas');
+            breathWrap.appendChild(bCanvas);
+            panel.insertBefore(breathWrap, panel.firstChild);
+
+            let breathRaf = null;
+            let bTime = 0;
+
+            // Persistent silk threads with physics-like properties
+            const THREAD_COUNT = 8;
+            const threads = [];
+            for (let i = 0; i < THREAD_COUNT; i++) {
+                threads.push({
+                    yBase: 0.1 + (i / THREAD_COUNT) * 0.8,
+                    phase: Math.random() * Math.PI * 2,
+                    speed: 0.15 + Math.random() * 0.25,
+                    amplitude: 0.04 + Math.random() * 0.06,
+                    freq1: 1.5 + Math.random() * 1.5,
+                    freq2: 2.5 + Math.random() * 2.0,
+                    freq3: 0.7 + Math.random() * 0.8,
+                    thickness: 0.8 + Math.random() * 1.2,
+                    colorIdx: i % 3,
+                    breathPhase: Math.random() * Math.PI * 2,
+                    breathSpeed: 0.2 + Math.random() * 0.3,
+                });
+            }
+
+            const breathResize = () => {
+                const r = panel.getBoundingClientRect();
+                bCanvas.width = Math.round(r.width * 0.35);
+                bCanvas.height = Math.round(r.height * 0.35);
+            };
+
+            const getBreathColors = () => {
+                const cs = getComputedStyle(document.documentElement);
+                return [
+                    cs.getPropertyValue('--ai-aurora-1').trim() || '#7364FF',
+                    cs.getPropertyValue('--ai-aurora-3').trim() || '#9B59F6',
+                    cs.getPropertyValue('--ai-aurora-5').trim() || '#20E3B2',
+                ];
+            };
+
+            const hexToRgbB = (hex) => {
+                hex = hex.replace('#', '');
+                if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+                const n = parseInt(hex, 16);
+                return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+            };
+
+            const renderBreath = () => {
+                const ctx = bCanvas.getContext('2d');
+                if (!ctx || !bCanvas.width) { breathRaf = requestAnimationFrame(renderBreath); return; }
+                const w = bCanvas.width, h = bCanvas.height;
+
+                // Soft trail fade for ghosting - creates silk afterimage
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                ctx.fillRect(0, 0, w, h);
+                ctx.globalCompositeOperation = 'lighter';
+
+                bTime += 0.006;
+                const colors = getBreathColors();
+                const rgbs = colors.map(hexToRgbB);
+
+                for (let t = 0; t < threads.length; t++) {
+                    const th = threads[t];
+                    const rgb = rgbs[th.colorIdx];
+
+                    // Breathing alpha - each thread breathes independently
+                    const breathAlpha = 0.06 + Math.sin(bTime * th.breathSpeed + th.breathPhase) * 0.04;
+
+                    ctx.beginPath();
+                    ctx.strokeStyle = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${breathAlpha})`;
+                    ctx.lineWidth = th.thickness;
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+
+                    const segments = 40;
+                    for (let s = 0; s <= segments; s++) {
+                        const frac = s / segments;
+                        const x = frac * w;
+
+                        // Triple-frequency undulation for organic silk feel
+                        const wave1 = Math.sin(frac * Math.PI * th.freq1 + bTime * th.speed + th.phase) * th.amplitude;
+                        const wave2 = Math.sin(frac * Math.PI * th.freq2 + bTime * th.speed * 0.6 + th.phase * 1.4) * th.amplitude * 0.35;
+                        const wave3 = Math.sin(frac * Math.PI * th.freq3 + bTime * th.speed * 1.3 + th.phase * 0.6) * th.amplitude * 0.2;
+
+                        // Breathing expansion - whole thread gently swells
+                        const breathOffset = Math.sin(bTime * th.breathSpeed * 0.7 + th.breathPhase) * 0.008;
+
+                        const y = (th.yBase + wave1 + wave2 + wave3 + breathOffset) * h;
+
+                        if (s === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.stroke();
+                }
+
+                // Subtle glow nodes where threads cluster
+                for (let i = 0; i < 2; i++) {
+                    const nx = (0.3 + i * 0.4 + Math.sin(bTime * 0.2 + i * 3.1) * 0.12) * w;
+                    const ny = (0.35 + Math.cos(bTime * 0.25 + i * 2.0) * 0.18) * h;
+                    const rgb = rgbs[i % rgbs.length];
+                    const pulseAlpha = 0.04 + Math.sin(bTime * 0.4 + i * 1.5) * 0.025;
+                    const grad = ctx.createRadialGradient(nx, ny, 0, nx, ny, w * 0.1);
+                    grad.addColorStop(0, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${pulseAlpha})`);
+                    grad.addColorStop(1, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0)`);
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(nx - w * 0.1, ny - w * 0.1, w * 0.2, w * 0.2);
+                }
+
+                ctx.globalCompositeOperation = 'source-over';
+                breathRaf = requestAnimationFrame(renderBreath);
+            };
+
+            const startBreath = () => { breathResize(); if (!breathRaf) renderBreath(); };
+            const stopBreath = () => { if (breathRaf) { cancelAnimationFrame(breathRaf); breathRaf = null; } };
+
+            const breathObs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startBreath();
+                else stopBreath();
+            });
+            breathObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startBreath();
+            window.addEventListener('resize', () => { if (panel.style.display !== 'none') breathResize(); });
         })();
 
         // === Velvet Zephyr Flow v0.2.4 — Float Button Idle Shimmer 悬浮按钮闲置微光 ===

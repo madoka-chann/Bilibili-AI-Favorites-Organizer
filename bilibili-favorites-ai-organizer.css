@@ -1,8 +1,8 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v0.2.9
-   Velvet Aurora Weave · 天鹅绒极光丝织 · Refined Glass Morphism
+   B站 AI 收藏夹整理助理 — 完整样式表 v0.3.0
+   Velvet Silk Breath · 天鹅绒丝息 · Refined Glass Morphism
    Indigo-Nebula 双色系统 · Restrained Aurora Palette
-   Velvet Dynamics 30.0 · Ultra-Smooth Spring Micro-interactions
+   Velvet Dynamics 33.0 · Ultra-Smooth Spring Micro-interactions
    Stellar Abyss Dark Theme · Living Glass Surfaces
    Multi-Accent Color Themes · Ambient Light Motes · Liquid Borders
    Magnetic Tilt · Cursor-Reactive Particles · Fluid Morphing
@@ -31,9 +31,10 @@
    Velvet Silk Vortex · Silk Vortex Canvas · Idle Sway · Parchment & Graphene & CeladonRain Themes
    Velvet Zen Flow · Zen Ripple Canvas · Liquid Morph Idle · InkCloud & WarmWool & StillWater Themes
    Velvet Aura Flow · Aura Filament Canvas · Magnetic Parallax · Lotus & AmberMist & FrozenLake Themes
+   Velvet Silk Breath · Silk Breath Canvas · Jelly Micro-physics · Willow & DuskRose & IronBlue Themes
    ================================================================ */
 
-/* === 1. CSS 变量 (双主题系统) v0.2.9 === */
+/* === 1. CSS 变量 (双主题系统) v0.3.0 === */
 
 /* 亮色主题（默认） — 星潮·晨曦琉璃 Astral Glasstide */
 :root, [data-theme="light"] {
@@ -19834,4 +19835,449 @@ textarea:focus {
   background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.18) 50%, transparent 100%);
   background-size: 200% 100%;
   animation: ai-progress-silk-shimmer 2s var(--ai-ease-breath-silk, ease) infinite;
+}
+
+/* ================================================================
+   Velvet Silk Breath v0.3.0 — 天鹅绒丝息 · Velvet Dynamics 33.0
+   ================================================================ */
+
+/* === 805. Accent Theme: 柳烟 Willow Mist v0.3.0 — 低饱和灰绿·静谧优雅 === */
+[data-accent="willow"] {
+  --ai-primary: #7A9E7E;
+  --ai-primary-dark: #5B7E5F;
+  --ai-primary-light: #A8C4AB;
+  --ai-primary-bg: rgba(122, 158, 126, 0.06);
+  --ai-primary-shadow: rgba(122, 158, 126, 0.20);
+  --ai-aurora-1: #7A9E7E;
+  --ai-aurora-2: #96B89A;
+  --ai-aurora-3: #5B7E5F;
+  --ai-aurora-4: #8BAF8F;
+  --ai-aurora-5: #6E9472;
+  --ai-aurora-6: #A3BFA6;
+  --ai-aurora-7: #B5CDB8;
+  --ai-aurora-8: #C2D8C5;
+  --ai-header-gradient: linear-gradient(135deg, #5B7E5F, #7A9E7E, #5B7E5F);
+  --ai-float-gradient: linear-gradient(135deg, #7A9E7E 0%, #8BAF8F 40%, #A8C4AB 70%, #7A9E7E 100%);
+  --ai-neon-glow: 0 0 14px rgba(122, 158, 126, 0.18),
+                  0 0 28px rgba(91, 126, 95, 0.08);
+  --ai-glow-color: rgba(122, 158, 126, 0.07);
+  --ai-scrollbar: #A8C4AB;
+  --ai-scrollbar-hover: #7A9E7E;
+  --ai-interaction-glow: rgba(122, 158, 126, 0.10);
+}
+.ai-accent-dot[data-accent="willow"] { background: linear-gradient(135deg, #7A9E7E, #5B7E5F); }
+
+/* === 806. Accent Theme: 暮玫 Dusk Rose v0.3.0 — 灰粉烟霞·温柔沉静 === */
+[data-accent="dusk-rose"] {
+  --ai-primary: #B0879A;
+  --ai-primary-dark: #8E6A7C;
+  --ai-primary-light: #D0B3C0;
+  --ai-primary-bg: rgba(176, 135, 154, 0.06);
+  --ai-primary-shadow: rgba(176, 135, 154, 0.20);
+  --ai-aurora-1: #B0879A;
+  --ai-aurora-2: #C49DAE;
+  --ai-aurora-3: #8E6A7C;
+  --ai-aurora-4: #A07B8E;
+  --ai-aurora-5: #9E7A8C;
+  --ai-aurora-6: #C7A5B5;
+  --ai-aurora-7: #D4BAC6;
+  --ai-aurora-8: #DFC8D4;
+  --ai-header-gradient: linear-gradient(135deg, #8E6A7C, #B0879A, #8E6A7C);
+  --ai-float-gradient: linear-gradient(135deg, #B0879A 0%, #C49DAE 40%, #D0B3C0 70%, #B0879A 100%);
+  --ai-neon-glow: 0 0 14px rgba(176, 135, 154, 0.18),
+                  0 0 28px rgba(142, 106, 124, 0.08);
+  --ai-glow-color: rgba(176, 135, 154, 0.07);
+  --ai-scrollbar: #D0B3C0;
+  --ai-scrollbar-hover: #B0879A;
+  --ai-interaction-glow: rgba(176, 135, 154, 0.10);
+}
+.ai-accent-dot[data-accent="dusk-rose"] { background: linear-gradient(135deg, #B0879A, #8E6A7C); }
+
+/* === 807. Accent Theme: 铁青 Iron Blue v0.3.0 — 青灰钢蓝·冷冽克制 === */
+[data-accent="iron-blue"] {
+  --ai-primary: #6E8898;
+  --ai-primary-dark: #506A78;
+  --ai-primary-light: #9AB0BC;
+  --ai-primary-bg: rgba(110, 136, 152, 0.06);
+  --ai-primary-shadow: rgba(110, 136, 152, 0.20);
+  --ai-aurora-1: #6E8898;
+  --ai-aurora-2: #849CA8;
+  --ai-aurora-3: #506A78;
+  --ai-aurora-4: #7B95A3;
+  --ai-aurora-5: #628090;
+  --ai-aurora-6: #92AAB6;
+  --ai-aurora-7: #A6BCC5;
+  --ai-aurora-8: #B8CCD3;
+  --ai-header-gradient: linear-gradient(135deg, #506A78, #6E8898, #506A78);
+  --ai-float-gradient: linear-gradient(135deg, #6E8898 0%, #849CA8 40%, #9AB0BC 70%, #6E8898 100%);
+  --ai-neon-glow: 0 0 14px rgba(110, 136, 152, 0.18),
+                  0 0 28px rgba(80, 106, 120, 0.08);
+  --ai-glow-color: rgba(110, 136, 152, 0.07);
+  --ai-scrollbar: #9AB0BC;
+  --ai-scrollbar-hover: #6E8898;
+  --ai-interaction-glow: rgba(110, 136, 152, 0.10);
+}
+.ai-accent-dot[data-accent="iron-blue"] { background: linear-gradient(135deg, #6E8898, #506A78); }
+
+/* === 808. Silk Breath Canvas Container v0.3.0 — 丝息画布容器 === */
+.ai-silk-breath-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+  opacity: 0.8;
+  mix-blend-mode: screen;
+}
+.ai-silk-breath-canvas canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+[data-theme="dark"] .ai-silk-breath-canvas {
+  opacity: 0.6;
+  mix-blend-mode: screen;
+}
+
+/* === 809. Jelly Micro-physics v0.3.0 — 果冻微物理按钮交互 === */
+@keyframes ai-jelly-press {
+  0% {
+    transform: scale(1);
+  }
+  20% {
+    transform: scale(0.88, 1.08);
+  }
+  40% {
+    transform: scale(1.06, 0.94);
+  }
+  55% {
+    transform: scale(0.97, 1.02);
+  }
+  70% {
+    transform: scale(1.02, 0.99);
+  }
+  85% {
+    transform: scale(0.995, 1.005);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.ai-btn:active,
+.ai-header-btn:active,
+.ai-modal-btn:active {
+  animation: ai-jelly-press 0.5s var(--ai-spring-velvet, cubic-bezier(0.17,1.32,0.40,1)) !important;
+}
+
+/* === 810. Living Border Glow Pulse v0.3.0 — 活体边框辉光脉动 === */
+@keyframes ai-border-glow-pulse {
+  0%, 100% {
+    box-shadow: 0 28px 72px rgba(0, 0, 0, 0.11),
+                0 12px 32px rgba(0, 0, 0, 0.07),
+                0 0 0 1px var(--ai-glass-border),
+                0 0 40px var(--ai-glow-color, rgba(115,100,255,0.04)),
+                inset 0 1px 0 rgba(255,255,255,0.26);
+  }
+  50% {
+    box-shadow: 0 28px 72px rgba(0, 0, 0, 0.11),
+                0 12px 32px rgba(0, 0, 0, 0.07),
+                0 0 0 1px var(--ai-glass-border),
+                0 0 60px var(--ai-glow-color, rgba(115,100,255,0.07)),
+                0 0 90px var(--ai-glow-color, rgba(115,100,255,0.03)),
+                inset 0 1px 0 rgba(255,255,255,0.30);
+  }
+}
+#ai-sort-wrapper {
+  animation: ai-border-glow-pulse 6s var(--ai-ease-breath-deep, ease) infinite !important;
+}
+
+/* === 811. Panel Open Silk Morph v0.3.0 — 面板展开丝滑形变 === */
+@keyframes ai-panel-silk-open {
+  0% {
+    transform: scale(0.92, 0.96) translateY(12px);
+    opacity: 0;
+    filter: blur(6px);
+    border-radius: 36px;
+  }
+  40% {
+    transform: scale(1.015, 0.99) translateY(-2px);
+    opacity: 0.85;
+    filter: blur(0.5px);
+    border-radius: 30px;
+  }
+  65% {
+    transform: scale(0.998, 1.004) translateY(0.5px);
+    opacity: 0.96;
+  }
+  80% {
+    transform: scale(1.002, 0.999);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    filter: blur(0);
+    border-radius: 28px;
+  }
+}
+#ai-sort-wrapper[style*="display: flex"],
+#ai-sort-wrapper[style*="display:flex"] {
+  animation: ai-panel-silk-open 0.6s var(--ai-spring-silk, cubic-bezier(0.20,1.10,0.36,1)) forwards,
+             ai-border-glow-pulse 6s var(--ai-ease-breath-deep, ease) infinite 0.6s !important;
+}
+
+/* === 812. Float Button Elastic Morph Idle v0.3.0 — 悬浮按钮弹性形变呼吸 === */
+@keyframes ai-float-elastic-idle {
+  0%, 100% {
+    border-radius: 50%;
+    transform: scale(1) translateY(0);
+  }
+  15% {
+    border-radius: 48% 52% 50% 50% / 50% 50% 52% 48%;
+    transform: scale(1.01) translateY(-1px);
+  }
+  35% {
+    border-radius: 50% 48% 52% 48% / 48% 52% 48% 52%;
+    transform: scale(0.99) translateY(0.5px);
+  }
+  55% {
+    border-radius: 52% 48% 48% 52% / 52% 48% 50% 50%;
+    transform: scale(1.005) translateY(-0.5px);
+  }
+  75% {
+    border-radius: 48% 52% 50% 50% / 50% 48% 52% 50%;
+    transform: scale(0.995) translateY(0.3px);
+  }
+}
+#ai-float-btn {
+  animation: ai-float-gradient-shift 16s ease-in-out infinite,
+             ai-float-elastic-idle 8s var(--ai-ease-breath-deep, ease) infinite !important;
+}
+#ai-float-btn:hover {
+  animation: ai-float-gradient-shift 16s ease-in-out infinite !important;
+}
+
+/* === 813. Header Button Hover Spring v0.3.0 — 头部按钮悬浮弹簧 === */
+.ai-header-btn {
+  transition: all 0.4s var(--ai-spring-silk, cubic-bezier(0.20,1.10,0.36,1)) !important;
+  will-change: transform;
+}
+.ai-header-btn:hover {
+  transform: scale(1.14) translateY(-1.5px) !important;
+  background: rgba(255,255,255,0.28) !important;
+}
+
+/* === 814. Category Row Stagger Slide v0.3.0 — 分类行错开滑入 === */
+@keyframes ai-cat-silk-stagger {
+  0% {
+    transform: translateX(-14px) scale(0.97);
+    opacity: 0;
+    filter: blur(2px);
+  }
+  50% {
+    transform: translateX(2px) scale(1.005);
+    opacity: 0.85;
+    filter: blur(0);
+  }
+  70% {
+    transform: translateX(-0.5px) scale(0.999);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+.ai-cat-block {
+  animation: ai-cat-silk-stagger 0.55s var(--ai-spring-silk, cubic-bezier(0.20,1.10,0.36,1)) both !important;
+  animation-delay: calc(var(--i, 0) * 0.04s) !important;
+}
+
+/* === 815. Toast Elastic Pop v0.3.0 — Toast弹性弹出 === */
+@keyframes ai-toast-elastic-pop {
+  0% {
+    transform: translateX(40px) scale(0.85, 1.08);
+    opacity: 0;
+    filter: blur(4px);
+  }
+  35% {
+    transform: translateX(-6px) scale(1.04, 0.97);
+    opacity: 0.9;
+    filter: blur(0);
+  }
+  55% {
+    transform: translateX(2px) scale(0.99, 1.01);
+    opacity: 1;
+  }
+  70% {
+    transform: translateX(-0.5px) scale(1.002, 0.999);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+.ai-toast {
+  animation: ai-toast-elastic-pop 0.6s var(--ai-spring-silk, cubic-bezier(0.20,1.10,0.36,1)) forwards !important;
+}
+
+/* === 816. Modal Silk Enter v0.3.0 — 模态窗丝滑入场 === */
+@keyframes ai-modal-silk-enter {
+  0% {
+    transform: scale(0.9, 0.95) translateY(20px);
+    opacity: 0;
+    filter: blur(8px);
+  }
+  35% {
+    transform: scale(1.02, 0.99) translateY(-3px);
+    opacity: 0.8;
+    filter: blur(1px);
+  }
+  60% {
+    transform: scale(0.995, 1.003) translateY(1px);
+    opacity: 0.95;
+    filter: blur(0);
+  }
+  80% {
+    transform: scale(1.003, 0.999);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+.ai-modal {
+  animation: ai-modal-silk-enter 0.55s var(--ai-spring-silk, cubic-bezier(0.20,1.10,0.36,1)) forwards !important;
+}
+
+/* === 817. Input Focus Silk Glow v0.3.0 — 输入框聚焦丝滑辉光 === */
+.ai-input:focus,
+.ai-select:focus {
+  border-color: var(--ai-primary) !important;
+  box-shadow: 0 0 0 3px var(--ai-primary-bg, rgba(115,100,255,0.06)),
+              0 0 16px var(--ai-glow-color, rgba(115,100,255,0.04)) !important;
+  transition: border-color 0.3s var(--ai-ease-silk-out, ease),
+              box-shadow 0.4s var(--ai-spring-silk, ease) !important;
+}
+
+/* === 818. Group Header Hover Silk Sweep v0.3.0 — 设置组头悬浮丝滑扫光 === */
+.ai-group-header {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.35s var(--ai-ease-ios, ease) !important;
+}
+.ai-group-header::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--ai-primary-bg, rgba(115,100,255,0.06)), transparent);
+  transition: left 0.6s var(--ai-ease-smooth, ease);
+  pointer-events: none;
+}
+.ai-group-header:hover::after {
+  left: 100%;
+}
+
+/* === 819. Scroll Momentum Silk v0.3.0 — 滚动惯性丝滑 === */
+.ai-panel-content {
+  scroll-behavior: smooth !important;
+  overscroll-behavior: contain;
+}
+.ai-panel-content.scroll-fast {
+  transition: filter 0.08s ease !important;
+  filter: blur(0.3px);
+}
+
+/* === 820. Living Accent Dot Ring v0.3.0 — 活体主题色环 === */
+.ai-accent-dot.active {
+  box-shadow: 0 0 0 2.5px var(--ai-bg, #fff), 0 0 0 4px var(--ai-primary, #7364FF) !important;
+  transition: box-shadow 0.4s var(--ai-spring-silk, ease) !important;
+}
+@keyframes ai-accent-dot-breathe {
+  0%, 100% { box-shadow: 0 0 0 2.5px var(--ai-bg, #fff), 0 0 0 4px var(--ai-primary, #7364FF), 0 0 8px var(--ai-glow-color, rgba(115,100,255,0.06)); }
+  50% { box-shadow: 0 0 0 2.5px var(--ai-bg, #fff), 0 0 0 4px var(--ai-primary, #7364FF), 0 0 16px var(--ai-glow-color, rgba(115,100,255,0.12)); }
+}
+.ai-accent-dot.active {
+  animation: ai-accent-dot-breathe 3s var(--ai-ease-breath-deep, ease) infinite !important;
+}
+
+/* === 821. Button Tool Hover Micro-bounce v0.3.0 — 工具按钮悬浮微弹 === */
+.ai-btn-tool {
+  transition: transform 0.4s var(--ai-spring-silk, ease),
+              box-shadow 0.35s var(--ai-ease-silk-out, ease),
+              background-color 0.25s ease !important;
+}
+.ai-btn-tool:hover {
+  transform: translateY(-2px) scale(1.03) !important;
+  box-shadow: 0 6px 20px var(--ai-glow-color, rgba(115,100,255,0.08)) !important;
+}
+.ai-btn-tool:active {
+  transform: translateY(0) scale(0.96) !important;
+  transition-duration: 0.1s !important;
+}
+
+/* === 822. Log Entry Silk Slide v0.3.0 — 日志条目丝滑滑入 === */
+@keyframes ai-log-silk-slide {
+  0% {
+    transform: translateX(-10px) scaleX(0.95);
+    opacity: 0;
+  }
+  40% {
+    transform: translateX(1.5px) scaleX(1.01);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(0) scaleX(1);
+    opacity: 1;
+  }
+}
+.ai-log-entry {
+  animation: ai-log-silk-slide 0.4s var(--ai-spring-silk, ease) both !important;
+}
+
+/* === 823. Video Item Hover Silk Glow v0.3.0 — 视频项悬浮丝滑辉光 === */
+.ai-vid-item {
+  transition: transform 0.45s var(--ai-spring-silk, ease),
+              box-shadow 0.4s var(--ai-ease-silk-out, ease),
+              background-color 0.3s ease !important;
+}
+.ai-vid-item:hover {
+  transform: translateX(4px) !important;
+  box-shadow: -4px 0 16px var(--ai-glow-color, rgba(115,100,255,0.06)),
+              0 2px 10px rgba(0,0,0,0.03) !important;
+}
+
+/* === 824. Primary Button Shimmer Sweep v0.3.0 — 主按钮微光扫掠 === */
+.ai-btn-primary {
+  position: relative;
+  overflow: hidden;
+}
+.ai-btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transition: left 0.8s var(--ai-ease-smooth, ease);
+  pointer-events: none;
+}
+.ai-btn-primary:hover::after {
+  left: 150%;
+}
+
+/* === 825. Smooth Theme Switch Crossfade v0.3.0 — 丝滑主题切换交叉淡入 === */
+#ai-sort-wrapper, .ai-modal, #ai-float-btn,
+.ai-panel-content, .ai-settings, .ai-header,
+.ai-btn, .ai-btn-tool, .ai-input, .ai-select,
+.ai-group-header, .ai-group-body, .ai-status-log,
+.ai-toast, .ai-cat-row, .ai-vid-item, .ai-log-entry {
+  transition: background-color 0.7s var(--ai-ease-silk-out, ease),
+              color 0.6s var(--ai-ease-silk-out, ease),
+              border-color 0.6s var(--ai-ease-silk-out, ease),
+              box-shadow 0.7s var(--ai-ease-silk-out, ease) !important;
 }
