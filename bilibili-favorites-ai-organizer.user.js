@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.6.4
+// @version      1.6.5
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -4383,6 +4383,9 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'burnt-umber', label: '焦褐' },
                 { id: 'rain-glass', label: '雨玻' },
                 { id: 'ash-violet', label: '灰堇' },
+                { id: 'smoke', label: '烟灰' },
+                { id: 'pewter', label: '锡灰' },
+                { id: 'sage', label: '鼠尾草' },
                 { id: 'custom', label: '自定义' }
             ];
 
@@ -8393,6 +8396,219 @@ ${topUps.length > 0 ? `<div class="section">
                 row.appendChild(ripple);
                 ripple.addEventListener('animationend', () => ripple.remove());
             }, true);
+        })();
+
+        // === Velvet Nebula Mist v0.3.4 — 星雾画布 Nebula Mist Canvas ===
+        // Soft fog-like particles that drift, merge, breathe, and respond to mouse with gentle dispersal
+        (() => {
+            const mistWrap = document.createElement('div');
+            mistWrap.className = 'ai-nebula-mist-canvas';
+            const mCanvas = document.createElement('canvas');
+            mistWrap.appendChild(mCanvas);
+            panel.insertBefore(mistWrap, panel.firstChild);
+
+            let mistRaf = null;
+            let mTime = 0;
+            let mMouseX = -1, mMouseY = -1;
+
+            // Mist particles — soft, large, slow-moving fog blobs
+            const MIST_COUNT = 18;
+            const mists = [];
+            for (let i = 0; i < MIST_COUNT; i++) {
+                mists.push({
+                    x: Math.random(),
+                    y: Math.random(),
+                    vx: (Math.random() - 0.5) * 0.00015,
+                    vy: (Math.random() - 0.5) * 0.00012,
+                    radius: 0.04 + Math.random() * 0.08,
+                    phase: Math.random() * Math.PI * 2,
+                    breathSpeed: 0.08 + Math.random() * 0.16,
+                    driftFreqX: 0.1 + Math.random() * 0.2,
+                    driftFreqY: 0.08 + Math.random() * 0.18,
+                    colorIdx: i % 3,
+                    baseAlpha: 0.015 + Math.random() * 0.025,
+                });
+            }
+
+            const mistResize = () => {
+                const r = panel.getBoundingClientRect();
+                mCanvas.width = Math.round(r.width * 0.3);
+                mCanvas.height = Math.round(r.height * 0.3);
+            };
+
+            const getMistColors = () => {
+                const cs = getComputedStyle(document.documentElement);
+                return [
+                    cs.getPropertyValue('--ai-aurora-1').trim() || '#7364FF',
+                    cs.getPropertyValue('--ai-aurora-3').trim() || '#9B59F6',
+                    cs.getPropertyValue('--ai-aurora-5').trim() || '#20E3B2',
+                ];
+            };
+
+            const hexToRgbM = (hex) => {
+                hex = hex.replace('#', '');
+                if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+                const n = parseInt(hex, 16);
+                return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+            };
+
+            panel.addEventListener('mousemove', (e) => {
+                const rect = mCanvas.getBoundingClientRect();
+                if (rect.width > 0) {
+                    mMouseX = (e.clientX - rect.left) / rect.width;
+                    mMouseY = (e.clientY - rect.top) / rect.height;
+                }
+            });
+            panel.addEventListener('mouseleave', () => { mMouseX = -1; mMouseY = -1; });
+
+            const renderMist = () => {
+                const ctx = mCanvas.getContext('2d');
+                if (!ctx || !mCanvas.width) { mistRaf = requestAnimationFrame(renderMist); return; }
+                const w = mCanvas.width, h = mCanvas.height;
+
+                // Soft trail fade — creates dream-like afterimage
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.02)';
+                ctx.fillRect(0, 0, w, h);
+                ctx.globalCompositeOperation = 'lighter';
+
+                mTime += 0.003;
+                const colors = getMistColors();
+                const rgbs = colors.map(hexToRgbM);
+
+                for (let i = 0; i < mists.length; i++) {
+                    const m = mists[i];
+
+                    // Organic drift with sine modulation
+                    m.x += m.vx + Math.sin(mTime * m.driftFreqX + m.phase) * 0.00008;
+                    m.y += m.vy + Math.cos(mTime * m.driftFreqY + m.phase * 1.3) * 0.00006;
+
+                    // Soft mutual repulsion when very close (fog doesn't clump)
+                    for (let j = i + 1; j < mists.length; j++) {
+                        const dx = mists[j].x - m.x;
+                        const dy = mists[j].y - m.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 0.15 && dist > 0.005) {
+                            const repulse = 0.0000015 / (dist * dist);
+                            m.vx -= dx * repulse;
+                            m.vy -= dy * repulse;
+                            mists[j].vx += dx * repulse;
+                            mists[j].vy += dy * repulse;
+                        }
+                    }
+
+                    // Mouse dispersal — particles gently scatter away from cursor
+                    if (mMouseX >= 0) {
+                        const dx = m.x - mMouseX;
+                        const dy = m.y - mMouseY;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 0.2 && dist > 0) {
+                            const force = (0.2 - dist) / 0.2 * 0.0006;
+                            m.vx += dx / dist * force;
+                            m.vy += dy / dist * force;
+                        }
+                    }
+
+                    // Velocity damping — very high for fog-like feel
+                    m.vx *= 0.996;
+                    m.vy *= 0.996;
+
+                    // Soft wrap
+                    if (m.x < -0.15) m.x = 1.15;
+                    if (m.x > 1.15) m.x = -0.15;
+                    if (m.y < -0.15) m.y = 1.15;
+                    if (m.y > 1.15) m.y = -0.15;
+
+                    // Breathing radius and alpha
+                    const breathScale = 1 + Math.sin(mTime * m.breathSpeed + m.phase) * 0.25;
+                    const r = m.radius * breathScale * Math.min(w, h);
+                    const alpha = m.baseAlpha + Math.sin(mTime * m.breathSpeed * 0.5 + m.phase * 1.2) * m.baseAlpha * 0.6;
+
+                    const cx = m.x * w;
+                    const cy = m.y * h;
+                    const rgb = rgbs[m.colorIdx];
+
+                    // Multi-stop gradient for fog softness
+                    const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+                    grad.addColorStop(0, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${alpha * 1.2})`);
+                    grad.addColorStop(0.3, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${alpha * 0.7})`);
+                    grad.addColorStop(0.6, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${alpha * 0.3})`);
+                    grad.addColorStop(1, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0)`);
+                    ctx.fillStyle = grad;
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // Ambient horizontal mist band — drifts vertically
+                const bandY = h * (0.5 + Math.sin(mTime * 0.12) * 0.35);
+                const bandH = h * 0.25;
+                const rgb0 = rgbs[0];
+                const bandAlpha = 0.008 + Math.sin(mTime * 0.2) * 0.005;
+                const bandGrad = ctx.createLinearGradient(0, bandY - bandH, 0, bandY + bandH);
+                bandGrad.addColorStop(0, 'transparent');
+                bandGrad.addColorStop(0.3, `rgba(${rgb0[0]},${rgb0[1]},${rgb0[2]},${bandAlpha})`);
+                bandGrad.addColorStop(0.7, `rgba(${rgb0[0]},${rgb0[1]},${rgb0[2]},${bandAlpha * 0.6})`);
+                bandGrad.addColorStop(1, 'transparent');
+                ctx.fillStyle = bandGrad;
+                ctx.fillRect(0, bandY - bandH, w, bandH * 2);
+
+                ctx.globalCompositeOperation = 'source-over';
+                mistRaf = requestAnimationFrame(renderMist);
+            };
+
+            const startMist = () => { mistResize(); if (!mistRaf) renderMist(); };
+            const stopMist = () => { if (mistRaf) { cancelAnimationFrame(mistRaf); mistRaf = null; } };
+
+            const mistObs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startMist();
+                else stopMist();
+            });
+            mistObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startMist();
+            window.addEventListener('resize', () => { if (panel.style.display !== 'none') mistResize(); });
+        })();
+
+        // === Velvet Nebula Mist v0.3.4 — Float Button Organic Morph 悬浮按钮有机形变 ===
+        (() => {
+            let morphRaf = null;
+            let morphTime = 0;
+
+            const renderMorph = () => {
+                morphTime += 0.008;
+                // Multi-frequency organic border-radius morphing
+                const r1 = 50 + Math.sin(morphTime * 0.4) * 4;
+                const r2 = 50 + Math.cos(morphTime * 0.35 + 0.8) * 4;
+                const r3 = 50 + Math.sin(morphTime * 0.45 + 1.6) * 4;
+                const r4 = 50 + Math.cos(morphTime * 0.3 + 2.4) * 4;
+                const r5 = 50 + Math.sin(morphTime * 0.38 + 3.2) * 4;
+                const r6 = 50 + Math.cos(morphTime * 0.42 + 4.0) * 4;
+                const r7 = 50 + Math.sin(morphTime * 0.33 + 4.8) * 4;
+                const r8 = 50 + Math.cos(morphTime * 0.36 + 5.6) * 4;
+
+                floatBtn.style.borderRadius = `${r1}% ${r2}% ${r3}% ${r4}% / ${r5}% ${r6}% ${r7}% ${r8}%`;
+
+                // Subtle rotation oscillation
+                const rot = Math.sin(morphTime * 0.25) * 0.8;
+                const sc = 1 + Math.sin(morphTime * 0.18) * 0.012;
+                floatBtn.style.transform = `rotate(${rot}deg) scale(${sc})`;
+
+                morphRaf = requestAnimationFrame(renderMorph);
+            };
+
+            const startMorph = () => { if (!morphRaf) renderMorph(); };
+            const stopMorph = () => {
+                if (morphRaf) { cancelAnimationFrame(morphRaf); morphRaf = null; }
+                floatBtn.style.borderRadius = '50%';
+                floatBtn.style.transform = '';
+            };
+
+            const morphObs = new MutationObserver(() => {
+                if (floatBtn.style.display !== 'none') startMorph();
+                else stopMorph();
+            });
+            morphObs.observe(floatBtn, { attributes: true, attributeFilter: ['style'] });
+            if (floatBtn.style.display !== 'none') startMorph();
         })();
 
         // === Velvet Zephyr Flow v0.2.4 — Float Button Idle Shimmer 悬浮按钮闲置微光 ===

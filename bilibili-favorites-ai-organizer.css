@@ -1,8 +1,8 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v0.3.3
-   Velvet Silk Tide · 天鹅绒丝潮 · Refined Glass Morphism
+   B站 AI 收藏夹整理助理 — 完整样式表 v0.3.4
+   Velvet Nebula Mist · 天鹅绒星雾 · Refined Glass Morphism
    Indigo-Nebula 双色系统 · Restrained Aurora Palette
-   Velvet Dynamics 36.0 · Ultra-Smooth Spring Micro-interactions
+   Velvet Dynamics 37.0 · Ultra-Smooth Spring Micro-interactions
    Stellar Abyss Dark Theme · Living Glass Surfaces
    Multi-Accent Color Themes · Ambient Light Motes · Liquid Borders
    Magnetic Tilt · Cursor-Reactive Particles · Fluid Morphing
@@ -33,10 +33,11 @@
    Velvet Aura Flow · Aura Filament Canvas · Magnetic Parallax · Lotus & AmberMist & FrozenLake Themes
    Velvet Silk Breath · Silk Breath Canvas · Jelly Micro-physics · Willow & DuskRose & IronBlue Themes
    Velvet Luminous Tide · Luminous Tide Canvas · Pulse Ring · SnowPeak & DeepInk & WarmLinen Themes
-   Velvet Silk Tide · Silk Tide Canvas · Living Border Glow · BurntUmber & RainGlass & AshViolet + StoneMoss & DriedRose & NightFog
+   Velvet Silk Tide · Silk Tide Canvas · Living Border Glow · BurntUmber & RainGlass & AshViolet
+   Velvet Nebula Mist · Nebula Mist Canvas · Organic Morph Float · Phase Glow Border · Smoke & Pewter & SageGreen Themes
    ================================================================ */
 
-/* === 1. CSS 变量 (双主题系统) v0.3.3 === */
+/* === 1. CSS 变量 (双主题系统) v0.3.4 === */
 
 /* 亮色主题（默认） — 星潮·晨曦琉璃 Astral Glasstide */
 :root, [data-theme="light"] {
@@ -21582,5 +21583,505 @@ textarea:focus {
     filter: brightness(1.01) saturate(1.02);
     box-shadow: 0 0 16px var(--ai-primary-shadow, rgba(115,100,255,0.20)),
                 0 0 32px rgba(155, 89, 246, 0.08);
+  }
+}
+
+/* ================================================================
+   Velvet Nebula Mist v0.3.4 — 天鹅绒星雾新增特性
+   Velvet Dynamics 37.0 · Nebula Mist Canvas · Organic Morph Float
+   Phase Glow Border · Ultra-Smooth Transition Upgrades
+   ================================================================ */
+
+/* === 889. Nebula Mist Canvas v0.3.4 — 星雾画布 === */
+.ai-nebula-mist-canvas {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  opacity: 0.6;
+  mix-blend-mode: screen;
+}
+
+.ai-nebula-mist-canvas canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+[data-theme="dark"] .ai-nebula-mist-canvas {
+  opacity: 0.75;
+  mix-blend-mode: screen;
+}
+
+/* === 890. Float Button Organic Morph v0.3.4 — 悬浮按钮有机形变 === */
+@keyframes ai-float-organic-morph {
+  0% {
+    border-radius: 50%;
+    transform: rotate(0deg) scale(1);
+  }
+  12% {
+    border-radius: 48% 52% 54% 46% / 52% 48% 50% 50%;
+    transform: rotate(0.6deg) scale(1.01);
+  }
+  25% {
+    border-radius: 54% 46% 48% 52% / 46% 54% 48% 52%;
+    transform: rotate(-0.4deg) scale(0.995);
+  }
+  37% {
+    border-radius: 50% 50% 52% 48% / 54% 46% 50% 50%;
+    transform: rotate(0.3deg) scale(1.005);
+  }
+  50% {
+    border-radius: 46% 54% 50% 50% / 50% 52% 48% 52%;
+    transform: rotate(-0.5deg) scale(0.998);
+  }
+  62% {
+    border-radius: 52% 48% 46% 54% / 48% 50% 54% 46%;
+    transform: rotate(0.4deg) scale(1.008);
+  }
+  75% {
+    border-radius: 48% 52% 52% 48% / 52% 46% 50% 54%;
+    transform: rotate(-0.2deg) scale(0.997);
+  }
+  87% {
+    border-radius: 54% 46% 50% 50% / 50% 54% 46% 52%;
+    transform: rotate(0.3deg) scale(1.003);
+  }
+  100% {
+    border-radius: 50%;
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+#ai-float-btn {
+  animation: ai-float-organic-morph 12s var(--ai-ease-breath-deep, ease-in-out) infinite,
+             ai-idle-silk-breathe 6s ease-in-out infinite !important;
+}
+
+#ai-float-btn:hover {
+  animation-play-state: paused, paused !important;
+}
+
+/* === 891. Phase Glow Border v0.3.4 — 相位辉光边框 === */
+@keyframes ai-phase-glow-border {
+  0% {
+    box-shadow: 0 0 0 0 transparent,
+                inset 0 0 0 1px rgba(115, 100, 255, 0.06);
+  }
+  25% {
+    box-shadow: 0 1px 12px rgba(115, 100, 255, 0.06),
+                inset 0 0 0 1px rgba(115, 100, 255, 0.10);
+  }
+  50% {
+    box-shadow: 0 2px 18px rgba(115, 100, 255, 0.08),
+                inset 0 0 0 1px rgba(155, 89, 246, 0.08);
+  }
+  75% {
+    box-shadow: 0 1px 12px rgba(155, 89, 246, 0.05),
+                inset 0 0 0 1px rgba(115, 100, 255, 0.06);
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent,
+                inset 0 0 0 1px rgba(115, 100, 255, 0.06);
+  }
+}
+
+#ai-sort-wrapper {
+  animation: ai-phase-glow-border 10s ease-in-out infinite;
+}
+
+[data-theme="dark"] #ai-sort-wrapper {
+  animation: ai-phase-glow-border-dark 10s ease-in-out infinite;
+}
+
+@keyframes ai-phase-glow-border-dark {
+  0% {
+    box-shadow: 0 0 0 0 transparent,
+                inset 0 0 0 1px rgba(176, 168, 255, 0.05);
+  }
+  25% {
+    box-shadow: 0 2px 16px rgba(115, 100, 255, 0.10),
+                inset 0 0 0 1px rgba(176, 168, 255, 0.12);
+  }
+  50% {
+    box-shadow: 0 3px 24px rgba(115, 100, 255, 0.12),
+                inset 0 0 0 1px rgba(155, 89, 246, 0.10);
+  }
+  75% {
+    box-shadow: 0 2px 16px rgba(155, 89, 246, 0.08),
+                inset 0 0 0 1px rgba(176, 168, 255, 0.08);
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent,
+                inset 0 0 0 1px rgba(176, 168, 255, 0.05);
+  }
+}
+
+/* === 892. Enhanced Category Row Silk Transition v0.3.4 — 分类行丝滑过渡增强 === */
+.ai-cat-row {
+  transition: all 0.5s var(--ai-spring-silk, ease),
+              background 0.6s var(--ai-ease-gossamer, ease),
+              border-left-color 0.8s var(--ai-ease-mist, ease) !important;
+}
+
+.ai-cat-row:hover {
+  transform: translateX(4px) !important;
+  transition: all 0.4s var(--ai-spring-pudding, ease),
+              background 0.35s var(--ai-ease-bloom, ease) !important;
+}
+
+/* === 893. Button Press Spring v0.3.4 — 按钮按压弹簧增强 === */
+.ai-btn:active,
+.ai-btn-tool:active {
+  transform: scale(0.91) !important;
+  transition: transform 0.08s cubic-bezier(0.2, 0, 0.6, 1) !important;
+}
+
+.ai-btn:not(:active),
+.ai-btn-tool:not(:active) {
+  transition: transform 0.55s var(--ai-spring-pudding, ease),
+              box-shadow 0.4s var(--ai-ease-gossamer, ease),
+              background 0.3s ease !important;
+}
+
+/* === 894. Modal Open/Close Silk Enhancement v0.3.4 — 模态框丝滑开关增强 === */
+@keyframes ai-modal-silk-enter {
+  0% {
+    transform: scale(0.92) translateY(20px);
+    opacity: 0;
+    filter: blur(8px) saturate(0.5);
+  }
+  30% {
+    transform: scale(1.015) translateY(-4px);
+    opacity: 0.85;
+    filter: blur(1px) saturate(0.9);
+  }
+  55% {
+    transform: scale(0.997) translateY(1px);
+    opacity: 0.96;
+    filter: blur(0) saturate(1);
+  }
+  75% {
+    transform: scale(1.003) translateY(-0.5px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    filter: blur(0) saturate(1);
+  }
+}
+
+@keyframes ai-modal-silk-exit {
+  0% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    transform: scale(0.95) translateY(16px);
+    opacity: 0;
+    filter: blur(6px);
+  }
+}
+
+@keyframes ai-backdrop-silk-in {
+  0% {
+    opacity: 0;
+    backdrop-filter: blur(0) saturate(1);
+  }
+  100% {
+    opacity: 1;
+    backdrop-filter: blur(16px) saturate(1.4);
+  }
+}
+
+.ai-modal-backdrop {
+  animation: ai-backdrop-silk-in 0.45s var(--ai-ease-gossamer, ease) both !important;
+}
+
+.ai-modal {
+  animation: ai-modal-silk-enter 0.65s var(--ai-spring-silk, ease) both !important;
+}
+
+/* === 895. Toast Entrance Silk Bounce v0.3.4 — Toast入场丝滑弹跳 === */
+@keyframes ai-toast-silk-bounce-in {
+  0% {
+    transform: translateX(60px) scale(0.85);
+    opacity: 0;
+    filter: blur(6px);
+  }
+  25% {
+    transform: translateX(-8px) scale(1.03);
+    opacity: 0.9;
+    filter: blur(0);
+  }
+  45% {
+    transform: translateX(4px) scale(0.99);
+  }
+  65% {
+    transform: translateX(-1.5px) scale(1.005);
+  }
+  80% {
+    transform: translateX(0.5px) scale(0.999);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* === 896. Scroll Indicator Fade v0.3.4 — 滚动指示器淡入淡出 === */
+.ai-panel-content {
+  mask-image: linear-gradient(to bottom,
+    transparent 0px,
+    black 6px,
+    black calc(100% - 6px),
+    transparent 100%) !important;
+  -webkit-mask-image: linear-gradient(to bottom,
+    transparent 0px,
+    black 6px,
+    black calc(100% - 6px),
+    transparent 100%) !important;
+}
+
+/* === 897. Settings Area Silk Reveal v0.3.4 — 设置区域丝滑揭示 === */
+@keyframes ai-settings-silk-reveal {
+  0% {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  40% {
+    opacity: 0.7;
+    transform: translateY(1px);
+  }
+  100% {
+    max-height: 2000px;
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ai-settings[style*="display: block"],
+.ai-settings[style*="display:block"] {
+  animation: ai-settings-silk-reveal 0.55s var(--ai-spring-silk, ease) both;
+}
+
+/* === 898. Smoke Theme v0.3.4 — 烟灰主题 === */
+[data-accent="smoke"] {
+  --ai-primary: #8B8589;
+  --ai-primary-dark: #6B6569;
+  --ai-primary-light: #B0ABB0;
+  --ai-primary-bg: rgba(139, 133, 137, 0.06);
+  --ai-primary-shadow: rgba(139, 133, 137, 0.22);
+  --ai-aurora-1: #8B8589;
+  --ai-aurora-2: #A09BA0;
+  --ai-aurora-3: #787278;
+  --ai-aurora-4: #9A959A;
+  --ai-aurora-5: #6E6A6E;
+  --ai-aurora-6: #B5AFB5;
+  --ai-aurora-7: #908A90;
+  --ai-aurora-8: #A5A0A5;
+  --ai-header-gradient: linear-gradient(135deg, #6B6569, #8B8589, #A09BA0);
+  --ai-float-gradient: linear-gradient(135deg, #8B8589, #A09BA0, #787278, #8B8589);
+  --ai-neon-glow: 0 0 16px rgba(139, 133, 137, 0.22),
+                  0 0 32px rgba(139, 133, 137, 0.10);
+  --ai-interaction-glow: rgba(139, 133, 137, 0.10);
+  --ai-glow-color: rgba(139, 133, 137, 0.06);
+  --ai-chromatic-border: linear-gradient(135deg, rgba(139,133,137,0.26), rgba(160,155,160,0.22), rgba(120,114,120,0.20));
+}
+
+.ai-accent-dot[data-accent="smoke"] {
+  background: linear-gradient(135deg, #8B8589, #A09BA0);
+}
+
+/* === 899. Pewter Theme v0.3.4 — 锡灰主题 === */
+[data-accent="pewter"] {
+  --ai-primary: #7B8A8E;
+  --ai-primary-dark: #5B6A6E;
+  --ai-primary-light: #A0B0B4;
+  --ai-primary-bg: rgba(123, 138, 142, 0.06);
+  --ai-primary-shadow: rgba(123, 138, 142, 0.22);
+  --ai-aurora-1: #7B8A8E;
+  --ai-aurora-2: #90A0A4;
+  --ai-aurora-3: #687A7E;
+  --ai-aurora-4: #849498;
+  --ai-aurora-5: #5E7074;
+  --ai-aurora-6: #A8B8BC;
+  --ai-aurora-7: #748488;
+  --ai-aurora-8: #98A8AC;
+  --ai-header-gradient: linear-gradient(135deg, #5B6A6E, #7B8A8E, #90A0A4);
+  --ai-float-gradient: linear-gradient(135deg, #7B8A8E, #90A0A4, #687A7E, #7B8A8E);
+  --ai-neon-glow: 0 0 16px rgba(123, 138, 142, 0.22),
+                  0 0 32px rgba(123, 138, 142, 0.10);
+  --ai-interaction-glow: rgba(123, 138, 142, 0.10);
+  --ai-glow-color: rgba(123, 138, 142, 0.06);
+  --ai-chromatic-border: linear-gradient(135deg, rgba(123,138,142,0.26), rgba(144,160,164,0.22), rgba(104,122,126,0.20));
+}
+
+.ai-accent-dot[data-accent="pewter"] {
+  background: linear-gradient(135deg, #7B8A8E, #90A0A4);
+}
+
+/* === 900. Sage Green Theme v0.3.4 — 鼠尾草主题 === */
+[data-accent="sage"] {
+  --ai-primary: #8A9A7B;
+  --ai-primary-dark: #6A7A5B;
+  --ai-primary-light: #B0C0A0;
+  --ai-primary-bg: rgba(138, 154, 123, 0.06);
+  --ai-primary-shadow: rgba(138, 154, 123, 0.22);
+  --ai-aurora-1: #8A9A7B;
+  --ai-aurora-2: #9EAE8E;
+  --ai-aurora-3: #788A68;
+  --ai-aurora-4: #94A484;
+  --ai-aurora-5: #6C7E5C;
+  --ai-aurora-6: #A8B898;
+  --ai-aurora-7: #84947A;
+  --ai-aurora-8: #98A890;
+  --ai-header-gradient: linear-gradient(135deg, #6A7A5B, #8A9A7B, #9EAE8E);
+  --ai-float-gradient: linear-gradient(135deg, #8A9A7B, #9EAE8E, #788A68, #8A9A7B);
+  --ai-neon-glow: 0 0 16px rgba(138, 154, 123, 0.22),
+                  0 0 32px rgba(138, 154, 123, 0.10);
+  --ai-interaction-glow: rgba(138, 154, 123, 0.10);
+  --ai-glow-color: rgba(138, 154, 123, 0.06);
+  --ai-chromatic-border: linear-gradient(135deg, rgba(138,154,123,0.26), rgba(158,174,142,0.22), rgba(120,138,104,0.20));
+}
+
+.ai-accent-dot[data-accent="sage"] {
+  background: linear-gradient(135deg, #8A9A7B, #9EAE8E);
+}
+
+/* === 901. Dark Mode Enhancements for New Themes v0.3.4 === */
+[data-theme="dark"][data-accent="smoke"] #ai-float-btn {
+  box-shadow: 0 0 16px rgba(139, 133, 137, 0.22), 0 0 32px rgba(139, 133, 137, 0.10);
+}
+[data-theme="dark"][data-accent="smoke"] .ai-nebula-particle {
+  background: radial-gradient(circle, rgba(139, 133, 137, 0.4), transparent) !important;
+}
+[data-theme="dark"][data-accent="pewter"] #ai-float-btn {
+  box-shadow: 0 0 16px rgba(123, 138, 142, 0.22), 0 0 32px rgba(123, 138, 142, 0.10);
+}
+[data-theme="dark"][data-accent="pewter"] .ai-nebula-particle {
+  background: radial-gradient(circle, rgba(123, 138, 142, 0.4), transparent) !important;
+}
+[data-theme="dark"][data-accent="sage"] #ai-float-btn {
+  box-shadow: 0 0 16px rgba(138, 154, 123, 0.22), 0 0 32px rgba(138, 154, 123, 0.10);
+}
+[data-theme="dark"][data-accent="sage"] .ai-nebula-particle {
+  background: radial-gradient(circle, rgba(138, 154, 123, 0.4), transparent) !important;
+}
+
+/* === 902. Float Button Hover Scale Silk v0.3.4 — 悬浮按钮悬停丝滑缩放 === */
+#ai-float-btn:hover {
+  transform: scale(1.10) !important;
+  transition: transform 0.45s var(--ai-spring-pudding, ease),
+              box-shadow 0.5s var(--ai-ease-gossamer, ease) !important;
+}
+
+/* === 903. Category Expand Arrow Rotate v0.3.4 — 分类展开箭头旋转 === */
+.ai-cat-row [data-lucide="chevron-down"],
+.ai-cat-row [data-lucide="chevron-right"] {
+  transition: transform 0.45s var(--ai-spring-silk, ease) !important;
+}
+
+/* === 904. Log Entry Stagger Entrance v0.3.4 — 日志条目交错入场 === */
+@keyframes ai-log-silk-entry {
+  0% {
+    transform: translateX(20px);
+    opacity: 0;
+    filter: blur(2px);
+  }
+  40% {
+    transform: translateX(-3px);
+    opacity: 0.85;
+    filter: blur(0);
+  }
+  65% {
+    transform: translateX(1px);
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.ai-log-entry {
+  animation: ai-log-silk-entry 0.45s var(--ai-spring-silk, ease) both !important;
+}
+
+/* === 905. Group Header Expand Bounce v0.3.4 — 设置组标题展开弹跳 === */
+@keyframes ai-group-bounce-expand {
+  0% {
+    max-height: 0;
+    opacity: 0;
+    transform: scaleY(0.95);
+    transform-origin: top;
+  }
+  40% {
+    opacity: 0.8;
+    transform: scaleY(1.01);
+  }
+  70% {
+    transform: scaleY(0.998);
+  }
+  100% {
+    max-height: 2000px;
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+/* === 906. Enhanced Scrollbar Glow v0.3.4 — 增强滚动条辉光 === */
+#ai-sort-wrapper ::-webkit-scrollbar-thumb:hover,
+.ai-modal ::-webkit-scrollbar-thumb:hover {
+  background: var(--ai-primary, #7364FF) !important;
+  box-shadow: 0 0 6px var(--ai-primary-bg, rgba(115,100,255,0.15));
+  transition: background 0.3s ease !important;
+}
+
+/* === 907. Panel Content Ambient Mist Layer v0.3.4 — 面板内容环境雾层 === */
+.ai-panel-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(to bottom,
+    var(--ai-bg-secondary, #F9F7FF) 0%,
+    transparent 100%);
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.ai-panel-content:not(:first-child)::before {
+  opacity: 0.5;
+}
+
+/* === 908. Video Item Hover Depth v0.3.4 — 视频项悬停深度感 === */
+.ai-vid-rich:hover {
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04) !important;
+  transition: all 0.4s var(--ai-spring-silk, ease),
+              box-shadow 0.5s var(--ai-ease-gossamer, ease) !important;
+}
+
+.ai-vid-rich:hover .ai-vid-cover {
+  transform: scale(1.08) rotate(-0.6deg) !important;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.12) !important;
+  transition: all 0.55s var(--ai-spring-pudding, ease) !important;
+}
+
+/* === 909. Reduced Motion Safeguard v0.3.4 === */
+@media (prefers-reduced-motion: reduce) {
+  #ai-float-btn,
+  #ai-sort-wrapper {
+    animation: none !important;
+  }
+  .ai-nebula-mist-canvas {
+    display: none !important;
   }
 }
