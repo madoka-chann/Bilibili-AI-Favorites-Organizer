@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.6.2
+// @version      1.6.3
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -4377,6 +4377,9 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'snow-peak', label: '雪峰' },
                 { id: 'deep-ink', label: '深墨' },
                 { id: 'warm-linen', label: '暖麻' },
+                { id: 'stone-moss', label: '苔石' },
+                { id: 'dried-rose', label: '干玫' },
+                { id: 'night-fog', label: '夜雾' },
                 { id: 'custom', label: '自定义' }
             ];
 
@@ -7944,6 +7947,214 @@ ${topUps.length > 0 ? `<div class="section">
             });
             ringObs.observe(floatBtn, { attributes: true, attributeFilter: ['style'] });
             if (floatBtn.style.display !== 'none') startRing();
+        })();
+
+        // === Velvet Gossamer Flow v0.3.2 — 游丝流光画布 Gossamer Thread Canvas ===
+        // Ethereal gossamer threads that float, breathe, and respond to mouse with magnetic pull
+        (() => {
+            const gossWrap = document.createElement('div');
+            gossWrap.className = 'ai-gossamer-canvas';
+            const gCanvas = document.createElement('canvas');
+            gossWrap.appendChild(gCanvas);
+            panel.insertBefore(gossWrap, panel.firstChild);
+
+            let gossRaf = null;
+            let gTime = 0;
+            let gMouseX = -1, gMouseY = -1;
+
+            const THREAD_COUNT = 6;
+            const KNOT_PER_THREAD = 8;
+            const threads = [];
+            for (let t = 0; t < THREAD_COUNT; t++) {
+                const knots = [];
+                const baseY = (t + 0.5) / THREAD_COUNT;
+                for (let k = 0; k < KNOT_PER_THREAD; k++) {
+                    knots.push({
+                        baseX: (k + 0.5) / KNOT_PER_THREAD,
+                        baseY: baseY + (Math.random() - 0.5) * 0.12,
+                        x: 0, y: 0,
+                        phase: Math.random() * Math.PI * 2,
+                        ampX: 0.006 + Math.random() * 0.014,
+                        ampY: 0.008 + Math.random() * 0.018,
+                        freqX: 0.3 + Math.random() * 0.4,
+                        freqY: 0.25 + Math.random() * 0.35,
+                    });
+                }
+                threads.push({
+                    knots,
+                    colorIdx: t % 3,
+                    width: 0.6 + Math.random() * 0.8,
+                    breathPhase: Math.random() * Math.PI * 2,
+                    breathSpeed: 0.4 + Math.random() * 0.6,
+                });
+            }
+
+            // Floating dust motes along threads
+            const DUST_COUNT = 14;
+            const dustMotes = [];
+            for (let i = 0; i < DUST_COUNT; i++) {
+                dustMotes.push({
+                    threadIdx: i % THREAD_COUNT,
+                    t: Math.random(), // position along thread 0-1
+                    speed: 0.0008 + Math.random() * 0.0015,
+                    size: 1.0 + Math.random() * 2.0,
+                    phase: Math.random() * Math.PI * 2,
+                    pulseSpeed: 0.5 + Math.random() * 0.8,
+                    colorIdx: i % 3,
+                });
+            }
+
+            const gossResize = () => {
+                const r = panel.getBoundingClientRect();
+                gCanvas.width = Math.round(r.width * 0.35);
+                gCanvas.height = Math.round(r.height * 0.35);
+            };
+
+            const getGossColors = () => {
+                const cs = getComputedStyle(document.documentElement);
+                return [
+                    cs.getPropertyValue('--ai-aurora-1').trim() || '#7364FF',
+                    cs.getPropertyValue('--ai-aurora-3').trim() || '#9B59F6',
+                    cs.getPropertyValue('--ai-aurora-5').trim() || '#20E3B2',
+                ];
+            };
+
+            const hexToRgbG = (hex) => {
+                hex = hex.replace('#', '');
+                if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+                const n = parseInt(hex, 16);
+                return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+            };
+
+            panel.addEventListener('mousemove', (e) => {
+                const rect = gCanvas.getBoundingClientRect();
+                if (rect.width > 0) {
+                    gMouseX = (e.clientX - rect.left) / rect.width;
+                    gMouseY = (e.clientY - rect.top) / rect.height;
+                }
+            });
+            panel.addEventListener('mouseleave', () => { gMouseX = -1; gMouseY = -1; });
+
+            const renderGossamer = () => {
+                const ctx = gCanvas.getContext('2d');
+                if (!ctx || !gCanvas.width) { gossRaf = requestAnimationFrame(renderGossamer); return; }
+                const w = gCanvas.width, h = gCanvas.height;
+                ctx.clearRect(0, 0, w, h);
+                gTime += 0.005;
+
+                const colors = getGossColors();
+                const rgbs = colors.map(hexToRgbG);
+
+                // Update knot positions with organic wave motion
+                for (const thread of threads) {
+                    const breathScale = 1 + Math.sin(gTime * thread.breathSpeed + thread.breathPhase) * 0.2;
+                    for (const knot of thread.knots) {
+                        knot.x = knot.baseX + Math.sin(gTime * knot.freqX + knot.phase) * knot.ampX * breathScale
+                               + Math.cos(gTime * knot.freqX * 0.6 + knot.phase * 1.4) * knot.ampX * 0.3;
+                        knot.y = knot.baseY + Math.cos(gTime * knot.freqY + knot.phase * 0.7) * knot.ampY * breathScale
+                               + Math.sin(gTime * knot.freqY * 0.5 + knot.phase * 1.6) * knot.ampY * 0.25;
+
+                        // Mouse magnetic attraction
+                        if (gMouseX >= 0) {
+                            const dx = gMouseX - knot.x;
+                            const dy = gMouseY - knot.y;
+                            const dist = Math.sqrt(dx * dx + dy * dy);
+                            if (dist < 0.25 && dist > 0) {
+                                const pull = (0.25 - dist) / 0.25 * 0.04;
+                                knot.x += dx * pull;
+                                knot.y += dy * pull;
+                            }
+                        }
+                    }
+                }
+
+                // Draw threads as flowing bezier curves
+                ctx.lineCap = 'round';
+                for (const thread of threads) {
+                    const rgb = rgbs[thread.colorIdx];
+                    const alpha = 0.12 + Math.sin(gTime * thread.breathSpeed + thread.breathPhase) * 0.06;
+                    ctx.strokeStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${alpha})`;
+                    ctx.lineWidth = thread.width;
+
+                    const knots = thread.knots;
+                    if (knots.length < 2) continue;
+                    ctx.beginPath();
+                    ctx.moveTo(knots[0].x * w, knots[0].y * h);
+                    for (let i = 0; i < knots.length - 1; i++) {
+                        const curr = knots[i];
+                        const next = knots[i + 1];
+                        const mx = (curr.x + next.x) / 2 * w;
+                        const my = (curr.y + next.y) / 2 * h;
+                        ctx.quadraticCurveTo(curr.x * w, curr.y * h, mx, my);
+                    }
+                    const last = knots[knots.length - 1];
+                    ctx.lineTo(last.x * w, last.y * h);
+                    ctx.stroke();
+
+                    // Second pass — thinner highlight thread with offset
+                    ctx.strokeStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${alpha * 0.4})`;
+                    ctx.lineWidth = thread.width * 0.4;
+                    ctx.beginPath();
+                    ctx.moveTo(knots[0].x * w + 1, knots[0].y * h - 1);
+                    for (let i = 0; i < knots.length - 1; i++) {
+                        const curr = knots[i];
+                        const next = knots[i + 1];
+                        const mx = (curr.x + next.x) / 2 * w + 1;
+                        const my = (curr.y + next.y) / 2 * h - 1;
+                        ctx.quadraticCurveTo(curr.x * w + 1, curr.y * h - 1, mx, my);
+                    }
+                    ctx.lineTo(last.x * w + 1, last.y * h - 1);
+                    ctx.stroke();
+                }
+
+                // Dust motes floating along threads
+                for (const dust of dustMotes) {
+                    dust.t += dust.speed;
+                    if (dust.t > 1) dust.t -= 1;
+
+                    const thread = threads[dust.threadIdx];
+                    const knots = thread.knots;
+                    const totalLen = knots.length - 1;
+                    const segF = dust.t * totalLen;
+                    const segI = Math.min(Math.floor(segF), totalLen - 1);
+                    const segT = segF - segI;
+                    const k0 = knots[segI], k1 = knots[Math.min(segI + 1, knots.length - 1)];
+                    const px = (k0.x + (k1.x - k0.x) * segT) * w;
+                    const py = (k0.y + (k1.y - k0.y) * segT) * h;
+
+                    const rgb = rgbs[dust.colorIdx];
+                    const pulseAlpha = (0.3 + Math.sin(gTime * dust.pulseSpeed + dust.phase) * 0.25);
+
+                    // Glow halo
+                    const grad = ctx.createRadialGradient(px, py, 0, px, py, dust.size * 4);
+                    grad.addColorStop(0, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${pulseAlpha * 0.35})`);
+                    grad.addColorStop(0.5, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${pulseAlpha * 0.10})`);
+                    grad.addColorStop(1, `rgba(${rgb[0]},${rgb[1]},${rgb[2]},0)`);
+                    ctx.beginPath();
+                    ctx.arc(px, py, dust.size * 4, 0, Math.PI * 2);
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+
+                    // Core
+                    ctx.beginPath();
+                    ctx.arc(px, py, dust.size * 0.5, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${pulseAlpha * 0.7})`;
+                    ctx.fill();
+                }
+
+                gossRaf = requestAnimationFrame(renderGossamer);
+            };
+
+            const startGossamer = () => { gossResize(); if (!gossRaf) renderGossamer(); };
+            const stopGossamer = () => { if (gossRaf) { cancelAnimationFrame(gossRaf); gossRaf = null; } };
+
+            const gossObs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startGossamer();
+                else stopGossamer();
+            });
+            gossObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startGossamer();
+            window.addEventListener('resize', () => { if (panel.style.display !== 'none') gossResize(); });
         })();
 
         // === Velvet Zephyr Flow v0.2.4 — Float Button Idle Shimmer 悬浮按钮闲置微光 ===
