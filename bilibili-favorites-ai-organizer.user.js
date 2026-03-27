@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         B站 AI 收藏夹自动分类整理
 // @namespace    http://tampermonkey.net/
-// @version      1.6.1
+// @version      1.6.2
 // @description  支持所有AI智能分类B站收藏夹视频 | 自定义模板/增量整理/定时自动整理/AI费用估算/分类导出CSV&JSON&HTML报告/收藏夹健康报告/置信度可视化&低置信度筛选/失效视频批量归档/抓取缓存/动态System Prompt/Token用量追踪/标题栏进度/智能碎片合并/跨收藏夹去重/分类合并/AI自动重试/遗漏检测/全局防风控冷却/可拖拽按钮/XSS安全/撤销历史栈/备份/自适应限速/Toast通知/Confetti庆祝动画/键盘快捷键/整理历史时间线/极光渐变UI/毛玻璃面板
 // @author       B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板
 // @match        *://*.bilibili.com/*
@@ -4374,6 +4374,9 @@ ${topUps.length > 0 ? `<div class="section">
                 { id: 'willow', label: '柳烟' },
                 { id: 'dusk-rose', label: '暮玫' },
                 { id: 'iron-blue', label: '铁青' },
+                { id: 'snow-peak', label: '雪峰' },
+                { id: 'deep-ink', label: '深墨' },
+                { id: 'warm-linen', label: '暖麻' },
                 { id: 'custom', label: '自定义' }
             ];
 
@@ -7771,6 +7774,176 @@ ${topUps.length > 0 ? `<div class="section">
             breathObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startBreath();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') breathResize(); });
+        })();
+
+        // === Velvet Luminous Tide v0.3.1 — 潮光画布 Luminous Tide Canvas ===
+        // Soft tidal light orbs that drift, pulse, and gently attract each other
+        (() => {
+            const tideWrap = document.createElement('div');
+            tideWrap.className = 'ai-luminous-tide-canvas';
+            const tCanvas = document.createElement('canvas');
+            tideWrap.appendChild(tCanvas);
+            panel.insertBefore(tideWrap, panel.firstChild);
+
+            let tideRaf = null;
+            let tTime = 0;
+
+            const ORB_COUNT = 12;
+            const orbs = [];
+            for (let i = 0; i < ORB_COUNT; i++) {
+                orbs.push({
+                    x: Math.random(), y: Math.random(),
+                    vx: (Math.random() - 0.5) * 0.0004,
+                    vy: (Math.random() - 0.5) * 0.0003,
+                    radius: 0.03 + Math.random() * 0.05,
+                    phase: Math.random() * Math.PI * 2,
+                    pulseSpeed: 0.3 + Math.random() * 0.5,
+                    driftFreq: 0.4 + Math.random() * 0.6,
+                    colorIdx: i % 3,
+                });
+            }
+
+            const tideResize = () => {
+                const r = panel.getBoundingClientRect();
+                tCanvas.width = Math.round(r.width * 0.3);
+                tCanvas.height = Math.round(r.height * 0.3);
+            };
+
+            const getTideColors = () => {
+                const cs = getComputedStyle(document.documentElement);
+                return [
+                    cs.getPropertyValue('--ai-aurora-1').trim() || '#7364FF',
+                    cs.getPropertyValue('--ai-aurora-3').trim() || '#9B59F6',
+                    cs.getPropertyValue('--ai-aurora-5').trim() || '#20E3B2',
+                ];
+            };
+
+            const hexToRgbT = (hex) => {
+                hex = hex.replace('#', '');
+                if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+                const n = parseInt(hex, 16);
+                return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+            };
+
+            const renderTide = () => {
+                const ctx = tCanvas.getContext('2d');
+                if (!ctx || !tCanvas.width) { tideRaf = requestAnimationFrame(renderTide); return; }
+                const w = tCanvas.width, h = tCanvas.height;
+
+                // Gentle fade for soft trailing
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+                ctx.fillRect(0, 0, w, h);
+                ctx.globalCompositeOperation = 'lighter';
+
+                tTime += 0.005;
+                const colors = getTideColors();
+                const rgbs = colors.map(hexToRgbT);
+
+                for (let i = 0; i < orbs.length; i++) {
+                    const o = orbs[i];
+
+                    // Tidal drift with sine modulation
+                    o.x += o.vx + Math.sin(tTime * o.driftFreq + o.phase) * 0.0003;
+                    o.y += o.vy + Math.cos(tTime * o.driftFreq * 0.8 + o.phase * 1.3) * 0.00025;
+
+                    // Soft mutual attraction between nearby orbs
+                    for (let j = i + 1; j < orbs.length; j++) {
+                        const dx = orbs[j].x - o.x;
+                        const dy = orbs[j].y - o.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 0.3 && dist > 0.01) {
+                            const force = 0.000004 / (dist * dist);
+                            o.vx += dx * force;
+                            o.vy += dy * force;
+                            orbs[j].vx -= dx * force;
+                            orbs[j].vy -= dy * force;
+                        }
+                    }
+
+                    // Velocity damping
+                    o.vx *= 0.998;
+                    o.vy *= 0.998;
+
+                    // Wrap around edges
+                    if (o.x < -0.1) o.x = 1.1;
+                    if (o.x > 1.1) o.x = -0.1;
+                    if (o.y < -0.1) o.y = 1.1;
+                    if (o.y > 1.1) o.y = -0.1;
+
+                    // Pulse breathing radius
+                    const pulseR = o.radius * (1 + Math.sin(tTime * o.pulseSpeed + o.phase) * 0.3);
+                    const rgb = rgbs[o.colorIdx];
+                    const alpha = 0.035 + Math.sin(tTime * o.pulseSpeed * 0.6 + o.phase) * 0.02;
+
+                    const cx = o.x * w;
+                    const cy = o.y * h;
+                    const r = pulseR * Math.min(w, h);
+
+                    const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+                    grad.addColorStop(0, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`);
+                    grad.addColorStop(0.6, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha * 0.4})`);
+                    grad.addColorStop(1, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0)`);
+                    ctx.fillStyle = grad;
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // Tidal wave overlay — horizontal luminous band
+                const waveY = h * (0.5 + Math.sin(tTime * 0.25) * 0.3);
+                const waveH = h * 0.15;
+                const rgb0 = rgbs[0];
+                const waveAlpha = 0.015 + Math.sin(tTime * 0.4) * 0.008;
+                const waveGrad = ctx.createLinearGradient(0, waveY - waveH, 0, waveY + waveH);
+                waveGrad.addColorStop(0, 'transparent');
+                waveGrad.addColorStop(0.5, `rgba(${rgb0[0]}, ${rgb0[1]}, ${rgb0[2]}, ${waveAlpha})`);
+                waveGrad.addColorStop(1, 'transparent');
+                ctx.fillStyle = waveGrad;
+                ctx.fillRect(0, waveY - waveH, w, waveH * 2);
+
+                ctx.globalCompositeOperation = 'source-over';
+                tideRaf = requestAnimationFrame(renderTide);
+            };
+
+            const startTide = () => { tideResize(); if (!tideRaf) renderTide(); };
+            const stopTide = () => { if (tideRaf) { cancelAnimationFrame(tideRaf); tideRaf = null; } };
+
+            const tideObs = new MutationObserver(() => {
+                if (panel.style.display !== 'none') startTide();
+                else stopTide();
+            });
+            tideObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
+            if (panel.style.display !== 'none') startTide();
+            window.addEventListener('resize', () => { if (panel.style.display !== 'none') tideResize(); });
+        })();
+
+        // === Velvet Luminous Tide v0.3.1 — Float Button Ambient Pulse Ring 悬浮按钮环境脉冲环 ===
+        (() => {
+            let ringRaf = null;
+            let ringTime = 0;
+            const ringEl = document.createElement('div');
+            ringEl.className = 'ai-float-pulse-ring';
+            floatBtn.appendChild(ringEl);
+
+            const renderRing = () => {
+                ringTime += 0.012;
+                const scale = 1 + Math.sin(ringTime * 0.6) * 0.12;
+                const alpha = 0.15 + Math.sin(ringTime * 0.8) * 0.08;
+                ringEl.style.transform = `translate(-50%, -50%) scale(${scale.toFixed(3)})`;
+                ringEl.style.opacity = alpha.toFixed(3);
+                ringRaf = requestAnimationFrame(renderRing);
+            };
+
+            const startRing = () => { if (!ringRaf) renderRing(); };
+            const stopRing = () => { if (ringRaf) { cancelAnimationFrame(ringRaf); ringRaf = null; } };
+
+            const ringObs = new MutationObserver(() => {
+                if (floatBtn.style.display !== 'none') startRing();
+                else stopRing();
+            });
+            ringObs.observe(floatBtn, { attributes: true, attributeFilter: ['style'] });
+            if (floatBtn.style.display !== 'none') startRing();
         })();
 
         // === Velvet Zephyr Flow v0.2.4 — Float Button Idle Shimmer 悬浮按钮闲置微光 ===

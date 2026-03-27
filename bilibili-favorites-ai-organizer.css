@@ -1,8 +1,8 @@
 /* ================================================================
-   B站 AI 收藏夹整理助理 — 完整样式表 v0.3.0
-   Velvet Silk Breath · 天鹅绒丝息 · Refined Glass Morphism
+   B站 AI 收藏夹整理助理 — 完整样式表 v0.3.1
+   Velvet Luminous Tide · 天鹅绒潮光 · Refined Glass Morphism
    Indigo-Nebula 双色系统 · Restrained Aurora Palette
-   Velvet Dynamics 33.0 · Ultra-Smooth Spring Micro-interactions
+   Velvet Dynamics 34.0 · Ultra-Smooth Spring Micro-interactions
    Stellar Abyss Dark Theme · Living Glass Surfaces
    Multi-Accent Color Themes · Ambient Light Motes · Liquid Borders
    Magnetic Tilt · Cursor-Reactive Particles · Fluid Morphing
@@ -32,9 +32,10 @@
    Velvet Zen Flow · Zen Ripple Canvas · Liquid Morph Idle · InkCloud & WarmWool & StillWater Themes
    Velvet Aura Flow · Aura Filament Canvas · Magnetic Parallax · Lotus & AmberMist & FrozenLake Themes
    Velvet Silk Breath · Silk Breath Canvas · Jelly Micro-physics · Willow & DuskRose & IronBlue Themes
+   Velvet Luminous Tide · Luminous Tide Canvas · Pulse Ring · SnowPeak & DeepInk & WarmLinen Themes
    ================================================================ */
 
-/* === 1. CSS 变量 (双主题系统) v0.3.0 === */
+/* === 1. CSS 变量 (双主题系统) v0.3.1 === */
 
 /* 亮色主题（默认） — 星潮·晨曦琉璃 Astral Glasstide */
 :root, [data-theme="light"] {
@@ -20270,7 +20271,7 @@ textarea:focus {
   left: 150%;
 }
 
-/* === 825. Smooth Theme Switch Crossfade v0.3.0 — 丝滑主题切换交叉淡入 === */
+/* === 825. Smooth Theme Switch Crossfade v0.3.1 — 丝滑主题切换交叉淡入 === */
 #ai-sort-wrapper, .ai-modal, #ai-float-btn,
 .ai-panel-content, .ai-settings, .ai-header,
 .ai-btn, .ai-btn-tool, .ai-input, .ai-select,
@@ -20280,4 +20281,382 @@ textarea:focus {
               color 0.6s var(--ai-ease-silk-out, ease),
               border-color 0.6s var(--ai-ease-silk-out, ease),
               box-shadow 0.7s var(--ai-ease-silk-out, ease) !important;
+}
+
+/* ================================================================
+   v0.3.1 — Velvet Luminous Tide · 天鹅绒潮光
+   Velvet Dynamics 34.0 · 潮光画布+脉冲环+雪峰&深墨&暖麻主题+丝滑动效升级
+   ================================================================ */
+
+/* === 826. Snow Peak Accent Theme v0.3.1 — 雪峰主题 === */
+[data-accent="snow-peak"] {
+  --ai-primary: #8B9DAF;
+  --ai-primary-dark: #6B8099;
+  --ai-primary-light: #B8C8D8;
+  --ai-primary-bg: rgba(139, 157, 175, 0.06);
+  --ai-primary-shadow: rgba(139, 157, 175, 0.18);
+  --ai-aurora-1: #8B9DAF;
+  --ai-aurora-2: #A3B2C0;
+  --ai-aurora-3: #6B8099;
+  --ai-aurora-4: #97ABBA;
+  --ai-aurora-5: #7E92A5;
+  --ai-aurora-6: #AFC0CE;
+  --ai-aurora-7: #C4D1DB;
+  --ai-aurora-8: #D6DFE6;
+  --ai-header-gradient: linear-gradient(135deg, #6B8099, #8B9DAF, #6B8099);
+  --ai-float-gradient: linear-gradient(135deg, #8B9DAF 0%, #A3B2C0 40%, #B8C8D8 70%, #8B9DAF 100%);
+  --ai-neon-glow: 0 0 14px rgba(139, 157, 175, 0.16),
+                  0 0 28px rgba(107, 128, 153, 0.07);
+  --ai-glow-color: rgba(139, 157, 175, 0.06);
+  --ai-scrollbar: #B8C8D8;
+  --ai-scrollbar-hover: #8B9DAF;
+  --ai-interaction-glow: rgba(139, 157, 175, 0.09);
+}
+.ai-accent-dot[data-accent="snow-peak"] { background: linear-gradient(135deg, #8B9DAF, #6B8099); }
+
+/* === 827. Deep Ink Accent Theme v0.3.1 — 深墨主题 === */
+[data-accent="deep-ink"] {
+  --ai-primary: #4A5568;
+  --ai-primary-dark: #2D3748;
+  --ai-primary-light: #718096;
+  --ai-primary-bg: rgba(74, 85, 104, 0.06);
+  --ai-primary-shadow: rgba(74, 85, 104, 0.20);
+  --ai-aurora-1: #4A5568;
+  --ai-aurora-2: #5A6778;
+  --ai-aurora-3: #2D3748;
+  --ai-aurora-4: #546070;
+  --ai-aurora-5: #3E4E5E;
+  --ai-aurora-6: #687888;
+  --ai-aurora-7: #7C8C9A;
+  --ai-aurora-8: #90A0AE;
+  --ai-header-gradient: linear-gradient(135deg, #2D3748, #4A5568, #2D3748);
+  --ai-float-gradient: linear-gradient(135deg, #4A5568 0%, #5A6778 40%, #718096 70%, #4A5568 100%);
+  --ai-neon-glow: 0 0 14px rgba(74, 85, 104, 0.18),
+                  0 0 28px rgba(45, 55, 72, 0.08);
+  --ai-glow-color: rgba(74, 85, 104, 0.07);
+  --ai-scrollbar: #718096;
+  --ai-scrollbar-hover: #4A5568;
+  --ai-interaction-glow: rgba(74, 85, 104, 0.10);
+}
+.ai-accent-dot[data-accent="deep-ink"] { background: linear-gradient(135deg, #4A5568, #2D3748); }
+
+/* === 828. Warm Linen Accent Theme v0.3.1 — 暖麻主题 === */
+[data-accent="warm-linen"] {
+  --ai-primary: #A89078;
+  --ai-primary-dark: #8C7460;
+  --ai-primary-light: #C4B0A0;
+  --ai-primary-bg: rgba(168, 144, 120, 0.06);
+  --ai-primary-shadow: rgba(168, 144, 120, 0.18);
+  --ai-aurora-1: #A89078;
+  --ai-aurora-2: #B8A090;
+  --ai-aurora-3: #8C7460;
+  --ai-aurora-4: #B09884;
+  --ai-aurora-5: #9A846E;
+  --ai-aurora-6: #C0AC9C;
+  --ai-aurora-7: #D0C0B2;
+  --ai-aurora-8: #DDD0C4;
+  --ai-header-gradient: linear-gradient(135deg, #8C7460, #A89078, #8C7460);
+  --ai-float-gradient: linear-gradient(135deg, #A89078 0%, #B8A090 40%, #C4B0A0 70%, #A89078 100%);
+  --ai-neon-glow: 0 0 14px rgba(168, 144, 120, 0.16),
+                  0 0 28px rgba(140, 116, 96, 0.07);
+  --ai-glow-color: rgba(168, 144, 120, 0.06);
+  --ai-scrollbar: #C4B0A0;
+  --ai-scrollbar-hover: #A89078;
+  --ai-interaction-glow: rgba(168, 144, 120, 0.09);
+}
+.ai-accent-dot[data-accent="warm-linen"] { background: linear-gradient(135deg, #A89078, #8C7460); }
+
+/* === 829. Luminous Tide Canvas Container v0.3.1 — 潮光画布容器 === */
+.ai-luminous-tide-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+  opacity: 0.75;
+  mix-blend-mode: screen;
+}
+.ai-luminous-tide-canvas canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+[data-theme="dark"] .ai-luminous-tide-canvas {
+  opacity: 0.55;
+  mix-blend-mode: screen;
+}
+
+/* === 830. Float Button Ambient Pulse Ring v0.3.1 — 悬浮按钮环境脉冲环 === */
+.ai-float-pulse-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 120%;
+  height: 120%;
+  border-radius: 50%;
+  border: 1.5px solid var(--ai-primary, #7364FF);
+  opacity: 0.15;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: none;
+  will-change: transform, opacity;
+  filter: blur(0.5px);
+}
+[data-theme="dark"] .ai-float-pulse-ring {
+  border-color: var(--ai-primary-light, #B0A8FF);
+  opacity: 0.12;
+}
+
+/* === 831. Enhanced Hover Ripple Propagation v0.3.1 — 增强悬浮涟漪传播 === */
+.ai-cat-row {
+  position: relative;
+  overflow: hidden;
+}
+.ai-cat-row::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    var(--ai-interaction-glow, rgba(115,100,255,0.08)) 0%,
+    transparent 60%);
+  opacity: 0;
+  transition: opacity 0.5s var(--ai-ease-silk-out, ease);
+  pointer-events: none;
+  z-index: 0;
+}
+.ai-cat-row:hover::before {
+  opacity: 1;
+}
+
+/* === 832. Silky Accordion Expand v0.3.1 — 丝滑手风琴展开动效 === */
+.ai-cat-detail {
+  transition: max-height 0.55s var(--ai-spring-silk, cubic-bezier(0.20,1.10,0.36,1)),
+              opacity 0.4s var(--ai-ease-silk-out, ease),
+              padding 0.4s var(--ai-ease-silk-out, ease) !important;
+}
+.ai-cat-detail.open {
+  animation: ai-accordion-breathe 0.5s var(--ai-spring-silk, ease) forwards;
+}
+@keyframes ai-accordion-breathe {
+  0% { transform: scaleY(0.96); transform-origin: top; }
+  50% { transform: scaleY(1.008); }
+  100% { transform: scaleY(1); }
+}
+
+/* === 833. Improved Jelly Press v0.3.1 — 改进果冻按压(更Q弹) === */
+@keyframes ai-jelly-press-v2 {
+  0% {
+    transform: scale(1);
+  }
+  12% {
+    transform: scale(0.86, 1.10);
+  }
+  28% {
+    transform: scale(1.08, 0.93);
+  }
+  42% {
+    transform: scale(0.975, 1.025);
+  }
+  56% {
+    transform: scale(1.02, 0.99);
+  }
+  72% {
+    transform: scale(0.993, 1.006);
+  }
+  86% {
+    transform: scale(1.004, 0.998);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.ai-btn:active,
+.ai-header-btn:active,
+.ai-modal-btn:active {
+  animation: ai-jelly-press-v2 0.55s var(--ai-spring-velvet, cubic-bezier(0.17,1.32,0.40,1)) !important;
+}
+
+/* === 834. Float Button Hover Elastic Squash v0.3.1 — 悬浮按钮悬浮弹性挤压 === */
+#ai-float-btn:hover {
+  animation: ai-float-gradient-shift 16s ease-in-out infinite !important;
+  transform: scale(1.08) !important;
+  transition: transform 0.5s var(--ai-spring-jelly, cubic-bezier(0.22,1.52,0.38,1)) !important;
+}
+#ai-float-btn:active {
+  transform: scale(0.92) !important;
+  transition: transform 0.12s ease !important;
+}
+
+/* === 835. Settings Group Fold Silk v0.3.1 — 设置组折叠丝滑动效 === */
+.ai-group-body {
+  transition: opacity 0.4s var(--ai-ease-silk-out, ease),
+              max-height 0.5s var(--ai-spring-silk, ease) !important;
+  overflow: hidden;
+}
+.ai-group-body[style*="display: none"],
+.ai-group-body[style*="display:none"] {
+  opacity: 0;
+  max-height: 0 !important;
+}
+
+/* === 836. Header Shimmer Sweep v0.3.1 — 头部微光扫掠(常驻) === */
+.ai-header::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 80%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), rgba(255,255,255,0.10), rgba(255,255,255,0.06), transparent);
+  animation: ai-header-shimmer-sweep 8s var(--ai-ease-smooth, ease) infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+@keyframes ai-header-shimmer-sweep {
+  0% { left: -120%; }
+  40% { left: 120%; }
+  100% { left: 120%; }
+}
+
+/* === 837. Filter Button Elastic Toggle v0.3.1 — 筛选按钮弹性切换 === */
+.ai-filter-btn {
+  transition: all 0.45s var(--ai-spring-silk, cubic-bezier(0.20,1.10,0.36,1)) !important;
+}
+.ai-filter-btn.active {
+  animation: ai-filter-pop 0.45s var(--ai-spring-jelly, cubic-bezier(0.22,1.52,0.38,1)) forwards;
+}
+@keyframes ai-filter-pop {
+  0% { transform: scale(0.9); }
+  40% { transform: scale(1.08); }
+  65% { transform: scale(0.975); }
+  100% { transform: scale(1); }
+}
+
+/* === 838. Panel Close Silk Dissolve v0.3.1 — 面板关闭丝滑溶解 === */
+@keyframes ai-panel-aura-close {
+  0% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    filter: blur(0);
+  }
+  40% {
+    transform: scale(0.98) translateY(6px);
+    opacity: 0.7;
+    filter: blur(1px);
+  }
+  100% {
+    transform: scale(0.93, 0.96) translateY(18px);
+    opacity: 0;
+    filter: blur(5px);
+  }
+}
+
+/* === 839. Video Cover Hover Lift v0.3.1 — 视频封面悬浮抬升 === */
+.ai-vid-cover {
+  transition: transform 0.45s var(--ai-spring-silk, ease),
+              box-shadow 0.4s var(--ai-ease-silk-out, ease) !important;
+}
+.ai-vid-rich:hover .ai-vid-cover {
+  transform: scale(1.06) translateY(-2px) !important;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12) !important;
+}
+
+/* === 840. Scrollbar Silk Transition v0.3.1 — 滚动条丝滑过渡 === */
+#ai-sort-wrapper ::-webkit-scrollbar-thumb,
+.ai-modal ::-webkit-scrollbar-thumb {
+  transition: background-color 0.4s ease, width 0.3s ease !important;
+}
+#ai-sort-wrapper ::-webkit-scrollbar-thumb:hover,
+.ai-modal ::-webkit-scrollbar-thumb:hover {
+  background: var(--ai-scrollbar-hover) !important;
+}
+
+/* === 841. Ambient Breathe Overlay v0.3.1 — 环境呼吸叠层 === */
+@keyframes ai-ambient-breathe {
+  0%, 100% {
+    background-position: 0% 50%;
+    opacity: 0.3;
+  }
+  50% {
+    background-position: 100% 50%;
+    opacity: 0.5;
+  }
+}
+#ai-sort-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--ai-mesh-gradient);
+  background-size: 200% 200%;
+  animation: ai-ambient-breathe 12s var(--ai-ease-breath-deep, ease) infinite;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+  opacity: 0.4;
+}
+
+/* === 842. Float Button Spring Return v0.3.1 — 悬浮按钮弹簧回场 === */
+@keyframes ai-velvet-spring-in {
+  0% {
+    transform: scale(0) translateY(20px);
+    opacity: 0;
+  }
+  30% {
+    transform: scale(1.15) translateY(-4px);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(0.94) translateY(1px);
+    opacity: 0.95;
+  }
+  70% {
+    transform: scale(1.04) translateY(-0.5px);
+  }
+  85% {
+    transform: scale(0.99);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* === 843. Modal Backdrop Silk Blur v0.3.1 — 模态背景丝滑模糊 === */
+@keyframes ai-backdrop-silk-in {
+  0% {
+    backdrop-filter: blur(0px) saturate(1);
+    opacity: 0;
+  }
+  100% {
+    backdrop-filter: blur(16px) saturate(1.4);
+    opacity: 1;
+  }
+}
+.ai-modal-backdrop {
+  animation: ai-backdrop-silk-in 0.4s var(--ai-ease-silk-out, ease) forwards !important;
+}
+
+/* === 844. Accent Picker Dot Hover Spring v0.3.1 — 主题色选择悬浮弹簧 === */
+.ai-accent-dot {
+  transition: transform 0.4s var(--ai-spring-silk, ease),
+              box-shadow 0.35s var(--ai-ease-silk-out, ease) !important;
+}
+.ai-accent-dot:hover {
+  transform: scale(1.2) translateY(-2px) !important;
+  box-shadow: 0 4px 12px var(--ai-glow-color, rgba(115,100,255,0.12)) !important;
+}
+
+/* === 845. Checkbox Jelly Toggle v0.3.1 — 复选框果冻切换 === */
+.ai-cat-row input[type="checkbox"] {
+  transition: transform 0.4s var(--ai-spring-jelly, cubic-bezier(0.22,1.52,0.38,1)) !important;
+}
+.ai-cat-row input[type="checkbox"]:checked {
+  animation: ai-check-pop 0.4s var(--ai-spring-jelly, ease) forwards;
+}
+@keyframes ai-check-pop {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.3); }
+  55% { transform: scale(0.9); }
+  75% { transform: scale(1.08); }
+  100% { transform: scale(1); }
 }
