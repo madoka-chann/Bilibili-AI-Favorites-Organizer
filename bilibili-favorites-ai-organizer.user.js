@@ -4518,6 +4518,14 @@ ${topUps.length > 0 ? `<div class="section">
 
         // === Velvet Silk v0.0.2 — 丝绒微光特性 ===
 
+        // === 延迟初始化画布动效（首次打开面板时执行，避免页面卡死）===
+        let _canvasEffectsInited = false;
+        function _initCanvasEffects() {
+            if (_canvasEffectsInited) return;
+            _canvasEffectsInited = true;
+            const animSettings = loadSettings();
+            if (!animSettings.animEnabled) return;
+
         // === Ambient Light Motes 环境光斑 ===
         (() => {
             const motesWrap = document.createElement('div');
@@ -8949,6 +8957,8 @@ ${topUps.length > 0 ? `<div class="section">
             if (panel.style.display !== 'none') startLava();
         })();
 
+        } // end _initCanvasEffects — 画布动效延迟初始化结束
+
         // === Header Prismatic Ribbon 头部棱光彩带 ===
         (() => {
             const header = panel.querySelector('.ai-header');
@@ -9317,6 +9327,8 @@ ${topUps.length > 0 ? `<div class="section">
                 floatBtn.style.opacity = '';
                 floatBtn.style.filter = '';
             });
+            // 首次打开面板时初始化画布动效
+            _initCanvasEffects();
             // 面板弹性形变弹出 — Velvet Bloom v0.1.0
             panel.classList.remove('ai-panel-closing');
             panel.style.animation = 'none';
@@ -9768,6 +9780,7 @@ ${topUps.length > 0 ? `<div class="section">
                     panel.style.display = 'none';
                     floatBtn.style.display = 'flex';
                 } else {
+                    _initCanvasEffects();
                     floatBtn.style.display = 'none';
                     panel.style.display = 'flex';
                 }
