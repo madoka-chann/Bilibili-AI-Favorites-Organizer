@@ -1229,8 +1229,20 @@
     }
 
     function getSourceMediaId() {
+        // 优先从 search 参数获取（旧版 URL: ?fid=XXX）
         const params = new URLSearchParams(window.location.search);
-        return params.get('fid') || params.get('media_id') || params.get('id');
+        const fromSearch = params.get('fid') || params.get('media_id') || params.get('id');
+        if (fromSearch) return fromSearch;
+        // B站新版使用 hash 路由（/#/favlist?fid=XXX），search 为空，需从 hash 中解析
+        const hash = window.location.hash;
+        if (hash) {
+            const hashQuery = hash.indexOf('?') !== -1 ? hash.substring(hash.indexOf('?')) : '';
+            if (hashQuery) {
+                const hashParams = new URLSearchParams(hashQuery);
+                return hashParams.get('fid') || hashParams.get('media_id') || hashParams.get('id') || null;
+            }
+        }
+        return null;
     }
 
     function buildFormData(obj) {
@@ -9771,31 +9783,7 @@ ${topUps.length > 0 ? `<div class="section">
             }, 1000);
         });
 
-        // ===== 键盘快捷键 =====
-        document.addEventListener('keydown', (e) => {
-            // Alt+B 切换面板显隐
-            if (e.altKey && (e.key === 'b' || e.key === 'B')) {
-                e.preventDefault();
-                if (panel.style.display === 'flex') {
-                    panel.style.display = 'none';
-                    floatBtn.style.display = 'flex';
-                } else {
-                    _initCanvasEffects();
-                    floatBtn.style.display = 'none';
-                    panel.style.display = 'flex';
-                }
-            }
-            // Ctrl+Enter 开始整理
-            if (e.ctrlKey && e.key === 'Enter') {
-                const btn = document.getElementById('ai-start-btn');
-                if (btn && !btn.disabled && panel.style.display === 'flex') btn.click();
-            }
-            // ESC 关闭面板（仅在没有模态框时）
-            if (e.key === 'Escape' && panel.style.display === 'flex' && !document.querySelector('.ai-modal-backdrop')) {
-                panel.style.display = 'none';
-                floatBtn.style.display = 'flex';
-            }
-        });
+        // (键盘快捷键已整合到下方全局 keydown 监听器)
 
         // ===== 统计仪表盘 =====
         document.getElementById('ai-tool-stats').onclick = async function() {
@@ -10201,10 +10189,12 @@ ${topUps.length > 0 ? `<div class="section">
             else alert('当前提供商没有申请链接');
         };
 
-        // 设置模型显示值
+        // 设置模型显示值并自动保存
         function setModelValue(name) {
             document.getElementById('ai-set-model').value = name;
             document.getElementById('ai-model-display').textContent = name || '选择模型...';
+            // 持久化模型名，避免仅更新 DOM 而未写入 GM 存储
+            GM_setValue('bfao_modelName', name);
         }
 
         // 填充模型列表数据（不自动展开）
@@ -10661,19 +10651,32 @@ ${topUps.length > 0 ? `<div class="section">
 
         // ===== 全局键盘快捷键 =====
         document.addEventListener('keydown', (e) => {
-            // Esc: 关闭面板或模态框
+            // Alt+B: 切换面板显隐（带动画）
+            if (e.altKey && (e.key === 'b' || e.key === 'B')) {
+                e.preventDefault();
+                if (panel.style.display !== 'none' && panel.style.display !== '') {
+                    // 复用关闭按钮逻辑（带动画）
+                    document.getElementById('ai-close-btn').click();
+                } else {
+                    // 复用悬浮按钮逻辑（带动画）
+                    floatBtn.click();
+                }
+                return;
+            }
+
+            // Esc: 关闭模态框 或 关闭面板（带动画）
             if (e.key === 'Escape') {
                 const modal = document.querySelector('.ai-modal-backdrop');
                 if (modal) { modal.remove(); return; }
-                if (panel.style.display === 'flex') {
-                    panel.style.display = 'none';
-                    floatBtn.style.display = 'flex';
+                if (panel.style.display !== 'none' && panel.style.display !== '') {
+                    // 复用关闭按钮逻辑（带动画）
+                    document.getElementById('ai-close-btn').click();
                 }
                 return;
             }
 
             // 仅在面板打开时生效的快捷键
-            if (panel.style.display !== 'flex') return;
+            if (panel.style.display === 'none' || panel.style.display === '') return;
 
             // Ctrl+Enter / Cmd+Enter: 开始整理
             if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
