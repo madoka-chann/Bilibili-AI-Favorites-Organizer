@@ -9339,8 +9339,6 @@ ${topUps.length > 0 ? `<div class="section">
                 floatBtn.style.opacity = '';
                 floatBtn.style.filter = '';
             });
-            // 首次打开面板时初始化画布动效
-            _initCanvasEffects();
             // 面板弹性形变弹出 — Velvet Bloom v0.1.0
             panel.classList.remove('ai-panel-closing');
             panel.style.animation = 'none';
@@ -9352,6 +9350,8 @@ ${topUps.length > 0 ? `<div class="section">
             void panel.offsetHeight;
             panel.style.animation = 'ai-panel-aura-open 0.78s cubic-bezier(0.14, 1.26, 0.32, 1.00) forwards';
             clampPanelPosition();
+            // 面板动画结束后再初始化画布动效，避免 MutationObserver 级联导致卡死
+            setTimeout(_initCanvasEffects, 850);
         };
 
         document.getElementById('ai-close-btn').onclick = () => {
