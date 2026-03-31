@@ -209,7 +209,7 @@
   .input:focus,
   .select:focus {
     border-color: var(--ai-primary);
-    box-shadow: 0 0 0 3px rgba(115, 100, 255, 0.12);
+    box-shadow: 0 0 0 3px var(--ai-primary-shadow);
   }
 
   .select {
@@ -302,11 +302,11 @@
   }
 
   .model-item:hover {
-    background: var(--ai-bg-hover, rgba(115, 100, 255, 0.04));
+    background: var(--ai-bg-hover);
   }
 
   .model-item.active {
-    background: var(--ai-primary-bg, rgba(115, 100, 255, 0.06));
+    background: var(--ai-primary-bg);
     color: var(--ai-primary);
     font-weight: 600;
   }

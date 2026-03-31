@@ -65,7 +65,7 @@
 
   .select:focus {
     border-color: var(--ai-primary);
-    box-shadow: 0 0 0 3px rgba(115, 100, 255, 0.12);
+    box-shadow: 0 0 0 3px var(--ai-primary-shadow);
   }
 
   .prompt-textarea {
@@ -87,6 +87,6 @@
 
   .prompt-textarea:focus {
     border-color: var(--ai-primary);
-    box-shadow: 0 0 0 3px rgba(115, 100, 255, 0.12);
+    box-shadow: 0 0 0 3px var(--ai-primary-shadow);
   }
 </style>
