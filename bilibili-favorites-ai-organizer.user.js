@@ -4542,6 +4542,9 @@ ${topUps.length > 0 ? `<div class="section">
             _canvasEffectsInited = true;
             const animSettings = loadSettings();
             if (!animSettings.animEnabled) return;
+
+            // 最大同时运行的画布特效数（超出部分跳过，避免数十个 RAF 循环同时运行）
+            const MAX_CANVAS_FX = 6;
             const _fxQ = [];
 
         // === Ambient Light Motes 环境光斑 ===
@@ -8975,10 +8978,11 @@ ${topUps.length > 0 ? `<div class="section">
             if (panel.style.display !== 'none') startLava();
         });
 
-            // 逐帧分批初始化画布动效，避免同时启动导致卡死
+            // 逐帧分批初始化画布动效（限制最大数量）
+            const _fxMax = Math.min(_fxQ.length, MAX_CANVAS_FX);
             let _fxI = 0;
             const _runNextFx = () => {
-                if (_fxI >= _fxQ.length) return;
+                if (_fxI >= _fxMax) return;
                 _fxQ[_fxI++]();
                 requestAnimationFrame(_runNextFx);
             };
