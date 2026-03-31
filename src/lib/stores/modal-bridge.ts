@@ -12,6 +12,10 @@ export interface FolderSelectRequest {
 export const folderSelectRequest = writable<FolderSelectRequest | null>(null);
 
 export function requestFolderSelect(folders: FavFolder[]): Promise<number[]> {
+  // 拒绝前一个未完成的请求，防止 Promise 泄漏
+  const pending = get(folderSelectRequest);
+  if (pending) pending.reject(new Error('被新请求覆盖'));
+
   return new Promise((resolve, reject) => {
     folderSelectRequest.set({ folders, resolve, reject });
   });
@@ -48,6 +52,10 @@ export function requestPreviewConfirm(
   categories: CategoryResult,
   videos: VideoResource[],
 ): Promise<CategoryResult> {
+  // 拒绝前一个未完成的请求，防止 Promise 泄漏
+  const pending = get(previewConfirmRequest);
+  if (pending) pending.reject(new Error('被新请求覆盖'));
+
   return new Promise((resolve, reject) => {
     previewConfirmRequest.set({ categories, videos, resolve, reject });
   });

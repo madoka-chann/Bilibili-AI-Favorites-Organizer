@@ -5,6 +5,7 @@
   import { fetchModelList } from '$lib/api/ai-client';
   import { logs } from '$lib/stores/state';
   import { Eye, EyeOff, RefreshCw, ExternalLink } from 'lucide-svelte';
+  import type { AIProviderId } from '$lib/types';
 
   let showApiKey = false;
   let modelLoading = false;
@@ -15,7 +16,7 @@
   $: isCustomProvider = providerConfig?.isCustom ?? false;
 
   function handleProviderChange(e: Event) {
-    const value = (e.target as HTMLSelectElement).value;
+    const value = (e.target as HTMLSelectElement).value as AIProviderId;
     const config = AI_PROVIDERS[value];
     settings.update({
       provider: value,

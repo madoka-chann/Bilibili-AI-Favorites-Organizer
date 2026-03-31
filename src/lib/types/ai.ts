@@ -12,8 +12,14 @@ export interface AIProvider {
   isCustom?: boolean;
 }
 
+/** 内置服务商 ID */
+export type AIProviderId =
+  | 'gemini' | 'openai' | 'deepseek' | 'siliconflow' | 'qwen'
+  | 'moonshot' | 'zhipu' | 'groq' | 'openrouter' | 'ollama'
+  | 'github' | 'anthropic' | 'custom';
+
 /** AI 服务商注册表 */
-export type AIProviderRegistry = Record<string, AIProvider>;
+export type AIProviderRegistry = Record<AIProviderId, AIProvider>;
 
 /** AI 请求构建结果 */
 export interface AIRequestConfig {

@@ -2,10 +2,59 @@ import type {
   BiliData, FavFolder, VideoResource,
   BiliApiResponse, BiliFolderListData, BiliFavResourceData, BiliCreateFolderData,
 } from '$lib/types';
-import { BILIBILI_PAGE_SIZE, BILIBILI_URLS } from '$lib/utils/constants';
+import { BILIBILI_PAGE_SIZE, BILIBILI_URLS, DEFAULT_FOLDER_TITLE } from '$lib/utils/constants';
 import { sleep, humanDelay } from '$lib/utils/timing';
 import { logs } from '$lib/stores/state';
 import { getErrorMessage } from '$lib/utils/errors';
+
+// ================= B站 POST API (带限流重试) =================
+
+interface PostBiliOptions {
+  /** 操作名称 (用于日志) */
+  label: string;
+  /** 最大重试次数 */
+  maxRetries?: number;
+  /** 首次限流等待基数 (ms) */
+  baseWaitMs?: number;
+}
+
+/**
+ * 统一的 B站 POST API 请求 (含限流重试)
+ * 消除 createFolder / moveVideos / batchDeleteVideos 中的重复逻辑
+ */
+async function postBiliApi<T = unknown>(
+  url: string,
+  formData: string,
+  opts: PostBiliOptions,
+): Promise<BiliApiResponse<T>> {
+  const { label, maxRetries = 3, baseWaitMs = 3000 } = opts;
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    const res: BiliApiResponse<T> = await fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: formData,
+    }).then((r) => r.json());
+
+    if (res.code === 0) return res;
+
+    if (isRateLimited(res)) {
+      const waitMs = baseWaitMs * Math.pow(2, attempt - 1);
+      logs.add(
+        `${label}被限流，等待 ${(waitMs / 1000).toFixed(0)}s 后重试 (${attempt}/${maxRetries})...`,
+        'warning',
+      );
+      await sleep(waitMs);
+      continue;
+    }
+
+    // 非限流错误直接返回，由调用方判断
+    return res;
+  }
+
+  throw new Error(`${label}重试 ${maxRetries} 次仍被限流`);
+}
 
 // ================= 认证数据 =================
 
@@ -170,7 +219,7 @@ export async function getMyFolders(
   const allFolders = await getAllFoldersWithIds(biliData);
   const folderMap: Record<string, number> = {};
   for (const f of allFolders) {
-    if (f.title !== '默认收藏夹') folderMap[f.title] = f.id;
+    if (f.title !== DEFAULT_FOLDER_TITLE) folderMap[f.title] = f.id;
   }
   return folderMap;
 }
@@ -182,48 +231,28 @@ export async function createFolder(
   biliData: BiliData
 ): Promise<number> {
   logs.add(`正在新建收藏夹：【${title}】`, 'info');
-  const url = BILIBILI_URLS.folderAdd;
-  const data = buildFormData({
-    title,
-    privacy: 1,
-    csrf: biliData.csrf,
-  });
 
-  for (let attempt = 1; attempt <= 3; attempt++) {
-    const res: BiliApiResponse<BiliCreateFolderData> = await fetch(url, {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: data,
-    }).then((r) => r.json());
+  const res = await postBiliApi<BiliCreateFolderData>(
+    BILIBILI_URLS.folderAdd,
+    buildFormData({ title, privacy: 1, csrf: biliData.csrf }),
+    { label: '创建收藏夹', maxRetries: 3, baseWaitMs: 3000 },
+  );
 
-    if (res.code === 0 && res.data) {
-      // 追加到缓存
-      if (_folderListCache) {
-        _folderListCache.push({
-          id: res.data.id,
-          fid: res.data.fid ?? res.data.id,
-          mid: Number(biliData.mid),
-          title,
-          media_count: 0,
-        });
-      }
-      await humanDelay(1000);
-      return res.data.id;
-    }
-
-    if (isRateLimited(res)) {
-      const waitMs = 3000 * Math.pow(2, attempt - 1);
-      logs.add(
-        `创建收藏夹被限流，等待 ${(waitMs / 1000).toFixed(0)}s 后重试 (${attempt}/3)...`,
-        'warning',
-      );
-      await sleep(waitMs);
-      continue;
-    }
+  if (res.code !== 0 || !res.data) {
     throw new Error(`新建失败: ${res.message}`);
   }
-  throw new Error('创建收藏夹重试 3 次仍被限流');
+
+  if (_folderListCache) {
+    _folderListCache.push({
+      id: res.data.id,
+      fid: res.data.fid ?? res.data.id,
+      mid: Number(biliData.mid),
+      title,
+      media_count: 0,
+    });
+  }
+  await humanDelay(1000);
+  return res.data.id;
 }
 
 // ================= 移动视频 =================
@@ -234,44 +263,25 @@ export async function moveVideos(
   resourcesStr: string,
   biliData: BiliData
 ): Promise<boolean> {
-  const url = BILIBILI_URLS.resourceMove;
-  const payload = {
-    src_media_id: sourceMediaId,
-    tar_media_id: tarMediaId,
-    mid: biliData.mid,
-    resources: resourcesStr,
-    csrf: biliData.csrf,
-  };
-
-  for (let attempt = 1; attempt <= 4; attempt++) {
-    const res: BiliApiResponse = await fetch(url, {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: buildFormData(payload),
-    }).then((r) => r.json());
+  try {
+    const res = await postBiliApi(
+      BILIBILI_URLS.resourceMove,
+      buildFormData({
+        src_media_id: sourceMediaId,
+        tar_media_id: tarMediaId,
+        mid: biliData.mid,
+        resources: resourcesStr,
+        csrf: biliData.csrf,
+      }),
+      { label: '移动操作', maxRetries: 4, baseWaitMs: 5000 },
+    );
 
     if (res.code === 0) return true;
-
-    if (isRateLimited(res)) {
-      const waitMs = 5000 * Math.pow(2, attempt - 1);
-      logs.add(
-        `移动操作被限流，等待 ${(waitMs / 1000).toFixed(0)}s 后重试 (${attempt}/4)...`,
-        'warning',
-      );
-      await sleep(waitMs);
-      continue;
-    }
-
-    logs.add(
-      `移动失败 (code ${res.code}): ${res.message ?? '未知错误'}`,
-      'warning',
-    );
-    if (attempt < 4) {
-      await sleep(3000 * attempt);
-    }
+    logs.add(`移动失败 (code ${res.code}): ${res.message ?? '未知错误'}`, 'warning');
+    return false;
+  } catch {
+    return false;
   }
-  return false;
 }
 
 // ================= 批量删除 =================
@@ -281,36 +291,17 @@ export async function batchDeleteVideos(
   resources: string,
   biliData: BiliData
 ): Promise<boolean> {
-  const url = BILIBILI_URLS.resourceBatchDel;
-  const data = buildFormData({
-    media_id: mediaId,
-    resources,
-    csrf: biliData.csrf,
-  });
-
-  for (let attempt = 1; attempt <= 3; attempt++) {
-    const res: BiliApiResponse = await fetch(url, {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: data,
-    }).then((r) => r.json());
-
-    if (res.code === 0) return true;
-
-    if (isRateLimited(res)) {
-      const waitMs = 3000 * Math.pow(2, attempt - 1);
-      logs.add(
-        `删除操作被限流，等待 ${(waitMs / 1000).toFixed(0)}s 后重试 (${attempt}/3)...`,
-        'warning',
-      );
-      await sleep(waitMs);
-      continue;
-    }
+  try {
+    const res = await postBiliApi(
+      BILIBILI_URLS.resourceBatchDel,
+      buildFormData({ media_id: mediaId, resources, csrf: biliData.csrf }),
+      { label: '删除操作', maxRetries: 3, baseWaitMs: 3000 },
+    );
+    return res.code === 0;
+  } catch {
+    logs.add('删除操作重试 3 次仍被限流', 'warning');
     return false;
   }
-  logs.add('删除操作重试 3 次仍被限流', 'warning');
-  return false;
 }
 
 // ================= 获取所有视频 =================

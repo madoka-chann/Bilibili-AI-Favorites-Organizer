@@ -1,5 +1,10 @@
 // ================= B站 API 常量 =================
+
+/** B站 API 强制分页大小 */
 export const BILIBILI_PAGE_SIZE = 40;
+
+/** 默认收藏夹名称 (不参与分类) */
+export const DEFAULT_FOLDER_TITLE = '默认收藏夹';
 
 // ================= API URL 构建器 =================
 const BILIBILI_API_BASE = 'https://api.bilibili.com/x/v3/fav';

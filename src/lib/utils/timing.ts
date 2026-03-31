@@ -11,7 +11,7 @@ export function humanDelay(baseMs: number): Promise<void> {
 }
 
 /** 防抖函数 */
-export function debounce<T extends (...args: unknown[]) => void>(
+export function debounce<T extends (...args: never[]) => void>(
   fn: T,
   delayMs: number
 ): (...args: Parameters<T>) => void {
@@ -23,7 +23,7 @@ export function debounce<T extends (...args: unknown[]) => void>(
 }
 
 /** 节流函数 */
-export function throttle<T extends (...args: unknown[]) => void>(
+export function throttle<T extends (...args: never[]) => void>(
   fn: T,
   delayMs: number
 ): (...args: Parameters<T>) => void {

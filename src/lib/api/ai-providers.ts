@@ -35,7 +35,7 @@ function resolvePromptTexts(prompt: AIPrompt): { system: string; user: string } 
   if (typeof prompt === 'string') {
     return { system: FALLBACK_SYSTEM, user: prompt };
   }
-  return { system: prompt.system || FALLBACK_SYSTEM, user: prompt.user };
+  return { system: prompt.system ?? FALLBACK_SYSTEM, user: prompt.user };
 }
 
 function buildGeminiRequest(prompt: AIPrompt, s: Settings): AIRequestConfig {
@@ -196,8 +196,8 @@ export { REQUEST_BUILDERS, RESPONSE_PARSERS };
 // ================= Token 格式化 =================
 
 export function formatTokenCount(n: number): string {
-  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M';
-  if (n >= 1_000) return (n / 1_000).toFixed(1) + 'K';
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
+  if (n >= 1_000) return (n / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
   return String(n);
 }
 
