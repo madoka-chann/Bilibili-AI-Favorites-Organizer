@@ -4025,12 +4025,27 @@
   100% { filter: hue-rotate(360deg); }
 }
 
+/* === 统一下拉面板 === */
+.ai-dropdown-panel {
+  position: absolute;
+  display: none;
+  background: var(--ai-bg);
+  border: 1px solid var(--ai-border);
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+  z-index: 10;
+  overflow: hidden;
+}
+
 /* === 165. 色彩主题选择器 UI === */
 .ai-accent-picker {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
   align-items: center;
   padding: 4px 0;
+  max-height: 180px;
+  overflow-y: auto;
 }
 
 .ai-accent-dot {
@@ -5770,10 +5785,7 @@
   }
 }
 
-#ai-sort-wrapper:not(:hover) {
-  animation: ai-panel-shadow-breathe 6s var(--ai-ease-breath) infinite,
-             ai-mesh-evolve 30s var(--ai-ease-breath) infinite;
-}
+/* :not(:hover) 动画已移至全局 ai-weave-shadow-breath 避免 hover 切换闪烁 */
 
 /* === 252. Float Button Jelly Hover — 悬浮按钮果冻悬停 === */
 #ai-float-btn {
@@ -6102,8 +6114,9 @@
 }
 
 /* === 268. Panel Hover Lift — 面板悬浮提升 === */
+/* 注意：不加 translateY，否则 mouseenter 时面板跳动产生闪烁 */
 #ai-sort-wrapper:hover {
-  transform: perspective(1200px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translateY(-2px);
+  transform: perspective(1200px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
 }
 
 /* === 269. Close Button Jelly — 关闭按钮果冻效果 === */
@@ -6282,10 +6295,7 @@
   }
 }
 
-#ai-sort-wrapper:not(:hover):not(.ai-tilt-active) {
-  animation: ai-heartbeat-glow 4s var(--ai-ease-breath) infinite,
-             ai-mesh-evolve 30s var(--ai-ease-breath) infinite;
-}
+/* :not(:hover) 动画已移至全局 ai-weave-shadow-breath 避免 hover 切换闪烁 */
 
 /* === 278. Float Button Breathing Halo — 悬浮按钮呼吸光环 (始终呼吸) === */
 @keyframes ai-float-breath-ring {
@@ -6871,11 +6881,7 @@
   }
 }
 
-#ai-sort-wrapper:not(:hover):not(.ai-tilt-active) {
-  animation: ai-silk-pulse 6s var(--ai-ease-drift) infinite,
-             ai-surface-tension 16s var(--ai-ease-breath) infinite,
-             ai-mesh-evolve 30s var(--ai-ease-breath) infinite;
-}
+/* :not(:hover) 动画已移至全局 ai-weave-shadow-breath 避免 hover 切换闪烁 */
 
 /* === 308. Magnetic Field Lines — 磁场线效果 (面板悬浮时) === */
 @keyframes ai-magnetic-field {
@@ -13457,10 +13463,7 @@ input[type="checkbox"]:active {
   }
 }
 
-#ai-sort-wrapper:not(:hover) {
-  animation: ai-global-breath 8s var(--ai-ease-breath-sync) infinite,
-             ai-cascade-border-breathe 8s var(--ai-ease-breath-sync) infinite;
-}
+/* :not(:hover) 动画已移至全局 ai-weave-shadow-breath 避免 hover 切换闪烁 */
 
 /* === 568. Liquid Momentum Hover 液态动量悬停 v0.1.7 === */
 .ai-cat-row {
@@ -14466,10 +14469,7 @@ input[type="checkbox"]:active {
   }
 }
 
-#ai-sort-wrapper:not(:hover) {
-  animation: ai-cascade-idle-drift 10s var(--ai-ease-breath-sync, ease) infinite,
-             ai-ripple-ring-pulse 12s var(--ai-ease-ripple-out, ease) infinite;
-}
+/* :not(:hover) 动画已移至全局 ai-weave-shadow-breath 避免 hover 切换闪烁 */
 
 /* === 590. Enhanced Elastic Button Squeeze 弹性按钮果冻挤压 v0.1.8 === */
 .ai-btn:hover {
@@ -17461,10 +17461,7 @@ input[type="checkbox"]:active {
 }
 
 /* === 702. Panel Idle Living Breath v0.2.5 — 面板呼吸微动 === */
-/* 注意：idle breath 不能动 transform，否则 mouseenter 时动画停止会导致 transform 跳变闪烁 */
-#ai-sort-wrapper:not(.ai-panel-closing):not(:hover) {
-  animation: ai-weave-shadow-breath 4s var(--ai-ease-breath, ease-in-out) infinite !important;
-}
+/* :not(:hover) 动画已删除，统一由 #ai-sort-wrapper 的全局 ai-weave-shadow-breath 处理 */
 
 /* === 703. Header Particle Shimmer Pulse v0.2.5 — 头部粒子呼吸闪烁 === */
 @keyframes ai-particle-shimmer-pulse {

@@ -62,6 +62,7 @@
             .ai-group-header:hover{background:linear-gradient(135deg,var(--ai-primary-bg),rgba(255,107,157,0.05));color:var(--ai-primary);}
             .ai-group-icon{width:22px;height:22px;border-radius:var(--ai-radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
             .ai-group-body{padding-left:2px;}
+            .ai-dropdown-panel{position:absolute;display:none;background:var(--ai-bg);border:1px solid var(--ai-border);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.12),0 2px 8px rgba(0,0,0,0.06);z-index:10;overflow:hidden;}
             .ai-input{padding:7px 10px;border:1.5px solid var(--ai-border);border-radius:var(--ai-radius-sm);font-size:12px;outline:none;box-sizing:border-box;background:var(--ai-input-bg)!important;color:var(--ai-text)!important;transition:all 0.3s var(--ai-ease-ios);}
             .ai-input:focus{border-color:var(--ai-primary);box-shadow:0 0 0 3px rgba(115,100,255,0.12);}
             .ai-select{padding:7px 10px;border:1.5px solid var(--ai-border);border-radius:var(--ai-radius-sm);font-size:12px;outline:none;background:var(--ai-input-bg)!important;color:var(--ai-text)!important;cursor:pointer;transition:all 0.3s var(--ai-ease-ios);}
@@ -3966,10 +3967,10 @@ ${topUps.length > 0 ? `<div class="section">
                                     <button id="ai-verify-model" class="ai-btn" style="padding:4px 6px;" title="验证模型可用性"><i data-lucide="check-circle" style="width:13px;height:13px;"></i></button>
                                     <button id="ai-tool-bench" class="ai-btn" style="padding:4px 6px;" title="AI模型性能测试"><i data-lucide="gauge" style="width:13px;height:13px;"></i></button>
                                 </div>
-                                <div id="ai-model-dropdown" style="display:none;position:absolute;left:0;right:0;top:100%;margin-top:4px;border:1px solid var(--ai-primary);border-radius:6px;background:var(--ai-bg);overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.15);z-index:10;">
-                                    <div style="display:flex;border-bottom:1px solid #eee;">
+                                <div id="ai-model-dropdown" class="ai-dropdown-panel" style="display:none;">
+                                    <div style="display:flex;border-bottom:1px solid var(--ai-border-light);">
                                         <input id="ai-model-custom-input" class="ai-input" type="text" placeholder="搜索或输入自定义模型名..." style="flex:1;border:none;border-radius:0;font-size:12px;">
-                                        <button id="ai-model-custom-confirm" class="ai-btn" style="border:none;border-radius:0;padding:6px 10px;font-size:11px;color:#7C5CFC;">确定</button>
+                                        <button id="ai-model-custom-confirm" class="ai-btn" style="border:none;border-radius:0;padding:6px 10px;font-size:11px;color:var(--ai-primary);">确定</button>
                                     </div>
                                     <select id="ai-model-select" multiple style="width:100%;border:none;outline:none;font-size:12px;max-height:200px;cursor:pointer;"></select>
                                 </div>
@@ -4464,7 +4465,8 @@ ${topUps.length > 0 ? `<div class="section">
             // 创建弹出面板
             const picker = document.createElement('div');
             picker.id = 'ai-accent-picker';
-            picker.style.cssText = 'display:none;position:absolute;top:100%;right:0;margin-top:6px;padding:10px 12px;background:var(--ai-glass-bg);backdrop-filter:blur(24px);border:1px solid var(--ai-glass-border);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.15);z-index:10;min-width:180px;';
+            picker.className = 'ai-dropdown-panel';
+            picker.style.cssText = 'display:none;padding:10px 12px;width:200px;';
 
             const title = document.createElement('div');
             title.style.cssText = 'font-size:11px;color:var(--ai-text-muted);margin-bottom:6px;font-weight:500;';
@@ -4525,7 +4527,6 @@ ${topUps.length > 0 ? `<div class="section">
             // 挂载到 panel wrapper（避免 .ai-header overflow:hidden 裁剪）
             const accentBtn = document.getElementById('ai-accent-toggle');
             if (accentBtn) {
-                picker.style.cssText = 'display:none;position:absolute;padding:10px 12px;background:var(--ai-glass-bg);backdrop-filter:blur(24px);border:1px solid var(--ai-glass-border);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.15);z-index:10;min-width:180px;';
                 panel.appendChild(picker);
                 accentBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -6315,24 +6316,29 @@ ${topUps.length > 0 ? `<div class="section">
             modelSelect.innerHTML = models.map(m => `<option value="${m}">${m}</option>`).join('');
         }
 
+        // 将模型下拉面板移至 panel 根节点，避免被 .ai-panel-content overflow 裁剪
+        (() => {
+            const dd = document.getElementById('ai-model-dropdown');
+            if (dd) panel.appendChild(dd);
+        })();
+
         // 展开/收起模型下拉面板
         function toggleModelDropdown(show) {
             const dropdown = document.getElementById('ai-model-dropdown');
             const trigger = document.getElementById('ai-model-trigger');
             const arrow = trigger.querySelector('[data-lucide]');
-            // 切换父容器 overflow 防止下拉被裁剪
-            const settingsArea = document.getElementById('ai-settings-area');
-            const panelContent = panel.querySelector('.ai-panel-content');
             if (show && document.getElementById('ai-model-select').options.length > 0) {
+                // 动态定位：相对 trigger 按钮
+                const triggerRect = trigger.getBoundingClientRect();
+                const panelRect = panel.getBoundingClientRect();
+                dropdown.style.top = (triggerRect.bottom - panelRect.top + 4) + 'px';
+                dropdown.style.left = (triggerRect.left - panelRect.left) + 'px';
+                dropdown.style.width = triggerRect.width + 'px';
                 dropdown.style.display = 'block';
                 if (arrow) { arrow.setAttribute('data-lucide', 'chevron-up'); }
-                if (settingsArea) settingsArea.style.overflow = 'visible';
-                if (panelContent) { panelContent.style.overflowY = 'visible'; panelContent.style.overflowX = 'hidden'; }
             } else {
                 dropdown.style.display = 'none';
                 if (arrow) { arrow.setAttribute('data-lucide', 'chevron-down'); }
-                if (settingsArea) settingsArea.style.overflow = '';
-                if (panelContent) { panelContent.style.overflowY = ''; panelContent.style.overflowX = ''; }
             }
             if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [trigger] });
         }
@@ -6430,6 +6436,15 @@ ${topUps.length > 0 ? `<div class="section">
             const dropdown = document.getElementById('ai-model-dropdown');
             const isOpen = dropdown.style.display !== 'none';
             toggleModelDropdown(!isOpen);
+        });
+
+        // 点击外部关闭模型下拉
+        document.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('ai-model-dropdown');
+            const trigger = document.getElementById('ai-model-trigger');
+            if (dropdown.style.display !== 'none' && !dropdown.contains(e.target) && !trigger.contains(e.target)) {
+                toggleModelDropdown(false);
+            }
         });
 
         // 从列表选择模型
