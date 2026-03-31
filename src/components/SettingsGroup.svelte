@@ -8,6 +8,15 @@
   export let defaultOpen: boolean = false;
 
   let open = defaultOpen;
+
+  /** Convert hex to rgba string for background tint */
+  function hexToRgba(hex: string, alpha: number): string {
+    const h = hex.replace('#', '');
+    const r = parseInt(h.substring(0, 2), 16);
+    const g = parseInt(h.substring(2, 4), 16);
+    const b = parseInt(h.substring(4, 6), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
 </script>
 
 <div class="group">
@@ -17,7 +26,7 @@
     aria-expanded={open}
   >
     {#if icon}
-      <span class="group-icon" style:background="rgba({iconColor}, 0.1)" style:color={iconColor}>
+      <span class="group-icon" style:background={hexToRgba(iconColor, 0.1)} style:color={iconColor}>
         <svelte:component this={icon} size={14} />
       </span>
     {/if}

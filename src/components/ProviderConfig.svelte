@@ -284,7 +284,7 @@
     border: 1px solid var(--ai-border);
     border-radius: 10px;
     background: var(--ai-bg);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--ai-shadow-md);
     margin-top: 4px;
   }
 

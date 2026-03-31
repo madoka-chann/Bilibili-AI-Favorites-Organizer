@@ -7,6 +7,9 @@ export default defineConfig({
     svelte(),
     monkey({
       entry: 'src/main.ts',
+      server: {
+        open: false,
+      },
       userscript: {
         name: 'B站 AI 收藏夹自动分类整理',
         namespace: 'http://tampermonkey.net/',

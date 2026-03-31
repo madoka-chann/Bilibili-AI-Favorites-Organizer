@@ -113,7 +113,7 @@
     background: var(--ai-error);
     color: #fff;
   }
-  .btn-delete:hover:not(:disabled) { box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3); }
+  .btn-delete:hover:not(:disabled) { box-shadow: 0 4px 12px rgba(var(--ai-error-rgb), 0.3); }
   .hint {
     font-size: 10px;
     color: var(--ai-text-muted);

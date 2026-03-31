@@ -137,22 +137,22 @@
   }
 
   .toast-success {
-    background: color-mix(in srgb, var(--ai-success) 90%, transparent);
+    background: rgba(var(--ai-success-rgb), 0.9);
     color: #fff;
   }
 
   .toast-error {
-    background: color-mix(in srgb, var(--ai-error-alt) 90%, transparent);
+    background: rgba(var(--ai-error-alt-rgb), 0.9);
     color: #fff;
   }
 
   .toast-warning {
-    background: color-mix(in srgb, var(--ai-warning) 90%, transparent);
+    background: rgba(var(--ai-warning-rgb), 0.9);
     color: #fff;
   }
 
   .toast-info {
-    background: color-mix(in srgb, var(--ai-primary) 90%, transparent);
+    background: rgba(var(--ai-primary-rgb), 0.9);
     color: #fff;
   }
 
