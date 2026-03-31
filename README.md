@@ -2,6 +2,9 @@
 
 # Bilibili 收藏夹 AI 智能整理器
 
+
+非常早期的版本演示视频，现在重构中
+
 https://github.com/user-attachments/assets/f23b1fa1-7da2-4f5e-b2c1-ab46e784517c
 
 
