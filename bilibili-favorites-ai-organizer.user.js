@@ -4524,19 +4524,20 @@ ${topUps.length > 0 ? `<div class="section">
             picker.appendChild(colorRow);
             if (savedAccent === 'custom') colorRow.style.display = 'block';
 
-            // 挂载到 panel wrapper（避免 .ai-header overflow:hidden 裁剪）
+            // 挂载到 body，用 position:fixed 完全规避祖先 overflow/transform 裁剪
             const accentBtn = document.getElementById('ai-accent-toggle');
             if (accentBtn) {
-                panel.appendChild(picker);
+                document.body.appendChild(picker);
                 accentBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     const isHidden = picker.style.display === 'none';
                     if (isHidden) {
-                        const btnRect = accentBtn.getBoundingClientRect();
-                        const panelRect = panel.getBoundingClientRect();
-                        picker.style.top = (btnRect.bottom - panelRect.top + 6) + 'px';
-                        picker.style.right = (panelRect.right - btnRect.right) + 'px';
+                        const r = accentBtn.getBoundingClientRect();
+                        picker.style.position = 'fixed';
+                        picker.style.top = (r.bottom + 6) + 'px';
+                        picker.style.right = (window.innerWidth - r.right) + 'px';
                         picker.style.left = 'auto';
+                        picker.style.zIndex = '2147483642';
                     }
                     picker.style.display = isHidden ? 'block' : 'none';
                 });
@@ -5469,6 +5470,10 @@ ${topUps.length > 0 ? `<div class="section">
         };
 
         document.getElementById('ai-close-btn').onclick = () => {
+            // 关闭所有挂载在 body 上的下拉面板
+            toggleModelDropdown(false);
+            const accentPicker = document.getElementById('ai-accent-picker');
+            if (accentPicker) accentPicker.style.display = 'none';
             panel.classList.add('ai-panel-closing');
             // 弹性形变关闭 — Velvet Bloom v0.1.0
             panel.style.animation = 'none';
@@ -6316,10 +6321,10 @@ ${topUps.length > 0 ? `<div class="section">
             modelSelect.innerHTML = models.map(m => `<option value="${m}">${m}</option>`).join('');
         }
 
-        // 将模型下拉面板移至 panel 根节点，避免被 .ai-panel-content overflow 裁剪
+        // 将模型下拉面板移至 body，用 position:fixed 彻底规避 panel 内 overflow/transform 裁剪
         (() => {
             const dd = document.getElementById('ai-model-dropdown');
-            if (dd) panel.appendChild(dd);
+            if (dd) document.body.appendChild(dd);
         })();
 
         // 展开/收起模型下拉面板
@@ -6328,12 +6333,13 @@ ${topUps.length > 0 ? `<div class="section">
             const trigger = document.getElementById('ai-model-trigger');
             const arrow = trigger.querySelector('[data-lucide]');
             if (show && document.getElementById('ai-model-select').options.length > 0) {
-                // 动态定位：相对 trigger 按钮
-                const triggerRect = trigger.getBoundingClientRect();
-                const panelRect = panel.getBoundingClientRect();
-                dropdown.style.top = (triggerRect.bottom - panelRect.top + 4) + 'px';
-                dropdown.style.left = (triggerRect.left - panelRect.left) + 'px';
-                dropdown.style.width = triggerRect.width + 'px';
+                // position:fixed + viewport 坐标，完全不受祖先 overflow/transform 影响
+                const r = trigger.getBoundingClientRect();
+                dropdown.style.position = 'fixed';
+                dropdown.style.top = (r.bottom + 4) + 'px';
+                dropdown.style.left = r.left + 'px';
+                dropdown.style.width = r.width + 'px';
+                dropdown.style.zIndex = '2147483642';
                 dropdown.style.display = 'block';
                 if (arrow) { arrow.setAttribute('data-lucide', 'chevron-up'); }
             } else {

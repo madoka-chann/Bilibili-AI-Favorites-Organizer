@@ -5441,6 +5441,7 @@
   transform-style: preserve-3d;
   transform: perspective(1200px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
   transition: transform 0.6s var(--ai-ease-liquid);
+  will-change: transform, box-shadow;
 }
 
 /* === 238. Cursor Glow Follower — 光标追踪光晕 === */
@@ -6113,11 +6114,8 @@
   }
 }
 
-/* === 268. Panel Hover Lift — 面板悬浮提升 === */
-/* 注意：不加 translateY，否则 mouseenter 时面板跳动产生闪烁 */
-#ai-sort-wrapper:hover {
-  transform: perspective(1200px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
-}
+/* === 268. Panel Hover Lift — 已移除 ===
+   hover transform 与 base rule 完全相同，冗余规则会在 mouseenter 时触发不必要的样式重算 */
 
 /* === 269. Close Button Jelly — 关闭按钮果冻效果 === */
 #ai-close-btn:active {
