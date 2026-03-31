@@ -2,5 +2,4 @@ node_modules/
 dist/
 .vite/
 *.local
-.claude/settings.local.json
-.claude/settings.local.json
+.claude/
