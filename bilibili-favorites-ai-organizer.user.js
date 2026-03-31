@@ -4537,9 +4537,10 @@ ${topUps.length > 0 ? `<div class="section">
             _canvasEffectsInited = true;
             const animSettings = loadSettings();
             if (!animSettings.animEnabled) return;
+            const _fxQ = [];
 
         // === Ambient Light Motes 环境光斑 ===
-        (() => {
+        _fxQ.push(() => {
             const motesWrap = document.createElement('div');
             motesWrap.className = 'ai-light-motes';
             panel.insertBefore(motesWrap, panel.firstChild);
@@ -4566,10 +4567,10 @@ ${topUps.length > 0 ? `<div class="section">
                 `;
                 motesWrap.appendChild(mote);
             }
-        })();
+        });
 
         // === Real-time Aurora Canvas 实时极光画布 ===
-        (() => {
+        _fxQ.push(() => {
             const auroraWrap = document.createElement('div');
             auroraWrap.className = 'ai-aurora-canvas';
             const canvas = document.createElement('canvas');
@@ -4646,10 +4647,10 @@ ${topUps.length > 0 ? `<div class="section">
             if (panel.style.display !== 'none') startAurora();
 
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') resize(); });
-        })();
+        });
 
         // === Reactive Firefly Particles 萤火响应粒子场 ===
-        (() => {
+        _fxQ.push(() => {
             const field = document.createElement('div');
             field.className = 'ai-firefly-field';
             panel.insertBefore(field, panel.children[1]);
@@ -4721,18 +4722,18 @@ ${topUps.length > 0 ? `<div class="section">
             });
             obs2.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') scatterFireflies();
-        })();
+        });
 
         // === Liquid Glass Refraction Layer ===
-        (() => {
+        _fxQ.push(() => {
             const refract = document.createElement('div');
             refract.className = 'ai-refraction-layer';
             panel.insertBefore(refract, panel.children[2]);
-        })();
+        });
 
         // === Velvet Lumen Drift Canvas v0.2.9 — 流光漂画布 ===
         // Dandelion-seed-like luminous particles drifting with silk threads
-        (() => {
+        _fxQ.push(() => {
             const driftWrap = document.createElement('div');
             driftWrap.className = 'ai-lumen-drift-canvas';
             const canvas = document.createElement('canvas');
@@ -4889,11 +4890,11 @@ ${topUps.length > 0 ? `<div class="section">
             if (panel.style.display !== 'none') startDrift();
 
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') resize(); });
-        })();
+        });
 
         // === Velvet Aurora Weave v0.2.9 — 极光丝织画布 ===
         // Flowing aurora wave field with iridescent silk thread connections
-        (() => {
+        _fxQ.push(() => {
             const weaveWrap = document.createElement('div');
             weaveWrap.className = 'ai-aurora-weave-canvas';
             const canvas = document.createElement('canvas');
@@ -5081,10 +5082,10 @@ ${topUps.length > 0 ? `<div class="section">
                     if (canvas.width > 0 && canvas.height > 0) initNodes(canvas.width, canvas.height);
                 }
             });
-        })();
+        });
 
         // === Phantom Silk v0.0.9 — Morphic Flow Canvas 形态流体画布 ===
-        (() => {
+        _fxQ.push(() => {
             const morphWrap = document.createElement('div');
             morphWrap.className = 'ai-morphic-canvas';
             const canvas = document.createElement('canvas');
@@ -5169,10 +5170,10 @@ ${topUps.length > 0 ? `<div class="section">
             obs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startMorphic();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') resize(); });
-        })();
+        });
 
         // === Phantom Silk v0.0.9 — Depth Parallax Layer 深度视差层 ===
-        (() => {
+        _fxQ.push(() => {
             const depthLayer = document.createElement('div');
             depthLayer.className = 'ai-depth-layer';
             const inner = document.createElement('div');
@@ -5189,10 +5190,10 @@ ${topUps.length > 0 ? `<div class="section">
                     depthLayer.style.transform = `translateY(${offsetY}px)`;
                 }, { passive: true });
             }
-        })();
+        });
 
         // === Velvet Bloom v0.1.0 — Ripple Interference Canvas 涟漪干涉画布 ===
-        (() => {
+        _fxQ.push(() => {
             const ripWrap = document.createElement('div');
             ripWrap.className = 'ai-ripple-canvas';
             const rCanvas = document.createElement('canvas');
@@ -5296,10 +5297,10 @@ ${topUps.length > 0 ? `<div class="section">
             ripObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startRipple();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') ripResize(); });
-        })();
+        });
 
         // === Velvet Breath v0.1.1 — Silk Thread Canvas 丝线织流画布 ===
-        (() => {
+        _fxQ.push(() => {
             const silkWrap = document.createElement('div');
             silkWrap.className = 'ai-silk-thread-canvas';
             const sCanvas = document.createElement('canvas');
@@ -5409,10 +5410,10 @@ ${topUps.length > 0 ? `<div class="section">
             silkObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startSilk();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') silkResize(); });
-        })();
+        });
 
         // === Lucid Drift v0.1.2 — Firefly Canvas 萤火画布 ===
-        (() => {
+        _fxQ.push(() => {
             const ffCanvas = document.createElement('div');
             ffCanvas.className = 'ai-firefly-canvas';
             panel.insertBefore(ffCanvas, panel.firstChild);
@@ -5496,10 +5497,10 @@ ${topUps.length > 0 ? `<div class="section">
             });
             ffObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startFF();
-        })();
+        });
 
         // === Lucid Drift v0.1.2 — Aurora Ribbon 极光丝带 (标题栏) ===
-        (() => {
+        _fxQ.push(() => {
             const header = panel.querySelector('.ai-header');
             if (!header) return;
 
@@ -5601,10 +5602,10 @@ ${topUps.length > 0 ? `<div class="section">
             aObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startAurora();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') aResize(); });
-        })();
+        });
 
         // === Velvet Prism v0.1.3 — Gravity Orb Canvas 引力球画布 ===
-        (() => {
+        _fxQ.push(() => {
             const gravityWrap = document.createElement('div');
             gravityWrap.className = 'ai-gravity-canvas';
             panel.insertBefore(gravityWrap, panel.firstChild);
@@ -5726,10 +5727,10 @@ ${topUps.length > 0 ? `<div class="section">
             });
             gObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startGravity();
-        })();
+        });
 
         // === Velvet Flux v0.1.4 — Plasma Vein Canvas 等离子脉络画布 ===
-        (() => {
+        _fxQ.push(() => {
             const veinWrap = document.createElement('div');
             veinWrap.className = 'ai-plasma-vein-canvas';
             const vCanvas = document.createElement('canvas');
@@ -5866,10 +5867,10 @@ ${topUps.length > 0 ? `<div class="section">
             veinObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startVein();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') veinResize(); });
-        })();
+        });
 
         // === Velvet Aether v0.1.5 — Harmonic Ripple Canvas 谐波涟漪画布 ===
-        (() => {
+        _fxQ.push(() => {
             const hWrap = document.createElement('div');
             hWrap.className = 'ai-harmonic-canvas';
             const hCanvas = document.createElement('canvas');
@@ -5982,10 +5983,10 @@ ${topUps.length > 0 ? `<div class="section">
             hObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startHarmonic();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') hResize(); });
-        })();
+        });
 
         // === Velvet Zephyr v0.1.6 — Luminous Membrane Canvas 荧光膜画布 ===
-        (() => {
+        _fxQ.push(() => {
             const mWrap = document.createElement('div');
             mWrap.className = 'ai-membrane-canvas';
             const mCanvas = document.createElement('canvas');
@@ -6102,10 +6103,10 @@ ${topUps.length > 0 ? `<div class="section">
             mObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startMembrane();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') mResize(); });
-        })();
+        });
 
         // === Velvet Zephyr v0.1.6 — Zephyr Particle Field 和风粒子场 ===
-        (() => {
+        _fxQ.push(() => {
             const zField = document.createElement('div');
             zField.className = 'ai-zephyr-field';
             panel.insertBefore(zField, panel.firstChild);
@@ -6168,10 +6169,10 @@ ${topUps.length > 0 ? `<div class="section">
             });
             zObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startZephyr();
-        })();
+        });
 
         // === Velvet Cascade v0.1.7 — Silk Waterfall Canvas 丝瀑画布 ===
-        (() => {
+        _fxQ.push(() => {
             const cvs = document.createElement('canvas');
             cvs.className = 'ai-silk-waterfall-canvas';
             panel.insertBefore(cvs, panel.firstChild);
@@ -6270,10 +6271,10 @@ ${topUps.length > 0 ? `<div class="section">
             wObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startWaterfall();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') wResize(); });
-        })();
+        });
 
         // === Velvet Ripple v0.1.8 — Luminous Orb Field Canvas 光蕴球场画布 ===
-        (() => {
+        _fxQ.push(() => {
             const cvs = document.createElement('canvas');
             cvs.className = 'ai-luminous-orb-canvas';
             panel.insertBefore(cvs, panel.firstChild);
@@ -6407,10 +6408,10 @@ ${topUps.length > 0 ? `<div class="section">
             orbObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startOrbs();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') orbResize(); });
-        })();
+        });
 
         // === Velvet Pulse v0.1.9 — Pulse Web Canvas 脉冲丝网画布 ===
-        (() => {
+        _fxQ.push(() => {
             const cvs = document.createElement('canvas');
             cvs.className = 'ai-pulse-web-canvas';
             panel.insertBefore(cvs, panel.firstChild);
@@ -6544,10 +6545,10 @@ ${topUps.length > 0 ? `<div class="section">
             pwObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startPW();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') pwResize(); });
-        })();
+        });
 
         // === Velvet Nebula v0.2.0 — Constellation Canvas 星座网络画布 ===
-        (() => {
+        _fxQ.push(() => {
             const cWrap = document.createElement('div');
             cWrap.className = 'ai-constellation-canvas';
             const cCvs = document.createElement('canvas');
@@ -6704,10 +6705,10 @@ ${topUps.length > 0 ? `<div class="section">
             cObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startConst();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') cResize(); });
-        })();
+        });
 
         // === Velvet Mirage v0.2.1 — Liquid Aurora Canvas 液态极光画布 ===
-        (() => {
+        _fxQ.push(() => {
             const laWrap = document.createElement('div');
             laWrap.className = 'ai-liquid-aurora-canvas';
             const laCvs = document.createElement('canvas');
@@ -6817,10 +6818,10 @@ ${topUps.length > 0 ? `<div class="section">
             laObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startLA();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') laResize(); });
-        })();
+        });
 
         // === Velvet Drift v0.2.2 — Nebula Ink Flow Canvas 星墨流韵画布 ===
-        (() => {
+        _fxQ.push(() => {
             const nfWrap = document.createElement('div');
             nfWrap.className = 'ai-nebula-flow-canvas';
             const nfCvs = document.createElement('canvas');
@@ -6927,10 +6928,10 @@ ${topUps.length > 0 ? `<div class="section">
             nfObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startNF();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') nfResize(); });
-        })();
+        });
 
         // === Velvet Drift v0.2.2 — Velvet Sine Wave Canvas 天鹅绒正弦波画布 ===
-        (() => {
+        _fxQ.push(() => {
             const swWrap = document.createElement('div');
             swWrap.className = 'ai-sine-wave-canvas';
             const swCvs = document.createElement('canvas');
@@ -7038,10 +7039,10 @@ ${topUps.length > 0 ? `<div class="section">
             swObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startSW();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') swResize(); });
-        })();
+        });
 
         // === Velvet Tidal v0.2.3/v0.2.4 — Fluid Tidal Canvas 潮汐流体画布 ===
-        (() => {
+        _fxQ.push(() => {
             const tidalWrap = document.createElement('div');
             tidalWrap.className = 'ai-tidal-canvas';
             const tCanvas = document.createElement('canvas');
@@ -7162,10 +7163,10 @@ ${topUps.length > 0 ? `<div class="section">
             tidalObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startTidal();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') tidalResize(); });
-        })();
+        });
 
         // === Velvet Zephyr Flow v0.2.4 — 涟漪织流画布 Ripple Weave Canvas ===
-        (() => {
+        _fxQ.push(() => {
             const weaveWrap = document.createElement('div');
             weaveWrap.className = 'ai-weave-canvas';
             const wCanvas = document.createElement('canvas');
@@ -7260,10 +7261,10 @@ ${topUps.length > 0 ? `<div class="section">
             weaveObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startWeave();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') weaveResize(); });
-        })();
+        });
 
         // === Velvet Silk Vortex v0.2.5 — 丝涡流场画布 Silk Vortex Flow Canvas ===
-        (() => {
+        _fxQ.push(() => {
             const vortexWrap = document.createElement('div');
             vortexWrap.className = 'ai-silk-vortex-canvas';
             const vCanvas = document.createElement('canvas');
@@ -7376,10 +7377,10 @@ ${topUps.length > 0 ? `<div class="section">
             vortexObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startVortex();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') vortexResize(); });
-        })();
+        });
 
         // === Velvet Zen Flow v0.2.6 — Zen Ripple Canvas 禅意涟漪画布 ===
-        (() => {
+        _fxQ.push(() => {
             const zenWrap = document.createElement('div');
             zenWrap.className = 'ai-zen-ripple-canvas';
             const zCanvas = document.createElement('canvas');
@@ -7490,10 +7491,10 @@ ${topUps.length > 0 ? `<div class="section">
             zenObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startZen();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') zenResize(); });
-        })();
+        });
 
         // === Velvet Aura Flow v0.2.7 — Aura Filament Canvas 光韵丝缕画布 ===
-        (() => {
+        _fxQ.push(() => {
             const auraWrap = document.createElement('div');
             auraWrap.className = 'ai-aura-flow-canvas';
             const aCanvas = document.createElement('canvas');
@@ -7613,10 +7614,10 @@ ${topUps.length > 0 ? `<div class="section">
             auraObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startAura();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') auraResize(); });
-        })();
+        });
 
         // === Velvet Aura Flow v0.2.7 — Magnetic Parallax 磁场视差效果 ===
-        (() => {
+        _fxQ.push(() => {
             let parallaxRaf = null;
             let targetTiltX = 0, targetTiltY = 0;
             let currentTiltX = 0, currentTiltY = 0;
@@ -7672,11 +7673,11 @@ ${topUps.length > 0 ? `<div class="section">
             });
             pObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startParallax();
-        })();
+        });
 
         // === Velvet Silk Breath v0.3.0 — 丝息画布 Silk Breath Canvas ===
         // Always-moving luminous silk threads that drift, breathe, and undulate
-        (() => {
+        _fxQ.push(() => {
             const breathWrap = document.createElement('div');
             breathWrap.className = 'ai-silk-breath-canvas';
             const bCanvas = document.createElement('canvas');
@@ -7803,11 +7804,11 @@ ${topUps.length > 0 ? `<div class="section">
             breathObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startBreath();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') breathResize(); });
-        })();
+        });
 
         // === Velvet Luminous Tide v0.3.1 — 潮光画布 Luminous Tide Canvas ===
         // Soft tidal light orbs that drift, pulse, and gently attract each other
-        (() => {
+        _fxQ.push(() => {
             const tideWrap = document.createElement('div');
             tideWrap.className = 'ai-luminous-tide-canvas';
             const tCanvas = document.createElement('canvas');
@@ -7945,10 +7946,10 @@ ${topUps.length > 0 ? `<div class="section">
             tideObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startTide();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') tideResize(); });
-        })();
+        });
 
         // === Velvet Luminous Tide v0.3.1 — Float Button Ambient Pulse Ring 悬浮按钮环境脉冲环 ===
-        (() => {
+        _fxQ.push(() => {
             let ringRaf = null;
             let ringTime = 0;
             const ringEl = document.createElement('div');
@@ -7973,11 +7974,11 @@ ${topUps.length > 0 ? `<div class="section">
             });
             ringObs.observe(floatBtn, { attributes: true, attributeFilter: ['style'] });
             if (floatBtn.style.display !== 'none') startRing();
-        })();
+        });
 
         // === Velvet Gossamer Flow v0.3.2 — 游丝流光画布 Gossamer Thread Canvas ===
         // Ethereal gossamer threads that float, breathe, and respond to mouse with magnetic pull
-        (() => {
+        _fxQ.push(() => {
             const gossWrap = document.createElement('div');
             gossWrap.className = 'ai-gossamer-canvas';
             const gCanvas = document.createElement('canvas');
@@ -8181,11 +8182,11 @@ ${topUps.length > 0 ? `<div class="section">
             gossObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startGossamer();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') gossResize(); });
-        })();
+        });
 
         // === Velvet Silk Tide v0.3.3 — 丝潮画布 Silk Tide Canvas ===
         // Flowing tidal silk waves with depth layers, organic breathing, and mouse-reactive currents
-        (() => {
+        _fxQ.push(() => {
             const tideWrap = document.createElement('div');
             tideWrap.className = 'ai-silk-tide-canvas';
             const tCanvas = document.createElement('canvas');
@@ -8401,10 +8402,10 @@ ${topUps.length > 0 ? `<div class="section">
             tideObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startTide();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') tideResize(); });
-        })();
+        });
 
         // === Magnetic Ripple Hover v0.3.3 — 磁性涟漪悬停 ===
-        (() => {
+        _fxQ.push(() => {
             panel.addEventListener('mouseenter', (e) => {
                 if (!e.target.closest || !e.target.closest('.ai-cat-row')) return;
                 const row = e.target.closest('.ai-cat-row');
@@ -8416,11 +8417,11 @@ ${topUps.length > 0 ? `<div class="section">
                 row.appendChild(ripple);
                 ripple.addEventListener('animationend', () => ripple.remove());
             }, true);
-        })();
+        });
 
         // === Velvet Nebula Mist v0.3.4 — 星雾画布 Nebula Mist Canvas ===
         // Soft fog-like particles that drift, merge, breathe, and respond to mouse with gentle dispersal
-        (() => {
+        _fxQ.push(() => {
             const mistWrap = document.createElement('div');
             mistWrap.className = 'ai-nebula-mist-canvas';
             const mCanvas = document.createElement('canvas');
@@ -8587,10 +8588,10 @@ ${topUps.length > 0 ? `<div class="section">
             mistObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startMist();
             window.addEventListener('resize', () => { if (panel.style.display !== 'none') mistResize(); });
-        })();
+        });
 
         // === Velvet Nebula Mist v0.3.4 — Float Button Organic Morph 悬浮按钮有机形变 ===
-        (() => {
+        _fxQ.push(() => {
             let morphRaf = null;
             let morphTime = 0;
 
@@ -8629,10 +8630,10 @@ ${topUps.length > 0 ? `<div class="section">
             });
             morphObs.observe(floatBtn, { attributes: true, attributeFilter: ['style'] });
             if (floatBtn.style.display !== 'none') startMorph();
-        })();
+        });
 
         // === Velvet Zephyr Flow v0.2.4 — Float Button Idle Shimmer 悬浮按钮闲置微光 ===
-        (() => {
+        _fxQ.push(() => {
             let shimmerRaf = null;
             let shimmerTime = 0;
             const renderShimmer = () => {
@@ -8659,10 +8660,10 @@ ${topUps.length > 0 ? `<div class="section">
             });
             shimmerObs.observe(floatBtn, { attributes: true, attributeFilter: ['style'] });
             if (floatBtn.style.display !== 'none') startShimmer();
-        })();
+        });
 
         // === Velvet Zephyr Flow v0.2.4 — Header Gradient Live Drift 头部渐变实时漂移 ===
-        (() => {
+        _fxQ.push(() => {
             const header = panel.querySelector('.ai-header');
             if (!header) return;
             let hdrRaf = null;
@@ -8685,10 +8686,10 @@ ${topUps.length > 0 ? `<div class="section">
             });
             hdrObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startHdr();
-        })();
+        });
 
         // === Velvet Tidal v0.2.3 — Scroll Velocity Blur 滚动速度模糊 ===
-        (() => {
+        _fxQ.push(() => {
             const content = panel.querySelector('.ai-panel-content');
             if (!content) return;
             let lastScroll = 0;
@@ -8703,10 +8704,10 @@ ${topUps.length > 0 ? `<div class="section">
                     blurTimer = setTimeout(() => content.classList.remove('scroll-fast'), 80);
                 }
             }, { passive: true });
-        })();
+        });
 
         // === Velvet Ripple v0.1.8 — Header Particle Drift 头部粒子漂流 ===
-        (() => {
+        _fxQ.push(() => {
             const header = panel.querySelector('.ai-header');
             if (!header) return;
 
@@ -8744,10 +8745,10 @@ ${topUps.length > 0 ? `<div class="section">
                 `;
                 particleWrap.appendChild(p);
             }
-        })();
+        });
 
         // === Velvet Ripple v0.1.8 — Elastic Overscroll Spring 弹性过滚弹簧 ===
-        (() => {
+        _fxQ.push(() => {
             const content = panel.querySelector('.ai-panel-content');
             if (!content) return;
             let overscrollRaf = null;
@@ -8784,10 +8785,10 @@ ${topUps.length > 0 ? `<div class="section">
                 }
                 overscrollRaf = requestAnimationFrame(animateOverscroll);
             }
-        })();
+        });
 
         // === Velvet Zephyr v0.1.6 — Spring Scroll Physics 弹簧滚动物理 ===
-        (() => {
+        _fxQ.push(() => {
             const content = panel.querySelector('.ai-panel-content');
             if (!content) return;
 
@@ -8818,10 +8819,10 @@ ${topUps.length > 0 ? `<div class="section">
                     }
                 }, 80);
             }, { passive: true });
-        })();
+        });
 
         // === Velvet Bloom v0.1.0 — Magnetic Cursor Trail 磁性光标拖尾 ===
-        (() => {
+        _fxQ.push(() => {
             const trailWrap = document.createElement('div');
             trailWrap.className = 'ai-cursor-trail';
             panel.insertBefore(trailWrap, panel.children[1]);
@@ -8879,10 +8880,10 @@ ${topUps.length > 0 ? `<div class="section">
             };
 
             const startTrail = () => { if (!trailRaf) trailRaf = requestAnimationFrame(renderTrail); };
-        })();
+        });
 
         // === Lava Lamp Particle System 熔岩灯实时渲染粒子 v0.0.6 ===
-        (() => {
+        _fxQ.push(() => {
             const lavaField = document.createElement('div');
             lavaField.className = 'ai-lava-field';
             panel.insertBefore(lavaField, panel.firstChild);
@@ -8967,7 +8968,16 @@ ${topUps.length > 0 ? `<div class="section">
             });
             lavaObs.observe(panel, { attributes: true, attributeFilter: ['style'] });
             if (panel.style.display !== 'none') startLava();
-        })();
+        });
+
+            // 逐帧分批初始化画布动效，避免同时启动导致卡死
+            let _fxI = 0;
+            const _runNextFx = () => {
+                if (_fxI >= _fxQ.length) return;
+                _fxQ[_fxI++]();
+                requestAnimationFrame(_runNextFx);
+            };
+            requestAnimationFrame(_runNextFx);
 
         } // end _initCanvasEffects — 画布动效延迟初始化结束
 
