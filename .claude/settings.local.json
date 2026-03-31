@@ -3,7 +3,8 @@
     "allow": [
       "Bash(npm --version)",
       "WebSearch",
-      "Bash(find src/components -name \"*.svelte\" -exec sed -i -E 's/var\\\\\\(--ai-\\([a-z-]+\\),\\\\s*#[0-9a-fA-F]+\\\\\\)/var\\(--ai-\\\\1\\)/g' {} +)"
+      "Bash(find src/components -name \"*.svelte\" -exec sed -i -E 's/var\\\\\\(--ai-\\([a-z-]+\\),\\\\s*#[0-9a-fA-F]+\\\\\\)/var\\(--ai-\\\\1\\)/g' {} +)",
+      "Bash(find src/components -name \"*.svelte\" -exec sed -i 's/rgba\\(115, 100, 255, 0.12\\)/var\\(--ai-primary-shadow\\)/g' {} +)"
     ]
   }
 }
