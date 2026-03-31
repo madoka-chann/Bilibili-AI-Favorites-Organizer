@@ -7,6 +7,7 @@ import { gmXmlHttpRequest } from '$lib/utils/gm';
 import { gmFetch } from '$lib/utils/gm';
 import { sleep } from '$lib/utils/timing';
 import { logs } from '$lib/stores/state';
+import { getErrorMessage } from '$lib/utils/errors';
 import {
   REQUEST_BUILDERS,
   RESPONSE_PARSERS,
@@ -151,8 +152,8 @@ export async function callAI(
     try {
       return await callAISingle(prompt, settings);
     } catch (err: unknown) {
-      const isRetryable = (err as { retryable?: boolean })?.retryable;
-      const errMsg = err instanceof Error ? err.message : String((err as { message?: string })?.message ?? err);
+      const isRetryable = err && typeof err === 'object' && 'retryable' in err && (err as { retryable?: boolean }).retryable;
+      const errMsg = getErrorMessage(err);
       if (isRetryable && attempt < maxRetries) {
         const waitMs = Math.min(2000 * Math.pow(2, attempt - 1), 16000);
         logs.add(

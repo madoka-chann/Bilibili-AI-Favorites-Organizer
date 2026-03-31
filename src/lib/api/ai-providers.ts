@@ -4,7 +4,7 @@ import type {
   GeminiUsageMetadata, StandardUsage,
 } from '$lib/types';
 import { AI_PROVIDERS } from '$lib/utils/constants';
-import { tokenUsage } from '$lib/stores/state';
+import { tokenUsage, logs } from '$lib/stores/state';
 import { get } from 'svelte/store';
 
 // ================= 常量 =================
@@ -21,7 +21,7 @@ export function getProviderBaseUrl(settings: Settings): string {
     let url = (settings.customBaseUrl || '').trim().replace(/\/+$/, '');
     if (url && !/^https?:\/\//i.test(url)) url = 'https://' + url;
     if (url && /^http:\/\//i.test(url) && !/^http:\/\/(localhost|127\.|0\.0\.0\.0)/i.test(url)) {
-      console.warn('[BFAO] 自定义 API 地址使用了 HTTP 而非 HTTPS，存在中间人攻击风险');
+      logs.add('自定义 API 地址使用了 HTTP 而非 HTTPS，存在中间人攻击风险', 'warning');
     }
     return url;
   }
@@ -151,19 +151,25 @@ function trackStandardUsage(usage: StandardUsage): void {
 function parseGeminiResponse(text: string): string {
   const json: GeminiResponse = JSON.parse(text);
   if (json.usageMetadata) trackGeminiUsage(json.usageMetadata);
-  return json.candidates[0].content.parts[0].text;
+  const content = json.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!content) throw new Error('Gemini 响应结构异常: 未找到有效内容');
+  return content;
 }
 
 function parseOpenAIResponse(text: string): string {
   const json: OpenAIResponse = JSON.parse(text);
   if (json.usage) trackStandardUsage(json.usage);
-  return json.choices[0].message.content;
+  const content = json.choices?.[0]?.message?.content;
+  if (!content) throw new Error('OpenAI 响应结构异常: 未找到有效内容');
+  return content;
 }
 
 function parseAnthropicResponse(text: string): string {
   const json: AnthropicResponse = JSON.parse(text);
   if (json.usage) trackStandardUsage(json.usage);
-  return json.content[0].text;
+  const content = json.content?.[0]?.text;
+  if (!content) throw new Error('Anthropic 响应结构异常: 未找到有效内容');
+  return content;
 }
 
 // ================= 注册表 =================

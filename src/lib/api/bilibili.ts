@@ -2,9 +2,10 @@ import type {
   BiliData, FavFolder, VideoResource,
   BiliApiResponse, BiliFolderListData, BiliFavResourceData, BiliCreateFolderData,
 } from '$lib/types';
-import { BILIBILI_PAGE_SIZE } from '$lib/utils/constants';
+import { BILIBILI_PAGE_SIZE, BILIBILI_URLS } from '$lib/utils/constants';
 import { sleep, humanDelay } from '$lib/utils/timing';
 import { logs } from '$lib/stores/state';
+import { getErrorMessage } from '$lib/utils/errors';
 
 // ================= 认证数据 =================
 
@@ -148,7 +149,7 @@ export async function getAllFoldersWithIds(
   if (_folderListCache && now - _folderListCacheTime < FOLDER_CACHE_TTL) {
     return _folderListCache;
   }
-  const url = `https://api.bilibili.com/x/v3/fav/folder/created/list-all?up_mid=${biliData.mid}`;
+  const url = BILIBILI_URLS.folderList(biliData.mid);
   const res = await lightFetchJson<BiliFolderListData>(url);
   if (res.code === 0 && res.data?.list) {
     _folderListCache = res.data.list;
@@ -181,7 +182,7 @@ export async function createFolder(
   biliData: BiliData
 ): Promise<number> {
   logs.add(`正在新建收藏夹：【${title}】`, 'info');
-  const url = 'https://api.bilibili.com/x/v3/fav/folder/add';
+  const url = BILIBILI_URLS.folderAdd;
   const data = buildFormData({
     title,
     privacy: 1,
@@ -233,7 +234,7 @@ export async function moveVideos(
   resourcesStr: string,
   biliData: BiliData
 ): Promise<boolean> {
-  const url = 'https://api.bilibili.com/x/v3/fav/resource/move';
+  const url = BILIBILI_URLS.resourceMove;
   const payload = {
     src_media_id: sourceMediaId,
     tar_media_id: tarMediaId,
@@ -280,7 +281,7 @@ export async function batchDeleteVideos(
   resources: string,
   biliData: BiliData
 ): Promise<boolean> {
-  const url = 'https://api.bilibili.com/x/v3/fav/resource/batch-del';
+  const url = BILIBILI_URLS.resourceBatchDel;
   const data = buildFormData({
     media_id: mediaId,
     resources,
@@ -334,12 +335,12 @@ export async function fetchAllVideos(
       );
     }
 
-    const listUrl = `https://api.bilibili.com/x/v3/fav/resource/list?media_id=${mediaId}&pn=${pn}&ps=${BILIBILI_PAGE_SIZE}&platform=web`;
+    const listUrl = BILIBILI_URLS.resourceList(mediaId, pn);
     let listRes: BiliApiResponse<BiliFavResourceData>;
     try {
       listRes = await safeFetchJson<BiliFavResourceData>(listUrl);
-    } catch (e) {
-      logs.add(`读取出错: ${e instanceof Error ? e.message : String(e)}`, 'error');
+    } catch (e: unknown) {
+      logs.add(`读取出错: ${getErrorMessage(e)}`, 'error');
       break;
     }
 
@@ -365,4 +366,75 @@ export async function fetchAllVideos(
   }
 
   return allVideos;
+}
+
+// ================= 通用收藏夹分页遍历 =================
+
+export interface FolderScanOptions<T> {
+  /** B站认证数据 */
+  biliData: BiliData;
+  /** 每页请求间隔 (ms) */
+  fetchDelay: number;
+  /** 取消检查回调 */
+  cancelCheck: () => boolean;
+  /** 使用的请求函数 (safeFetchJson 或 lightFetchJson) */
+  fetchFn?: typeof safeFetchJson;
+  /** 处理每个视频的回调，返回要收集的结果 (返回 undefined 则跳过) */
+  onVideo: (video: VideoResource, folder: FavFolder) => T | undefined;
+  /** 日志前缀 */
+  logPrefix?: string;
+}
+
+/**
+ * 遍历所有收藏夹的所有视频 (通用分页逻辑)
+ * 消除 dead-videos / duplicates / backup 中的重复分页代码
+ */
+export async function scanAllFolderVideos<T>(
+  opts: FolderScanOptions<T>,
+): Promise<{ results: T[]; totalScanned: number }> {
+  const {
+    biliData, fetchDelay, cancelCheck,
+    fetchFn = safeFetchJson, onVideo, logPrefix = '扫描',
+  } = opts;
+
+  const allFolders = await getAllFoldersWithIds(biliData);
+  logs.add(`共 ${allFolders.length} 个收藏夹，开始逐个${logPrefix}...`, 'info');
+
+  const results: T[] = [];
+  let totalScanned = 0;
+
+  for (let fi = 0; fi < allFolders.length; fi++) {
+    if (cancelCheck()) break;
+    const folder = allFolders[fi];
+    logs.add(`${logPrefix} [${fi + 1}/${allFolders.length}] ${folder.title}...`, 'info');
+
+    let pn = 1;
+    while (true) {
+      if (cancelCheck()) break;
+      try {
+        const res = await fetchFn<BiliFavResourceData>(
+          BILIBILI_URLS.resourceList(folder.id, pn),
+        );
+        if (res.code !== 0) break;
+        const medias = res.data?.medias ?? [];
+        for (const v of medias) {
+          totalScanned++;
+          const item = onVideo(v as VideoResource, folder);
+          if (item !== undefined) results.push(item);
+        }
+        if (!res.data?.has_more || medias.length === 0) break;
+        pn++;
+        await humanDelay(fetchDelay);
+      } catch (e: unknown) {
+        logs.add(
+          `${logPrefix} ${folder.title} 出错: ${getErrorMessage(e)}，跳过`,
+          'warning',
+        );
+        break;
+      }
+    }
+    await humanDelay(fetchDelay);
+  }
+
+  return { results, totalScanned };
 }

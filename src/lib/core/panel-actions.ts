@@ -17,6 +17,7 @@ import type { DeadVideoEntry } from '$lib/core/dead-videos';
 import { scanDuplicates, deduplicateVideos } from '$lib/core/duplicates';
 import type { DuplicateEntry } from '$lib/core/duplicates';
 import { loadHistory, clearHistory } from '$lib/core/history';
+import { getErrorMessage } from '$lib/utils/errors';
 
 // ================= Auth Helper =================
 
@@ -46,8 +47,8 @@ export async function handleStart(callbacks: StartProcessCallbacks): Promise<voi
   if (!biliData) return;
   try {
     await startProcess(s, biliData);
-  } catch (e: any) {
-    logs.add(`整理流程出错: ${e.message}`, 'error');
+  } catch (e: unknown) {
+    logs.add(`整理流程出错: ${getErrorMessage(e)}`, 'error');
     isRunning.set(false);
   }
 }
@@ -76,8 +77,8 @@ export async function handleCleanDead(state: DeadVideoState): Promise<DeadVideoS
       logs.add(`发现 ${deadVideos.length} 个失效视频`, 'warning');
       return { ...state, deadVideos, showDeadResult: true };
     }
-  } catch (e: any) {
-    logs.add(`扫描失败: ${e.message}`, 'error');
+  } catch (e: unknown) {
+    logs.add(`扫描失败: ${getErrorMessage(e)}`, 'error');
     return state;
   } finally {
     isRunning.set(false);
@@ -94,8 +95,8 @@ export async function handleArchiveDead(deadVideos: DeadVideoEntry[]): Promise<b
     const moved = await archiveDeadVideos(deadVideos, biliData, s.moveChunkSize, s.writeDelay);
     logs.add(`完成！共 ${moved} 个失效视频已归档。请刷新页面。`, 'success');
     return true;
-  } catch (e: any) {
-    logs.add(`归档失败: ${e.message}`, 'error');
+  } catch (e: unknown) {
+    logs.add(`归档失败: ${getErrorMessage(e)}`, 'error');
     return false;
   } finally {
     isRunning.set(false);
@@ -111,8 +112,8 @@ export async function handleDeleteDead(deadVideos: DeadVideoEntry[]): Promise<bo
     const deleted = await deleteDeadVideos(deadVideos, biliData, s.writeDelay);
     logs.add(`删除完成！共删除 ${deleted} 个失效视频。请刷新页面。`, 'success');
     return true;
-  } catch (e: any) {
-    logs.add(`删除失败: ${e.message}`, 'error');
+  } catch (e: unknown) {
+    logs.add(`删除失败: ${getErrorMessage(e)}`, 'error');
     return false;
   } finally {
     isRunning.set(false);
@@ -143,8 +144,8 @@ export async function handleFindDups(state: DuplicateState): Promise<DuplicateSt
       logs.add(`发现 ${duplicates.length} 个重复视频`, 'warning');
       return { ...state, duplicates, showDupResult: true };
     }
-  } catch (e: any) {
-    logs.add(`扫描失败: ${e.message}`, 'error');
+  } catch (e: unknown) {
+    logs.add(`扫描失败: ${getErrorMessage(e)}`, 'error');
     return state;
   } finally {
     isRunning.set(false);
@@ -162,8 +163,8 @@ export async function handleDedup(duplicates: DuplicateEntry[]): Promise<boolean
     const removed = await deduplicateVideos(duplicates, biliData, s.writeDelay);
     logs.add(`去重完成！共删除 ${removed} 个重复副本。请刷新页面。`, 'success');
     return true;
-  } catch (e: any) {
-    logs.add(`去重失败: ${e.message}`, 'error');
+  } catch (e: unknown) {
+    logs.add(`去重失败: ${getErrorMessage(e)}`, 'error');
     return false;
   } finally {
     isRunning.set(false);
@@ -221,8 +222,8 @@ export async function handleStats(mode: 'stats' | 'health'): Promise<StatsState 
       statsTotalVideos,
       statsDeadCount: 0,
     };
-  } catch (e: any) {
-    logs.add(`统计失败: ${e.message}`, 'error');
+  } catch (e: unknown) {
+    logs.add(`统计失败: ${getErrorMessage(e)}`, 'error');
     return null;
   } finally {
     isRunning.set(false);

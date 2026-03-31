@@ -5,6 +5,7 @@
 
 import { gmGetValue, gmSetValue } from '$lib/utils/gm';
 import type { FavFolder, GlobalVideoCache } from '$lib/types';
+import { BILIBILI_URLS } from '$lib/utils/constants';
 
 const CACHE_KEY = 'bfao_bg_folder_cache';
 const CACHE_TTL = 10 * 60 * 1000; // 10 min
@@ -33,7 +34,7 @@ async function fetchJson(url: string): Promise<any> {
 }
 
 async function fetchFolderList(mid: string): Promise<FavFolder[]> {
-  const url = `https://api.bilibili.com/x/v3/fav/folder/created/list-all?up_mid=${mid}`;
+  const url = BILIBILI_URLS.folderList(mid);
   const res = await fetchJson(url);
   if (res?.code === 0 && res.data?.list) {
     return res.data.list;

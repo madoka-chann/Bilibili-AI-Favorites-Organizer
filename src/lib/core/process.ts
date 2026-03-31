@@ -18,6 +18,7 @@ import { humanDelay, createConcurrencyLimiter } from '$lib/utils/timing';
 import { gmSetValue, gmGetValue } from '$lib/utils/gm';
 import { saveUndoData, type UndoRecord } from '$lib/core/undo';
 import { saveHistoryEntry } from '$lib/core/history';
+import { getErrorMessage } from '$lib/utils/errors';
 
 // ================= Helpers =================
 
@@ -182,10 +183,10 @@ async function classifyWithAI(
         aiCompleted++;
         updateProgress('ai', aiCompleted, totalAiCalls);
         logs.add(`AI 批次 ${idx} 完成`, 'success');
-      } catch (err: any) {
+      } catch (err: unknown) {
         aiCompleted++;
         updateProgress('ai', aiCompleted, totalAiCalls);
-        logs.add(`AI 批次 ${idx} 失败: ${err.message}`, 'error');
+        logs.add(`AI 批次 ${idx} 失败: ${getErrorMessage(err)}`, 'error');
       }
     });
 
@@ -284,8 +285,8 @@ async function moveVideosToFolders(
       try {
         targetFolderId = await createFolder(categoryName, biliData);
         existingFoldersMap[categoryName] = targetFolderId;
-      } catch (e: any) {
-        logs.add(`创建收藏夹「${categoryName}」失败: ${e.message}`, 'error');
+      } catch (e: unknown) {
+        logs.add(`创建收藏夹「${categoryName}」失败: ${getErrorMessage(e)}`, 'error');
         continue;
       }
     }
