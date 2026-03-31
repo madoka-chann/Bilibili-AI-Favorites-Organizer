@@ -62,17 +62,6 @@ export interface CategoryResult {
   }>;
 }
 
-/** 撤销数据 */
-export interface UndoData {
-  time: number;
-  sourceMediaIds: number[];
-  moves: Array<{
-    resources: string; // "id:type" 格式
-    fromMediaId: number;
-    toMediaId: number;
-  }>;
-}
-
 /** B站认证数据 */
 export interface BiliData {
   mid: string;

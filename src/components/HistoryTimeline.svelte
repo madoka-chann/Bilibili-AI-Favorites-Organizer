@@ -8,7 +8,7 @@
   export let onclose: (() => void) | undefined = undefined;
 </script>
 
-<Modal title="整理历史" showFooter={true} cancelText="关闭" confirmText="" on:close={() => onclose?.()}>
+<Modal title="整理历史" showFooter={true} cancelText="关闭" confirmText="" onclose={() => onclose?.()}>
   <svelte:fragment slot="icon"><Clock size={18} /></svelte:fragment>
 
   <div class="timeline-content">

@@ -1,5 +1,4 @@
 import { writable, derived } from 'svelte/store';
-import type { UndoData } from '$lib/types';
 
 // ================= 运行时状态 =================
 
@@ -42,10 +41,6 @@ export const adaptive = writable<AdaptiveState>({
   currentFetchDelay: 0,
   currentWriteDelay: 0,
 });
-
-// ================= 撤销历史 =================
-
-export const undoData = writable<UndoData | null>(null);
 
 // ================= 日志 =================
 

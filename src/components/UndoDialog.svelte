@@ -15,8 +15,8 @@
   title="撤销操作"
   confirmText="执行撤销"
   confirmDisabled={processing || history.length === 0}
-  on:close={() => onclose?.()}
-  on:confirm={() => onundo?.(selectedIndex)}
+  onclose={() => onclose?.()}
+  onconfirm={() => onundo?.(selectedIndex)}
 >
   <svelte:fragment slot="icon"><Undo2 size={18} /></svelte:fragment>
 

@@ -51,6 +51,7 @@ export default defineConfig({
       $lib: '/src/lib',
       $components: '/src/components',
       $animations: '/src/animations',
+      $styles: '/src/styles',
       $actions: '/src/actions',
     },
   },

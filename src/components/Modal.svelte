@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, onDestroy, createEventDispatcher } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { gsap, EASINGS } from '$animations/gsap-config';
   import { shouldAnimateFunctional } from '$animations/gsap-config';
   import { X } from 'lucide-svelte';
@@ -11,8 +11,8 @@
   export let cancelText: string = '取消';
   export let confirmDisabled: boolean = false;
   export let width: string = 'min(600px, 90vw)';
-
-  const dispatch = createEventDispatcher();
+  export let onclose: (() => void) | undefined = undefined;
+  export let onconfirm: (() => void) | undefined = undefined;
 
   let backdropEl: HTMLDivElement;
   let modalEl: HTMLDivElement;
@@ -76,10 +76,10 @@
         opacity: 0,
         duration: 0.25,
         delay: 0.05,
-        onComplete: () => dispatch('close'),
+        onComplete: () => onclose?.(),
       });
     } else {
-      dispatch('close');
+      onclose?.();
     }
   }
 </script>
@@ -117,7 +117,7 @@
           <button
             class="modal-btn confirm"
             disabled={confirmDisabled}
-            onclick={() => dispatch('confirm')}
+            onclick={() => onconfirm?.()}
           >
             {confirmText}
           </button>

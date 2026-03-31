@@ -17,7 +17,7 @@
   }, {});
 </script>
 
-<Modal title="失效视频扫描结果" showFooter={false} on:close={() => onclose?.()}>
+<Modal title="失效视频扫描结果" showFooter={false} onclose={() => onclose?.()}>
   <svelte:fragment slot="icon"><Archive size={18} /></svelte:fragment>
 
   <div class="result-content">

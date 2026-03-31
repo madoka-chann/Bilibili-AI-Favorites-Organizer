@@ -21,17 +21,16 @@
     previewConfirmRequest, resolvePreviewConfirm, rejectPreviewConfirm,
     rejectAllModals,
   } from '$lib/stores/modal-bridge';
-  import { settings } from '$lib/stores/settings';
-  import { getBiliData, getSourceMediaId, getAllFoldersWithIds } from '$lib/api/bilibili';
-  import { startProcess } from '$lib/core/process';
+  import { loadUndoHistory } from '$lib/core/undo';
+  import { loadHistory } from '$lib/core/history';
   import { exportLogs } from '$lib/core/export-logs';
-  import { backupFavorites, downloadBackupFile } from '$lib/core/backup';
-  import { loadUndoHistory, undoOperation } from '$lib/core/undo';
-  import { scanDeadVideos, archiveDeadVideos, deleteDeadVideos } from '$lib/core/dead-videos';
+  import {
+    handleStart, handleCleanDead, handleArchiveDead, handleDeleteDead,
+    handleFindDups, handleDedup, handleUndoConfirm, handleBackup,
+    handleStats, handleHistoryClear, type StatsState,
+  } from '$lib/core/panel-actions';
   import type { DeadVideoEntry } from '$lib/core/dead-videos';
-  import { scanDuplicates, deduplicateVideos } from '$lib/core/duplicates';
   import type { DuplicateEntry } from '$lib/core/duplicates';
-  import { loadHistory, clearHistory } from '$lib/core/history';
   import type { FavFolder } from '$lib/types';
 
   export let onclose: (() => void) | undefined = undefined;
@@ -70,7 +69,7 @@
     }, panelEl);
 
     const handleKeydown = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.key === 'Enter' && !$isRunning) handleStart();
+      if (e.ctrlKey && e.key === 'Enter' && !$isRunning) onStart();
     };
     document.addEventListener('keydown', handleKeydown);
     return () => document.removeEventListener('keydown', handleKeydown);
@@ -78,7 +77,7 @@
 
   onDestroy(() => { ctx?.revert(); });
 
-  function handleClose() {
+  function doClose() {
     if (!panelEl) { onclose?.(); return; }
     if (shouldAnimateFunctional()) {
       gsap.to(panelEl, { y: 32, scale: 0.9, rotation: 0.5, opacity: 0, filter: 'blur(6px)', duration: 0.35, ease: EASINGS.silkOut, onComplete: () => onclose?.() });
@@ -87,188 +86,69 @@
     }
   }
 
-  function ensureBiliData() {
-    const biliData = getBiliData();
-    if (!biliData.mid || !biliData.csrf) {
-      logs.add('请先登录 B站', 'error');
-      return null;
-    }
-    return biliData;
+  function onStart() { handleStart({ openSettings: () => { settingsOpen = true; } }); }
+
+  async function onCleanDead() {
+    const result = await handleCleanDead({ deadVideos, showDeadResult, deadProcessing });
+    deadVideos = result.deadVideos;
+    showDeadResult = result.showDeadResult;
   }
 
-  async function handleStart() {
-    const s = $settings;
-    if (!s.apiKey && s.provider !== 'ollama') {
-      settingsOpen = true;
-      logs.add('请先配置 API Key', 'warning');
-      return;
-    }
-    const biliData = ensureBiliData();
-    if (!biliData) return;
-    try {
-      await startProcess(s, biliData);
-    } catch (e: any) {
-      logs.add(`整理流程出错: ${e.message}`, 'error');
-      isRunning.set(false);
-    }
-  }
-
-  // ========== 失效视频归档 ==========
-  async function handleCleanDead() {
-    const biliData = ensureBiliData();
-    if (!biliData) return;
-
-    isRunning.set(true);
-    cancelRequested.set(false);
-    try {
-      deadVideos = await scanDeadVideos(biliData, $settings.fetchDelay);
-      if (deadVideos.length === 0) {
-        logs.add('没有发现失效视频！收藏夹很健康！', 'success');
-      } else {
-        logs.add(`发现 ${deadVideos.length} 个失效视频`, 'warning');
-        showDeadResult = true;
-      }
-    } catch (e: any) {
-      logs.add(`扫描失败: ${e.message}`, 'error');
-    } finally {
-      isRunning.set(false);
-      cancelRequested.set(false);
-    }
-  }
-
-  async function handleArchiveDead() {
-    const biliData = ensureBiliData();
-    if (!biliData) return;
+  async function onArchiveDead() {
     deadProcessing = true;
-    isRunning.set(true);
-    try {
-      const moved = await archiveDeadVideos(deadVideos, biliData, $settings.moveChunkSize, $settings.writeDelay);
-      logs.add(`完成！共 ${moved} 个失效视频已归档。请刷新页面。`, 'success');
-      showDeadResult = false;
-    } catch (e: any) {
-      logs.add(`归档失败: ${e.message}`, 'error');
-    } finally {
-      deadProcessing = false;
-      isRunning.set(false);
-    }
+    const ok = await handleArchiveDead(deadVideos);
+    deadProcessing = false;
+    if (ok) showDeadResult = false;
   }
 
-  async function handleDeleteDead() {
-    const biliData = ensureBiliData();
-    if (!biliData) return;
+  async function onDeleteDead() {
     deadProcessing = true;
-    isRunning.set(true);
-    try {
-      const deleted = await deleteDeadVideos(deadVideos, biliData, $settings.writeDelay);
-      logs.add(`删除完成！共删除 ${deleted} 个失效视频。请刷新页面。`, 'success');
-      showDeadResult = false;
-    } catch (e: any) {
-      logs.add(`删除失败: ${e.message}`, 'error');
-    } finally {
-      deadProcessing = false;
-      isRunning.set(false);
-    }
+    const ok = await handleDeleteDead(deadVideos);
+    deadProcessing = false;
+    if (ok) showDeadResult = false;
   }
 
-  // ========== 跨收藏夹去重 ==========
-  async function handleFindDups() {
-    const biliData = ensureBiliData();
-    if (!biliData) return;
-
-    isRunning.set(true);
-    cancelRequested.set(false);
-    try {
-      duplicates = await scanDuplicates(biliData, $settings.fetchDelay);
-      if (duplicates.length === 0) {
-        logs.add('没有发现重复视频！', 'success');
-      } else {
-        logs.add(`发现 ${duplicates.length} 个重复视频`, 'warning');
-        showDupResult = true;
-      }
-    } catch (e: any) {
-      logs.add(`扫描失败: ${e.message}`, 'error');
-    } finally {
-      isRunning.set(false);
-      cancelRequested.set(false);
-    }
+  async function onFindDups() {
+    const result = await handleFindDups({ duplicates, showDupResult, dupProcessing });
+    duplicates = result.duplicates;
+    showDupResult = result.showDupResult;
   }
 
-  async function handleDedup() {
-    const biliData = ensureBiliData();
-    if (!biliData) return;
+  async function onDedup() {
     dupProcessing = true;
-    isRunning.set(true);
-    cancelRequested.set(false);
-    try {
-      const removed = await deduplicateVideos(duplicates, biliData, $settings.writeDelay);
-      logs.add(`去重完成！共删除 ${removed} 个重复副本。请刷新页面。`, 'success');
-      showDupResult = false;
-    } catch (e: any) {
-      logs.add(`去重失败: ${e.message}`, 'error');
-    } finally {
-      dupProcessing = false;
-      isRunning.set(false);
-      cancelRequested.set(false);
-    }
+    const ok = await handleDedup(duplicates);
+    dupProcessing = false;
+    if (ok) showDupResult = false;
   }
 
-  // ========== 撤销 ==========
   function handleUndo() {
     showUndo = true;
   }
 
-  async function handleUndoConfirm(index: number) {
-    const biliData = ensureBiliData();
-    if (!biliData) return;
+  async function onUndoConfirm(index: number) {
     showUndo = false;
-    await undoOperation(index, biliData, $settings.writeDelay);
+    await handleUndoConfirm(index);
   }
 
-  // ========== 备份 ==========
-  async function handleBackup() {
-    const biliData = ensureBiliData();
-    if (!biliData) return;
-    const backup = await backupFavorites(biliData, $settings.fetchDelay);
-    if (backup) {
-      downloadBackupFile(backup);
-      logs.add('备份文件已下载', 'success');
+  async function onStatsClick(mode: 'stats' | 'health') {
+    const result = await handleStats(mode);
+    if (result) {
+      showStats = result.showStats;
+      statsMode = result.statsMode;
+      statsFolders = result.statsFolders;
+      statsTotalVideos = result.statsTotalVideos;
+      statsDeadCount = result.statsDeadCount;
     }
   }
 
-  // ========== 统计/健康 ==========
-  async function handleStats(mode: 'stats' | 'health') {
-    const biliData = ensureBiliData();
-    if (!biliData) return;
-
-    statsMode = mode;
-    isRunning.set(true);
-    logs.add('正在统计收藏夹信息...', 'info');
-
-    try {
-      statsFolders = await getAllFoldersWithIds(biliData);
-      statsTotalVideos = statsFolders.reduce((s, f) => s + (f.media_count || 0), 0);
-
-      // 快速估算失效视频数（仅基于文件夹信息）
-      statsDeadCount = 0;
-      showStats = true;
-      logs.add(`统计完成：${statsFolders.length} 个收藏夹，${statsTotalVideos} 个视频`, 'success');
-    } catch (e: any) {
-      logs.add(`统计失败: ${e.message}`, 'error');
-    } finally {
-      isRunning.set(false);
-    }
-  }
-
-  // ========== 历史时间线 ==========
-  function handleHistoryClear() {
-    clearHistory();
+  function onHistoryClear() {
+    handleHistoryClear();
     showHistory = false;
-    logs.add('整理历史已清空', 'success');
   }
 </script>
 
 <div class="panel" bind:this={panelEl}>
-  <Header onclose={handleClose} bind:settingsOpen />
+  <Header onclose={doClose} bind:settingsOpen />
 
   <div class="panel-content">
     {#if settingsOpen}
@@ -280,14 +160,14 @@
       <LogArea />
       <ProgressBar />
       <ActionButtons
-        onstart={handleStart}
+        onstart={onStart}
         onstop={() => { cancelRequested.set(true); rejectAllModals(); logs.add('正在停止...', 'warning'); }}
-        oncleandead={handleCleanDead}
-        onfinddups={handleFindDups}
+        oncleandead={onCleanDead}
+        onfinddups={onFindDups}
         onundo={handleUndo}
         onbackup={handleBackup}
-        onstats={() => handleStats('stats')}
-        onhealth={() => handleStats('health')}
+        onstats={() => onStatsClick('stats')}
+        onhealth={() => onStatsClick('health')}
         onexportlogs={exportLogs}
         onhelp={() => logs.add('帮助: github.com/madoka-chann/Bilibili-AI-Favorites-Organizer', 'info')}
         onhistory={() => { showHistory = true; }}
@@ -301,8 +181,8 @@
   <DeadVideosResult
     {deadVideos}
     processing={deadProcessing}
-    onarchive={handleArchiveDead}
-    ondelete={handleDeleteDead}
+    onarchive={onArchiveDead}
+    ondelete={onDeleteDead}
     onclose={() => { showDeadResult = false; }}
   />
 {/if}
@@ -311,7 +191,7 @@
   <DuplicatesResult
     {duplicates}
     processing={dupProcessing}
-    ondedup={handleDedup}
+    ondedup={onDedup}
     onclose={() => { showDupResult = false; }}
   />
 {/if}
@@ -319,7 +199,7 @@
 {#if showUndo}
   <UndoDialog
     history={loadUndoHistory()}
-    onundo={handleUndoConfirm}
+    onundo={onUndoConfirm}
     onclose={() => { showUndo = false; }}
   />
 {/if}
@@ -327,7 +207,7 @@
 {#if showHistory}
   <HistoryTimeline
     history={loadHistory()}
-    onclear={handleHistoryClear}
+    onclear={onHistoryClear}
     onclose={() => { showHistory = false; }}
   />
 {/if}

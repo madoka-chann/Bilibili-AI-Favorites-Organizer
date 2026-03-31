@@ -11,7 +11,7 @@
   const showCount = Math.min(duplicates.length, 50);
 </script>
 
-<Modal title="重复视频扫描结果" showFooter={false} on:close={() => onclose?.()}>
+<Modal title="重复视频扫描结果" showFooter={false} onclose={() => onclose?.()}>
   <svelte:fragment slot="icon"><Copy size={18} /></svelte:fragment>
 
   <div class="result-content">

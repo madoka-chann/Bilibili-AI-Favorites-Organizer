@@ -33,8 +33,8 @@
   title="选择收藏夹"
   confirmText="确认选择 ({selected.size})"
   confirmDisabled={selected.size === 0}
-  on:close={() => onclose?.()}
-  on:confirm={() => onconfirm?.([...selected])}
+  onclose={() => onclose?.()}
+  onconfirm={() => onconfirm?.([...selected])}
 >
   <svelte:fragment slot="icon"><FolderOpen size={18} /></svelte:fragment>
 

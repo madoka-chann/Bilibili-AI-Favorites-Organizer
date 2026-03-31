@@ -22,8 +22,8 @@
   showFooter={true}
   cancelText=""
   confirmText="关闭"
-  on:close={() => onclose?.()}
-  on:confirm={() => onclose?.()}
+  onclose={() => onclose?.()}
+  onconfirm={() => onclose?.()}
 >
   <svelte:fragment slot="icon">
     {#if mode === 'health'}

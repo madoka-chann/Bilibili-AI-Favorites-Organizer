@@ -1,0 +1,92 @@
+/* Shared form control styles for settings & config panels */
+
+.bfao-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bfao-label {
+  font-size: 12px;
+  color: var(--ai-text-secondary);
+  font-weight: 500;
+}
+
+.bfao-input,
+.bfao-select {
+  padding: 7px 10px;
+  border: 1.5px solid var(--ai-border);
+  border-radius: 8px;
+  font-size: 12px;
+  outline: none;
+  box-sizing: border-box;
+  background: var(--ai-input-bg);
+  color: var(--ai-text);
+  transition: all 0.3s cubic-bezier(0.2, 0.98, 0.28, 1);
+}
+
+.bfao-input:focus,
+.bfao-select:focus {
+  border-color: var(--ai-primary);
+  box-shadow: 0 0 0 3px var(--ai-primary-shadow);
+}
+
+.bfao-select {
+  cursor: pointer;
+  width: 100%;
+}
+
+.bfao-input-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.bfao-input-flex {
+  flex: 1;
+}
+
+.bfao-input-small {
+  width: 80px;
+}
+
+.bfao-icon-btn {
+  padding: 6px;
+  border: 1.5px solid var(--ai-border);
+  border-radius: 8px;
+  background: var(--ai-bg);
+  color: var(--ai-text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.bfao-icon-btn:hover {
+  border-color: var(--ai-primary);
+  color: var(--ai-primary);
+}
+
+.bfao-icon-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.bfao-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--ai-text-secondary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.bfao-checkbox-label input[type='checkbox'] {
+  accent-color: var(--ai-primary);
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}

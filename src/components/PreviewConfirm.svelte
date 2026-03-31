@@ -33,8 +33,8 @@
   title="分类预览"
   confirmText="确认执行"
   width="min(700px, 92vw)"
-  on:close={() => onclose?.()}
-  on:confirm={() => onconfirm?.(categories)}
+  onclose={() => onclose?.()}
+  onconfirm={() => onconfirm?.(categories)}
 >
   <svelte:fragment slot="icon"><Eye size={18} /></svelte:fragment>
 

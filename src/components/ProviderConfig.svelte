@@ -1,4 +1,5 @@
 <script lang="ts">
+  import '$styles/forms.css';
   import { settings } from '$lib/stores/settings';
   import { AI_PROVIDERS } from '$lib/utils/constants';
   import { fetchModelList } from '$lib/api/ai-client';
@@ -47,11 +48,11 @@
 
 <div class="provider-config">
   <!-- 服务商选择 -->
-  <div class="field">
-    <label class="label">AI 服务商</label>
-    <div class="row">
+  <div class="bfao-field">
+    <label class="bfao-label">AI 服务商</label>
+    <div class="bfao-input-row">
       <select
-        class="select"
+        class="bfao-select"
         value={$settings.provider}
         onchange={handleProviderChange}
       >
@@ -75,10 +76,10 @@
 
   <!-- 自定义 URL (仅自定义 provider) -->
   {#if isCustomProvider}
-    <div class="field">
-      <label class="label">API 地址</label>
+    <div class="bfao-field">
+      <label class="bfao-label">API 地址</label>
       <input
-        class="input"
+        class="bfao-input"
         type="text"
         placeholder="https://your-api.com/v1"
         value={$settings.customBaseUrl}
@@ -89,11 +90,11 @@
   {/if}
 
   <!-- API Key -->
-  <div class="field">
-    <label class="label">API Key</label>
-    <div class="row">
+  <div class="bfao-field">
+    <label class="bfao-label">API Key</label>
+    <div class="bfao-input-row">
       <input
-        class="input flex-1"
+        class="bfao-input bfao-input-flex"
         type={showApiKey ? 'text' : 'password'}
         placeholder={providerConfig?.keyPlaceholder ?? '填入 API Key'}
         value={$settings.apiKey}
@@ -101,7 +102,7 @@
           settings.update({ apiKey: (e.target as HTMLInputElement).value })}
       />
       <button
-        class="icon-btn"
+        class="bfao-icon-btn"
         onclick={() => (showApiKey = !showApiKey)}
         title={showApiKey ? '隐藏' : '显示'}
       >
@@ -115,11 +116,11 @@
   </div>
 
   <!-- 模型选择 -->
-  <div class="field">
-    <label class="label">模型</label>
-    <div class="row">
+  <div class="bfao-field">
+    <label class="bfao-label">模型</label>
+    <div class="bfao-input-row">
       <input
-        class="input flex-1"
+        class="bfao-input bfao-input-flex"
         type="text"
         placeholder="输入模型名称"
         value={$settings.modelName}
@@ -127,7 +128,7 @@
           settings.update({ modelName: (e.target as HTMLInputElement).value })}
       />
       <button
-        class="icon-btn"
+        class="bfao-icon-btn"
         onclick={handleFetchModels}
         disabled={modelLoading}
         title="获取模型列表"
@@ -152,10 +153,10 @@
   </div>
 
   <!-- 并发数 -->
-  <div class="field">
-    <label class="label">AI 并发数</label>
+  <div class="bfao-field">
+    <label class="bfao-label">AI 并发数</label>
     <input
-      class="input small"
+      class="bfao-input bfao-input-small"
       type="number"
       min="1"
       max="20"
@@ -173,80 +174,6 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-  }
-
-  .field {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .label {
-    font-size: 12px;
-    color: var(--ai-text-secondary);
-    font-weight: 500;
-  }
-
-  .row {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-  }
-
-  .input,
-  .select {
-    padding: 7px 10px;
-    border: 1.5px solid var(--ai-border);
-    border-radius: 8px;
-    font-size: 12px;
-    outline: none;
-    box-sizing: border-box;
-    background: var(--ai-input-bg);
-    color: var(--ai-text);
-    transition: all 0.3s cubic-bezier(0.2, 0.98, 0.28, 1);
-  }
-
-  .input:focus,
-  .select:focus {
-    border-color: var(--ai-primary);
-    box-shadow: 0 0 0 3px var(--ai-primary-shadow);
-  }
-
-  .select {
-    cursor: pointer;
-    width: 100%;
-  }
-
-  .flex-1 {
-    flex: 1;
-  }
-
-  .small {
-    width: 80px;
-  }
-
-  .icon-btn {
-    padding: 6px;
-    border: 1.5px solid var(--ai-border);
-    border-radius: 8px;
-    background: var(--ai-bg);
-    color: var(--ai-text-secondary);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-    flex-shrink: 0;
-  }
-
-  .icon-btn:hover {
-    border-color: var(--ai-primary);
-    color: var(--ai-primary);
-  }
-
-  .icon-btn:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
   }
 
   .link-btn {
