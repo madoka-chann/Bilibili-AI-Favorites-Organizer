@@ -49,10 +49,10 @@
             :root{--ai-primary:#7364FF;--ai-primary-dark:#5046E5;--ai-primary-light:#B0A8FF;--ai-primary-bg:rgba(115,100,255,0.06);--ai-primary-shadow:rgba(115,100,255,0.22);--ai-success:#10B981;--ai-error:#F43F5E;--ai-info:#818CF8;--ai-warning:#F59E0B;--ai-text:#181233;--ai-text-secondary:#38305A;--ai-text-muted:#868199;--ai-text-light:#BEB8D0;--ai-border:#E4DDF5;--ai-border-light:#F0EAFA;--ai-border-lighter:#F9F7FF;--ai-bg:#fff;--ai-bg-secondary:#F9F7FF;--ai-bg-tertiary:#F0EAFA;--ai-bg-hover:rgba(115,100,255,0.04);--ai-header-gradient:linear-gradient(135deg,#7364FF,#9B59F6,#7364FF);--ai-modal-backdrop:rgba(24,18,51,0.58);--ai-input-bg:#fff;--ai-font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--ai-z-float:2147483640;--ai-z-panel:2147483641;--ai-z-modal:2147483645;--ai-z-particle:2147483646;--ai-radius-xs:6px;--ai-radius-sm:8px;--ai-radius-md:10px;--ai-radius-lg:14px;--ai-radius-xl:18px;--ai-transition:0.25s cubic-bezier(0.4,0,0.2,1);--ai-transition-slow:0.4s cubic-bezier(0.16,1,0.3,1);--ai-scrollbar:#BEB8D0;--ai-scrollbar-hover:#868199;--ai-cat-detail-bg:#F9F7FF;--ai-separator:#E4DDF5;--ai-glow-color:rgba(115,100,255,0.07);--ai-badge-new-bg:#F43F5E;--ai-badge-existing-bg:#10B981;--ai-vid-odd-bg:rgba(24,18,51,0.012);--ai-vid-hover-bg:rgba(115,100,255,0.05);--ai-spring:cubic-bezier(0.32,1.48,0.62,1);--ai-spring-gentle:cubic-bezier(0.20,1.04,0.42,1);--ai-spring-bouncy:cubic-bezier(0.165,0.84,0.28,1.18);--ai-spring-silk:cubic-bezier(0.20,1.10,0.36,1);--ai-ease-out-expo:cubic-bezier(0.14,1,0.28,1);--ai-ease-smooth:cubic-bezier(0.38,0,0,1);--ai-ease-fluid:cubic-bezier(0.22,0.78,0.22,1);--ai-ease-ios:cubic-bezier(0.20,0.98,0.28,1);--ai-ease-magnetic:cubic-bezier(0.18,0.88,0.28,1.08);--ai-ease-butterfly:cubic-bezier(0.13,0.94,0.22,1.03);--ai-ease-ethereal:cubic-bezier(0.08,0.92,0.16,1);--ai-spring-flux:cubic-bezier(0.22,1.36,0.42,1);--ai-ease-aurora:cubic-bezier(0.12,0.88,0.20,1.04);--ai-ease-dreamy:cubic-bezier(0.06,0.96,0.14,1);--ai-spring-firefly:cubic-bezier(0.28,1.68,0.48,1);--ai-spring-velvet:cubic-bezier(0.17,1.32,0.40,1);--ai-spring-jelly:cubic-bezier(0.22,1.52,0.38,1);--ai-ease-silk-out:cubic-bezier(0.08,0.90,0.15,1.02);--ai-spring-marshmallow:cubic-bezier(0.19,1.42,0.37,1);--ai-spring-droplet:cubic-bezier(0.26,1.58,0.44,1);--ai-spring-silk-bounce:cubic-bezier(0.14,1.28,0.34,1.02);--ai-ease-gossamer:cubic-bezier(0.08,0.96,0.18,1);--ai-spring-pudding:cubic-bezier(0.21,1.46,0.40,1);--ai-ease-dewdrop:cubic-bezier(0.04,0.88,0.10,1.03);--ai-spring-bloom:cubic-bezier(0.14,1.34,0.32,1.01);--ai-spring-petal:cubic-bezier(0.18,1.52,0.38,0.98);--ai-ease-bloom:cubic-bezier(0.04,0.90,0.10,1.02);--ai-ease-mist:cubic-bezier(0.06,0.88,0.14,1);--ai-spring-dew:cubic-bezier(0.12,1.42,0.28,1.01);--ai-ease-twilight:cubic-bezier(0.10,0.94,0.16,1.01);--ai-spring-ripple:cubic-bezier(0.20,1.28,0.36,1);--ai-ease-breath-deep:cubic-bezier(0.45,0,0.55,1);--ai-spring-lucid:cubic-bezier(0.14,1.22,0.32,1.01);--ai-ease-drift:cubic-bezier(0.06,0.90,0.12,1.00);--ai-spring-elastic-soft:cubic-bezier(0.18,1.48,0.36,0.98);--ai-ease-river:cubic-bezier(0.04,0.86,0.10,1.02);--ai-spring-bounce-light:cubic-bezier(0.22,1.32,0.40,1.00);--ai-ease-fog:cubic-bezier(0.02,0.94,0.08,1.00);--ai-ease-glide:cubic-bezier(0.08,0.78,0.16,1.00);--ai-spring-prism:cubic-bezier(0.16,1.34,0.30,1.00);--ai-ease-velvet:cubic-bezier(0.04,0.92,0.10,1.01);--ai-spring-gravity:cubic-bezier(0.20,1.56,0.36,0.97);--ai-ease-satin:cubic-bezier(0.03,0.90,0.08,1.00);--ai-spring-taffy:cubic-bezier(0.18,1.62,0.34,0.96);--ai-ease-pond:cubic-bezier(0.05,0.82,0.12,1.01);--ai-spring-plasma:cubic-bezier(0.16,1.38,0.36,1.01);--ai-ease-vein:cubic-bezier(0.04,0.88,0.12,1.01);--ai-ease-harmonic:cubic-bezier(0.08,0.82,0.18,1.04);--ai-spring-silk-vortex:cubic-bezier(0.14,1.40,0.30,1.00);--ai-ease-silk-flow:cubic-bezier(0.06,0.92,0.12,1.01);--ai-spring-cloud:cubic-bezier(0.18,1.24,0.36,1.02);--ai-ease-tidal-out:cubic-bezier(0.04,0.86,0.08,1.00);--ai-spring-whip:cubic-bezier(0.24,1.64,0.42,0.96);--ai-ease-feather:cubic-bezier(0.02,0.90,0.06,1.00);--ai-spring-gelatin:cubic-bezier(0.20,1.56,0.34,0.98);--ai-ease-nectar:cubic-bezier(0.08,0.84,0.14,1.02);--ai-ease-aura:cubic-bezier(0.05,0.90,0.10,1.01);--ai-spring-aura:cubic-bezier(0.14,1.26,0.32,1.00);--ai-ease-filament:cubic-bezier(0.08,0.84,0.14,1.02);--ai-spring-magnetic:cubic-bezier(0.18,1.38,0.34,0.99);--ai-ease-lotus:cubic-bezier(0.06,0.92,0.12,1.00);--ai-spring-frost:cubic-bezier(0.12,1.18,0.28,1.02);--ai-spring-aurora:cubic-bezier(0.14,1.36,0.30,1.00);--ai-spring-weave:cubic-bezier(0.18,1.42,0.32,0.98);--ai-ease-cloud-drift:cubic-bezier(0.04,0.94,0.08,1.00);--ai-spring-jelly-soft:cubic-bezier(0.22,1.52,0.38,0.97);--ai-ease-breath-silk:cubic-bezier(0.38,0.02,0.08,1.00);}
             #ai-float-btn{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-float);background:linear-gradient(135deg,#7364FF,#9B59F6,#B0A8FF,#7364FF);background-size:300% 300%;color:#fff;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 14px rgba(115,100,255,0.18),0 0 28px rgba(155,89,246,0.08);border:2px solid rgba(255,255,255,0.28);transition:transform 0.7s var(--ai-spring-silk);}
             #ai-float-btn [data-lucide]{width:24px;height:24px;}
-            #ai-sort-wrapper{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-panel);width:min(400px,calc(100vw - 60px));display:flex;flex-direction:column;background:var(--ai-bg,#fff);color:var(--ai-text,#181233);box-shadow:0 24px 68px rgba(0,0,0,0.11),0 10px 28px rgba(0,0,0,0.07);border-radius:28px;overflow:hidden;font-family:var(--ai-font);}
+            #ai-sort-wrapper{position:fixed;bottom:30px;left:30px;z-index:var(--ai-z-panel);width:min(400px,calc(100vw - 60px));display:flex;flex-direction:column;background:var(--ai-bg,#fff);color:var(--ai-text,#181233);box-shadow:0 24px 68px rgba(0,0,0,0.11),0 10px 28px rgba(0,0,0,0.07);border-radius:28px;overflow:visible;font-family:var(--ai-font);}
             #ai-sort-wrapper [data-lucide]{width:16px;height:16px;stroke-width:2;vertical-align:middle;display:inline-block;}
             .ai-panel-content{background:var(--ai-bg)!important;padding:0;flex:1 1 0%!important;min-height:0!important;max-height:none!important;overflow-y:auto!important;overflow-x:hidden!important;border-bottom-left-radius:26px;border-bottom-right-radius:26px;}
-            .ai-header{background:linear-gradient(135deg,#7364FF,#9B59F6,#7364FF);background-size:400% 400%;color:#fff;padding:16px 18px;font-weight:600;font-size:14px;display:flex;justify-content:space-between;align-items:center;position:relative;overflow:hidden;}
+            .ai-header{background:linear-gradient(135deg,#7364FF,#9B59F6,#7364FF);background-size:400% 400%;color:#fff;padding:16px 18px;font-weight:600;font-size:14px;display:flex;justify-content:space-between;align-items:center;position:relative;overflow:hidden;border-top-left-radius:28px;border-top-right-radius:28px;}
             .ai-header-title{display:flex;align-items:center;gap:7px;}
             .ai-header-actions{display:flex;gap:8px;align-items:center;position:relative;z-index:1;}
             .ai-header-btn{padding:5px;border:none;background:rgba(255,255,255,0.12);color:#fff;border-radius:var(--ai-radius-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.35s var(--ai-spring);border:1px solid rgba(255,255,255,0.08);}
@@ -271,7 +271,8 @@
             // 批量休息防风控
             batchRestInterval: GM_getValue('bfao_batchRestInterval', 100),
             batchRestMinutes: GM_getValue('bfao_batchRestMinutes', 1),
-            // 后台缓存扫描间隔（分钟）
+            // 后台缓存
+            bgCacheEnabled: GM_getValue('bfao_bgCacheEnabled', false),
             cacheScanInterval: GM_getValue('bfao_cacheScanInterval', 15)
         };
     }
@@ -283,7 +284,7 @@
             'lastPrompt','adaptiveRate','notifyOnComplete',
             'multiFolderEnabled','animEnabled','incrementalMode',
             'batchRestInterval','batchRestMinutes',
-            'cacheScanInterval'];
+            'bgCacheEnabled','cacheScanInterval'];
         keys.forEach(k => { if (s[k] !== undefined) GM_setValue('bfao_' + k, s[k]); });
         // 按服务商保存 API Key，切换服务商时可自动恢复
         if (s.provider && s.apiKey !== undefined) GM_setValue('bfao_apiKey_' + s.provider, s.apiKey);
@@ -4059,8 +4060,11 @@ ${topUps.length > 0 ? `<div class="section">
                                 <input id="ai-set-incremental" type="checkbox" ${settings.incrementalMode ? 'checked' : ''}> <span>增量整理</span>
                             </label>
                         </div>
-                        <div style="display:flex;gap:8px;align-items:center;margin-top:8px;font-size:12px;">
-                            <span style="font-size:11px;color:var(--ai-text-muted);white-space:nowrap;" title="后台增量缓存收藏夹数据的检查间隔">缓存扫描间隔</span>
+                        <label class="ai-behavior-option" title="在所有 B 站页面后台定期扫描并缓存收藏夹数据，关闭后仅在需要时抓取" style="margin-top:8px;">
+                            <input id="ai-set-bg-cache" type="checkbox" ${settings.bgCacheEnabled ? 'checked' : ''}> <span>后台自动缓存</span>
+                        </label>
+                        <div style="display:flex;gap:8px;align-items:center;margin-top:4px;font-size:12px;">
+                            <span style="font-size:11px;color:var(--ai-text-muted);white-space:nowrap;" title="后台增量缓存收藏夹数据的检查间隔（需开启后台自动缓存）">缓存扫描间隔</span>
                             <select id="ai-set-cache-interval" class="ai-select" style="font-size:11px;padding:2px 4px;">
                                 <option value="5" ${settings.cacheScanInterval === 5 ? 'selected' : ''}>5 分钟</option>
                                 <option value="15" ${settings.cacheScanInterval === 15 ? 'selected' : ''}>15 分钟</option>
@@ -6562,6 +6566,7 @@ ${topUps.length > 0 ? `<div class="section">
                 incrementalMode: document.getElementById('ai-set-incremental').checked,
                 batchRestInterval: parseInt(document.getElementById('ai-set-batch-rest-interval').value) || 100,
                 batchRestMinutes: parseFloat(document.getElementById('ai-set-batch-rest-minutes').value) || 1,
+                bgCacheEnabled: document.getElementById('ai-set-bg-cache').checked,
                 cacheScanInterval: parseInt(document.getElementById('ai-set-cache-interval').value) || 15
             });
             // 重新设置后台缓存定时器
@@ -6881,6 +6886,11 @@ ${topUps.length > 0 ? `<div class="section">
         if (_bgCacheInitTimer) { clearTimeout(_bgCacheInitTimer); _bgCacheInitTimer = null; }
 
         const settings = loadSettings();
+        if (!settings.bgCacheEnabled) {
+            console.log('[AI整理] 后台缓存已关闭（可在设置中开启）');
+            return;
+        }
+
         const intervalMs = (settings.cacheScanInterval || 15) * 60 * 1000;
 
         // 延迟 30 秒后首次扫描，之后按设置间隔定期检查
