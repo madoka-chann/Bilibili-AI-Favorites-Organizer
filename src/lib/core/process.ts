@@ -1,9 +1,10 @@
-import type { Settings, BiliData, VideoResource, CategoryResult } from '$lib/types';
+import type { Settings, BiliData, VideoResource, CategoryResult, ClassifiedVideoEntry } from '$lib/types';
 import { get } from 'svelte/store';
 import {
   isRunning, cancelRequested, logs,
   progressPhase, progressCurrent, progressTotal, progressStartTime,
   resetTokenUsage, tokenUsage,
+  type ProgressPhase,
 } from '$lib/stores/state';
 import {
   getSourceMediaId, getAllFoldersWithIds, getMyFolders,
@@ -22,8 +23,8 @@ import { saveHistoryEntry } from '$lib/core/history';
 
 type CancelCheck = () => boolean;
 
-function updateProgress(phase: string, current: number, total: number) {
-  progressPhase.set(phase as any);
+function updateProgress(phase: ProgressPhase, current: number, total: number) {
+  progressPhase.set(phase);
   progressCurrent.set(current);
   progressTotal.set(total);
   const pct = total > 0 ? Math.round((current / total) * 100) : 0;
@@ -174,7 +175,7 @@ async function classifyWithAI(
         if (aiResult?.categories) {
           for (const [catName, vids] of Object.entries(aiResult.categories)) {
             if (!allCategories[catName]) allCategories[catName] = [];
-            allCategories[catName].push(...(vids as any[]));
+            allCategories[catName].push(...vids);
           }
         }
 
@@ -204,18 +205,16 @@ function postProcessCategories(
 ): CategoryResult {
   // Deduplicate within and across categories
   const assignedIds = new Set<string>();
-  for (const [, vids] of Object.entries(allCategories)) {
+  for (const catName of Object.keys(allCategories)) {
+    const vids = allCategories[catName];
     const seen = new Set<string>();
-    const deduped = (vids as any[]).filter((v) => {
+    allCategories[catName] = vids.filter((v) => {
       const key = `${v.id}:${v.type}`;
       if (seen.has(key) || assignedIds.has(key)) return false;
       seen.add(key);
       assignedIds.add(key);
       return true;
     });
-    (allCategories as any)[Object.keys(allCategories).find((k) =>
-      allCategories[k] === vids
-    )!] = deduped;
   }
 
   // Detect missed videos
@@ -234,7 +233,7 @@ function postProcessCategories(
   // Merge tiny categories
   const tinyCats = Object.entries(allCategories).filter(
     ([name, vids]) =>
-      (vids as any[]).length === 1 &&
+      vids.length === 1 &&
       !existingFoldersMap[name] &&
       name !== '未分类',
   );
@@ -242,7 +241,7 @@ function postProcessCategories(
     logs.add(`合并 ${tinyCats.length} 个碎片分类`, 'info');
     if (!allCategories['未分类']) allCategories['未分类'] = [];
     for (const [name, vids] of tinyCats) {
-      allCategories['未分类'].push(...(vids as any[]));
+      allCategories['未分类'].push(...vids);
       delete allCategories[name];
     }
   }
@@ -292,14 +291,13 @@ async function moveVideosToFolders(
     }
 
     // Move in chunks
-    const videos = vids as any[];
-    for (let i = 0; i < videos.length; i += settings.moveChunkSize) {
+    for (let i = 0; i < vids.length; i += settings.moveChunkSize) {
       if (isCancelled()) break;
 
-      const chunk = videos.slice(i, i + settings.moveChunkSize);
+      const chunk = vids.slice(i, i + settings.moveChunkSize);
 
       // Group by source
-      const bySource: Record<number, any[]> = {};
+      const bySource: Record<number, ClassifiedVideoEntry[]> = {};
       for (const v of chunk) {
         const src = videoSourceMap.get(v.id) ?? sourceMediaIds[0];
         if (!bySource[src]) bySource[src] = [];
@@ -309,7 +307,7 @@ async function moveVideosToFolders(
       for (const [fromStr, subChunk] of Object.entries(bySource)) {
         const from = Number(fromStr);
         const resourcesStr = subChunk
-          .map((v: any) => `${v.id}:${v.type}`)
+          .map((v) => `${v.id}:${v.type}`)
           .join(',');
         const success = await moveVideos(from, targetFolderId, resourcesStr, biliData);
 
@@ -445,7 +443,7 @@ export async function startProcess(settings: Settings, biliData: BiliData): Prom
     // Phase 5: Preview & confirm
     logs.add(
       `分类结果: ${Object.entries(allCategories)
-        .map(([k, v]) => `${k}(${(v as any[]).length})`)
+        .map(([k, v]) => `${k}(${v.length})`)
         .join(', ')}`,
       'info',
     );

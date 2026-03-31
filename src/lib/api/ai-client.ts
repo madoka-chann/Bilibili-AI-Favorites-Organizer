@@ -1,6 +1,8 @@
-import type { Settings, AIFormat } from '$lib/types';
-import { AI_PROVIDERS } from '$lib/utils/constants';
-import { AI_TIMEOUT_MS } from '$lib/utils/constants';
+import type {
+  Settings, AIFormat, AIClassificationResult,
+  GeminiModelEntry, ModelEntry,
+} from '$lib/types';
+import { AI_PROVIDERS, AI_TIMEOUT_MS } from '$lib/utils/constants';
 import { gmXmlHttpRequest } from '$lib/utils/gm';
 import { gmFetch } from '$lib/utils/gm';
 import { sleep } from '$lib/utils/timing';
@@ -17,7 +19,7 @@ import {
 export function callAISingle(
   prompt: AIPrompt,
   settings: Settings
-): Promise<any> {
+): Promise<AIClassificationResult> {
   const fmt: AIFormat =
     (AI_PROVIDERS[settings.provider]?.format as AIFormat) ?? 'gemini';
   const builder = REQUEST_BUILDERS[fmt] ?? REQUEST_BUILDERS.gemini;
@@ -117,14 +119,14 @@ export function callAISingle(
             parsed = JSON.parse(fixed);
           }
           resolve(parsed);
-        } catch (e: any) {
-          reject(new Error(`解析 AI 回复失败: ${e.message}`));
+        } catch (e) {
+          reject(new Error(`解析 AI 回复失败: ${e instanceof Error ? e.message : String(e)}`));
         }
       },
       onerror(resp) {
         clearTimeout(timeoutId);
         const detail =
-          resp && (resp as any).error ? ` (${(resp as any).error})` : '';
+          resp && 'error' in resp ? ` (${(resp as { error: string }).error})` : '';
         reject({
           retryable: true,
           message: `网络请求失败${detail}，请检查网络或 API 地址`,
@@ -144,13 +146,13 @@ export async function callAI(
   prompt: AIPrompt,
   settings: Settings,
   maxRetries = 3
-): Promise<any> {
+): Promise<AIClassificationResult> {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       return await callAISingle(prompt, settings);
-    } catch (err: any) {
-      const isRetryable = err?.retryable;
-      const errMsg = err.message || String(err);
+    } catch (err: unknown) {
+      const isRetryable = (err as { retryable?: boolean })?.retryable;
+      const errMsg = err instanceof Error ? err.message : String((err as { message?: string })?.message ?? err);
       if (isRetryable && attempt < maxRetries) {
         const waitMs = Math.min(2000 * Math.pow(2, attempt - 1), 16000);
         logs.add(
@@ -163,6 +165,7 @@ export async function callAI(
       throw new Error(errMsg);
     }
   }
+  throw new Error(`AI 请求 ${maxRetries} 次均失败`);
 }
 
 // ================= 模型列表获取 =================
@@ -178,15 +181,13 @@ export async function fetchModelList(settings: Settings): Promise<string[]> {
     do {
       const pageUrl = `${config.baseUrl}/models?key=${settings.apiKey}&pageSize=100${pageToken ? '&pageToken=' + pageToken : ''}`;
       const resp = await gmFetch(pageUrl);
-      const json = JSON.parse(resp.responseText);
-      const models = (json.models || [])
-        .filter(
-          (m: any) =>
-            m.supportedGenerationMethods?.includes('generateContent')
-        )
-        .map((m: any) => m.name.replace('models/', ''));
+      const json: { models?: GeminiModelEntry[]; nextPageToken?: string } =
+        JSON.parse(resp.responseText);
+      const models = (json.models ?? [])
+        .filter((m) => m.supportedGenerationMethods?.includes('generateContent'))
+        .map((m) => m.name.replace('models/', ''));
       allModels.push(...models);
-      pageToken = json.nextPageToken || '';
+      pageToken = json.nextPageToken ?? '';
     } while (pageToken);
     allModels.sort();
     return allModels;
@@ -212,15 +213,16 @@ export async function fetchModelList(settings: Settings): Promise<string[]> {
   }
 
   const resp = await gmFetch(url, { headers });
-  const json = JSON.parse(resp.responseText);
+  const json: { data?: ModelEntry[]; models?: ModelEntry[] } =
+    JSON.parse(resp.responseText);
   let models: string[];
 
   if (fmt === 'github') {
-    models = (Array.isArray(json) ? json : json.data || json.models || [])
-      .map((m: any) => m.id || m.name || '')
-      .filter(Boolean);
+    const list: ModelEntry[] = Array.isArray(json) ? json : (json.data ?? json.models ?? []);
+    models = list.map((m) => m.id ?? m.name ?? '').filter(Boolean);
   } else {
-    models = (json.data || []).map((m: any) => m.id).filter(Boolean);
+    const list: ModelEntry[] = json.data ?? [];
+    models = list.map((m) => m.id ?? '').filter(Boolean);
   }
   models.sort();
   return models;

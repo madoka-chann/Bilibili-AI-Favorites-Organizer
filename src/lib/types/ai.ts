@@ -60,3 +60,64 @@ export interface PromptPreset {
   isCustom?: boolean;
   id?: string;
 }
+
+// ================= AI API 响应类型 =================
+
+/** Gemini Token 用量元数据 */
+export interface GeminiUsageMetadata {
+  promptTokenCount?: number;
+  candidatesTokenCount?: number;
+  totalTokenCount?: number;
+}
+
+/** OpenAI/Anthropic Token 用量 */
+export interface StandardUsage {
+  prompt_tokens?: number;
+  completion_tokens?: number;
+  total_tokens?: number;
+  input_tokens?: number;
+  output_tokens?: number;
+}
+
+/** Gemini API 响应 */
+export interface GeminiResponse {
+  candidates: Array<{ content: { parts: Array<{ text: string }> } }>;
+  usageMetadata?: GeminiUsageMetadata;
+}
+
+/** OpenAI/GitHub API 响应 */
+export interface OpenAIResponse {
+  choices: Array<{ message: { content: string } }>;
+  usage?: StandardUsage;
+}
+
+/** Anthropic API 响应 */
+export interface AnthropicResponse {
+  content: Array<{ text: string }>;
+  usage?: StandardUsage;
+}
+
+/** Gemini 模型列表条目 */
+export interface GeminiModelEntry {
+  name: string;
+  supportedGenerationMethods?: string[];
+}
+
+/** OpenAI/GitHub/Anthropic 模型列表条目 */
+export interface ModelEntry {
+  id?: string;
+  name?: string;
+}
+
+/** AI 分类结果 (AI 返回的原始结构) */
+export interface AIClassificationResult {
+  thoughts?: string;
+  categories?: Record<string, Array<{ id: number; type: number; conf?: number }>>;
+}
+
+/** 分类条目 (带置信度) */
+export interface ClassifiedVideoEntry {
+  id: number;
+  type: number;
+  conf?: number;
+}

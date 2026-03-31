@@ -1,4 +1,7 @@
-import type { BiliData, FavFolder, VideoResource } from '$lib/types';
+import type {
+  BiliData, FavFolder, VideoResource,
+  BiliApiResponse, BiliFolderListData, BiliFavResourceData, BiliCreateFolderData,
+} from '$lib/types';
 import { BILIBILI_PAGE_SIZE } from '$lib/utils/constants';
 import { sleep, humanDelay } from '$lib/utils/timing';
 import { logs } from '$lib/stores/state';
@@ -45,68 +48,91 @@ function buildFormData(obj: Record<string, string | number>): string {
   return new URLSearchParams(obj as Record<string, string>).toString();
 }
 
-/** 轻量级 JSON 请求 (只读, 短超时) */
-export async function lightFetchJson(
-  url: string,
-  maxRetries = 3
-): Promise<any> {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000);
-    try {
-      const res = await fetch(url, {
-        credentials: 'include',
-        signal: controller.signal,
-      });
-      clearTimeout(timeoutId);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return await res.json();
-    } catch (e: any) {
-      clearTimeout(timeoutId);
-      if (attempt < maxRetries) {
-        await sleep(1000 * attempt);
-        continue;
-      }
-      throw e;
-    }
-  }
+/** B站限流错误码 */
+const RATE_LIMIT_CODES = [-412, -429];
+
+/** 是否为限流响应 */
+function isRateLimited(json: BiliApiResponse): boolean {
+  return RATE_LIMIT_CODES.includes(json.code);
 }
 
-/** 带风控重试的 JSON 请求 */
-export async function safeFetchJson(
+interface FetchBiliOptions {
+  /** 超时毫秒数 */
+  timeoutMs?: number;
+  /** 最大重试次数 */
+  maxRetries?: number;
+  /** 是否处理限流重试 (带日志) */
+  handleRateLimit?: boolean;
+}
+
+/**
+ * 统一的 B站 API JSON 请求
+ * - light 模式: { timeoutMs: 15000, maxRetries: 3 }
+ * - safe 模式:  { timeoutMs: 30000, maxRetries: 4, handleRateLimit: true }
+ */
+export async function fetchBiliJson<T = unknown>(
   url: string,
-  maxRetries = 4
-): Promise<any> {
+  opts: FetchBiliOptions = {},
+): Promise<BiliApiResponse<T>> {
+  const {
+    timeoutMs = 30000,
+    maxRetries = 4,
+    handleRateLimit = true,
+  } = opts;
+
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000);
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
       const res = await fetch(url, {
         credentials: 'include',
         signal: controller.signal,
       });
-      clearTimeout(timeoutId);
-      const json = await res.json();
+      clearTimeout(timer);
 
-      if (json.code === -412 || json.code === -429) {
+      if (!handleRateLimit) {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      }
+
+      const json: BiliApiResponse<T> = await res.json();
+
+      if (handleRateLimit && isRateLimited(json)) {
         const waitMs = 5000 * Math.pow(2, attempt - 1);
         logs.add(
           `请求被限流，等待 ${(waitMs / 1000).toFixed(0)}s 后重试 (${attempt}/${maxRetries})...`,
-          'warning'
+          'warning',
         );
         await sleep(waitMs);
         continue;
       }
       return json;
-    } catch (e: any) {
-      clearTimeout(timeoutId);
+    } catch (e) {
+      clearTimeout(timer);
       if (attempt < maxRetries) {
-        await sleep(2000 * attempt);
+        await sleep(handleRateLimit ? 2000 * attempt : 1000 * attempt);
         continue;
       }
       throw e;
     }
   }
+  // TypeScript 需要一个不可达返回
+  throw new Error(`请求 ${maxRetries} 次均失败`);
+}
+
+/** 轻量级 JSON 请求 (只读, 短超时, 不处理限流) */
+export async function lightFetchJson<T = unknown>(
+  url: string,
+  maxRetries = 3,
+): Promise<BiliApiResponse<T>> {
+  return fetchBiliJson<T>(url, { timeoutMs: 15000, maxRetries, handleRateLimit: false });
+}
+
+/** 带风控重试的 JSON 请求 */
+export async function safeFetchJson<T = unknown>(
+  url: string,
+  maxRetries = 4,
+): Promise<BiliApiResponse<T>> {
+  return fetchBiliJson<T>(url, { timeoutMs: 30000, maxRetries, handleRateLimit: true });
 }
 
 // ================= 文件夹列表 (带缓存) =================
@@ -123,7 +149,7 @@ export async function getAllFoldersWithIds(
     return _folderListCache;
   }
   const url = `https://api.bilibili.com/x/v3/fav/folder/created/list-all?up_mid=${biliData.mid}`;
-  const res = await lightFetchJson(url);
+  const res = await lightFetchJson<BiliFolderListData>(url);
   if (res.code === 0 && res.data?.list) {
     _folderListCache = res.data.list;
     _folderListCacheTime = now;
@@ -163,14 +189,14 @@ export async function createFolder(
   });
 
   for (let attempt = 1; attempt <= 3; attempt++) {
-    const res = await fetch(url, {
+    const res: BiliApiResponse<BiliCreateFolderData> = await fetch(url, {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: data,
     }).then((r) => r.json());
 
-    if (res.code === 0) {
+    if (res.code === 0 && res.data) {
       // 追加到缓存
       if (_folderListCache) {
         _folderListCache.push({
@@ -185,11 +211,11 @@ export async function createFolder(
       return res.data.id;
     }
 
-    if (res.code === -412 || res.code === -429) {
+    if (isRateLimited(res)) {
       const waitMs = 3000 * Math.pow(2, attempt - 1);
       logs.add(
         `创建收藏夹被限流，等待 ${(waitMs / 1000).toFixed(0)}s 后重试 (${attempt}/3)...`,
-        'warning'
+        'warning',
       );
       await sleep(waitMs);
       continue;
@@ -217,28 +243,28 @@ export async function moveVideos(
   };
 
   for (let attempt = 1; attempt <= 4; attempt++) {
-    const res = await fetch(url, {
+    const res: BiliApiResponse = await fetch(url, {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: buildFormData(payload as any),
+      body: buildFormData(payload),
     }).then((r) => r.json());
 
     if (res.code === 0) return true;
 
-    if (res.code === -412 || res.code === -429) {
+    if (isRateLimited(res)) {
       const waitMs = 5000 * Math.pow(2, attempt - 1);
       logs.add(
         `移动操作被限流，等待 ${(waitMs / 1000).toFixed(0)}s 后重试 (${attempt}/4)...`,
-        'warning'
+        'warning',
       );
       await sleep(waitMs);
       continue;
     }
 
     logs.add(
-      `移动失败 (code ${res.code}): ${res.message || '未知错误'}`,
-      'warning'
+      `移动失败 (code ${res.code}): ${res.message ?? '未知错误'}`,
+      'warning',
     );
     if (attempt < 4) {
       await sleep(3000 * attempt);
@@ -262,7 +288,7 @@ export async function batchDeleteVideos(
   });
 
   for (let attempt = 1; attempt <= 3; attempt++) {
-    const res = await fetch(url, {
+    const res: BiliApiResponse = await fetch(url, {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -271,11 +297,11 @@ export async function batchDeleteVideos(
 
     if (res.code === 0) return true;
 
-    if (res.code === -412 || res.code === -429) {
+    if (isRateLimited(res)) {
       const waitMs = 3000 * Math.pow(2, attempt - 1);
       logs.add(
         `删除操作被限流，等待 ${(waitMs / 1000).toFixed(0)}s 后重试 (${attempt}/3)...`,
-        'warning'
+        'warning',
       );
       await sleep(waitMs);
       continue;
@@ -304,16 +330,16 @@ export async function fetchAllVideos(
     if (pn <= 3 || pn % 10 === 0) {
       logs.add(
         `正在读取第 ${pn}${totalPages > 0 ? ` / ${totalPages}` : ''} 页...`,
-        'info'
+        'info',
       );
     }
 
     const listUrl = `https://api.bilibili.com/x/v3/fav/resource/list?media_id=${mediaId}&pn=${pn}&ps=${BILIBILI_PAGE_SIZE}&platform=web`;
-    let listRes: any;
+    let listRes: BiliApiResponse<BiliFavResourceData>;
     try {
-      listRes = await safeFetchJson(listUrl);
-    } catch (e: any) {
-      logs.add(`读取出错: ${e.message}`, 'error');
+      listRes = await safeFetchJson<BiliFavResourceData>(listUrl);
+    } catch (e) {
+      logs.add(`读取出错: ${e instanceof Error ? e.message : String(e)}`, 'error');
       break;
     }
 

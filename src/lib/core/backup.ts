@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import type { BiliData, FavFolder } from '$lib/types';
+import type { BiliData, BiliFavResourceData } from '$lib/types';
 import { isRunning, cancelRequested, logs } from '$lib/stores/state';
 import { getAllFoldersWithIds, lightFetchJson } from '$lib/api/bilibili';
 import { humanDelay } from '$lib/utils/timing';
@@ -60,7 +60,7 @@ export async function backupFavorites(
       while (true) {
         if (isCancelled()) break;
         try {
-          const res = await lightFetchJson(
+          const res = await lightFetchJson<BiliFavResourceData>(
             `https://api.bilibili.com/x/v3/fav/resource/list?media_id=${folder.id}&pn=${pn}&ps=${BILIBILI_PAGE_SIZE}&platform=web`,
           );
           if (res.code !== 0) break;
@@ -74,8 +74,8 @@ export async function backupFavorites(
           if (!res.data?.has_more || medias.length === 0) break;
           pn++;
           await humanDelay(fetchDelay);
-        } catch (e: any) {
-          logs.add(`备份 ${folder.title} 第 ${pn} 页失败: ${e.message}，跳过后续页`, 'warning');
+        } catch (e) {
+          logs.add(`备份 ${folder.title} 第 ${pn} 页失败: ${e instanceof Error ? e.message : String(e)}，跳过后续页`, 'warning');
           break;
         }
       }
@@ -88,8 +88,8 @@ export async function backupFavorites(
     const totalVideos = backup.folders.reduce((s, f) => s + f.videos.length, 0);
     logs.add(`备份完成！${backup.folders.length} 个收藏夹，${totalVideos} 个视频`, 'success');
     return backup;
-  } catch (err: any) {
-    logs.add(`备份失败: ${err.message}`, 'error');
+  } catch (err) {
+    logs.add(`备份失败: ${err instanceof Error ? err.message : String(err)}`, 'error');
     return null;
   } finally {
     isRunning.set(false);

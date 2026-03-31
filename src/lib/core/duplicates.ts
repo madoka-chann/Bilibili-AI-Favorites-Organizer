@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import type { BiliData } from '$lib/types';
+import type { BiliData, BiliFavResourceData } from '$lib/types';
 import { cancelRequested, logs } from '$lib/stores/state';
 import { getAllFoldersWithIds, safeFetchJson, batchDeleteVideos } from '$lib/api/bilibili';
 import { humanDelay } from '$lib/utils/timing';
@@ -41,7 +41,7 @@ export async function scanDuplicates(
     while (true) {
       if (isCancelled()) break;
       try {
-        const res = await safeFetchJson(
+        const res = await safeFetchJson<BiliFavResourceData>(
           `https://api.bilibili.com/x/v3/fav/resource/list?media_id=${folder.id}&pn=${pn}&ps=${BILIBILI_PAGE_SIZE}&platform=web`,
         );
         if (res.code !== 0) break;
@@ -59,8 +59,8 @@ export async function scanDuplicates(
         if (!res.data?.has_more || medias.length === 0) break;
         pn++;
         await humanDelay(fetchDelay);
-      } catch (e: any) {
-        logs.add(`扫描 ${folder.title} 出错: ${e.message}，跳过`, 'warning');
+      } catch (e) {
+        logs.add(`扫描 ${folder.title} 出错: ${e instanceof Error ? e.message : String(e)}，跳过`, 'warning');
         break;
       }
     }
