@@ -30,8 +30,8 @@ export function getProviderBaseUrl(settings: Settings): string {
 
 // ================= Request Builders =================
 
-/** 解析 prompt 为 system + user 文本对 */
-function resolvePromptTexts(prompt: AIPrompt): { system: string; user: string } {
+/** 解析 prompt 为 system + user 文本对 (统一入口) */
+function resolvePrompt(prompt: AIPrompt): { system: string; user: string } {
   if (typeof prompt === 'string') {
     return { system: FALLBACK_SYSTEM, user: prompt };
   }
@@ -40,7 +40,7 @@ function resolvePromptTexts(prompt: AIPrompt): { system: string; user: string } 
 
 function buildGeminiRequest(prompt: AIPrompt, s: Settings): AIRequestConfig {
   const base = AI_PROVIDERS.gemini.baseUrl;
-  const { system: systemText, user: userText } = resolvePromptTexts(prompt);
+  const { system: systemText, user: userText } = resolvePrompt(prompt);
   return {
     url: `${base}/models/${s.modelName}:generateContent?key=${s.apiKey}`,
     method: 'POST',
@@ -53,18 +53,14 @@ function buildGeminiRequest(prompt: AIPrompt, s: Settings): AIRequestConfig {
   };
 }
 
-/** 构建 OpenAI 兼容格式的消息列表 */
+/** 构建 OpenAI 兼容格式的消息列表 (复用 resolvePrompt) */
 function buildChatMessages(
   prompt: AIPrompt,
 ): Array<{ role: string; content: string }> {
+  const { system, user } = resolvePrompt(prompt);
   const messages: Array<{ role: string; content: string }> = [];
-  if (typeof prompt === 'string') {
-    messages.push({ role: 'system', content: FALLBACK_SYSTEM });
-    messages.push({ role: 'user', content: prompt });
-  } else {
-    if (prompt.system) messages.push({ role: 'system', content: prompt.system });
-    messages.push({ role: 'user', content: prompt.user });
-  }
+  if (system) messages.push({ role: 'system', content: system });
+  messages.push({ role: 'user', content: user });
   return messages;
 }
 
@@ -97,7 +93,7 @@ function buildOpenAIRequest(prompt: AIPrompt, s: Settings): AIRequestConfig {
 
 function buildAnthropicRequest(prompt: AIPrompt, s: Settings): AIRequestConfig {
   const base = AI_PROVIDERS.anthropic.baseUrl;
-  const { system: systemText, user: userText } = resolvePromptTexts(prompt);
+  const { system: systemText, user: userText } = resolvePrompt(prompt);
   return {
     url: `${base}/v1/messages`,
     method: 'POST',

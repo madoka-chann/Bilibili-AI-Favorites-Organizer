@@ -5,6 +5,7 @@
   import { fetchModelList } from '$lib/api/ai-client';
   import { logs } from '$lib/stores/state';
   import { Eye, EyeOff, RefreshCw, ExternalLink } from 'lucide-svelte';
+  import { getErrorMessage } from '$lib/utils/errors';
   import type { AIProviderId } from '$lib/types';
 
   let showApiKey = false;
@@ -34,8 +35,8 @@
       modelList = await fetchModelList(s);
       showModelDropdown = true;
       logs.add(`获取到 ${modelList.length} 个模型`, 'success');
-    } catch (e: any) {
-      logs.add(`获取模型列表失败: ${e.message}`, 'error');
+    } catch (e: unknown) {
+      logs.add(`获取模型列表失败: ${getErrorMessage(e)}`, 'error');
     } finally {
       modelLoading = false;
     }

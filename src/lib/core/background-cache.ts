@@ -4,7 +4,7 @@
  */
 
 import { gmGetValue, gmSetValue } from '$lib/utils/gm';
-import type { FavFolder, GlobalVideoCache } from '$lib/types';
+import type { FavFolder, GlobalVideoCache, BiliApiResponse, BiliFolderListData } from '$lib/types';
 import { BILIBILI_URLS } from '$lib/utils/constants';
 
 const CACHE_KEY = 'bfao_bg_folder_cache';
@@ -16,7 +16,7 @@ function getMidFromCookie(): string {
   return match ? match[1] : '';
 }
 
-async function fetchJson(url: string): Promise<any> {
+async function fetchJson<T = unknown>(url: string): Promise<BiliApiResponse<T> | null> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 10000);
   try {
@@ -26,7 +26,7 @@ async function fetchJson(url: string): Promise<any> {
     });
     clearTimeout(timeoutId);
     if (!res.ok) return null;
-    return await res.json();
+    return await res.json() as BiliApiResponse<T>;
   } catch {
     clearTimeout(timeoutId);
     return null;
@@ -35,7 +35,7 @@ async function fetchJson(url: string): Promise<any> {
 
 async function fetchFolderList(mid: string): Promise<FavFolder[]> {
   const url = BILIBILI_URLS.folderList(mid);
-  const res = await fetchJson(url);
+  const res = await fetchJson<BiliFolderListData>(url);
   if (res?.code === 0 && res.data?.list) {
     return res.data.list;
   }

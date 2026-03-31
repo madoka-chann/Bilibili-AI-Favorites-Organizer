@@ -1,81 +1,83 @@
 import { writable, get } from 'svelte/store';
 import type { FavFolder, CategoryResult, VideoResource } from '$lib/types';
 
-// ================= Folder Select Bridge =================
+// ================= Generic Modal Bridge =================
 
-export interface FolderSelectRequest {
-  folders: FavFolder[];
-  resolve: (ids: number[]) => void;
+interface ModalRequest<TInput, TResult> {
+  input: TInput;
+  resolve: (value: TResult) => void;
   reject: (reason?: unknown) => void;
 }
 
-export const folderSelectRequest = writable<FolderSelectRequest | null>(null);
+/**
+ * 创建一个 Promise 桥接模式的 modal store
+ * 消除 FolderSelect / PreviewConfirm 中的重复代码
+ */
+function createModalBridge<TInput, TResult>() {
+  const store = writable<ModalRequest<TInput, TResult> | null>(null);
 
-export function requestFolderSelect(folders: FavFolder[]): Promise<number[]> {
-  // 拒绝前一个未完成的请求，防止 Promise 泄漏
-  const pending = get(folderSelectRequest);
-  if (pending) pending.reject(new Error('被新请求覆盖'));
+  function request(input: TInput): Promise<TResult> {
+    const pending = get(store);
+    if (pending) pending.reject(new Error('被新请求覆盖'));
 
-  return new Promise((resolve, reject) => {
-    folderSelectRequest.set({ folders, resolve, reject });
-  });
-}
-
-export function resolveFolderSelect(ids: number[]): void {
-  const req = get(folderSelectRequest);
-  if (req) {
-    folderSelectRequest.set(null);
-    req.resolve(ids);
+    return new Promise((resolve, reject) => {
+      store.set({ input, resolve, reject });
+    });
   }
+
+  function resolve(value: TResult): void {
+    const req = get(store);
+    if (req) {
+      store.set(null);
+      req.resolve(value);
+    }
+  }
+
+  function reject(): void {
+    const req = get(store);
+    if (req) {
+      store.set(null);
+      req.reject(new Error('用户取消'));
+    }
+  }
+
+  return { subscribe: store.subscribe, request, resolve, reject };
 }
 
-export function rejectFolderSelect(): void {
-  const req = get(folderSelectRequest);
-  if (req) {
-    folderSelectRequest.set(null);
-    req.reject(new Error('用户取消选择'));
-  }
-}
+// ================= Folder Select Bridge =================
+
+const folderBridge = createModalBridge<FavFolder[], number[]>();
+
+export const folderSelectRequest = {
+  subscribe: folderBridge.subscribe,
+};
+
+export const requestFolderSelect = folderBridge.request;
+export const resolveFolderSelect = folderBridge.resolve;
+export const rejectFolderSelect = folderBridge.reject;
 
 // ================= Preview Confirm Bridge =================
 
-export interface PreviewConfirmRequest {
+interface PreviewInput {
   categories: CategoryResult;
   videos: VideoResource[];
-  resolve: (data: CategoryResult) => void;
-  reject: (reason?: unknown) => void;
 }
 
-export const previewConfirmRequest = writable<PreviewConfirmRequest | null>(null);
+const previewBridge = createModalBridge<PreviewInput, CategoryResult>();
+
+export const previewConfirmRequest = {
+  subscribe: previewBridge.subscribe,
+};
 
 export function requestPreviewConfirm(
   categories: CategoryResult,
   videos: VideoResource[],
 ): Promise<CategoryResult> {
-  // 拒绝前一个未完成的请求，防止 Promise 泄漏
-  const pending = get(previewConfirmRequest);
-  if (pending) pending.reject(new Error('被新请求覆盖'));
-
-  return new Promise((resolve, reject) => {
-    previewConfirmRequest.set({ categories, videos, resolve, reject });
-  });
+  return previewBridge.request({ categories, videos });
 }
 
-export function resolvePreviewConfirm(data: CategoryResult): void {
-  const req = get(previewConfirmRequest);
-  if (req) {
-    previewConfirmRequest.set(null);
-    req.resolve(data);
-  }
-}
-
-export function rejectPreviewConfirm(): void {
-  const req = get(previewConfirmRequest);
-  if (req) {
-    previewConfirmRequest.set(null);
-    req.reject(new Error('用户取消确认'));
-  }
-}
+export const resolvePreviewConfirm = previewBridge.resolve;
+export const rejectPreviewConfirm = previewBridge.reject;
 
 // ================= Reject All =================
 

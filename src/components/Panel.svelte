@@ -224,7 +224,7 @@
 
 {#if $folderSelectRequest}
   <FolderSelector
-    folders={$folderSelectRequest.folders}
+    folders={$folderSelectRequest.input}
     onconfirm={(ids) => resolveFolderSelect(ids)}
     onclose={() => rejectFolderSelect()}
   />
@@ -232,8 +232,8 @@
 
 {#if $previewConfirmRequest}
   <PreviewConfirm
-    categories={$previewConfirmRequest.categories}
-    videos={$previewConfirmRequest.videos}
+    categories={$previewConfirmRequest.input.categories}
+    videos={$previewConfirmRequest.input.videos}
     onconfirm={(data) => resolvePreviewConfirm(data)}
     onclose={() => rejectPreviewConfirm()}
   />

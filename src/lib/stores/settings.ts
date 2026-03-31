@@ -36,18 +36,12 @@ function loadFromStorage(): Settings {
   };
 }
 
+/** 所有持久化键 — 从 DEFAULT_SETTINGS 自动推导，避免手动维护 */
+const SETTINGS_KEYS = Object.keys(DEFAULT_SETTINGS) as (keyof Settings)[];
+
 /** 保存设置到 GM_setValue */
 function saveToStorage(s: Settings): void {
-  const keys: (keyof Settings)[] = [
-    'provider', 'customBaseUrl', 'apiKey', 'modelName',
-    'aiChunkSize', 'aiConcurrency', 'limitEnabled', 'limitCount',
-    'fetchDelay', 'writeDelay', 'moveChunkSize', 'skipDeadVideos',
-    'lastPrompt', 'adaptiveRate', 'notifyOnComplete',
-    'multiFolderEnabled', 'animEnabled', 'incrementalMode',
-    'batchRestInterval', 'batchRestMinutes',
-    'bgCacheEnabled', 'cacheScanInterval',
-  ];
-  for (const k of keys) {
+  for (const k of SETTINGS_KEYS) {
     if (s[k] !== undefined) {
       gmSetValue('bfao_' + k, s[k]);
     }
