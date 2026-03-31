@@ -174,6 +174,57 @@ export async function getMyFolders(
   return folderMap;
 }
 
+// ================= 通用 POST 请求 (限流重试) =================
+
+interface PostBiliOptions<T> {
+  url: string;
+  payload: Record<string, string | number>;
+  /** 操作名称，用于日志 */
+  label: string;
+  maxRetries?: number;
+  /** 限流基础等待时间 (ms) */
+  baseWaitMs?: number;
+  /** code === 0 时的回调，返回最终结果 */
+  onSuccess?: (data: T | undefined) => void;
+}
+
+async function postBiliApi<T = unknown>(
+  opts: PostBiliOptions<T>,
+): Promise<BiliApiResponse<T>> {
+  const { url, payload, label, maxRetries = 3, baseWaitMs = 3000, onSuccess } = opts;
+  const body = buildFormData(payload);
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    const res: BiliApiResponse<T> = await fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body,
+    }).then((r) => r.json());
+
+    if (res.code === 0) {
+      onSuccess?.(res.data);
+      return res;
+    }
+
+    if (isRateLimited(res)) {
+      const waitMs = baseWaitMs * Math.pow(2, attempt - 1);
+      logs.add(
+        `${label}被限流，等待 ${(waitMs / 1000).toFixed(0)}s 后重试 (${attempt}/${maxRetries})...`,
+        'warning',
+      );
+      await sleep(waitMs);
+      continue;
+    }
+
+    // 非限流错误，直接返回
+    return res;
+  }
+
+  // 所有重试耗尽
+  return { code: -1, message: `${label}重试 ${maxRetries} 次仍被限流` };
+}
+
 // ================= 创建收藏夹 =================
 
 export async function createFolder(
@@ -181,48 +232,29 @@ export async function createFolder(
   biliData: BiliData
 ): Promise<number> {
   logs.add(`正在新建收藏夹：【${title}】`, 'info');
-  const url = 'https://api.bilibili.com/x/v3/fav/folder/add';
-  const data = buildFormData({
-    title,
-    privacy: 1,
-    csrf: biliData.csrf,
-  });
 
-  for (let attempt = 1; attempt <= 3; attempt++) {
-    const res: BiliApiResponse<BiliCreateFolderData> = await fetch(url, {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: data,
-    }).then((r) => r.json());
-
-    if (res.code === 0 && res.data) {
-      // 追加到缓存
-      if (_folderListCache) {
+  const res = await postBiliApi<BiliCreateFolderData>({
+    url: 'https://api.bilibili.com/x/v3/fav/folder/add',
+    payload: { title, privacy: 1, csrf: biliData.csrf },
+    label: '创建收藏夹',
+    onSuccess(data) {
+      if (data && _folderListCache) {
         _folderListCache.push({
-          id: res.data.id,
-          fid: res.data.fid ?? res.data.id,
+          id: data.id,
+          fid: data.fid ?? data.id,
           mid: Number(biliData.mid),
           title,
           media_count: 0,
         });
       }
-      await humanDelay(1000);
-      return res.data.id;
-    }
+    },
+  });
 
-    if (isRateLimited(res)) {
-      const waitMs = 3000 * Math.pow(2, attempt - 1);
-      logs.add(
-        `创建收藏夹被限流，等待 ${(waitMs / 1000).toFixed(0)}s 后重试 (${attempt}/3)...`,
-        'warning',
-      );
-      await sleep(waitMs);
-      continue;
-    }
-    throw new Error(`新建失败: ${res.message}`);
+  if (res.code === 0 && res.data) {
+    await humanDelay(1000);
+    return res.data.id;
   }
-  throw new Error('创建收藏夹重试 3 次仍被限流');
+  throw new Error(`新建失败: ${res.message}`);
 }
 
 // ================= 移动视频 =================
@@ -233,43 +265,25 @@ export async function moveVideos(
   resourcesStr: string,
   biliData: BiliData
 ): Promise<boolean> {
-  const url = 'https://api.bilibili.com/x/v3/fav/resource/move';
-  const payload = {
-    src_media_id: sourceMediaId,
-    tar_media_id: tarMediaId,
-    mid: biliData.mid,
-    resources: resourcesStr,
-    csrf: biliData.csrf,
-  };
+  const res = await postBiliApi({
+    url: 'https://api.bilibili.com/x/v3/fav/resource/move',
+    payload: {
+      src_media_id: sourceMediaId,
+      tar_media_id: tarMediaId,
+      mid: biliData.mid,
+      resources: resourcesStr,
+      csrf: biliData.csrf,
+    },
+    label: '移动操作',
+    maxRetries: 4,
+    baseWaitMs: 5000,
+  });
 
-  for (let attempt = 1; attempt <= 4; attempt++) {
-    const res: BiliApiResponse = await fetch(url, {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: buildFormData(payload),
-    }).then((r) => r.json());
-
-    if (res.code === 0) return true;
-
-    if (isRateLimited(res)) {
-      const waitMs = 5000 * Math.pow(2, attempt - 1);
-      logs.add(
-        `移动操作被限流，等待 ${(waitMs / 1000).toFixed(0)}s 后重试 (${attempt}/4)...`,
-        'warning',
-      );
-      await sleep(waitMs);
-      continue;
-    }
-
-    logs.add(
-      `移动失败 (code ${res.code}): ${res.message ?? '未知错误'}`,
-      'warning',
-    );
-    if (attempt < 4) {
-      await sleep(3000 * attempt);
-    }
-  }
+  if (res.code === 0) return true;
+  logs.add(
+    `移动失败 (code ${res.code}): ${res.message ?? '未知错误'}`,
+    'warning',
+  );
   return false;
 }
 
@@ -280,35 +294,14 @@ export async function batchDeleteVideos(
   resources: string,
   biliData: BiliData
 ): Promise<boolean> {
-  const url = 'https://api.bilibili.com/x/v3/fav/resource/batch-del';
-  const data = buildFormData({
-    media_id: mediaId,
-    resources,
-    csrf: biliData.csrf,
+  const res = await postBiliApi({
+    url: 'https://api.bilibili.com/x/v3/fav/resource/batch-del',
+    payload: { media_id: mediaId, resources, csrf: biliData.csrf },
+    label: '删除操作',
   });
 
-  for (let attempt = 1; attempt <= 3; attempt++) {
-    const res: BiliApiResponse = await fetch(url, {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: data,
-    }).then((r) => r.json());
-
-    if (res.code === 0) return true;
-
-    if (isRateLimited(res)) {
-      const waitMs = 3000 * Math.pow(2, attempt - 1);
-      logs.add(
-        `删除操作被限流，等待 ${(waitMs / 1000).toFixed(0)}s 后重试 (${attempt}/3)...`,
-        'warning',
-      );
-      await sleep(waitMs);
-      continue;
-    }
-    return false;
-  }
-  logs.add('删除操作重试 3 次仍被限流', 'warning');
+  if (res.code === 0) return true;
+  if (res.code === -1) logs.add(res.message ?? '删除操作重试失败', 'warning');
   return false;
 }
 

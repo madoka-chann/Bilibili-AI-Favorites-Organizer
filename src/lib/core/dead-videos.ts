@@ -1,13 +1,10 @@
 import { get } from 'svelte/store';
-import type { BiliData, BiliFavResourceData } from '$lib/types';
-import { isRunning, cancelRequested, logs } from '$lib/stores/state';
-import {
-  getAllFoldersWithIds, getMyFolders, createFolder,
-  moveVideos, batchDeleteVideos, safeFetchJson,
-} from '$lib/api/bilibili';
+import type { BiliData } from '$lib/types';
+import { cancelRequested, logs } from '$lib/stores/state';
+import { getMyFolders, createFolder, moveVideos, batchDeleteVideos } from '$lib/api/bilibili';
 import { humanDelay } from '$lib/utils/timing';
 import { isDeadVideo } from '$lib/utils/dom';
-import { BILIBILI_PAGE_SIZE } from '$lib/utils/constants';
+import { scanAllFolderVideos } from './folder-scan';
 
 const DEAD_VIDEO_FOLDER_NAME = '失效视频归档';
 
@@ -24,54 +21,32 @@ export async function scanDeadVideos(
   biliData: BiliData,
   fetchDelay: number,
 ): Promise<DeadVideoEntry[]> {
-  const isCancelled = () => get(cancelRequested);
-
   logs.add('正在扫描所有收藏夹中的失效视频...', 'info');
-  const allFolders = await getAllFoldersWithIds(biliData);
-  logs.add(`共 ${allFolders.length} 个收藏夹，开始逐个扫描...`, 'info');
 
   const deadVideos: DeadVideoEntry[] = [];
-  let totalScanned = 0;
-
-  for (let fi = 0; fi < allFolders.length; fi++) {
-    if (isCancelled()) break;
-    const folder = allFolders[fi];
-    logs.add(`扫描 [${fi + 1}/${allFolders.length}] ${folder.title}...`, 'info');
-
-    let pn = 1;
-    while (true) {
-      if (isCancelled()) break;
-      try {
-        const res = await safeFetchJson<BiliFavResourceData>(
-          `https://api.bilibili.com/x/v3/fav/resource/list?media_id=${folder.id}&pn=${pn}&ps=${BILIBILI_PAGE_SIZE}&platform=web`,
-        );
-        if (res.code !== 0) break;
-        const medias = res.data?.medias ?? [];
-        for (const v of medias) {
-          totalScanned++;
-          if (isDeadVideo(v)) {
-            deadVideos.push({
-              id: v.id,
-              type: v.type ?? 2,
-              title: v.title || `ID:${v.id}`,
-              folderId: folder.id,
-              folderTitle: folder.title,
-            });
-          }
-        }
-        if (!res.data?.has_more || medias.length === 0) break;
-        pn++;
-        await humanDelay(fetchDelay);
-      } catch (e) {
-        logs.add(`扫描 ${folder.title} 出错: ${e instanceof Error ? e.message : String(e)}，跳过`, 'warning');
-        break;
-      }
+  const totalScanned = await scanAllFolderVideos(biliData, fetchDelay, ({ video, folder }) => {
+    if (isDeadVideo(video)) {
+      deadVideos.push({
+        id: video.id,
+        type: video.type ?? 2,
+        title: video.title || `ID:${video.id}`,
+        folderId: folder.id,
+        folderTitle: folder.title,
+      });
     }
-    await humanDelay(fetchDelay);
-  }
+  });
 
   logs.add(`扫描完成，共扫描 ${totalScanned} 个视频`, 'info');
   return deadVideos;
+}
+
+/** 按来源收藏夹分组 */
+function groupBySource(deadVideos: DeadVideoEntry[]): Record<number, DeadVideoEntry[]> {
+  const bySource: Record<number, DeadVideoEntry[]> = {};
+  for (const v of deadVideos) {
+    (bySource[v.folderId] ??= []).push(v);
+  }
+  return bySource;
 }
 
 /** 将失效视频移动到专用归档收藏夹 */
@@ -92,15 +67,8 @@ export async function archiveDeadVideos(
     await humanDelay(writeDelay);
   }
 
-  // 按来源收藏夹分组
-  const bySource: Record<number, DeadVideoEntry[]> = {};
-  for (const v of deadVideos) {
-    if (!bySource[v.folderId]) bySource[v.folderId] = [];
-    bySource[v.folderId].push(v);
-  }
-
   let moved = 0;
-  for (const [srcIdStr, vids] of Object.entries(bySource)) {
+  for (const [srcIdStr, vids] of Object.entries(groupBySource(deadVideos))) {
     if (isCancelled()) break;
     const srcId = Number(srcIdStr);
     for (let i = 0; i < vids.length; i += moveChunkSize) {
@@ -125,15 +93,8 @@ export async function deleteDeadVideos(
 ): Promise<number> {
   const isCancelled = () => get(cancelRequested);
 
-  // 按来源收藏夹分组
-  const bySource: Record<number, DeadVideoEntry[]> = {};
-  for (const v of deadVideos) {
-    if (!bySource[v.folderId]) bySource[v.folderId] = [];
-    bySource[v.folderId].push(v);
-  }
-
   let deleted = 0;
-  for (const [srcIdStr, vids] of Object.entries(bySource)) {
+  for (const [srcIdStr, vids] of Object.entries(groupBySource(deadVideos))) {
     if (isCancelled()) break;
     const resources = vids.map((v) => `${v.id}:${v.type}`).join(',');
     const success = await batchDeleteVideos(Number(srcIdStr), resources, biliData);

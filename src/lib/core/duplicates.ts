@@ -1,9 +1,9 @@
 import { get } from 'svelte/store';
-import type { BiliData, BiliFavResourceData } from '$lib/types';
+import type { BiliData } from '$lib/types';
 import { cancelRequested, logs } from '$lib/stores/state';
-import { getAllFoldersWithIds, safeFetchJson, batchDeleteVideos } from '$lib/api/bilibili';
+import { batchDeleteVideos } from '$lib/api/bilibili';
 import { humanDelay } from '$lib/utils/timing';
-import { BILIBILI_PAGE_SIZE } from '$lib/utils/constants';
+import { scanAllFolderVideos } from './folder-scan';
 
 export interface DuplicateEntry {
   id: number;
@@ -18,11 +18,7 @@ export async function scanDuplicates(
   biliData: BiliData,
   fetchDelay: number,
 ): Promise<DuplicateEntry[]> {
-  const isCancelled = () => get(cancelRequested);
-
   logs.add('正在扫描所有收藏夹...', 'info');
-  const allFolders = await getAllFoldersWithIds(biliData);
-  logs.add(`共 ${allFolders.length} 个收藏夹，开始逐个扫描...`, 'info');
 
   const videoFolderMap: Record<number, Array<{
     folderTitle: string;
@@ -30,42 +26,15 @@ export async function scanDuplicates(
     videoTitle: string;
     videoType: number;
   }>> = {};
-  let totalScanned = 0;
 
-  for (let fi = 0; fi < allFolders.length; fi++) {
-    if (isCancelled()) break;
-    const folder = allFolders[fi];
-    logs.add(`扫描 [${fi + 1}/${allFolders.length}] ${folder.title}...`, 'info');
-
-    let pn = 1;
-    while (true) {
-      if (isCancelled()) break;
-      try {
-        const res = await safeFetchJson<BiliFavResourceData>(
-          `https://api.bilibili.com/x/v3/fav/resource/list?media_id=${folder.id}&pn=${pn}&ps=${BILIBILI_PAGE_SIZE}&platform=web`,
-        );
-        if (res.code !== 0) break;
-        const medias = res.data?.medias ?? [];
-        for (const v of medias) {
-          if (!videoFolderMap[v.id]) videoFolderMap[v.id] = [];
-          videoFolderMap[v.id].push({
-            folderTitle: folder.title,
-            folderId: folder.id,
-            videoTitle: v.title,
-            videoType: v.type ?? 2,
-          });
-        }
-        totalScanned += medias.length;
-        if (!res.data?.has_more || medias.length === 0) break;
-        pn++;
-        await humanDelay(fetchDelay);
-      } catch (e) {
-        logs.add(`扫描 ${folder.title} 出错: ${e instanceof Error ? e.message : String(e)}，跳过`, 'warning');
-        break;
-      }
-    }
-    await humanDelay(fetchDelay);
-  }
+  const totalScanned = await scanAllFolderVideos(biliData, fetchDelay, ({ video, folder }) => {
+    (videoFolderMap[video.id] ??= []).push({
+      folderTitle: folder.title,
+      folderId: folder.id,
+      videoTitle: video.title,
+      videoType: video.type ?? 2,
+    });
+  });
 
   logs.add(`扫描完成，共收集 ${totalScanned} 条视频记录`, 'info');
 

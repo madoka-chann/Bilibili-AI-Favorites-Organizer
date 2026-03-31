@@ -4,6 +4,7 @@ import { isRunning, cancelRequested, logs } from '$lib/stores/state';
 import { getAllFoldersWithIds, lightFetchJson } from '$lib/api/bilibili';
 import { humanDelay } from '$lib/utils/timing';
 import { BILIBILI_PAGE_SIZE } from '$lib/utils/constants';
+import { downloadAsFile } from '$lib/utils/dom';
 
 export interface BackupData {
   version: string;
@@ -100,15 +101,6 @@ export async function backupFavorites(
 /** 下载备份文件 */
 export function downloadBackupFile(backup: BackupData): void {
   const json = JSON.stringify(backup, null, 2);
-  const blob = new Blob([json], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `bilibili-favorites-backup-${new Date().toISOString().slice(0, 10)}.json`;
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(() => {
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }, 100);
+  const filename = `bilibili-favorites-backup-${new Date().toISOString().slice(0, 10)}.json`;
+  downloadAsFile(json, filename, 'application/json');
 }

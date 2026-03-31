@@ -48,3 +48,18 @@ export function timeAgo(timestamp: number): string {
 export function isDeadVideo(video: { attr?: number; title?: string }): boolean {
   return video.attr === 9 || video.title === '已失效视频';
 }
+
+/** 触发浏览器文件下载 */
+export function downloadAsFile(content: string, filename: string, mimeType: string): void {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 100);
+}
