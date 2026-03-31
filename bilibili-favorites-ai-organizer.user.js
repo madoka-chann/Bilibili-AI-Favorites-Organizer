@@ -265,7 +265,7 @@
             notifyOnComplete: GM_getValue('bfao_notifyOnComplete', true),
             multiFolderEnabled: GM_getValue('bfao_multiFolderEnabled', false),
             // 动画效果开关
-            animEnabled: GM_getValue('bfao_animEnabled', true),
+            animEnabled: GM_getValue('bfao_animEnabled', false),
             // 增量整理：仅处理上次整理后新增的视频
             incrementalMode: GM_getValue('bfao_incrementalMode', false),
             // 批量休息防风控
@@ -4145,6 +4145,9 @@ ${topUps.length > 0 ? `<div class="section">
         document.body.appendChild(floatBtn);
         document.body.appendChild(panel);
 
+        // === 动画效果总开关 ===
+        if (settings.animEnabled) {
+
         // === Ambient Glow 光标跟随 ===
         (() => {
             const glowLayer = document.createElement('div');
@@ -4316,6 +4319,8 @@ ${topUps.length > 0 ? `<div class="section">
             }
             floatBtn.appendChild(ring);
         })();
+
+        } // end if (settings.animEnabled) — 动画效果总开关结束
 
         // === 色彩主题切换 (Accent Color Themes) ===
         (() => {
@@ -8981,6 +8986,8 @@ ${topUps.length > 0 ? `<div class="section">
 
         } // end _initCanvasEffects — 画布动效延迟初始化结束
 
+        if (settings.animEnabled) {
+
         // === Header Prismatic Ribbon 头部棱光彩带 ===
         (() => {
             const header = panel.querySelector('.ai-header');
@@ -9067,6 +9074,8 @@ ${topUps.length > 0 ? `<div class="section">
                 btn.style.setProperty('--mouse-y', y + '%');
             });
         })();
+
+        } // end if (settings.animEnabled) — 后置动画效果结束
 
         // 面板位置边界钳制：防止面板超出视口
         function clampPanelPosition() {
@@ -9361,7 +9370,9 @@ ${topUps.length > 0 ? `<div class="section">
             panel.style.animation = 'ai-panel-aura-open 0.78s cubic-bezier(0.14, 1.26, 0.32, 1.00) forwards';
             clampPanelPosition();
             // 面板动画结束后再初始化画布动效，避免 MutationObserver 级联导致卡死
-            setTimeout(_initCanvasEffects, 850);
+            setTimeout(() => {
+                if (panel.style.display !== 'none') _initCanvasEffects();
+            }, 850);
         };
 
         document.getElementById('ai-close-btn').onclick = () => {
