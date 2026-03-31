@@ -1,0 +1,123 @@
+/*
+ * CSS Design Tokens
+ * Defined on .bfao-app (not :root) because `all: initial` resets custom properties.
+ * Dark theme via [data-theme="dark"] attribute set by App.svelte.
+ */
+
+/* ==================== Light Theme (default) ==================== */
+.bfao-app {
+  /* Backgrounds */
+  --ai-bg: #fff;
+  --ai-bg-secondary: #f9f7ff;
+  --ai-bg-tertiary: #f0eafa;
+  --ai-bg-hover: rgba(115, 100, 255, 0.04);
+  --ai-input-bg: #fff;
+
+  /* Text */
+  --ai-text: #181233;
+  --ai-text-secondary: #38305a;
+  --ai-text-muted: #868199;
+
+  /* Borders */
+  --ai-border: #e4ddf5;
+  --ai-border-light: #f0eafa;
+  --ai-border-lighter: #f9f7ff;
+
+  /* Primary */
+  --ai-primary: #7364ff;
+  --ai-primary-light: #b0a8ff;
+  --ai-primary-bg: rgba(115, 100, 255, 0.06);
+  --ai-primary-rgb: 115, 100, 255;
+  --ai-primary-shadow: rgba(115, 100, 255, 0.12);
+
+  /* Gradient accent */
+  --ai-gradient-accent: #9b59f6;
+
+  /* Success */
+  --ai-success: #10b981;
+  --ai-success-dark: #059669;
+  --ai-success-light: #34d399;
+  --ai-success-lighter: #6ee7b7;
+  --ai-success-bg: rgba(5, 150, 105, 0.1);
+
+  /* Error */
+  --ai-error: #e74c3c;
+  --ai-error-alt: #f43f5e;
+  --ai-error-hover: #ef5757;
+
+  /* Warning */
+  --ai-warning: #f59e0b;
+  --ai-warning-dark: #d97706;
+  --ai-warning-bg: rgba(217, 119, 6, 0.1);
+
+  /* Info */
+  --ai-info: #818cf8;
+
+  /* Overlay */
+  --ai-backdrop: rgba(24, 18, 51, 0.58);
+
+  /* Shadows */
+  --ai-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --ai-shadow-md: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --ai-shadow-lg: 0 24px 68px rgba(0, 0, 0, 0.11), 0 10px 28px rgba(0, 0, 0, 0.07);
+  --ai-shadow-modal: 0 44px 110px rgba(0, 0, 0, 0.2), 0 18px 44px rgba(0, 0, 0, 0.11);
+}
+
+/* ==================== Dark Theme ==================== */
+.bfao-app[data-theme="dark"] {
+  /* Backgrounds */
+  --ai-bg: #1a1130;
+  --ai-bg-secondary: #221845;
+  --ai-bg-tertiary: #2a1f50;
+  --ai-bg-hover: rgba(115, 100, 255, 0.08);
+  --ai-input-bg: #221845;
+
+  /* Text */
+  --ai-text: #e8e4f0;
+  --ai-text-secondary: #c4bdd5;
+  --ai-text-muted: #8a82a0;
+
+  /* Borders */
+  --ai-border: #3d3260;
+  --ai-border-light: #332a55;
+  --ai-border-lighter: #2a1f50;
+
+  /* Primary — brand purple stays consistent */
+  --ai-primary: #8b7fff;
+  --ai-primary-light: #a89eff;
+  --ai-primary-bg: rgba(139, 127, 255, 0.1);
+  --ai-primary-rgb: 139, 127, 255;
+  --ai-primary-shadow: rgba(139, 127, 255, 0.2);
+
+  /* Gradient accent */
+  --ai-gradient-accent: #a87bf5;
+
+  /* Success */
+  --ai-success: #34d399;
+  --ai-success-dark: #10b981;
+  --ai-success-light: #6ee7b7;
+  --ai-success-lighter: #a7f3d0;
+  --ai-success-bg: rgba(16, 185, 129, 0.15);
+
+  /* Error */
+  --ai-error: #f87171;
+  --ai-error-alt: #fb7185;
+  --ai-error-hover: #fca5a5;
+
+  /* Warning */
+  --ai-warning: #fbbf24;
+  --ai-warning-dark: #f59e0b;
+  --ai-warning-bg: rgba(245, 158, 11, 0.15);
+
+  /* Info */
+  --ai-info: #a5b4fc;
+
+  /* Overlay */
+  --ai-backdrop: rgba(10, 6, 20, 0.72);
+
+  /* Shadows — darker for dark mode */
+  --ai-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --ai-shadow-md: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --ai-shadow-lg: 0 24px 68px rgba(0, 0, 0, 0.35), 0 10px 28px rgba(0, 0, 0, 0.2);
+  --ai-shadow-modal: 0 44px 110px rgba(0, 0, 0, 0.5), 0 18px 44px rgba(0, 0, 0, 0.3);
+}

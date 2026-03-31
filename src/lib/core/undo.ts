@@ -1,0 +1,113 @@
+import { get } from 'svelte/store';
+import type { BiliData } from '$lib/types';
+import { isRunning, cancelRequested, logs } from '$lib/stores/state';
+import { moveVideos, invalidateFolderCache } from '$lib/api/bilibili';
+import { humanDelay } from '$lib/utils/timing';
+import { gmGetValue, gmSetValue } from '$lib/utils/gm';
+import { MAX_UNDO_HISTORY } from '$lib/utils/constants';
+
+export interface UndoRecord {
+  time: string;
+  timeLocal: string;
+  totalVideos: number;
+  totalCategories: number;
+  sourceMediaIds: number[];
+  moves: Array<{
+    fromMediaId: number;
+    toMediaId: number;
+    resources: string;
+    count: number;
+  }>;
+}
+
+const UNDO_KEY = 'bfao_undoHistory';
+
+/** 读取撤销历史栈 */
+export function loadUndoHistory(): UndoRecord[] {
+  try {
+    const raw = gmGetValue(UNDO_KEY, null);
+    if (raw) {
+      const parsed = JSON.parse(raw as string);
+      if (Array.isArray(parsed)) return parsed;
+    }
+    // 兼容旧版单条记录
+    const oldRaw = gmGetValue('bfao_undoData', null);
+    if (oldRaw) {
+      const oldData = JSON.parse(oldRaw as string);
+      if (oldData?.moves) return [oldData];
+    }
+    return [];
+  } catch {
+    return [];
+  }
+}
+
+/** 保存一条撤销数据 (入栈) */
+export function saveUndoData(record: UndoRecord): void {
+  try {
+    const history = loadUndoHistory();
+    history.unshift(record);
+    gmSetValue(UNDO_KEY, JSON.stringify(history.slice(0, MAX_UNDO_HISTORY)));
+    gmSetValue('bfao_undoData', JSON.stringify(record));
+  } catch (e) {
+    console.error('[AI整理] 保存撤销数据失败:', e);
+  }
+}
+
+/** 清除指定索引的撤销记录 */
+export function clearUndoRecord(index: number): void {
+  try {
+    const history = loadUndoHistory();
+    if (index >= 0 && index < history.length) {
+      history.splice(index, 1);
+    }
+    gmSetValue(UNDO_KEY, JSON.stringify(history));
+    gmSetValue('bfao_undoData', history.length > 0 ? JSON.stringify(history[0]) : null);
+  } catch (e) {
+    console.error('[AI整理] 清除撤销数据失败:', e);
+  }
+}
+
+/** 执行撤销操作 */
+export async function undoOperation(
+  selectedIndex: number,
+  biliData: BiliData,
+  writeDelay: number,
+): Promise<void> {
+  const history = loadUndoHistory();
+  const undo = history[selectedIndex];
+  if (!undo?.moves?.length) {
+    logs.add('撤销记录数据异常', 'error');
+    return;
+  }
+
+  isRunning.set(true);
+  cancelRequested.set(false);
+  logs.add('正在撤销操作...', 'info');
+
+  let restored = 0;
+
+  try {
+    for (let i = 0; i < undo.moves.length; i++) {
+      if (get(cancelRequested)) {
+        logs.add('用户已取消撤销', 'warning');
+        break;
+      }
+      const move = undo.moves[i];
+      logs.add(`[${i + 1}/${undo.moves.length}] 移回 ${move.count} 个视频到原收藏夹...`, 'info');
+
+      await moveVideos(move.toMediaId, move.fromMediaId, move.resources, biliData);
+      restored += move.count;
+      await humanDelay(writeDelay);
+    }
+
+    logs.add(`撤销完成！共恢复 ${restored} 个视频。请刷新页面。`, 'success');
+    clearUndoRecord(selectedIndex);
+    invalidateFolderCache();
+  } catch (err: any) {
+    logs.add(`撤销失败: ${err.message}`, 'error');
+  } finally {
+    isRunning.set(false);
+    cancelRequested.set(false);
+  }
+}

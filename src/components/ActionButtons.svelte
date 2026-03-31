@@ -1,0 +1,167 @@
+<script lang="ts">
+  import { isRunning, cancelRequested } from '$lib/stores/state';
+  import {
+    Play, Square, Archive, Copy, Undo2, Download,
+    BarChart3, Heart, FileText, HelpCircle, History,
+  } from 'lucide-svelte';
+
+  export let onstart: (() => void) | undefined = undefined;
+  export let onstop: (() => void) | undefined = undefined;
+  export let oncleandead: (() => void) | undefined = undefined;
+  export let onfinddups: (() => void) | undefined = undefined;
+  export let onundo: (() => void) | undefined = undefined;
+  export let onbackup: (() => void) | undefined = undefined;
+  export let onstats: (() => void) | undefined = undefined;
+  export let onhealth: (() => void) | undefined = undefined;
+  export let onexportlogs: (() => void) | undefined = undefined;
+  export let onhelp: (() => void) | undefined = undefined;
+  export let onhistory: (() => void) | undefined = undefined;
+
+  function handleStartStop() {
+    if ($isRunning) {
+      cancelRequested.set(true);
+      onstop?.();
+    } else {
+      onstart?.();
+    }
+  }
+</script>
+
+<div class="actions">
+  <button class="btn-primary" class:running={$isRunning} onclick={handleStartStop}>
+    {#if $isRunning}
+      <Square size={16} /><span>停止整理</span><kbd class="kbd">Esc</kbd>
+    {:else}
+      <Play size={16} /><span>开始整理</span><kbd class="kbd">Ctrl+↵</kbd>
+    {/if}
+  </button>
+
+  <div class="tool-row">
+    <button class="btn-tool" onclick={() => oncleandead?.()} disabled={$isRunning}>
+      <Archive size={14} /><span>失效归档</span>
+    </button>
+    <button class="btn-tool" onclick={() => onfinddups?.()} disabled={$isRunning}>
+      <Copy size={14} /><span>查重</span>
+    </button>
+    <button class="btn-tool" onclick={() => onundo?.()} disabled={$isRunning}>
+      <Undo2 size={14} /><span>撤销</span>
+    </button>
+  </div>
+
+  <div class="tool-row">
+    <button class="btn-tool" onclick={() => onbackup?.()} disabled={$isRunning}>
+      <Download size={14} /><span>备份</span>
+    </button>
+    <button class="btn-tool" onclick={() => onstats?.()}>
+      <BarChart3 size={14} /><span>统计</span>
+    </button>
+    <button class="btn-tool" onclick={() => onhealth?.()} disabled={$isRunning}>
+      <Heart size={14} /><span>健康</span>
+    </button>
+  </div>
+
+  <div class="tool-row">
+    <button class="btn-tool" onclick={() => onexportlogs?.()}>
+      <FileText size={14} /><span>日志</span>
+    </button>
+    <button class="btn-tool" onclick={() => onhelp?.()}>
+      <HelpCircle size={14} /><span>帮助</span>
+    </button>
+    <button class="btn-tool" onclick={() => onhistory?.()}>
+      <History size={14} /><span>历史</span>
+    </button>
+  </div>
+</div>
+
+<style>
+  .actions {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, var(--ai-primary), var(--ai-gradient-accent), var(--ai-primary));
+    background-size: 500% 500%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.2, 1.04, 0.42, 1);
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 12px 32px rgba(var(--ai-primary-rgb), 0.3), 0 5px 16px rgba(255, 107, 157, 0.16);
+    transform: translateY(-1px);
+  }
+
+  .btn-primary:active {
+    transform: scale(0.97);
+    transition-duration: 0.08s;
+  }
+
+  .btn-primary.running {
+    background: linear-gradient(135deg, var(--ai-error), var(--ai-error-hover), var(--ai-error));
+  }
+
+  .kbd {
+    font-size: 10px;
+    opacity: 0.6;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 1px 5px;
+    border-radius: 4px;
+    margin-left: 4px;
+    font-family: monospace;
+  }
+
+  .tool-row {
+    display: flex;
+    gap: 6px;
+  }
+
+  .btn-tool {
+    flex: 1;
+    padding: 8px 6px;
+    border: 1.5px solid var(--ai-border);
+    border-radius: 10px;
+    background: var(--ai-bg-tertiary);
+    color: var(--ai-text-secondary);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    transition: all 0.35s cubic-bezier(0.22, 1.42, 0.29, 1);
+  }
+
+  .btn-tool:hover {
+    transform: translateY(-3px) scale(1.045);
+    box-shadow: 0 10px 28px rgba(var(--ai-primary-rgb), 0.12);
+    border-color: var(--ai-primary-light);
+  }
+
+  .btn-tool:active {
+    transform: scale(0.92);
+    transition-duration: 0.08s;
+  }
+
+  .btn-tool:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+</style>
