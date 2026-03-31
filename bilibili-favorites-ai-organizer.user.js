@@ -4522,17 +4522,25 @@ ${topUps.length > 0 ? `<div class="section">
             picker.appendChild(colorRow);
             if (savedAccent === 'custom') colorRow.style.display = 'block';
 
-            // 挂载到 header actions
+            // 挂载到 panel wrapper（避免 .ai-header overflow:hidden 裁剪）
             const accentBtn = document.getElementById('ai-accent-toggle');
             if (accentBtn) {
-                accentBtn.style.position = 'relative';
-                accentBtn.appendChild(picker);
+                picker.style.cssText = 'display:none;position:absolute;padding:10px 12px;background:var(--ai-glass-bg);backdrop-filter:blur(24px);border:1px solid var(--ai-glass-border);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.15);z-index:10;min-width:180px;';
+                panel.appendChild(picker);
                 accentBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
+                    const isHidden = picker.style.display === 'none';
+                    if (isHidden) {
+                        const btnRect = accentBtn.getBoundingClientRect();
+                        const panelRect = panel.getBoundingClientRect();
+                        picker.style.top = (btnRect.bottom - panelRect.top + 6) + 'px';
+                        picker.style.right = (panelRect.right - btnRect.right) + 'px';
+                        picker.style.left = 'auto';
+                    }
+                    picker.style.display = isHidden ? 'block' : 'none';
                 });
                 document.addEventListener('click', (e) => {
-                    if (!accentBtn.contains(e.target)) picker.style.display = 'none';
+                    if (!accentBtn.contains(e.target) && !picker.contains(e.target)) picker.style.display = 'none';
                 });
             }
         })();

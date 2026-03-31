@@ -505,7 +505,8 @@
   background: var(--ai-bg) !important;
   padding: 0;
   flex: none !important;
-  overflow: hidden !important;
+  overflow-y: auto;
+  overflow-x: hidden;
   border-bottom-left-radius: 28px;
   border-bottom-right-radius: 28px;
 }
@@ -17460,20 +17461,9 @@ input[type="checkbox"]:active {
 }
 
 /* === 702. Panel Idle Living Breath v0.2.5 — 面板呼吸微动 === */
-@keyframes ai-panel-idle-breath {
-  0%, 100% {
-    transform: perspective(1600px) rotateX(0deg) rotateY(0deg) translateY(0px);
-  }
-  33% {
-    transform: perspective(1600px) rotateX(0.15deg) rotateY(-0.1deg) translateY(-0.5px);
-  }
-  66% {
-    transform: perspective(1600px) rotateX(-0.1deg) rotateY(0.12deg) translateY(0.3px);
-  }
-}
+/* 注意：idle breath 不能动 transform，否则 mouseenter 时动画停止会导致 transform 跳变闪烁 */
 #ai-sort-wrapper:not(.ai-panel-closing):not(:hover) {
-  animation: ai-panel-idle-breath 8s var(--ai-ease-feather, cubic-bezier(0.02, 0.90, 0.06, 1.00)) infinite,
-             ai-weave-shadow-breath 4s var(--ai-ease-breath, ease-in-out) infinite !important;
+  animation: ai-weave-shadow-breath 4s var(--ai-ease-breath, ease-in-out) infinite !important;
 }
 
 /* === 703. Header Particle Shimmer Pulse v0.2.5 — 头部粒子呼吸闪烁 === */
