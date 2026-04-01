@@ -3,7 +3,8 @@
   import Modal from './Modal.svelte';
   import { Eye, ChevronDown, ChevronRight } from 'lucide-svelte';
   import { tilt } from '$actions/tilt';
-  import { listStaggerReveal } from '$animations/micro';
+  import { Flip, EASINGS, shouldAnimate } from '$animations/gsap-config';
+  import { listStaggerReveal, hoverScale } from '$animations/micro';
   import type { CategoryResult, VideoResource } from '$lib/types';
 
   export let categories: CategoryResult = {};
@@ -21,9 +22,15 @@
 
   // Track expanded categories
   let expanded = new Set<string>();
+  let categoryListEl: HTMLElement;
 
   async function toggleExpand(name: string) {
     const wasExpanded = expanded.has(name);
+
+    // E2: FLIP expand/collapse — capture layout state before toggle
+    const useFlip = shouldAnimate() && categoryListEl;
+    const flipState = useFlip ? Flip.getState(categoryListEl.querySelectorAll('.category-group')) : null;
+
     if (wasExpanded) {
       expanded.delete(name);
     } else {
@@ -31,9 +38,24 @@
     }
     expanded = expanded;
 
-    // E1: Stagger reveal newly expanded video items
-    if (!wasExpanded) {
-      await tick();
+    await tick();
+
+    // E2: Animate layout change with FLIP
+    if (flipState) {
+      Flip.from(flipState, {
+        duration: 0.4,
+        ease: EASINGS.velvetSpring,
+        nested: true,
+        onComplete: () => {
+          if (!wasExpanded) {
+            const listEl = document.querySelector(`[data-category="${CSS.escape(name)}"] .video-list`);
+            if (listEl) {
+              listStaggerReveal(listEl.querySelectorAll('.video-item'));
+            }
+          }
+        },
+      });
+    } else if (!wasExpanded) {
       const listEl = document.querySelector(`[data-category="${CSS.escape(name)}"] .video-list`);
       if (listEl) {
         listStaggerReveal(listEl.querySelectorAll('.video-item'));
@@ -56,7 +78,7 @@
       共 <strong>{entries.length}</strong> 个分类，<strong>{totalVideos}</strong> 个视频
     </div>
 
-    <div class="category-list">
+    <div class="category-list" bind:this={categoryListEl}>
       {#each entries as [name, vids] (name)}
         {@const isExpanded = expanded.has(name)}
         <div class="category-group" data-category={name}>
@@ -76,7 +98,7 @@
             <div class="video-list">
               {#each vids as vid (vid.id)}
                 {@const info = videoMap.get(vid.id)}
-                <div class="video-item" use:tilt={{ maxDeg: 2, perspective: 600, scale: 1.01 }}>
+                <div class="video-item" use:tilt={{ maxDeg: 2, perspective: 600, scale: 1 }} use:hoverScale={{ scale: 1.03, duration: 0.3 }}>
                   <span class="video-title" title={info?.title ?? `av${vid.id}`}>
                     {info?.title ?? `av${vid.id}`}
                   </span>

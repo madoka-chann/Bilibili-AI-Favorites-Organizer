@@ -10,7 +10,7 @@
     },
     "phase1_componentArchitecture": {
       "status": "completed",
-      "summary": "19 个 Svelte 组件、stores、API 层、core 逻辑、类型定义全部迁移完成",
+      "summary": "20 个 Svelte 组件、stores、API 层、core 逻辑、类型定义全部迁移完成",
       "components": [
         "App.svelte", "FloatButton.svelte", "Panel.svelte", "Header.svelte",
         "SettingsPanel.svelte", "SettingsGroup.svelte", "ProviderConfig.svelte",
@@ -18,7 +18,7 @@
         "ActionButtons.svelte", "PreviewConfirm.svelte", "Modal.svelte",
         "Toast.svelte", "FolderSelector.svelte", "HistoryTimeline.svelte",
         "DeadVideosResult.svelte", "DuplicatesResult.svelte", "UndoDialog.svelte",
-        "StatsDialog.svelte"
+        "StatsDialog.svelte", "LiquidToggle.svelte"
       ],
       "libModules": {
         "api": ["ai-client.ts", "ai-providers.ts", "ai-prompt.ts", "bilibili.ts", "bilibili-http.ts", "bilibili-folders.ts", "bilibili-videos.ts", "bilibili-auth.ts", "bilibili-scanner.ts"],
@@ -30,24 +30,25 @@
     },
     "phase2_animations": {
       "status": "in_progress",
-      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; actions 已集成到更多组件; 进度条/Toast/文字特效动画已完成",
+      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; 高级视觉效果 B3/C5/E2/E4 已完成",
       "completed": [
         "gsap-config.ts: 插件注册 + 10 品牌缓动 + 三级减弱策略",
         "src/actions/magnetic.ts: A1 磁性光标吸引 (use:magnetic)",
         "src/actions/tilt.ts: E3 3D 倾斜悬浮 (use:tilt)",
         "src/actions/glow-track.ts: C3 径向光追踪 (use:glowTrack)",
         "src/actions/ripple.ts: 点击涟漪 (use:ripple)",
-        "src/animations/micro.ts: C2 pressEffect + C4 focusGlow + C6 checkBounce + C7 staggerReveal + F4 contentStagger + E1 listStaggerReveal",
+        "src/animations/micro.ts: C2 pressEffect + C4 focusGlow + C6 checkBounce + C7 staggerReveal + F4 contentStagger + E1 listStaggerReveal + E4 hoverScale",
         "src/animations/progress.ts: D2 进度轨迹粒子 + D3 阶段切换 + D4 胜利庆祝 + D5 数字翻滚弹跳",
         "src/animations/text.ts: H1 文字解码 + H2 数字翻滚",
         "FloatButton: A1 magnetic + A2 aurora glow + A3 click particles + A6 liquid morph + K1 drag",
-        "Panel: B1 velvet bloom + B2 curtain exit",
+        "Panel: B1 velvet bloom + B2 curtain exit + B3 标签交叉淡入",
         "Modal: F1 bloom enter + F3 physics exit + F4 content stagger",
         "Toast: G1 elastic slide-in + G2 timer ring + G3 FLIP 堆栈重排 + G4 类型化入场 + G5 slide-out",
         "Header: aurora-flow + ripple + pressEffect on buttons",
         "SettingsGroup: B4 GSAP 弹簧手风琴 (替代 Svelte transition:slide)",
+        "SettingsPanel: C5 LiquidToggle 液态开关 (替代 checkbox)",
         "ActionButtons: C1/C2 pressEffect + C3 glowTrack (所有按钮 + 主按钮)",
-        "PreviewConfirm: E3 tilt 视频卡片 + E1 listStaggerReveal 展开交错",
+        "PreviewConfirm: E2 FLIP 展开折叠 + E3 tilt 视频卡片 + E4 hoverScale + E1 listStaggerReveal",
         "ProviderConfig: C4 focusGlow (所有 input 元素)",
         "SettingsPanel: C4 focusGlow (number inputs)",
         "PromptEditor: C4 focusGlow (textarea)",
@@ -58,12 +59,8 @@
       "remaining": [
         "A4 FLIP 变形为面板",
         "A5 星座轨道",
-        "B3 标签交叉淡入",
         "B5 深度视差",
         "C1 全局磁性按钮 (更多组件集成)",
-        "C5 液态开关",
-        "E2 FLIP 展开折叠",
-        "E4 缩略图缩放",
         "I1-I5 粒子系统",
         "J1-J3 主题切换过渡",
         "K2 面板拖拽",
@@ -76,11 +73,11 @@
     },
     "phase4_codeQuality": {
       "status": "partially_done",
-      "summary": "TypeScript 类型定义完成; 模块化重构完成; 有 1 个 pre-existing TS error (settings.ts 类型转换); StatsDialog 移除未使用的 BiliData import",
+      "summary": "TypeScript 类型定义完成; 模块化重构完成; Code Review 修复了多处代码异味",
       "recentFixes": [
-        "移除 StatsDialog.svelte 中未使用的 BiliData 类型导入",
-        "移除 ProgressBar.svelte 中未使用的 onDestroy 导入",
-        "progress.ts 中使用 Z_INDEX.PARTICLE 常量替代硬编码 z-index"
+        "Panel.svelte 合并重复的 gsap-config 导入",
+        "LiquidToggle.svelte 修复 CSS transition 与 GSAP 动画冲突",
+        "PreviewConfirm.svelte 修复 tilt+hoverScale 的 scale 属性冲突"
       ]
     },
     "phase5_performance": {
@@ -90,7 +87,7 @@
   },
   "buildStatus": {
     "builds": true,
-    "output": "dist/bilibili-ai-favorites-organizer.user.js (403 kB, GSAP ~94 kB CDN)",
+    "output": "dist/bilibili-ai-favorites-organizer.user.js (409 kB, GSAP ~94 kB CDN)",
     "preExistingIssues": [
       "1 TS error: settings.ts:14 type cast",
       "1 TS error: SettingsGroup.svelte:48 callback type",

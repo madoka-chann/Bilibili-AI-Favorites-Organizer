@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { gsap, EASINGS } from '$animations/gsap-config';
-  import { shouldAnimateFunctional } from '$animations/gsap-config';
+  import { tick } from 'svelte';
+  import { gsap, EASINGS, shouldAnimateFunctional, shouldAnimate } from '$animations/gsap-config';
   import Header from './Header.svelte';
   import SettingsPanel from './SettingsPanel.svelte';
   import PromptEditor from './PromptEditor.svelte';
@@ -34,8 +34,11 @@
   export let onclose: (() => void) | undefined = undefined;
 
   let panelEl: HTMLDivElement;
+  let settingsEl: HTMLElement;
+  let mainAreaEl: HTMLElement;
   let ctx: gsap.Context;
   let settingsOpen = false;
+  let settingsVisible = false;
 
   // Modal 状态
   let showDeadResult = false;
@@ -81,6 +84,41 @@
       gsap.to(panelEl, { y: 32, scale: 0.9, rotation: 0.5, opacity: 0, filter: 'blur(6px)', duration: 0.35, ease: EASINGS.silkOut, onComplete: () => onclose?.() });
     } else {
       onclose?.();
+    }
+  }
+
+  /** B3: 标签交叉淡入 — settings panel toggle with cross-fade */
+  let prevSettingsOpen = false;
+  $: if (settingsOpen !== prevSettingsOpen) {
+    const opening = settingsOpen;
+    prevSettingsOpen = settingsOpen;
+    animateSettingsToggle(opening);
+  }
+
+  async function animateSettingsToggle(open: boolean) {
+    if (!shouldAnimate()) {
+      settingsVisible = open;
+      return;
+    }
+
+    if (open) {
+      settingsVisible = true;
+      await tick();
+      if (settingsEl) {
+        gsap.fromTo(settingsEl,
+          { opacity: 0, x: 15 },
+          { opacity: 1, x: 0, duration: 0.3, ease: EASINGS.velvetSpring }
+        );
+      }
+    } else {
+      if (settingsEl) {
+        gsap.to(settingsEl, {
+          opacity: 0, x: -15, duration: 0.2, ease: EASINGS.silkOut,
+          onComplete: () => { settingsVisible = false; }
+        });
+      } else {
+        settingsVisible = false;
+      }
     }
   }
 
@@ -149,11 +187,13 @@
   <Header onclose={doClose} bind:settingsOpen />
 
   <div class="panel-content">
-    {#if settingsOpen}
-      <SettingsPanel />
+    {#if settingsVisible}
+      <div class="settings-wrapper" bind:this={settingsEl}>
+        <SettingsPanel />
+      </div>
     {/if}
 
-    <div class="main-area">
+    <div class="main-area" bind:this={mainAreaEl}>
       <PromptEditor />
       <LogArea />
       <ProgressBar />
@@ -263,6 +303,10 @@
     overflow-x: hidden;
     border-bottom-left-radius: 26px;
     border-bottom-right-radius: 26px;
+  }
+
+  .settings-wrapper {
+    will-change: transform, opacity;
   }
 
   .main-area {

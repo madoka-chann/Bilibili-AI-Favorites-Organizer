@@ -4,6 +4,7 @@
   import { SPEED_PRESETS, AI_CHUNK_PRESETS } from '$lib/utils/constants';
   import SettingsGroup from './SettingsGroup.svelte';
   import ProviderConfig from './ProviderConfig.svelte';
+  import LiquidToggle from './LiquidToggle.svelte';
   import { focusGlow } from '$animations/micro';
   import { Cpu, SlidersHorizontal, ToggleRight, Sparkles } from 'lucide-svelte';
 </script>
@@ -138,41 +139,41 @@
   <!-- Group 3: 行为开关 -->
   <SettingsGroup title="行为设置" icon={ToggleRight} iconColor="#10b981">
     <div class="toggle-list">
-      <label class="bfao-checkbox-label">
-        <input type="checkbox" checked={$settings.skipDeadVideos}
-          onchange={(e) => settings.update({ skipDeadVideos: (e.target as HTMLInputElement).checked })} />
+      <div class="toggle-row">
         <span>跳过失效视频</span>
-      </label>
+        <LiquidToggle checked={$settings.skipDeadVideos}
+          onchange={(v) => settings.update({ skipDeadVideos: v })} />
+      </div>
 
-      <label class="bfao-checkbox-label">
-        <input type="checkbox" checked={$settings.adaptiveRate}
-          onchange={(e) => settings.update({ adaptiveRate: (e.target as HTMLInputElement).checked })} />
+      <div class="toggle-row">
         <span>自适应限速</span>
-      </label>
+        <LiquidToggle checked={$settings.adaptiveRate}
+          onchange={(v) => settings.update({ adaptiveRate: v })} />
+      </div>
 
-      <label class="bfao-checkbox-label">
-        <input type="checkbox" checked={$settings.notifyOnComplete}
-          onchange={(e) => settings.update({ notifyOnComplete: (e.target as HTMLInputElement).checked })} />
+      <div class="toggle-row">
         <span>完成后通知</span>
-      </label>
+        <LiquidToggle checked={$settings.notifyOnComplete}
+          onchange={(v) => settings.update({ notifyOnComplete: v })} />
+      </div>
 
-      <label class="bfao-checkbox-label">
-        <input type="checkbox" checked={$settings.multiFolderEnabled}
-          onchange={(e) => settings.update({ multiFolderEnabled: (e.target as HTMLInputElement).checked })} />
+      <div class="toggle-row">
         <span>多收藏夹模式</span>
-      </label>
+        <LiquidToggle checked={$settings.multiFolderEnabled}
+          onchange={(v) => settings.update({ multiFolderEnabled: v })} />
+      </div>
 
-      <label class="bfao-checkbox-label">
-        <input type="checkbox" checked={$settings.incrementalMode}
-          onchange={(e) => settings.update({ incrementalMode: (e.target as HTMLInputElement).checked })} />
+      <div class="toggle-row">
         <span>增量整理 (仅新增)</span>
-      </label>
+        <LiquidToggle checked={$settings.incrementalMode}
+          onchange={(v) => settings.update({ incrementalMode: v })} />
+      </div>
 
-      <label class="bfao-checkbox-label">
-        <input type="checkbox" checked={$settings.bgCacheEnabled}
-          onchange={(e) => settings.update({ bgCacheEnabled: (e.target as HTMLInputElement).checked })} />
+      <div class="toggle-row">
         <span>后台自动缓存</span>
-      </label>
+        <LiquidToggle checked={$settings.bgCacheEnabled}
+          onchange={(v) => settings.update({ bgCacheEnabled: v })} />
+      </div>
 
       {#if $settings.bgCacheEnabled}
         <div class="sub-field">
@@ -195,11 +196,11 @@
 
   <!-- Group 4: 动画效果 -->
   <SettingsGroup title="动画效果" icon={Sparkles} iconColor="#f59e0b">
-    <label class="bfao-checkbox-label">
-      <input type="checkbox" checked={$settings.animEnabled}
-        onchange={(e) => settings.update({ animEnabled: (e.target as HTMLInputElement).checked })} />
+    <div class="toggle-row">
       <span>启用极致动画效果</span>
-    </label>
+      <LiquidToggle checked={$settings.animEnabled}
+        onchange={(v) => settings.update({ animEnabled: v })} />
+    </div>
   </SettingsGroup>
 </div>
 
@@ -227,6 +228,15 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+  }
+
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 12.5px;
+    color: var(--ai-text-secondary);
   }
 
   .sub-field {

@@ -169,6 +169,47 @@ export function contentStagger(
 }
 
 /**
+ * E4: 悬浮缩放效果
+ * 鼠标悬停时元素微缩放，用于视频项/卡片
+ */
+export function hoverScale(
+  node: HTMLElement,
+  opts: { scale?: number; duration?: number } = {}
+) {
+  const scale = opts.scale ?? 1.08;
+  const duration = opts.duration ?? 0.35;
+
+  function onEnter() {
+    if (!shouldAnimate()) return;
+    gsap.to(node, {
+      scale,
+      duration,
+      ease: EASINGS.velvetSpring,
+    });
+  }
+
+  function onLeave() {
+    if (!shouldAnimate()) return;
+    gsap.to(node, {
+      scale: 1,
+      duration: duration * 0.85,
+      ease: EASINGS.silkOut,
+    });
+  }
+
+  node.addEventListener('mouseenter', onEnter);
+  node.addEventListener('mouseleave', onLeave);
+
+  return {
+    destroy() {
+      node.removeEventListener('mouseenter', onEnter);
+      node.removeEventListener('mouseleave', onLeave);
+      gsap.set(node, { clearProps: 'scale' });
+    },
+  };
+}
+
+/**
  * E1: 列表项交错揭示
  * 用于分类展开时视频项的交错入场
  */
