@@ -1,9 +1,12 @@
-## 史山重构中
-
 # Bilibili 收藏夹 AI 智能整理器
 
 
-非常早期的版本演示视频，现在重构中
+非常早期的版本演示视频，现在在抽空重构，后面做成一站式的收藏夹管理系统，
+
+顺便接管下b站原生的收藏夹搜索和收藏按钮，应该会做成浏览器扩展。
+
+<img width="3782" height="1755" alt="image" src="https://github.com/user-attachments/assets/205cd6c1-48b2-4fb3-b34c-daba9ac1a5c1" />
+
 
 https://github.com/user-attachments/assets/f23b1fa1-7da2-4f5e-b2c1-ab46e784517c
 
@@ -14,12 +17,15 @@ https://github.com/user-attachments/assets/f23b1fa1-7da2-4f5e-b2c1-ab46e784517c
 
 ### 安装&更新
 
-更新如有请点击重新安装
 
- **[Github源](https://raw.githubusercontent.com/madoka-chann/Bilibili-AI-Favorites-Organizer/refs/heads/main/bilibili-favorites-ai-organizer.user.js)**
+<img width="3782" height="1755" alt="f5ae59880d9e0062191a571129aa2305" src="https://github.com/user-attachments/assets/bc8708a0-e6b2-4ca8-a262-f251c44d8c88" />
+
+v1.0版本下方安装，新版有问题就不放了。
+
+ **[Github源](https://github.com/madoka-chann/backup-bili-ai/raw/refs/heads/main/bilibili-favorites-ai-organizer.user.js)**
 
  
- **[Github国内加速源](https://ghfast.top/https://raw.githubusercontent.com/madoka-chann/Bilibili-AI-Favorites-Organizer/main/bilibili-favorites-ai-organizer.user.js)**
+ **[Github国内加速源](https://ghfast.top/https://github.com/madoka-chann/backup-bili-ai/raw/refs/heads/main/bilibili-favorites-ai-organizer.user.js)**
 
 ## 功能特性
 
