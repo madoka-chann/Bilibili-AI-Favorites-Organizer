@@ -121,32 +121,23 @@ function buildGitHubRequest(prompt: AIPrompt, s: Settings): AIRequestConfig {
 
 // ================= Response Parsers =================
 
-function trackGeminiUsage(usage: GeminiUsageMetadata): void {
-  tokenUsage.update((u) => ({
-    ...u,
-    callCount: u.callCount + 1,
-    promptTokens: u.promptTokens + (usage.promptTokenCount ?? 0),
-    completionTokens: u.completionTokens + (usage.candidatesTokenCount ?? 0),
-    totalTokens: u.totalTokens + (usage.totalTokenCount ?? 0),
-  }));
-}
-
-function trackStandardUsage(usage: StandardUsage): void {
-  const input = usage.prompt_tokens ?? usage.input_tokens ?? 0;
-  const output = usage.completion_tokens ?? usage.output_tokens ?? 0;
-  const total = usage.total_tokens ?? (input + output);
+/** 统一 token 用量追踪 — 同时兼容 Gemini 与 OpenAI/Anthropic 字段命名 */
+function trackUsage(input: number, output: number, total?: number): void {
   tokenUsage.update((u) => ({
     ...u,
     callCount: u.callCount + 1,
     promptTokens: u.promptTokens + input,
     completionTokens: u.completionTokens + output,
-    totalTokens: u.totalTokens + total,
+    totalTokens: u.totalTokens + (total ?? (input + output)),
   }));
 }
 
 function parseGeminiResponse(text: string): string {
   const json: GeminiResponse = JSON.parse(text);
-  if (json.usageMetadata) trackGeminiUsage(json.usageMetadata);
+  if (json.usageMetadata) {
+    const u = json.usageMetadata;
+    trackUsage(u.promptTokenCount ?? 0, u.candidatesTokenCount ?? 0, u.totalTokenCount);
+  }
   const content = json.candidates?.[0]?.content?.parts?.[0]?.text;
   if (!content) throw new Error('Gemini 响应结构异常: 未找到有效内容');
   return content;
@@ -154,7 +145,10 @@ function parseGeminiResponse(text: string): string {
 
 function parseOpenAIResponse(text: string): string {
   const json: OpenAIResponse = JSON.parse(text);
-  if (json.usage) trackStandardUsage(json.usage);
+  if (json.usage) {
+    const u = json.usage;
+    trackUsage(u.prompt_tokens ?? u.input_tokens ?? 0, u.completion_tokens ?? u.output_tokens ?? 0, u.total_tokens);
+  }
   const content = json.choices?.[0]?.message?.content;
   if (!content) throw new Error('OpenAI 响应结构异常: 未找到有效内容');
   return content;
@@ -162,7 +156,10 @@ function parseOpenAIResponse(text: string): string {
 
 function parseAnthropicResponse(text: string): string {
   const json: AnthropicResponse = JSON.parse(text);
-  if (json.usage) trackStandardUsage(json.usage);
+  if (json.usage) {
+    const u = json.usage;
+    trackUsage(u.prompt_tokens ?? u.input_tokens ?? 0, u.completion_tokens ?? u.output_tokens ?? 0, u.total_tokens);
+  }
   const content = json.content?.[0]?.text;
   if (!content) throw new Error('Anthropic 响应结构异常: 未找到有效内容');
   return content;

@@ -20,14 +20,14 @@
 >
   <svelte:fragment slot="icon"><Undo2 size={18} /></svelte:fragment>
 
-  <div class="undo-content">
+  <div class="bfao-modal-body">
     {#if history.length === 0}
-      <div class="empty">没有可撤销的操作记录</div>
+      <div class="bfao-modal-empty">没有可撤销的操作记录</div>
     {:else}
       <div class="hint">选择要撤销的操作，撤销将把所有视频移回原收藏夹：</div>
       <div class="history-list">
         {#each history as record, i}
-          <label class="history-item" class:selected={selectedIndex === i}>
+          <label class="bfao-selectable-item" class:selected={selectedIndex === i}>
             <input type="radio" bind:group={selectedIndex} value={i} disabled={processing} />
             <div class="item-info">
               <div class="item-time">{record.timeLocal || record.time}</div>
@@ -44,13 +44,6 @@
 </Modal>
 
 <style>
-  .undo-content { padding: 16px 20px; }
-  .empty {
-    text-align: center;
-    color: var(--ai-text-muted);
-    padding: 24px 0;
-    font-size: 13px;
-  }
   .hint {
     font-size: 12px;
     color: var(--ai-text-secondary);
@@ -62,25 +55,6 @@
     flex-direction: column;
     gap: 6px;
   }
-
-  .history-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 10px 12px;
-    border: 1.5px solid var(--ai-border);
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    background: var(--ai-bg);
-  }
-  .history-item:hover { border-color: var(--ai-primary-light); }
-  .history-item.selected {
-    border-color: var(--ai-primary);
-    background: var(--ai-bg-tertiary);
-  }
-
-  .history-item input[type="radio"] { margin-top: 2px; }
 
   .item-info { flex: 1; }
   .item-time {

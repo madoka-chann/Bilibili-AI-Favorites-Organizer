@@ -18,6 +18,7 @@ import { scanDuplicates, deduplicateVideos } from '$lib/core/duplicates';
 import type { DuplicateEntry } from '$lib/core/duplicates';
 import { loadHistory, clearHistory } from '$lib/core/history';
 import { getErrorMessage } from '$lib/utils/errors';
+import { withRunningState } from '$lib/utils/running-state';
 
 // ================= Auth Helper =================
 
@@ -29,8 +30,6 @@ export function ensureBiliData() {
   }
   return biliData;
 }
-
-import { withRunningState } from '$lib/utils/running-state';
 
 // ================= Start Process =================
 

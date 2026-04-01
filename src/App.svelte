@@ -6,6 +6,8 @@
   import { isDark, accentColor } from '$lib/stores/theme';
   import '$animations/gsap-config';
   import './styles/variables.css';
+  import './styles/forms.css';
+  import './styles/modal.css';
 </script>
 
 <div

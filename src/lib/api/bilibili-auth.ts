@@ -4,12 +4,17 @@
 
 import type { BiliData } from '$lib/types';
 
+/** 从 cookie 提取用户 mid (不依赖 Svelte stores，后台缓存可安全使用) */
+export function getMidFromCookie(): string {
+  const match = document.cookie.match(/DedeUserID=([^;]+)/);
+  return match ? match[1] : '';
+}
+
 /** 从 cookie 获取认证数据 */
 export function getBiliData(): BiliData {
-  const midMatch = document.cookie.match(/DedeUserID=([^;]+)/);
   const csrfMatch = document.cookie.match(/bili_jct=([^;]+)/);
   return {
-    mid: midMatch ? midMatch[1] : '',
+    mid: getMidFromCookie(),
     csrf: csrfMatch ? csrfMatch[1] : '',
   };
 }

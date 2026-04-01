@@ -10,7 +10,7 @@
  */
 
 export { buildFormData, postBiliApi, fetchBiliJson, lightFetchJson, safeFetchJson } from './bilibili-http';
-export { getBiliData, getSourceMediaId } from './bilibili-auth';
+export { getBiliData, getSourceMediaId, getMidFromCookie } from './bilibili-auth';
 export { getAllFoldersWithIds, invalidateFolderCache, getMyFolders, createFolder } from './bilibili-folders';
 export { moveVideos, batchDeleteVideos, fetchAllVideos } from './bilibili-videos';
 export { scanAllFolderVideos, type FolderScanOptions } from './bilibili-scanner';

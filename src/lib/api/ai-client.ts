@@ -3,8 +3,7 @@ import type {
   GeminiModelEntry, ModelEntry,
 } from '$lib/types';
 import { AI_PROVIDERS, AI_TIMEOUT_MS } from '$lib/utils/constants';
-import { gmXmlHttpRequest } from '$lib/utils/gm';
-import { gmFetch } from '$lib/utils/gm';
+import { gmXmlHttpRequest, gmFetch } from '$lib/utils/gm';
 import { sleep } from '$lib/utils/timing';
 import { logs } from '$lib/stores/state';
 import { getErrorMessage } from '$lib/utils/errors';

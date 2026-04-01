@@ -12,7 +12,8 @@ import { logs } from '$lib/stores/state';
 // ================= 工具函数 =================
 
 export function buildFormData(obj: Record<string, string | number>): string {
-  return new URLSearchParams(obj as Record<string, string>).toString();
+  const entries = Object.entries(obj).map(([k, v]) => [k, String(v)]);
+  return new URLSearchParams(entries).toString();
 }
 
 /** B站限流错误码 */

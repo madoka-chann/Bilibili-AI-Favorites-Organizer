@@ -1,20 +1,16 @@
 /**
  * 后台缓存扫描 — 在所有 B站页面静默运行
- * 不依赖 Svelte stores，不 import bilibili.ts（它依赖 logs store）
+ * 不依赖 Svelte stores；getMidFromCookie 来自 bilibili-auth (无 store 依赖)
  */
 
 import { gmGetValue, gmSetValue } from '$lib/utils/gm';
 import type { FavFolder, GlobalVideoCache, BiliApiResponse, BiliFolderListData } from '$lib/types';
 import { BILIBILI_URLS } from '$lib/utils/constants';
+import { getMidFromCookie } from '$lib/api/bilibili-auth';
 
 const CACHE_KEY = 'bfao_bg_folder_cache';
 const CACHE_TTL = 10 * 60 * 1000; // 10 min
 const SCAN_INTERVAL = 15 * 60 * 1000; // 15 min
-
-function getMidFromCookie(): string {
-  const match = document.cookie.match(/DedeUserID=([^;]+)/);
-  return match ? match[1] : '';
-}
 
 async function fetchJson<T = unknown>(url: string): Promise<BiliApiResponse<T> | null> {
   const controller = new AbortController();

@@ -38,8 +38,8 @@
 >
   <svelte:fragment slot="icon"><Eye size={18} /></svelte:fragment>
 
-  <div class="preview-content">
-    <div class="summary">
+  <div class="bfao-modal-body preview-content">
+    <div class="bfao-modal-summary">
       共 <strong>{entries.length}</strong> 个分类，<strong>{totalVideos}</strong> 个视频
     </div>
 
@@ -84,15 +84,6 @@
 
 <style>
   .preview-content { padding: 12px 20px 16px; }
-
-  .summary {
-    font-size: 13px;
-    color: var(--ai-text-secondary);
-    margin-bottom: 12px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--ai-border-light);
-  }
-  .summary strong { color: var(--ai-primary); }
 
   .category-list {
     display: flex;
