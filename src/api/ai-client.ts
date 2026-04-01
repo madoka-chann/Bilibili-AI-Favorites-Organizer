@@ -49,6 +49,21 @@ function validateAIResult(parsed: unknown): AIClassificationResult {
   return parsed as AIClassificationResult;
 }
 
+// ================= API 密钥脱敏 =================
+
+/** 从文本片段中脱敏 API 密钥，防止密钥通过错误消息泄露 */
+function redactApiKey(text: string, apiKey: string): string {
+  if (!apiKey || apiKey.length <= 8) return text;
+  try {
+    return text.replace(
+      new RegExp(apiKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
+      '***',
+    );
+  } catch {
+    return text.replaceAll(apiKey, '***');
+  }
+}
+
 // ================= 单次 AI 调用 =================
 
 export function callAISingle(
@@ -80,21 +95,10 @@ export function callAISingle(
         }
 
         if (response.status !== 200) {
-          let errSnippet = (response.responseText || '').substring(0, 300);
-          if (settings.apiKey && settings.apiKey.length > 8) {
-            try {
-              errSnippet = errSnippet.replace(
-                new RegExp(
-                  settings.apiKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
-                  'g'
-                ),
-                '***'
-              );
-            } catch {
-              // Fallback: simple string replace if regex construction fails
-              errSnippet = errSnippet.replaceAll(settings.apiKey, '***');
-            }
-          }
+          const errSnippet = redactApiKey(
+            (response.responseText || '').substring(0, 300),
+            settings.apiKey,
+          );
           reject(new Error(`API 报错 ${response.status}：${errSnippet}`));
           return;
         }
@@ -105,7 +109,10 @@ export function callAISingle(
           const result = validateAIResult(parsed);
           resolve(result);
         } catch (e: unknown) {
-          const snippet = (response.responseText || '').substring(0, 120);
+          const snippet = redactApiKey(
+            (response.responseText || '').substring(0, 120),
+            settings.apiKey,
+          );
           reject(new Error(`解析 AI 回复失败: ${getErrorMessage(e)}\n响应片段: ${snippet}`));
         }
       },
@@ -199,7 +206,7 @@ export async function fetchModelList(settings: Settings): Promise<string[]> {
     url = `${config.baseUrl}/v1/models`;
     headers = {
       'x-api-key': settings.apiKey,
-      'anthropic-version': '2024-10-22',
+      'anthropic-version': '2024-10-22', // models list API 使用稳定版本，与 messages API 版本不同
     };
   } else {
     throw new Error('不支持的提供商');

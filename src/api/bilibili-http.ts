@@ -118,7 +118,6 @@ export async function fetchBiliJson<T = unknown>(
         credentials: 'include',
         signal: controller.signal,
       });
-      clearTimeout(timer);
 
       if (!handleRateLimit) {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -137,12 +136,13 @@ export async function fetchBiliJson<T = unknown>(
       }
       return json;
     } catch (e: unknown) {
-      clearTimeout(timer);
       if (attempt < maxRetries) {
         await sleep(handleRateLimit ? 2000 * attempt : 1000 * attempt);
         continue;
       }
       throw e;
+    } finally {
+      clearTimeout(timer);
     }
   }
   throw new Error(`请求 ${maxRetries} 次均失败`);

@@ -32,6 +32,7 @@ export function cursorScatter(node: HTMLElement, opts: CursorScatterOptions = {}
   const cfg = { ...DEFAULTS, ...opts };
   let lastTime = 0;
   let activeCount = 0;
+  const activeParticles = new Set<HTMLDivElement>();
 
   function onMouseMove(e: MouseEvent) {
     if (!shouldAnimate()) return;
@@ -72,6 +73,7 @@ export function cursorScatter(node: HTMLElement, opts: CursorScatterOptions = {}
     `;
     document.body.appendChild(dot);
     activeCount++;
+    activeParticles.add(dot);
 
     // 粒子散射动画: 随机方向飘散 + 缩小消失
     const angle = Math.random() * Math.PI * 2;
@@ -90,6 +92,7 @@ export function cursorScatter(node: HTMLElement, opts: CursorScatterOptions = {}
         onComplete() {
           dot.remove();
           activeCount--;
+          activeParticles.delete(dot);
         },
       }
     );
@@ -103,6 +106,13 @@ export function cursorScatter(node: HTMLElement, opts: CursorScatterOptions = {}
     },
     destroy() {
       node.removeEventListener('mousemove', onMouseMove);
+      // 清理所有在飞粒子，防止 DOM 残留
+      for (const dot of activeParticles) {
+        gsap.killTweensOf(dot);
+        dot.remove();
+      }
+      activeParticles.clear();
+      activeCount = 0;
     },
   };
 }

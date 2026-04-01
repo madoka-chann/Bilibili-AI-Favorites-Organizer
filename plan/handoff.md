@@ -1,6 +1,54 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-01, 第十六次)
+## 最近一次会话 (2026-04-01, 第十七次)
+
+### 本次完成内容
+
+**安全加固 + 资源清理强化 — 5 处代码质量改进 + 深度架构级 Code Review**
+
+#### 发现并修复的问题
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `ai-providers.ts` | `getProviderBaseUrl()` SSRF 拒绝时返回空字符串 — 空字符串构造相对 URL `/chat/completions`，导致 API 密钥被发送到 bilibili.com 域名 | **SECURITY** | 改为 `throw new Error(msg)` + `logs.add()` 通知用户，彻底阻断请求 |
+| `ai-client.ts` | JSON 解析失败时的错误消息包含未脱敏的响应片段 — API 可能在错误响应中回显密钥 | MEDIUM | 提取 `redactApiKey()` 工具函数，统一应用于所有包含响应文本的错误路径 |
+| `bilibili-http.ts` | `fetchBiliJson` 中 `clearTimeout(timer)` 分散在 try/catch 两处 — continue/return/throw 路径不一致，可能遗漏清理 | MEDIUM | 改用 `try { ... } finally { clearTimeout(timer); }` 保证所有退出路径均清理 |
+| `cursor-scatter.ts` | `destroy()` 只移除事件监听器，不清理正在动画中的粒子 — 组件销毁后 DOM 残留最多 5 个孤立节点 | MEDIUM | 新增 `activeParticles: Set<HTMLDivElement>` 追踪；`destroy()` 中 `gsap.killTweensOf()` + `dot.remove()` 全量清理 |
+| `ai-providers.ts` | Anthropic API 版本 `'2025-04-14'` 硬编码在函数体内 — 维护时需要搜索字符串定位 | LOW | 提取为 `ANTHROPIC_API_VERSION` 命名常量；`ai-client.ts` 中 models list API 的不同版本 `'2024-10-22'` 添加注释说明差异原因 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `magnetic.ts` | 全局 `document.mousemove` 监听器 | 120px 近距离检测需要全局鼠标追踪；`destroy()` 中已正确 `removeEventListener` |
+| `progress.ts` victoryCelebration | ticker 无超时保护 | 粒子 `life += dt` 确定性递增，`maxLife` 必达，ticker 必定自停 |
+| `gsap-config.ts` | `get(settings).animEnabled` 无 null guard | stores 在模块加载时即初始化含默认值，不可能为 null |
+| `modal-bridge.ts` | 新请求覆盖旧请求的 race condition | 单模态 UI 设计保证不会并发请求；覆盖行为是预期语义 |
+| `background-cache.ts` `fetchJson` | clearTimeout 分散在 try/catch | 函数简单（单次请求无重试），当前写法虽冗余但正确 |
+
+### 关键设计决策
+
+1. **SSRF 防护 throw-not-return**: 之前返回空字符串只是"软失败"，调用方不检查空字符串就会构造相对 URL。改为 throw 是硬失败，确保请求链彻底中断。调用方 (`callAISingle`) 的错误通过 `callAI` 的重试机制上报给用户。
+2. **`redactApiKey` 作为独立工具函数**: 而非内联在每个 catch 块中，便于后续所有包含响应文本的错误路径一致使用。
+3. **`finally` vs 双 `clearTimeout`**: `finally` 覆盖 return/throw/continue 三种退出路径，比分散在 try 和 catch 中更健壮且不会遗漏。
+4. **粒子清理用 `gsap.killTweensOf` + `remove`**: 必须先停动画再移除 DOM，否则 GSAP 在下一帧可能更新已移除节点。
+5. **Anthropic API 两个版本**: messages API 用最新 `2025-04-14`，models list API 用稳定 `2024-10-22`——不同 endpoint 版本不同是 Anthropic 推荐做法。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%**
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: SSRF 安全加固 + API key 脱敏 + 资源清理)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 errors。代码质量经 17 次迭代持续强化。**
+
+---
+
+## 上一次会话 (2026-04-01, 第十六次)
 
 ### 本次完成内容
 

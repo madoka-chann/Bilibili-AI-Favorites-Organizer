@@ -10,6 +10,8 @@ import { get } from 'svelte/store';
 const FALLBACK_SYSTEM =
   '你是一个逻辑严密的B站收藏夹视频分类专家。你只输出纯JSON，不输出任何其他内容。JSON格式为：{"thoughts":"分析过程","categories":{"收藏夹名":[{"id":数字,"type":数字}]}}';
 
+const ANTHROPIC_API_VERSION = '2025-04-14';
+
 /** Prompt 可以是字符串 (旧格式) 或 {system, user} 对象 */
 export type AIPrompt = string | { system: string; user: string };
 
@@ -40,16 +42,19 @@ export function getProviderBaseUrl(settings: Settings): string {
     if (url && !/^https?:\/\//i.test(url)) url = 'https://' + url;
 
     // SSRF 防护: 验证 URL 格式 + 拒绝私有地址
+    // 必须抛出而非返回空字符串 — 空字符串会构造相对 URL，
+    // 导致 API 密钥被发送到当前页面域名 (bilibili.com)
     if (url) {
       try {
         const parsed = new URL(url);
         if (isPrivateHost(parsed.hostname)) {
-          logs.add('自定义 API 地址指向内网地址，已拒绝 (SSRF 防护)', 'error');
-          return '';
+          throw new Error('自定义 API 地址指向内网地址，已拒绝 (SSRF 防护)');
         }
-      } catch {
-        logs.add('自定义 API 地址格式无效', 'error');
-        return '';
+      } catch (e) {
+        // 区分 SSRF 主动拒绝 vs URL 解析失败
+        const msg = e instanceof Error ? e.message : '自定义 API 地址格式无效';
+        logs.add(msg, 'error');
+        throw new Error(msg);
       }
 
       if (/^http:\/\//i.test(url)) {
@@ -133,7 +138,7 @@ function buildAnthropicRequest(prompt: AIPrompt, s: Settings): AIRequestConfig {
     headers: {
       'Content-Type': 'application/json',
       'x-api-key': s.apiKey,
-      'anthropic-version': '2025-04-14',
+      'anthropic-version': ANTHROPIC_API_VERSION,
       'anthropic-dangerous-direct-browser-access': 'true',
     },
     body: JSON.stringify({
