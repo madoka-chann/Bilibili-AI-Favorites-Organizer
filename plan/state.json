@@ -30,7 +30,7 @@
     },
     "phase2_animations": {
       "status": "in_progress",
-      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; 高级视觉效果 B3/C5/E2/E4 已完成",
+      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; 高级视觉效果完成; 面板拖拽+主题过渡已实现",
       "completed": [
         "gsap-config.ts: 插件注册 + 10 品牌缓动 + 三级减弱策略",
         "src/actions/magnetic.ts: A1 磁性光标吸引 (use:magnetic)",
@@ -41,10 +41,10 @@
         "src/animations/progress.ts: D2 进度轨迹粒子 + D3 阶段切换 + D4 胜利庆祝 + D5 数字翻滚弹跳",
         "src/animations/text.ts: H1 文字解码 + H2 数字翻滚",
         "FloatButton: A1 magnetic + A2 aurora glow + A3 click particles + A6 liquid morph + K1 drag",
-        "Panel: B1 velvet bloom + B2 curtain exit + B3 标签交叉淡入",
+        "Panel: B1 velvet bloom + B2 curtain exit + B3 标签交叉淡入 + K2 面板拖拽 + K3 位置持久化",
         "Modal: F1 bloom enter + F3 physics exit + F4 content stagger",
         "Toast: G1 elastic slide-in + G2 timer ring + G3 FLIP 堆栈重排 + G4 类型化入场 + G5 slide-out",
-        "Header: aurora-flow + ripple + pressEffect on buttons",
+        "Header: aurora-flow + ripple + pressEffect on buttons + J1 圆形揭示 + J2 图标旋转 + J3 色彩插值",
         "SettingsGroup: B4 GSAP 弹簧手风琴 (替代 Svelte transition:slide)",
         "SettingsPanel: C5 LiquidToggle 液态开关 (替代 checkbox)",
         "ActionButtons: C1/C2 pressEffect + C3 glowTrack (所有按钮 + 主按钮)",
@@ -61,10 +61,7 @@
         "A5 星座轨道",
         "B5 深度视差",
         "C1 全局磁性按钮 (更多组件集成)",
-        "I1-I5 粒子系统",
-        "J1-J3 主题切换过渡",
-        "K2 面板拖拽",
-        "K3 位置持久化 (面板)"
+        "I1-I5 粒子系统"
       ]
     },
     "phase3_cssCleanup": {
@@ -79,7 +76,9 @@
         "$lib/ 别名替换为 $api/$core/$stores/$types/$utils 具体别名 (143处)",
         "Panel.svelte 合并重复的 gsap-config 导入",
         "LiquidToggle.svelte 修复 CSS transition 与 GSAP 动画冲突",
-        "PreviewConfirm.svelte 修复 tilt+hoverScale 的 scale 属性冲突"
+        "PreviewConfirm.svelte 修复 tilt+hoverScale 的 scale 属性冲突",
+        "Header.svelte J3 精简: 只取 --ai-bg 用于遮罩, 移除未使用的变量快照",
+        "Panel.svelte K3 添加视口范围钳制 (防止窗口缩小后面板越界)"
       ]
     },
     "phase5_performance": {
@@ -89,7 +88,7 @@
   },
   "buildStatus": {
     "builds": true,
-    "output": "dist/bilibili-ai-favorites-organizer.user.js (409 kB, GSAP ~94 kB CDN)",
+    "output": "dist/bilibili-ai-favorites-organizer.user.js (412 kB, GSAP ~94 kB CDN)",
     "preExistingIssues": [
       "1 TS error: settings.ts:14 type cast",
       "1 TS error: SettingsGroup.svelte:48 callback type",

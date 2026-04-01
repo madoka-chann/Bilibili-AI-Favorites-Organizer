@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { tick } from 'svelte';
-  import { gsap, EASINGS, shouldAnimateFunctional, shouldAnimate } from '$animations/gsap-config';
+  import { gsap, Draggable, EASINGS, shouldAnimateFunctional, shouldAnimate } from '$animations/gsap-config';
+  import { gmGetValue, gmSetValue } from '$utils/gm';
   import Header from './Header.svelte';
   import SettingsPanel from './SettingsPanel.svelte';
   import PromptEditor from './PromptEditor.svelte';
@@ -34,6 +35,7 @@
   export let onclose: (() => void) | undefined = undefined;
 
   let panelEl: HTMLDivElement;
+  let headerEl: HTMLElement;
   let settingsEl: HTMLElement;
   let mainAreaEl: HTMLElement;
   let ctx: gsap.Context;
@@ -60,12 +62,50 @@
   let statsDeadCount = 0;
 
   onMount(() => {
+    // K3: 恢复保存的面板位置 (钳制到视口范围内)
+    const savedPos = gmGetValue('bfao_panelPos', null as { top: number; left: number } | null);
+    if (savedPos && panelEl) {
+      const rect = panelEl.getBoundingClientRect();
+      const clampedTop = Math.max(0, Math.min(savedPos.top, window.innerHeight - rect.height));
+      const clampedLeft = Math.max(0, Math.min(savedPos.left, window.innerWidth - rect.width));
+      panelEl.style.top = clampedTop + 'px';
+      panelEl.style.left = clampedLeft + 'px';
+      panelEl.style.bottom = 'auto';
+    }
+
     ctx = gsap.context(() => {
       if (shouldAnimateFunctional()) {
         gsap.fromTo(panelEl,
           { y: 48, scale: 0.86, rotation: -0.35, opacity: 0, filter: 'blur(14px) brightness(1.06) saturate(0.72)' },
           { y: 0, scale: 1, rotation: 0, opacity: 1, filter: 'blur(0px) brightness(1) saturate(1)', duration: 0.5, ease: EASINGS.velvetSpring }
         );
+      }
+
+      // K2: 面板拖拽 (header 作为拖拽触发区域)
+      if (headerEl) {
+        Draggable.create(panelEl, {
+          type: 'left,top',
+          trigger: headerEl,
+          bounds: document.body,
+          edgeResistance: 0.65,
+          inertia: false,
+          cursor: 'grab',
+          activeCursor: 'grabbing',
+          onDragStart() {
+            if (shouldAnimate()) {
+              gsap.to(panelEl, { scale: 0.98, boxShadow: '0 32px 80px rgba(0,0,0,0.18)', duration: 0.2 });
+            }
+          },
+          onDragEnd() {
+            if (shouldAnimate()) {
+              gsap.to(panelEl, { scale: 1, boxShadow: '', duration: 0.35, ease: EASINGS.prismBounce });
+            }
+            // K3: 持久化面板位置
+            const rect = panelEl.getBoundingClientRect();
+            panelEl.style.bottom = 'auto';
+            gmSetValue('bfao_panelPos', { top: rect.top, left: rect.left });
+          },
+        });
       }
     }, panelEl);
 
@@ -184,7 +224,9 @@
 </script>
 
 <div class="panel" bind:this={panelEl}>
-  <Header onclose={doClose} bind:settingsOpen />
+  <div bind:this={headerEl}>
+    <Header onclose={doClose} bind:settingsOpen />
+  </div>
 
   <div class="panel-content">
     {#if settingsVisible}
@@ -303,6 +345,10 @@
     overflow-x: hidden;
     border-bottom-left-radius: 26px;
     border-bottom-right-radius: 26px;
+  }
+
+  .panel :global(.gsap-draggable) {
+    cursor: default;
   }
 
   .settings-wrapper {

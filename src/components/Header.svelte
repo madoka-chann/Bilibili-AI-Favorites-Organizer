@@ -3,9 +3,73 @@
   import { isDark, toggleTheme } from '$stores/theme';
   import { ripple } from '$actions/ripple';
   import { pressEffect } from '$animations/micro';
+  import { gsap, EASINGS, shouldAnimate } from '$animations/gsap-config';
 
   export let settingsOpen = false;
   export let onclose: (() => void) | undefined = undefined;
+
+  let themeIconEl: HTMLButtonElement;
+
+  /** J1 圆形揭示 + J2 图标旋转 + J3 色彩插值 */
+  function handleThemeToggle(e: MouseEvent) {
+    if (!shouldAnimate()) {
+      toggleTheme();
+      return;
+    }
+
+    // J3: 快照切换前的背景色 (用于遮罩层)
+    const appEl = document.querySelector('.bfao-app') as HTMLElement | null;
+    const oldBg = appEl
+      ? getComputedStyle(appEl).getPropertyValue('--ai-bg').trim()
+      : '';
+
+    // 切换主题 (App.svelte 的 data-theme 会立即响应更新)
+    toggleTheme();
+
+    // J2: 主题图标旋转动画
+    if (themeIconEl) {
+      gsap.fromTo(themeIconEl,
+        { rotation: 0, scale: 1 },
+        { rotation: 360, scale: 1, duration: 0.5, ease: EASINGS.prismBounce }
+      );
+    }
+
+    if (!appEl || !oldBg) return;
+
+    // J1: 圆形揭示过渡
+    const cx = e.clientX;
+    const cy = e.clientY;
+    const maxRadius = Math.ceil(Math.hypot(
+      Math.max(cx, window.innerWidth - cx),
+      Math.max(cy, window.innerHeight - cy)
+    ));
+
+    // 遮罩: 旧主题背景色的全屏层，通过 clip-path 收缩来揭示新主题
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+      position: fixed;
+      inset: 0;
+      z-index: 2147483646;
+      background: ${oldBg};
+      clip-path: circle(${maxRadius}px at ${cx}px ${cy}px);
+      pointer-events: none;
+    `;
+    document.body.appendChild(overlay);
+
+    gsap.to(overlay, {
+      clipPath: `circle(0px at ${cx}px ${cy}px)`,
+      duration: 0.6,
+      ease: 'power2.inOut',
+      onComplete: () => overlay.remove(),
+    });
+
+    // J3: 面板内元素的 CSS 变量色彩过渡
+    const panelEl = appEl.querySelector('.panel') as HTMLElement | null;
+    if (panelEl) {
+      panelEl.style.transition = 'background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease';
+      setTimeout(() => { panelEl.style.transition = ''; }, 600);
+    }
+  }
 </script>
 
 <div class="header">
@@ -17,7 +81,8 @@
   <div class="header-actions">
     <button
       class="header-btn"
-      onclick={toggleTheme}
+      bind:this={themeIconEl}
+      onclick={handleThemeToggle}
       title={$isDark ? '切换到亮色模式' : '切换到暗色模式'}
       use:ripple={{ color: 'rgba(255,255,255,0.25)' }}
       use:pressEffect
@@ -68,6 +133,11 @@
     overflow: hidden;
     border-top-left-radius: 28px;
     border-top-right-radius: 28px;
+    cursor: grab;
+  }
+
+  .header:active {
+    cursor: grabbing;
   }
 
   .header-title {
