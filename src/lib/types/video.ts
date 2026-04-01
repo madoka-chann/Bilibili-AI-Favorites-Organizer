@@ -53,8 +53,10 @@ export interface VideoFetchCache {
   timestamp: number;
 }
 
+import type { ClassifiedVideoEntry } from './ai';
+
 /** 分类结果 (AI 返回) — 值类型引用 ClassifiedVideoEntry */
-export type CategoryResult = Record<string, import('./ai').ClassifiedVideoEntry[]>;
+export type CategoryResult = Record<string, ClassifiedVideoEntry[]>;
 
 /** B站认证数据 */
 export interface BiliData {

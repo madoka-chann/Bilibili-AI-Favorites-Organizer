@@ -6,7 +6,7 @@
  */
 
 import type { BiliApiResponse } from '$lib/types';
-import { sleep } from '$lib/utils/timing';
+import { sleep, backoffMs } from '$lib/utils/timing';
 import { logs } from '$lib/stores/state';
 
 // ================= 工具函数 =================
@@ -56,7 +56,7 @@ export async function postBiliApi<T = unknown>(
     if (res.code === 0) return res;
 
     if (isRateLimited(res)) {
-      const waitMs = baseWaitMs * Math.pow(2, attempt - 1);
+      const waitMs = backoffMs(attempt, baseWaitMs);
       logs.add(
         `${label}被限流，等待 ${(waitMs / 1000).toFixed(0)}s 后重试 (${attempt}/${maxRetries})...`,
         'warning',
@@ -112,7 +112,7 @@ export async function fetchBiliJson<T = unknown>(
       const json: BiliApiResponse<T> = await res.json();
 
       if (handleRateLimit && isRateLimited(json)) {
-        const waitMs = 5000 * Math.pow(2, attempt - 1);
+        const waitMs = backoffMs(attempt, 5000);
         logs.add(
           `请求被限流，等待 ${(waitMs / 1000).toFixed(0)}s 后重试 (${attempt}/${maxRetries})...`,
           'warning',

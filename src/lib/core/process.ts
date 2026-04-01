@@ -11,7 +11,7 @@ import {
 import { callAI } from '$lib/api/ai-client';
 import { buildSystemPrompt } from '$lib/api/ai-prompt';
 import { estimateCost, formatTokenCount } from '$lib/api/ai-providers';
-import { requestFolderSelect, requestPreviewConfirm } from '$lib/stores/modal-bridge';
+import { folderSelect, requestPreviewConfirm } from '$lib/stores/modal-bridge';
 import { isDeadVideo } from '$lib/utils/dom';
 import { humanDelay, createConcurrencyLimiter, formatNow } from '$lib/utils/timing';
 import { gmSetValue, gmGetValue } from '$lib/utils/gm';
@@ -35,7 +35,7 @@ async function resolveSourceFolders(
   if (settings.multiFolderEnabled) {
     const allFolders = await getAllFoldersWithIds(biliData);
     logs.add('请在弹出的面板中选择要整理的收藏夹...', 'info');
-    const ids = await requestFolderSelect(allFolders);
+    const ids = await folderSelect.request(allFolders);
     if (ids.length === 0) throw new Error('未选择任何收藏夹');
     return ids;
   }

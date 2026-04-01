@@ -46,6 +46,11 @@ export function formatNow(): { time: string; timeLocal: string } {
   };
 }
 
+/** 计算指数退避延迟 (ms) */
+export function backoffMs(attempt: number, baseMs: number, maxMs = Infinity): number {
+  return Math.min(baseMs * Math.pow(2, attempt - 1), maxMs);
+}
+
 /** 创建并发限制器 */
 export function createConcurrencyLimiter(maxConcurrent: number) {
   let running = 0;

@@ -4,7 +4,7 @@ import type {
 } from '$lib/types';
 import { AI_PROVIDERS, AI_TIMEOUT_MS } from '$lib/utils/constants';
 import { gmXmlHttpRequest, gmFetch } from '$lib/utils/gm';
-import { sleep } from '$lib/utils/timing';
+import { sleep, backoffMs } from '$lib/utils/timing';
 import { logs } from '$lib/stores/state';
 import { getErrorMessage } from '$lib/utils/errors';
 import { extractJsonObject } from '$lib/utils/json-extract';
@@ -105,7 +105,7 @@ export async function callAI(
       const isRetryable = err && typeof err === 'object' && 'retryable' in err && (err as { retryable?: boolean }).retryable;
       const errMsg = getErrorMessage(err);
       if (isRetryable && attempt < maxRetries) {
-        const waitMs = Math.min(2000 * Math.pow(2, attempt - 1), 16000);
+        const waitMs = backoffMs(attempt, 2000, 16000);
         logs.add(
           `AI 请求失败 (${errMsg})，${(waitMs / 1000).toFixed(0)}秒后重试 (${attempt}/${maxRetries})...`,
           'warning'

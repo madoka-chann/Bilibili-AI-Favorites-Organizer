@@ -17,9 +17,7 @@
   import PreviewConfirm from './PreviewConfirm.svelte';
   import { isRunning, cancelRequested, logs } from '$lib/stores/state';
   import {
-    folderSelectRequest, resolveFolderSelect, rejectFolderSelect,
-    previewConfirmRequest, resolvePreviewConfirm, rejectPreviewConfirm,
-    rejectAllModals,
+    folderSelect, previewConfirm, rejectAllModals,
   } from '$lib/stores/modal-bridge';
   import { loadUndoHistory } from '$lib/core/undo';
   import { loadHistory } from '$lib/core/history';
@@ -222,20 +220,20 @@
   />
 {/if}
 
-{#if $folderSelectRequest}
+{#if $folderSelect}
   <FolderSelector
-    folders={$folderSelectRequest.input}
-    onconfirm={(ids) => resolveFolderSelect(ids)}
-    onclose={() => rejectFolderSelect()}
+    folders={$folderSelect.input}
+    onconfirm={(ids) => folderSelect.resolve(ids)}
+    onclose={() => folderSelect.reject()}
   />
 {/if}
 
-{#if $previewConfirmRequest}
+{#if $previewConfirm}
   <PreviewConfirm
-    categories={$previewConfirmRequest.input.categories}
-    videos={$previewConfirmRequest.input.videos}
-    onconfirm={(data) => resolvePreviewConfirm(data)}
-    onclose={() => rejectPreviewConfirm()}
+    categories={$previewConfirm.input.categories}
+    videos={$previewConfirm.input.videos}
+    onconfirm={(data) => previewConfirm.resolve(data)}
+    onclose={() => previewConfirm.reject()}
   />
 {/if}
 

@@ -8,14 +8,14 @@ const SETTINGS_KEYS = Object.keys(DEFAULT_SETTINGS) as (keyof Settings)[];
 
 /** 从 GM_getValue 加载所有设置 (数据驱动，无需逐字段手写) */
 function loadFromStorage(): Settings {
-  const result = {} as Record<string, unknown>;
-  for (const key of SETTINGS_KEYS) {
-    result[key] = gmGetValue('bfao_' + key, DEFAULT_SETTINGS[key]);
-  }
+  const entries = SETTINGS_KEYS.map(
+    (key) => [key, gmGetValue('bfao_' + key, DEFAULT_SETTINGS[key])] as const,
+  );
+  const result = Object.fromEntries(entries) as Settings;
   // apiKey 按服务商隔离存储，优先读取当前服务商的 Key
   const providerKey = gmGetValue('bfao_apiKey_' + result.provider, '');
   if (providerKey) result.apiKey = providerKey;
-  return result as unknown as Settings;
+  return result;
 }
 
 /** 保存设置到 GM_setValue */

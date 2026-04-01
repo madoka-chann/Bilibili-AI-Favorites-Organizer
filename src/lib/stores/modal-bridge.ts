@@ -11,7 +11,7 @@ interface ModalRequest<TInput, TResult> {
 
 /**
  * 创建一个 Promise 桥接模式的 modal store
- * 消除 FolderSelect / PreviewConfirm 中的重复代码
+ * 返回可直接订阅的 store + request/resolve/reject 方法
  */
 function createModalBridge<TInput, TResult>() {
   const store = writable<ModalRequest<TInput, TResult> | null>(null);
@@ -44,44 +44,28 @@ function createModalBridge<TInput, TResult>() {
   return { subscribe: store.subscribe, request, resolve, reject };
 }
 
-// ================= Folder Select Bridge =================
+// ================= Bridge Instances =================
 
-const folderBridge = createModalBridge<FavFolder[], number[]>();
-
-export const folderSelectRequest = {
-  subscribe: folderBridge.subscribe,
-};
-
-export const requestFolderSelect = folderBridge.request;
-export const resolveFolderSelect = folderBridge.resolve;
-export const rejectFolderSelect = folderBridge.reject;
-
-// ================= Preview Confirm Bridge =================
+export const folderSelect = createModalBridge<FavFolder[], number[]>();
 
 interface PreviewInput {
   categories: CategoryResult;
   videos: VideoResource[];
 }
 
-const previewBridge = createModalBridge<PreviewInput, CategoryResult>();
+export const previewConfirm = createModalBridge<PreviewInput, CategoryResult>();
 
-export const previewConfirmRequest = {
-  subscribe: previewBridge.subscribe,
-};
-
+/** 便捷方法：组合 categories + videos 发起预览请求 */
 export function requestPreviewConfirm(
   categories: CategoryResult,
   videos: VideoResource[],
 ): Promise<CategoryResult> {
-  return previewBridge.request({ categories, videos });
+  return previewConfirm.request({ categories, videos });
 }
-
-export const resolvePreviewConfirm = previewBridge.resolve;
-export const rejectPreviewConfirm = previewBridge.reject;
 
 // ================= Reject All =================
 
 export function rejectAllModals(): void {
-  rejectFolderSelect();
-  rejectPreviewConfirm();
+  folderSelect.reject();
+  previewConfirm.reject();
 }
