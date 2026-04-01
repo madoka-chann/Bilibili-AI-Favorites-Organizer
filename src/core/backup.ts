@@ -6,6 +6,7 @@ import { getErrorMessage } from '$utils/errors';
 import { formatNow } from '$utils/timing';
 import { triggerDownload } from '$utils/download';
 import { withRunningState } from '$utils/running-state';
+import { DEFAULT_VIDEO_TYPE } from '$utils/constants';
 
 interface BackupVideoEntry {
   id: number;
@@ -47,7 +48,7 @@ export async function backupFavorites(
         logPrefix: '备份',
         onVideo: (v, folder) => ({
           id: v.id,
-          type: v.type,
+          type: v.type ?? DEFAULT_VIDEO_TYPE,
           title: v.title,
           bvid: v.bvid || '',
           folderId: folder.id,

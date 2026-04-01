@@ -35,11 +35,16 @@ export function extractJsonObject(raw: string): unknown {
     }
   }
 
-  // 尝试解析 JSON，失败则修复常见尾逗号问题
+  // 尝试解析 JSON，失败则修复常见尾逗号问题后重试
   try {
     return JSON.parse(content);
-  } catch {
+  } catch (firstErr: unknown) {
     const fixed = content.replace(/,\s*([\]}])/g, '$1');
-    return JSON.parse(fixed);
+    try {
+      return JSON.parse(fixed);
+    } catch {
+      // 尾逗号修复也无法解析，抛出原始错误以保留上下文
+      throw firstErr;
+    }
   }
 }

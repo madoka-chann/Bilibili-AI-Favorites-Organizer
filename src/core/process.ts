@@ -19,7 +19,7 @@ import { saveUndoData, type UndoRecord } from '$core/undo';
 import { saveHistoryEntry } from '$core/history';
 import { getErrorMessage } from '$utils/errors';
 import { groupBy } from '$utils/collections';
-import { UNCATEGORIZED_FOLDER } from '$utils/constants';
+import { UNCATEGORIZED_FOLDER, DEFAULT_VIDEO_TYPE } from '$utils/constants';
 import { updateProgress, resetProgress } from '$utils/progress';
 
 // ================= Helpers =================
@@ -131,7 +131,7 @@ async function classifyWithAI(
 
     const videoData = chunk.map((v) => ({
       id: v.id,
-      type: v.type,
+      type: v.type ?? DEFAULT_VIDEO_TYPE,
       title: v.title,
       up: v.upper?.name ?? '',
       play: v.cnt_info?.play ?? 0,
@@ -169,11 +169,7 @@ async function classifyWithAI(
     aiPromises.push(p);
   }
 
-  try {
-    await Promise.all(aiPromises);
-  } catch (err: unknown) {
-    logs.add(`AI 分类出现意外错误: ${getErrorMessage(err)}`, 'error');
-  }
+  await Promise.all(aiPromises);
 
   if (aiFailed > 0) {
     logs.add(`AI 分类汇总: ${totalAiCalls - aiFailed}/${totalAiCalls} 批次成功，${aiFailed} 批次失败`, aiFailed === totalAiCalls ? 'error' : 'warning');

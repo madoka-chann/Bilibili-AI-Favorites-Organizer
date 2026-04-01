@@ -40,12 +40,12 @@ const systemPrefersDark = writable(
 const mediaAbort = typeof window !== 'undefined' ? new AbortController() : null;
 
 // 监听系统主题变化
-if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined' && mediaAbort) {
   window
     .matchMedia('(prefers-color-scheme: dark)')
     .addEventListener('change', (e) => {
       systemPrefersDark.set(e.matches);
-    }, { signal: mediaAbort!.signal });
+    }, { signal: mediaAbort.signal });
 }
 
 /** 实际是否为暗色 (auto 模式跟随系统) */
@@ -80,12 +80,12 @@ export const prefersReducedMotion = writable(
     : false
 );
 
-if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined' && mediaAbort) {
   window
     .matchMedia('(prefers-reduced-motion: reduce)')
     .addEventListener('change', (e) => {
       prefersReducedMotion.set(e.matches);
-    }, { signal: mediaAbort!.signal });
+    }, { signal: mediaAbort.signal });
 }
 
 /** 清理所有 matchMedia 监听器 (脚本卸载时调用) */

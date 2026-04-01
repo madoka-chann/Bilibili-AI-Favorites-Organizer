@@ -13,6 +13,7 @@
   let thumbEl = $state<HTMLElement>(undefined!);
   let trackEl = $state<HTMLElement>(undefined!);
   let mounted = false;
+  let activeTl: gsap.core.Timeline | null = null;
 
   onMount(() => {
     if (checked && thumbEl) {
@@ -28,7 +29,10 @@
     if (!mounted || !shouldAnimate() || !thumbEl || !trackEl) return;
 
     // C5: Liquid toggle — thumb slides with stretch/squish
+    // 快速连续切换时，先终止前一个动画以防冲突
+    activeTl?.kill();
     const tl = gsap.timeline();
+    activeTl = tl;
     tl.to(thumbEl, {
       scaleX: 1.3,
       scaleY: 0.85,

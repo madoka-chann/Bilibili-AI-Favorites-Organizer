@@ -1,6 +1,55 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-01, 第十七次)
+## 最近一次会话 (2026-04-01, 第十八次)
+
+### 本次完成内容
+
+**防御性编程 + 错误处理 + 动画健壮性 — 6 处代码质量改进 + 深度架构级 Code Review**
+
+#### 发现并修复的问题
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `backup.ts` | `v.type` 无防御性回退 — dead-videos.ts/duplicates.ts 均使用 `?? DEFAULT_VIDEO_TYPE` 但 backup.ts 缺失 | MEDIUM | 添加 `?? DEFAULT_VIDEO_TYPE` 回退，与其他模块保持一致 |
+| `process.ts` | AI 分类数据准备阶段 `v.type` 同样缺少 type 回退 + `Promise.all()` 外层 catch 不可达 (每个 promise 内部已有 try-catch) | MEDIUM | 添加 type 回退；移除死代码 catch 块，简化为直接 `await Promise.all()` |
+| `json-extract.ts` | 尾逗号修复后的第二次 `JSON.parse` 无 try-catch — 修复失败时抛出误导性的 SyntaxError，丢失原始解析错误上下文 | MEDIUM | 包裹内层 try-catch，失败时重新抛出原始 `firstErr` 保留错误上下文 |
+| `theme.ts` | `mediaAbort!.signal` 使用非空断言 — 虽然在 `typeof window !== 'undefined'` 条件内但 TypeScript 不会跨语句 narrow | LOW | 将 `mediaAbort` 加入 if 条件，TypeScript 自动 narrow 为非 null 类型 |
+| `LiquidToggle.svelte` | 快速连续切换时 GSAP timeline 叠加冲突 — 前一个动画未终止就创建新动画 | MEDIUM | 新增 `activeTl` 引用追踪；新动画前调用 `activeTl?.kill()` |
+| `Header.svelte` | 主题图标旋转动画同样存在快速连续点击时叠加冲突 | MEDIUM | 新增 `themeIconTween` 引用追踪；新动画前调用 `themeIconTween?.kill()` |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `magnetic.ts` | 每个 magnetic action 实例注册全局 mousemove | 120px 近距离检测需要全局追踪；`destroy()` 正确清理 |
+| `PreviewConfirm.svelte` | `bind:this` 使用 `undefined!` 初始化 | Svelte 5 惯用模式，元素在 `onMount` 前绑定完成 |
+| `gm.ts` gmCache | Map 无大小限制 | userscript 单页生命周期内缓存键有限 (~30 个设置键)，不会 OOM |
+| `running-state.ts` | 双重 `cancelRequested.set(false)` (try 前后各一次) | 前置重置清除上次残留取消状态，finally 重置确保操作结束后状态干净——两者语义不同 |
+| `bilibili-folders.ts` | 缓存竞态 (并发调用可能重复 API) | JS 单线程 + await 点保证不会并发进入；由 UI 串行触发 |
+| `progress.ts` victoryCelebration | ticker 无超时保护 | 粒子 `life += dt` 确定性递增，`maxLife` 必达，ticker 必定自停 |
+
+### 关键设计决策
+
+1. **video type 防御性回退统一**: `VideoResource.type` 在 TypeScript 接口中是 `number` (非 optional)，但 B 站 API 运行时可能返回 null/undefined。dead-videos.ts 和 duplicates.ts 已有 `?? DEFAULT_VIDEO_TYPE`，backup.ts 和 process.ts 缺失，导致 API 异常时备份数据或 AI 分类数据中 type 为 undefined。
+2. **Promise.all 死代码移除**: 每个 promise 内部已有完整的 try-catch，不会 reject，外层 catch 永远不会执行。移除避免给维护者造成"这里可能会报错"的误导。
+3. **JSON 解析错误链**: 保留 `firstErr` 而非抛出第二次解析的错误——第二次解析的错误信息指向修复后的字符串，不如原始错误有诊断价值。
+4. **GSAP 动画中断保护**: `kill()` 前一个动画后再创建新动画，避免两个 timeline 同时操作同一 DOM 元素的 transform/scale 属性导致视觉抖动。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%**
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 防御性回退统一 + 死代码清理 + 错误链完善 + 非空断言消除 + 动画中断保护)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 errors。代码质量经 18 次迭代持续强化。**
+
+---
+
+## 上一次会话 (2026-04-01, 第十七次)
 
 ### 本次完成内容
 

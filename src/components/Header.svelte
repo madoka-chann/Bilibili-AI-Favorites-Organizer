@@ -14,6 +14,7 @@
   let { settingsOpen = $bindable(false), onclose }: Props = $props();
 
   let themeIconEl = $state<HTMLButtonElement>(undefined!);
+  let themeIconTween: gsap.core.Tween | null = null;
 
   /** J1 圆形揭示 + J2 图标旋转 + J3 色彩插值 */
   function handleThemeToggle(e: MouseEvent) {
@@ -31,9 +32,10 @@
     // 切换主题 (App.svelte 的 data-theme 会立即响应更新)
     toggleTheme();
 
-    // J2: 主题图标旋转动画
+    // J2: 主题图标旋转动画 — 快速连续点击时先终止前一个动画
     if (themeIconEl) {
-      gsap.fromTo(themeIconEl,
+      themeIconTween?.kill();
+      themeIconTween = gsap.fromTo(themeIconEl,
         { rotation: 0, scale: 1 },
         { rotation: 360, scale: 1, duration: 0.5, ease: EASINGS.prismBounce }
       );
