@@ -42,7 +42,12 @@ export default defineConfig({
         ],
       },
       build: {
-        externalGlobals: {},
+        externalGlobals: {
+          gsap: cdn.jsdelivr('gsap', 'dist/gsap.min.js'),
+          'gsap/Flip': cdn.jsdelivr('gsap', 'dist/Flip.min.js'),
+          'gsap/Draggable': cdn.jsdelivr('gsap', 'dist/Draggable.min.js'),
+          'gsap/CustomEase': cdn.jsdelivr('gsap', 'dist/CustomEase.min.js'),
+        },
       },
     }),
   ],
