@@ -29,6 +29,30 @@
   let expanded = new Set<string>();
   let categoryListEl: HTMLElement;
 
+  // Virtual scrolling constants
+  const ITEM_H = 34;
+  const GAP = 4;
+  const ROW = ITEM_H + GAP;
+  const VIRTUAL_THRESHOLD = 40;
+  const VISIBLE_ROWS = 8;
+  const OVERSCAN = 4;
+
+  // Per-category scroll tracking for virtual scrolling
+  let scrollTops: Record<string, number> = {};
+
+  function onVirtualScroll(name: string, e: Event) {
+    const el = e.currentTarget as HTMLElement;
+    scrollTops[name] = el.scrollTop;
+    scrollTops = scrollTops; // trigger reactivity
+  }
+
+  function getVisibleRange(name: string, total: number): { start: number; end: number } {
+    const st = scrollTops[name] ?? 0;
+    const start = Math.max(0, Math.floor(st / ROW) - OVERSCAN);
+    const end = Math.min(total, start + VISIBLE_ROWS + OVERSCAN * 2);
+    return { start, end };
+  }
+
   async function toggleExpand(name: string) {
     const wasExpanded = expanded.has(name);
 
@@ -38,6 +62,7 @@
 
     if (wasExpanded) {
       expanded.delete(name);
+      delete scrollTops[name];
     } else {
       expanded.add(name);
     }
@@ -86,6 +111,7 @@
     <div class="category-list" bind:this={categoryListEl}>
       {#each entries as [name, vids] (name)}
         {@const isExpanded = expanded.has(name)}
+        {@const needsVirtual = vids.length > VIRTUAL_THRESHOLD}
         <div class="category-group" data-category={name}>
           <button class="category-header" onclick={() => toggleExpand(name)}>
             <span class="expand-icon">
@@ -100,21 +126,51 @@
           </button>
 
           {#if isExpanded}
-            <div class="video-list">
-              {#each vids as vid (vid.id)}
-                {@const info = videoMap.get(vid.id)}
-                <div class="video-item" use:tilt={{ maxDeg: 2, perspective: 600, scale: 1 }} use:hoverScale={{ scale: 1.03, duration: 0.3 }}>
-                  <span class="video-title" title={info?.title ?? `av${vid.id}`}>
-                    {info?.title ?? `av${vid.id}`}
-                  </span>
-                  {#if vid.conf != null}
-                    <span class="conf" class:low={vid.conf < 0.6}>
-                      {Math.round(vid.conf * 100)}%
-                    </span>
-                  {/if}
+            {#if needsVirtual}
+              {@const range = getVisibleRange(name, vids.length)}
+              <div
+                class="video-list virtual-scroll"
+                style:height="{VISIBLE_ROWS * ROW}px"
+                onscroll={(e) => onVirtualScroll(name, e)}
+              >
+                <div class="virtual-spacer" style:height="{vids.length * ROW}px">
+                  {#each vids.slice(range.start, range.end) as vid, i (vid.id)}
+                    {@const info = videoMap.get(vid.id)}
+                    <div
+                      class="video-item virtual-item"
+                      style:top="{(range.start + i) * ROW}px"
+                      use:tilt={{ maxDeg: 2, perspective: 600, scale: 1 }}
+                      use:hoverScale={{ scale: 1.03, duration: 0.3 }}
+                    >
+                      <span class="video-title" title={info?.title ?? `av${vid.id}`}>
+                        {info?.title ?? `av${vid.id}`}
+                      </span>
+                      {#if vid.conf != null}
+                        <span class="conf" class:low={vid.conf < 0.6}>
+                          {Math.round(vid.conf * 100)}%
+                        </span>
+                      {/if}
+                    </div>
+                  {/each}
                 </div>
-              {/each}
-            </div>
+              </div>
+            {:else}
+              <div class="video-list">
+                {#each vids as vid (vid.id)}
+                  {@const info = videoMap.get(vid.id)}
+                  <div class="video-item" use:tilt={{ maxDeg: 2, perspective: 600, scale: 1 }} use:hoverScale={{ scale: 1.03, duration: 0.3 }}>
+                    <span class="video-title" title={info?.title ?? `av${vid.id}`}>
+                      {info?.title ?? `av${vid.id}`}
+                    </span>
+                    {#if vid.conf != null}
+                      <span class="conf" class:low={vid.conf < 0.6}>
+                        {Math.round(vid.conf * 100)}%
+                      </span>
+                    {/if}
+                  </div>
+                {/each}
+              </div>
+            {/if}
           {/if}
         </div>
       {/each}
@@ -181,6 +237,16 @@
     gap: 4px;
   }
 
+  .video-list.virtual-scroll {
+    overflow-y: auto;
+    position: relative;
+    display: block;
+  }
+
+  .virtual-spacer {
+    position: relative;
+  }
+
   .video-item {
     display: flex;
     align-items: center;
@@ -189,6 +255,12 @@
     border-radius: 6px;
     background: var(--ai-bg-secondary);
     font-size: 12px;
+  }
+
+  .video-item.virtual-item {
+    position: absolute;
+    left: 0;
+    right: 0;
   }
 
   .video-title {

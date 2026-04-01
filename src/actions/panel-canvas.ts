@@ -233,11 +233,28 @@ export function panelCanvas(node: HTMLElement, opts: PanelCanvasOptions = {}) {
     }
   });
 
-  // 初始化
+  // ================= 可见性暂停 =================
+  let paused = false;
+
+  const io = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting && paused) {
+        paused = false;
+        gsap.ticker.add(tick);
+      } else if (!entry.isIntersecting && !paused) {
+        paused = true;
+        gsap.ticker.remove(tick);
+      }
+    },
+    { threshold: 0 },
+  );
+
+  // 初始化 — 先注册观察器再启动渲染循环，确保不可见时立即暂停
   resize();
   if (cfg.mode === 'lumen') initThreads();
-  gsap.ticker.add(tick);
   ro.observe(node);
+  io.observe(node);
+  gsap.ticker.add(tick);
   node.addEventListener('mousemove', onMouseMove, { passive: true });
 
   return {
@@ -252,6 +269,7 @@ export function panelCanvas(node: HTMLElement, opts: PanelCanvasOptions = {}) {
     destroy() {
       gsap.ticker.remove(tick);
       ro.disconnect();
+      io.disconnect();
       node.removeEventListener('mousemove', onMouseMove);
       canvas.remove();
     },

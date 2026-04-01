@@ -44,7 +44,7 @@ export default defineConfig({
           'models.github.ai',
           'localhost',
           'openrouter.ai',
-          '*',
+          '*', // 自定义 OpenAI 兼容端点需要; SSRF 由 ai-providers.ts isPrivateHost() 防护
         ],
       },
       build: {

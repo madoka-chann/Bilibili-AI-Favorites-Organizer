@@ -1,15 +1,18 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte';
   import FloatButton from '$components/FloatButton.svelte';
   import Panel from '$components/Panel.svelte';
   import Toast from '$components/Toast.svelte';
   import { panelOpen } from '$stores/state';
-  import { isDark, accentColor } from '$stores/theme';
+  import { isDark, accentColor, destroyThemeListeners } from '$stores/theme';
   import { Flip, shouldAnimate } from '$animations/gsap-config';
   import './styles/variables.css';
   import './styles/forms.css';
   import './styles/modal.css';
 
   let flipState: Flip.FlipState | null = null;
+
+  onDestroy(destroyThemeListeners);
 
   function openPanel() {
     // A4: Capture FloatButton position for FLIP morph

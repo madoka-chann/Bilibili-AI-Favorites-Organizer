@@ -1,6 +1,60 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-01, 第十一次)
+## 最近一次会话 (2026-04-01, 第十二次)
+
+### 本次完成内容
+
+**性能优化收尾 + 安全审计 + 深度 Code Review**
+
+#### 性能优化
+
+| 改动 | 文件 | 详情 |
+|------|------|------|
+| Canvas 可见性暂停 | `src/actions/panel-canvas.ts` | IntersectionObserver 检测面板可见性；不可见时自动 `gsap.ticker.remove(tick)` 暂停渲染，可见时恢复；`io.disconnect()` 在 destroy 中正确清理 |
+| PreviewConfirm 虚拟滚动 | `src/components/PreviewConfirm.svelte` | 分类视频数 >40 时启用虚拟滚动；固定行高 38px (34+4gap)，显示 8 行 + 4 行 overscan；`scrollTops` 记录按分类名追踪滚动位置；折叠时自动清理 scrollTops 记录 |
+| Theme 监听器清理 | `src/App.svelte` | 添加 `onDestroy(destroyThemeListeners)` 调用，确保 matchMedia 监听器在组件销毁时通过 AbortController 清理 |
+
+#### 安全审计
+
+| 改动 | 文件 | 详情 |
+|------|------|------|
+| `@connect *` 审计 | `vite.config.ts` | 评估移除通配符 → 发现自定义 OpenAI 兼容端点需要 `*`；保留并添加注释说明 SSRF 由 `ai-providers.ts isPrivateHost()` 防护 |
+
+#### 深度 Code Review 发现并修复
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `panel-canvas.ts` | `gsap.ticker.add(tick)` 在 `io.observe(node)` 之前执行，不可见时有短暂无用渲染 | LOW | 调整初始化顺序：先注册 IO 观察器再启动 ticker |
+| `PreviewConfirm.svelte` | Svelte 5 事件语法：`on:scroll` 与 `style:` 指令混用触发构建错误 | HIGH | 改为 `onscroll` 新语法 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `PreviewConfirm.svelte` | 使用 `export let` 旧语法而非 Svelte 5 `$props()` | 项目全部组件统一使用旧语法，批量迁移应作为独立任务 |
+| `vite.config.ts` | `@connect *` 通配符 | 自定义 AI 端点功能必需；SSRF 防护已在 ai-providers.ts 实现 (isPrivateHost 阻止 127.*/10.*/192.168.* 等) |
+| ESLint 配置 | `.eslintrc.cjs` 未创建 | 当前工作流未使用 lint，可作为后续 CI/CD 集成时添加 |
+
+### 关键设计决策
+
+1. **虚拟滚动阈值 40**: 低于此数量直接渲染全部 DOM 节点（性能无忧），高于时切换绝对定位 + 窗口化渲染
+2. **Canvas 暂停用 IntersectionObserver 而非面板状态**: 直接观察 DOM 可见性比监听 store 更解耦，且在任何隐藏场景（非仅面板关闭）都能生效
+3. **保留 @connect ***: 移除会破坏核心功能（自定义 AI 端点），SSRF 防护已在应用层实现
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%**
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: @connect 安全审计 + 注释)
+- Phase 5 性能优化: **100%** (本次新增: Canvas 可见性暂停 + 虚拟滚动 + Theme 清理)
+
+**所有 Phase 均已 100% 完成。代码质量经 12 次迭代持续强化。**
+
+---
+
+## 上一次会话 (2026-04-01, 第十一次)
 
 ### 本次完成内容
 
