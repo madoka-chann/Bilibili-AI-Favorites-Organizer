@@ -106,8 +106,11 @@ export function phaseTransition(
 }
 
 /**
- * D4: 胜利庆祝
- * 面板微震 + 五彩纸屑粒子
+ * D4 + I3: 胜利庆祝
+ * 面板微震 + 物理模拟五彩纸屑 (gsap.ticker 逐帧更新)
+ *
+ * I3 增强: 60 粒子 + 帧级物理模拟 (速度 + 重力 + 旋转 + 空气阻力)
+ * 替代预计算 tween 路径，获得更自然的重力弧线
  */
 export function victoryCelebration(containerEl: HTMLElement) {
   if (!shouldAnimate()) return;
@@ -124,11 +127,27 @@ export function victoryCelebration(containerEl: HTMLElement) {
     ease: 'none',
   });
 
-  // 五彩纸屑
+  // I3: 物理模拟纸屑
   const rect = containerEl.getBoundingClientRect();
-  const confettiCount = 24;
+  const PARTICLE_COUNT = 60;
+  const GRAVITY = 700;   // px/s²
+  const DRAG = 0.98;     // 空气阻力 (60fps 基准)
+  const MAX_LIFE = 2.5;  // 秒
 
-  for (let i = 0; i < confettiCount; i++) {
+  interface ConfettiParticle {
+    el: HTMLSpanElement;
+    x: number; y: number;
+    vx: number; vy: number;
+    rotation: number;
+    rotSpeed: number;
+    life: number;
+    maxLife: number;
+  }
+
+  const particles: ConfettiParticle[] = [];
+
+  // 生成粒子
+  for (let i = 0; i < PARTICLE_COUNT; i++) {
     const piece = document.createElement('span');
     const size = 4 + Math.random() * 4;
     const color = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
@@ -136,8 +155,8 @@ export function victoryCelebration(containerEl: HTMLElement) {
 
     piece.style.cssText = `
       position: fixed;
-      left: ${rect.left + rect.width * 0.3 + Math.random() * rect.width * 0.4}px;
-      top: ${rect.top + rect.height * 0.3}px;
+      left: 0;
+      top: 0;
       width: ${size}px;
       height: ${isCircle ? size : size * 0.5}px;
       background: ${color};
@@ -148,23 +167,64 @@ export function victoryCelebration(containerEl: HTMLElement) {
     `;
     document.body.appendChild(piece);
 
-    const angle = -90 + (Math.random() - 0.5) * 120;
-    const velocity = 200 + Math.random() * 400;
+    // 发射参数: 从面板中上部区域向上扇形散射
+    const angle = -90 + (Math.random() - 0.5) * 120; // -150° to -30°
+    const speed = 200 + Math.random() * 400;
     const rad = (angle * Math.PI) / 180;
-    const vx = Math.cos(rad) * velocity;
-    const vy = Math.sin(rad) * velocity;
-    const duration = 0.8 + Math.random() * 0.6;
+    const maxLife = 1.2 + Math.random() * (MAX_LIFE - 1.2);
 
-    gsap.to(piece, {
-      x: vx * duration * 0.3,
-      y: vy * duration * 0.3 + 0.5 * 700 * duration * duration,
-      rotation: Math.random() * 720 - 360,
-      opacity: 0,
-      duration,
-      ease: EASINGS.confettiArc,
-      onComplete: () => piece.remove(),
+    particles.push({
+      el: piece,
+      x: rect.left + rect.width * 0.3 + Math.random() * rect.width * 0.4,
+      y: rect.top + rect.height * 0.3,
+      vx: Math.cos(rad) * speed,
+      vy: Math.sin(rad) * speed,
+      rotation: 0,
+      rotSpeed: (Math.random() - 0.5) * 600, // °/s
+      life: 0,
+      maxLife,
     });
   }
+
+  // gsap.ticker 逐帧物理更新
+  function tickPhysics() {
+    const dr = gsap.ticker.deltaRatio(); // 1 at 60fps, 2 at 30fps
+    const dt = dr / 60; // 秒 (帧率无关)
+
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.life += dt;
+
+      // 物理更新
+      p.vy += GRAVITY * dt;                 // 重力
+      const dragFactor = Math.pow(DRAG, dr); // 帧率无关阻力
+      p.vx *= dragFactor;
+      p.vy *= dragFactor;
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.rotation += p.rotSpeed * dt;
+
+      // 淡出 (最后 30% 生命周期)
+      const lifeRatio = p.life / p.maxLife;
+      const opacity = lifeRatio > 0.7 ? 1 - (lifeRatio - 0.7) / 0.3 : 1;
+
+      p.el.style.transform = `translate(${p.x}px, ${p.y}px) rotate(${p.rotation}deg)`;
+      p.el.style.opacity = String(opacity);
+
+      // 生命结束 → 移除
+      if (p.life >= p.maxLife) {
+        p.el.remove();
+        particles.splice(i, 1);
+      }
+    }
+
+    // 所有粒子结束 → 停止 ticker
+    if (particles.length === 0) {
+      gsap.ticker.remove(tickPhysics);
+    }
+  }
+
+  gsap.ticker.add(tickPhysics);
 }
 
 /**

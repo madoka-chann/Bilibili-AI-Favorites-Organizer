@@ -1,7 +1,7 @@
 {
   "project": "Bilibili AI Favorites Organizer - Svelte Refactoring",
   "plan": "zesty-wandering-acorn.md",
-  "lastUpdated": "2026-04-01-session9",
+  "lastUpdated": "2026-04-01-session10",
   "phases": {
     "phase0_buildSystem": {
       "status": "completed",
@@ -29,80 +29,48 @@
       }
     },
     "phase2_animations": {
-      "status": "in_progress",
-      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; 高级视觉效果完成; 面板拖拽+主题过渡已实现; A4 FLIP 变形 + B5 深度视差已完成; A5 星座轨道 + C1 全局磁性按钮已完成",
+      "status": "completed",
+      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; 高级视觉效果完成; 面板拖拽+主题过渡已实现; A4 FLIP 变形 + B5 深度视差已完成; A5 星座轨道 + C1 全局磁性按钮已完成; I1-I5 粒子系统全部完成",
       "completed": [
         "gsap-config.ts: 插件注册 + 10 品牌缓动 + 三级减弱策略",
         "src/actions/magnetic.ts: A1 磁性光标吸引 (use:magnetic)",
         "src/actions/tilt.ts: E3 3D 倾斜悬浮 (use:tilt)",
         "src/actions/glow-track.ts: C3 径向光追踪 (use:glowTrack)",
         "src/actions/ripple.ts: 点击涟漪 (use:ripple)",
-        "src/actions/parallax.ts: B5 深度视差 (use:parallax) — 滚动时面板背景层偏移",
+        "src/actions/parallax.ts: B5 深度视差 (use:parallax)",
+        "src/actions/panel-canvas.ts: I1 极光画布 + I5 丝线网络 (use:panelCanvas)",
+        "src/actions/cursor-scatter.ts: I2 光标散射 (use:cursorScatter)",
         "src/animations/micro.ts: C2 pressEffect + C4 focusGlow + C6 checkBounce + C7 staggerReveal + F4 contentStagger + E1 listStaggerReveal + E4 hoverScale",
-        "src/animations/progress.ts: D2 进度轨迹粒子 + D3 阶段切换 + D4 胜利庆祝 + D5 数字翻滚弹跳",
+        "src/animations/progress.ts: D2 进度轨迹粒子 + D3 阶段切换 + D4/I3 物理模拟庆祝纸屑 + D5 数字翻滚弹跳",
         "src/animations/text.ts: H1 文字解码 + H2 数字翻滚",
-        "FloatButton: A1 magnetic + A2 aurora glow + A3 click particles + A6 liquid morph + K1 drag",
-        "Panel: B1 velvet bloom + B2 curtain exit + B3 标签交叉淡入 + K2 面板拖拽 + K3 位置持久化 + B5 深度视差 (parallax action + ::before 背景层)",
-        "App.svelte: A4 FLIP 变形 — 捕获 FloatButton Flip.getState → 传递给 Panel → Flip.from() 形变入场",
-        "Modal: F1 bloom enter + F3 physics exit + F4 content stagger",
-        "Toast: G1 elastic slide-in + G2 timer ring + G3 FLIP 堆栈重排 + G4 类型化入场 + G5 slide-out",
-        "Header: aurora-flow + ripple + pressEffect on buttons + J1 圆形揭示 + J2 图标旋转 + J3 色彩插值",
-        "SettingsGroup: B4 GSAP 弹簧手风琴 (替代 Svelte transition:slide)",
-        "SettingsPanel: C5 LiquidToggle 液态开关 (替代 checkbox)",
-        "ActionButtons: C1/C2 pressEffect + C3 glowTrack (所有按钮 + 主按钮)",
-        "PreviewConfirm: E2 FLIP 展开折叠 + E3 tilt 视频卡片 + E4 hoverScale + E1 listStaggerReveal",
-        "ProviderConfig: C4 focusGlow (所有 input 元素)",
-        "SettingsPanel: C4 focusGlow (number inputs)",
-        "PromptEditor: C4 focusGlow (textarea)",
-        "ProgressBar: D1 平滑进度 + D2 轨迹粒子 + D3 阶段切换 + D4 胜利庆祝 + D5 数字弹跳 + D6 微光效果",
-        "LogArea: H1 文字解码效果 (新日志条目乱码→逐位解码)",
-        "StatsDialog: H2 数字翻滚 (统计数字从0滚动到目标值)",
-        "FloatButton: A5 星座轨道 — 5个轨道球围绕按钮旋转 (proxy+三角函数定位, 独立速度10-18s, 闪烁1.5-2.8s)",
-        "C1 全局磁性按钮: ActionButtons (10按钮), FolderSelector, HistoryTimeline, DeadVideosResult, DuplicatesResult 全部集成 use:magnetic (radius:40, strength:0.25)"
+        "FloatButton: A1-A6 + K1",
+        "Panel: B1-B5 + K2-K3 + I1 极光画布 + I2 光标散射 + I4 星云漂移",
+        "App.svelte: A4 FLIP 变形",
+        "Modal: F1-F4, Toast: G1-G5, Header: J1-J3",
+        "SettingsGroup: B4, SettingsPanel: C5, ActionButtons: C1-C3",
+        "PreviewConfirm: E1-E4, ProgressBar: D1-D6",
+        "LogArea: H1, StatsDialog: H2",
+        "FloatButton: A5 星座轨道",
+        "C1 全局磁性按钮: ActionButtons + FolderSelector + HistoryTimeline + DeadVideosResult + DuplicatesResult"
       ],
-      "remaining": [
-        "I1-I5 粒子系统"
-      ]
+      "remaining": []
     },
     "phase3_cssCleanup": {
       "status": "completed",
-      "summary": "原始 22,072 行 CSS 已删除 (完全未被 Svelte 代码引用); 全局 CSS 精简至 310 行 (variables.css 129 + forms.css 92 + modal.css 89); 移除 --ai-shadow-sm 死变量 + .bfao-scroll-list 死类; 组件样式全部在 Svelte <style> 块中 (~1,163 行); 0 个 @keyframes 在全局 CSS, 5 个在组件 scoped styles",
-      "result": {
-        "before": "22,391 lines across 4 CSS files, 448 @keyframes, 217 easing variables",
-        "after": "310 lines in 3 global CSS files + ~1,163 lines in 21 scoped <style> blocks = ~1,473 lines total",
-        "deleted": "bilibili-favorites-ai-organizer.css (22,072 lines), --ai-shadow-sm (unused variable), .bfao-scroll-list (unused class)"
-      }
+      "summary": "原始 22,072 行 CSS 已删除; 全局 CSS 精简至 310 行; 组件样式在 Svelte <style> 块中"
     },
     "phase4_codeQuality": {
       "status": "completed",
-      "summary": "TypeScript 类型定义完成; 模块化重构完成; 目录扁平化重构完成; 多轮 Code Review 修复了代码异味和安全问题; a11y 修复完成; SSRF 防护已添加; undo.ts 旧格式迁移添加 shape validation",
-      "recentFixes": [
-        "undo.ts: 添加 isValidUndoRecord() shape 验证函数 — loadUndoHistory 过滤无效记录",
-        "process.ts: classifyWithAI 中 Promise.all 添加 try-catch 防止意外异常",
-        "Panel.svelte: 提取 restoreSavedPosition() 复用函数消除重复代码",
-        "App.svelte: 移除冗余的 `import '$animations/gsap-config'` 重复导入",
-        "parallax.ts: Code Review 修复 — CSS 变量设置在父元素上 (修复作用域 bug)",
-        "parallax.ts: Code Review 修复 — 移除不必要的 gsap.quickTo (直接 style.setProperty 更可靠)",
-        "Panel.svelte: .panel-content 添加 position:relative + z-index:1 确保在 ::before 之上"
-      ]
+      "summary": "TypeScript 类型定义完成; 模块化重构完成; 目录扁平化; 多轮 Code Review; a11y + SSRF 防护"
     },
     "phase5_performance": {
       "status": "completed",
-      "summary": "GM_getValue 内存缓存层; AbortController 事件生命周期管理; PreviewConfirm videoMap memoization; theme.ts matchMedia 监听器集中清理",
-      "changes": [
-        "gm.ts: 添加 gmCache (Map) 写穿缓存层 — gmGetValue 命中缓存直接返回，避免重复 JSON 反序列化",
-        "gm.ts: gmSetValue 同时更新缓存 — 保持缓存一致性",
-        "gm.ts: 导出 gmCacheInvalidate() — 支持强制刷新单个 key",
-        "Panel.svelte: 改用 AbortController 管理 keydown 事件监听 (替代手动 removeEventListener)",
-        "Modal.svelte: 改用 AbortController 管理 ESC 关闭监听",
-        "theme.ts: 使用 AbortController 集中管理 2 个 matchMedia change 监听器 + 导出 destroyThemeListeners()",
-        "PreviewConfirm.svelte: videoMap 添加引用相等性检查 memoization — 仅在 videos 数组引用变化时重建 Map"
-      ]
+      "summary": "GM_getValue 内存缓存层; AbortController 事件管理; PreviewConfirm videoMap memoization; theme.ts matchMedia 集中清理"
     }
   },
   "buildStatus": {
     "builds": true,
-    "output": "dist/bilibili-ai-favorites-organizer.user.js (422 kB, GSAP ~94 kB CDN)",
+    "output": "dist/bilibili-ai-favorites-organizer.user.js (433 kB, GSAP ~94 kB CDN)",
     "preExistingIssues": []
   }
 }

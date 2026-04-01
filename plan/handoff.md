@@ -1,6 +1,53 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-01, 第九次)
+## 最近一次会话 (2026-04-01, 第十次)
+
+### 本次完成内容
+
+**Phase 2 最终收官 — I1-I5 粒子系统全部完成 + 深度 Code Review**
+
+#### I1-I5 粒子系统实现
+
+| 效果 | 文件 | 详情 |
+|------|------|------|
+| I1 极光画布 | `src/actions/panel-canvas.ts` | Canvas2D 50% 分辨率；3 层极光带 (多频率 sin 波叠加)；鼠标追踪径向发光；`gsap.ticker.add()` 统一渲染循环 |
+| I2 光标散射 | `src/actions/cursor-scatter.ts` | 80ms 节流 + 30% 生成率；最多 5 并发粒子；`position: fixed` 避免 overflow 裁剪 |
+| I3 物理纸屑 | `src/animations/progress.ts` | 升级 D4 → 60 粒子 + `gsap.ticker` 逐帧物理；重力 700px/s² + 帧率无关阻力 `Math.pow(drag, deltaRatio)` |
+| I4 星云漂移 | `Panel.svelte` (CSS) | 8 个 CSS 粒子；`calc(var(--i))` 参数化；`@keyframes nebula-float`；`prefers-reduced-motion` 自动禁用 |
+| I5 丝线网络 | `src/actions/panel-canvas.ts` | Canvas2D 40% 分辨率；30 个线程节点 + 连接检测；鼠标引力；与 I1 共享 `use:panelCanvas` action |
+
+#### 深度 Code Review 发现并修复
+
+| 文件 | 问题 | 修复 |
+|------|------|------|
+| `cursor-scatter.ts` | 粒子被 `overflow: auto` 裁剪 | 改为 `position: fixed` + `document.body` |
+| `panel-canvas.ts` | `time += 0.008` 帧率依赖 | `time += 0.008 * deltaRatio()` |
+| `panel-canvas.ts` | I5 线程物理帧率依赖 | `Math.pow(0.998, dr)` + 位移乘 `dr` |
+| `panel-canvas.ts` | `scale` 不随 mode 更新 | 提取 `getScale()` + `update()` 调 `resize()` |
+| `progress.ts` | I3 空气阻力帧率依赖 | `Math.pow(DRAG, deltaRatio)` |
+
+### 关键设计决策
+
+1. **I1/I5 共享单 Canvas action**: `use:panelCanvas={{ mode }}` — 符合 MAX_CANVAS_FX=1 约束
+2. **I3 不使用 Physics2D**: 付费插件，改用 `gsap.ticker` 手动物理
+3. **帧率无关物理**: 所有阻力用 `Math.pow(drag, deltaRatio)`
+4. **I2 fixed 定位**: 避免 `.panel-content` overflow 裁剪
+5. **I4 纯 CSS**: `calc(var(--i))` 参数化 8 个粒子差异
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (I1-I5 粒子系统本次全部完成)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%**
+- Phase 5 性能优化: **100%**
+
+**所有 Phase 均已 100% 完成。重构计划 (zesty-wandering-acorn.md) 全部实施完毕。**
+
+---
+
+## 上一次会话 (2026-04-01, 第九次)
 
 ### 本次完成内容
 

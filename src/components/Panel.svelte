@@ -4,6 +4,8 @@
   import { gsap, Flip, Draggable, EASINGS, shouldAnimateFunctional, shouldAnimate } from '$animations/gsap-config';
   import { gmGetValue, gmSetValue } from '$utils/gm';
   import { parallax } from '$actions/parallax';
+  import { panelCanvas } from '$actions/panel-canvas';
+  import { cursorScatter } from '$actions/cursor-scatter';
   import Header from './Header.svelte';
   import SettingsPanel from './SettingsPanel.svelte';
   import PromptEditor from './PromptEditor.svelte';
@@ -243,12 +245,19 @@
   }
 </script>
 
-<div class="panel" bind:this={panelEl}>
+<div class="panel" bind:this={panelEl} use:panelCanvas={{ mode: 'aurora' }}>
+  <!-- I4: 星云漂移 CSS 粒子 -->
+  <div class="nebula-drift" aria-hidden="true">
+    {#each Array(8) as _, i}
+      <span class="nebula-particle" style="--i: {i}"></span>
+    {/each}
+  </div>
+
   <div bind:this={headerEl}>
     <Header onclose={doClose} bind:settingsOpen />
   </div>
 
-  <div class="panel-content" use:parallax={{ speed: 0.3, maxOffset: 40 }}>
+  <div class="panel-content" use:parallax={{ speed: 0.3, maxOffset: 40 }} use:cursorScatter>
     {#if settingsVisible}
       <div class="settings-wrapper" bind:this={settingsEl}>
         <SettingsPanel />
@@ -393,5 +402,41 @@
 
   .main-area {
     padding: 0 15px 15px;
+  }
+
+  /* I4: 星云漂移 — 8 个环境粒子缓慢漂浮 */
+  .nebula-drift {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    border-radius: inherit;
+    z-index: 0;
+  }
+
+  .nebula-particle {
+    position: absolute;
+    width: calc(3px + var(--i) * 0.5px);
+    height: calc(3px + var(--i) * 0.5px);
+    border-radius: 50%;
+    background: rgba(var(--ai-primary-rgb, 115, 100, 255), 0.12);
+    box-shadow: 0 0 6px rgba(var(--ai-primary-rgb, 115, 100, 255), 0.08);
+    left: calc(10% + var(--i) * 10%);
+    top: calc(15% + var(--i) * 8%);
+    animation: nebula-float calc(12s + var(--i) * 3s) ease-in-out calc(var(--i) * -2s) infinite alternate;
+    opacity: 0.4;
+  }
+
+  @keyframes nebula-float {
+    0% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(calc(8px - var(--i) * 2px), calc(-12px + var(--i) * 1.5px)) scale(1.1); }
+    66% { transform: translate(calc(-6px + var(--i) * 1px), calc(8px - var(--i) * 1px)) scale(0.9); }
+    100% { transform: translate(calc(4px - var(--i) * 0.5px), calc(-6px + var(--i) * 0.8px)) scale(1.05); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nebula-particle {
+      animation: none;
+    }
   }
 </style>
