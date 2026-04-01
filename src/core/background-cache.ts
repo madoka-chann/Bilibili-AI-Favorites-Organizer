@@ -65,14 +65,26 @@ async function scanAndCache(): Promise<void> {
   gmSetValue(CACHE_KEY, existing);
 }
 
+let intervalId: ReturnType<typeof setInterval> | null = null;
+
 export function setupBackgroundCache(): void {
+  // Prevent duplicate intervals if called multiple times
+  if (intervalId !== null) return;
+
   // Initial scan after a short delay to avoid blocking page load
   setTimeout(() => {
     scanAndCache().catch(() => {});
   }, 5000);
 
   // Periodic rescan
-  setInterval(() => {
+  intervalId = setInterval(() => {
     scanAndCache().catch(() => {});
   }, SCAN_INTERVAL);
+}
+
+export function stopBackgroundCache(): void {
+  if (intervalId !== null) {
+    clearInterval(intervalId);
+    intervalId = null;
+  }
 }

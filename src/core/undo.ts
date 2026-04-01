@@ -28,14 +28,14 @@ const UNDO_KEY = 'bfao_undoHistory';
 export function loadUndoHistory(): UndoRecord[] {
   try {
     const raw = gmGetValue(UNDO_KEY, null);
-    if (raw) {
-      const parsed = JSON.parse(raw as string);
+    if (typeof raw === 'string') {
+      const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) return parsed;
     }
     // 兼容旧版单条记录
     const oldRaw = gmGetValue('bfao_undoData', null);
-    if (oldRaw) {
-      const oldData = JSON.parse(oldRaw as string);
+    if (typeof oldRaw === 'string') {
+      const oldData = JSON.parse(oldRaw);
       if (oldData?.moves) return [oldData];
     }
     return [];

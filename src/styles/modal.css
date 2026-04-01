@@ -70,13 +70,6 @@
 }
 .bfao-btn-muted:hover { background: var(--ai-bg-tertiary); }
 
-/* Scrollable list container */
-.bfao-scroll-list {
-  max-height: 300px;
-  overflow-y: auto;
-  margin-bottom: 14px;
-}
-
 /* Selectable item (radio/checkbox list) */
 .bfao-selectable-item {
   display: flex;

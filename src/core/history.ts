@@ -14,7 +14,7 @@ const MAX_HISTORY = 20;
 export function loadHistory(): HistoryEntry[] {
   try {
     const raw = gmGetValue(HISTORY_KEY, '[]');
-    const parsed = JSON.parse(raw as string);
+    const parsed = JSON.parse(typeof raw === 'string' ? raw : '[]');
     return Array.isArray(parsed) ? parsed : [];
   } catch {
     return [];

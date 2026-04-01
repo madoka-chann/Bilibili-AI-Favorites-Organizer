@@ -65,20 +65,24 @@
       ]
     },
     "phase3_cssCleanup": {
-      "status": "not_started",
-      "summary": "22,072 行原始 CSS 仍存在; 组件样式已在 Svelte <style> 块中; 全局 CSS 有 variables.css + forms.css + modal.css"
+      "status": "completed",
+      "summary": "原始 22,072 行 CSS 已删除 (完全未被 Svelte 代码引用); 全局 CSS 精简至 310 行 (variables.css 129 + forms.css 92 + modal.css 89); 移除 --ai-shadow-sm 死变量 + .bfao-scroll-list 死类; 组件样式全部在 Svelte <style> 块中 (~1,163 行); 0 个 @keyframes 在全局 CSS, 5 个在组件 scoped styles",
+      "result": {
+        "before": "22,391 lines across 4 CSS files, 448 @keyframes, 217 easing variables",
+        "after": "310 lines in 3 global CSS files + ~1,163 lines in 21 scoped <style> blocks = ~1,473 lines total",
+        "deleted": "bilibili-favorites-ai-organizer.css (22,072 lines), --ai-shadow-sm (unused variable), .bfao-scroll-list (unused class)"
+      }
     },
     "phase4_codeQuality": {
       "status": "partially_done",
-      "summary": "TypeScript 类型定义完成; 模块化重构完成; 目录扁平化重构完成; Code Review 修复了多处代码异味",
+      "summary": "TypeScript 类型定义完成; 模块化重构完成; 目录扁平化重构完成; 多轮 Code Review 修复了代码异味和安全问题",
       "recentFixes": [
-        "移除 src/lib/ 嵌套层，api/core/stores/types/utils 平铺到 src/ 根目录",
-        "$lib/ 别名替换为 $api/$core/$stores/$types/$utils 具体别名 (143处)",
-        "Panel.svelte 合并重复的 gsap-config 导入",
-        "LiquidToggle.svelte 修复 CSS transition 与 GSAP 动画冲突",
-        "PreviewConfirm.svelte 修复 tilt+hoverScale 的 scale 属性冲突",
-        "Header.svelte J3 精简: 只取 --ai-bg 用于遮罩, 移除未使用的变量快照",
-        "Panel.svelte K3 添加视口范围钳制 (防止窗口缩小后面板越界)"
+        "ai-client.ts: URL 参数改用 URLSearchParams 防止注入 (fetchModelList Gemini 分页)",
+        "background-cache.ts: setInterval 添加去重保护 + stopBackgroundCache 清理函数",
+        "undo.ts: JSON.parse 前添加 typeof 验证替代 unsafe `as string` 断言",
+        "history.ts: JSON.parse 前添加 typeof 验证替代 unsafe `as string` 断言",
+        "variables.css: 移除未使用的 --ai-shadow-sm 变量",
+        "modal.css: 移除未使用的 .bfao-scroll-list 类"
       ]
     },
     "phase5_performance": {
@@ -90,9 +94,7 @@
     "builds": true,
     "output": "dist/bilibili-ai-favorites-organizer.user.js (412 kB, GSAP ~94 kB CDN)",
     "preExistingIssues": [
-      "1 TS error: settings.ts:14 type cast",
-      "1 TS error: SettingsGroup.svelte:48 callback type",
-      "12 a11y warnings: ProviderConfig + SettingsPanel label associations"
+      "12 a11y warnings: ProviderConfig + SettingsPanel label associations + LiquidToggle aria-label"
     ]
   }
 }

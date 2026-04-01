@@ -130,7 +130,9 @@ export async function fetchModelList(settings: Settings): Promise<string[]> {
     const allModels: string[] = [];
     let pageToken = '';
     do {
-      const pageUrl = `${config.baseUrl}/models?key=${settings.apiKey}&pageSize=100${pageToken ? '&pageToken=' + pageToken : ''}`;
+      const params = new URLSearchParams({ key: settings.apiKey, pageSize: '100' });
+      if (pageToken) params.set('pageToken', pageToken);
+      const pageUrl = `${config.baseUrl}/models?${params}`;
       const resp = await gmFetch(pageUrl);
       const json: { models?: GeminiModelEntry[]; nextPageToken?: string } =
         JSON.parse(resp.responseText);
