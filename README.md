@@ -18,8 +18,6 @@ https://github.com/user-attachments/assets/f23b1fa1-7da2-4f5e-b2c1-ab46e784517c
 ### 安装&更新
 
 
-<img width="3782" height="1755" alt="f5ae59880d9e0062191a571129aa2305" src="https://github.com/user-attachments/assets/bc8708a0-e6b2-4ca8-a262-f251c44d8c88" />
-
 v1.0版本下方安装，新版有问题就不放了。
 
  **[Github源](https://github.com/madoka-chann/backup-bili-ai/raw/refs/heads/main/bilibili-favorites-ai-organizer.user.js)**
