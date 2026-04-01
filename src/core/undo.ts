@@ -24,19 +24,26 @@ export interface UndoRecord {
 
 const UNDO_KEY = 'bfao_undoHistory';
 
+/** 校验对象是否符合 UndoRecord 基本结构 */
+function isValidUndoRecord(val: unknown): val is UndoRecord {
+  if (typeof val !== 'object' || val === null) return false;
+  const obj = val as Record<string, unknown>;
+  return Array.isArray(obj.moves) && obj.moves.length > 0;
+}
+
 /** 读取撤销历史栈 */
 export function loadUndoHistory(): UndoRecord[] {
   try {
     const raw = gmGetValue(UNDO_KEY, null);
     if (typeof raw === 'string') {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) return parsed;
+      if (Array.isArray(parsed)) return parsed.filter(isValidUndoRecord);
     }
     // 兼容旧版单条记录
     const oldRaw = gmGetValue('bfao_undoData', null);
     if (typeof oldRaw === 'string') {
       const oldData = JSON.parse(oldRaw);
-      if (oldData?.moves) return [oldData];
+      if (isValidUndoRecord(oldData)) return [oldData];
     }
     return [];
   } catch {

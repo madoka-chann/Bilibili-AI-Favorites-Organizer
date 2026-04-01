@@ -4,10 +4,28 @@
   import Toast from '$components/Toast.svelte';
   import { panelOpen } from '$stores/state';
   import { isDark, accentColor } from '$stores/theme';
-  import '$animations/gsap-config';
+  import { Flip, shouldAnimate } from '$animations/gsap-config';
   import './styles/variables.css';
   import './styles/forms.css';
   import './styles/modal.css';
+
+  let flipState: Flip.FlipState | null = null;
+
+  function openPanel() {
+    // A4: Capture FloatButton position for FLIP morph
+    if (shouldAnimate()) {
+      const btn = document.querySelector('.bfao-app .float-btn') as HTMLElement | null;
+      if (btn && Flip) {
+        flipState = Flip.getState(btn);
+      }
+    }
+    panelOpen.set(true);
+  }
+
+  function closePanel() {
+    flipState = null;
+    panelOpen.set(false);
+  }
 </script>
 
 <div
@@ -15,10 +33,10 @@
   data-theme={$isDark ? 'dark' : 'light'}
   style:--ai-accent={$accentColor}
 >
-  <FloatButton onclick={() => panelOpen.set(true)} visible={!$panelOpen} />
+  <FloatButton onclick={openPanel} visible={!$panelOpen} />
 
   {#if $panelOpen}
-    <Panel onclose={() => panelOpen.set(false)} />
+    <Panel onclose={closePanel} {flipState} />
   {/if}
 
   <Toast />

@@ -166,7 +166,11 @@ async function classifyWithAI(
     aiPromises.push(p);
   }
 
-  await Promise.all(aiPromises);
+  try {
+    await Promise.all(aiPromises);
+  } catch (err: unknown) {
+    logs.add(`AI 分类出现意外错误: ${getErrorMessage(err)}`, 'error');
+  }
   return allCategories;
 }
 

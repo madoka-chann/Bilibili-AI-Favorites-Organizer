@@ -1,8 +1,9 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { tick } from 'svelte';
-  import { gsap, Draggable, EASINGS, shouldAnimateFunctional, shouldAnimate } from '$animations/gsap-config';
+  import { gsap, Flip, Draggable, EASINGS, shouldAnimateFunctional, shouldAnimate } from '$animations/gsap-config';
   import { gmGetValue, gmSetValue } from '$utils/gm';
+  import { parallax } from '$actions/parallax';
   import Header from './Header.svelte';
   import SettingsPanel from './SettingsPanel.svelte';
   import PromptEditor from './PromptEditor.svelte';
@@ -33,6 +34,7 @@
   import type { FavFolder } from '$types/index';
 
   export let onclose: (() => void) | undefined = undefined;
+  export let flipState: Flip.FlipState | null = null;
 
   let panelEl: HTMLDivElement;
   let headerEl: HTMLElement;
@@ -62,20 +64,38 @@
   let statsTotalVideos = 0;
   let statsDeadCount = 0;
 
-  onMount(() => {
-    // K3: 恢复保存的面板位置 (钳制到视口范围内)
+  /** K3: 恢复保存的面板位置，钳制到视口范围内 */
+  function restoreSavedPosition() {
     const savedPos = gmGetValue('bfao_panelPos', null as { top: number; left: number } | null);
     if (savedPos && panelEl) {
       const rect = panelEl.getBoundingClientRect();
-      const clampedTop = Math.max(0, Math.min(savedPos.top, window.innerHeight - rect.height));
-      const clampedLeft = Math.max(0, Math.min(savedPos.left, window.innerWidth - rect.width));
-      panelEl.style.top = clampedTop + 'px';
-      panelEl.style.left = clampedLeft + 'px';
+      panelEl.style.top = Math.max(0, Math.min(savedPos.top, window.innerHeight - rect.height)) + 'px';
+      panelEl.style.left = Math.max(0, Math.min(savedPos.left, window.innerWidth - rect.width)) + 'px';
       panelEl.style.bottom = 'auto';
     }
+  }
+
+  onMount(() => {
+    restoreSavedPosition();
 
     ctx = gsap.context(() => {
-      if (shouldAnimateFunctional()) {
+      if (flipState && shouldAnimate() && Flip) {
+        // A4: FLIP 变形 — 从 FloatButton 位置形变为面板
+        gsap.set(panelEl, { opacity: 1 });
+        Flip.from(flipState, {
+          targets: panelEl,
+          duration: 0.55,
+          ease: EASINGS.velvetSpring,
+          scale: true,
+          absolute: true,
+          prune: true,
+          onComplete: () => {
+            gsap.set(panelEl, { clearProps: 'all' });
+            restoreSavedPosition();
+          },
+        });
+      } else if (shouldAnimateFunctional()) {
+        // B1: 丝绒绽放 (fallback when no Flip state)
         gsap.fromTo(panelEl,
           { y: 48, scale: 0.86, rotation: -0.35, opacity: 0, filter: 'blur(14px) brightness(1.06) saturate(0.72)' },
           { y: 0, scale: 1, rotation: 0, opacity: 1, filter: 'blur(0px) brightness(1) saturate(1)', duration: 0.5, ease: EASINGS.velvetSpring }
@@ -228,7 +248,7 @@
     <Header onclose={doClose} bind:settingsOpen />
   </div>
 
-  <div class="panel-content">
+  <div class="panel-content" use:parallax={{ speed: 0.3, maxOffset: 40 }}>
     {#if settingsVisible}
       <div class="settings-wrapper" bind:this={settingsEl}>
         <SettingsPanel />
@@ -337,7 +357,23 @@
     backdrop-filter: blur(20px) saturate(1.2);
   }
 
+  /* B5: 深度视差 — 面板背景层随滚动偏移 */
+  .panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(ellipse at 30% 20%, rgba(var(--ai-primary-rgb, 115, 100, 255), 0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 80%, rgba(155, 89, 246, 0.04) 0%, transparent 50%);
+    transform: translateY(var(--parallax-y, 0px));
+    pointer-events: none;
+    z-index: 0;
+    will-change: transform;
+  }
+
   .panel-content {
+    position: relative;
+    z-index: 1;
     flex: 1 1 0%;
     min-height: 0;
     max-height: 60vh;
