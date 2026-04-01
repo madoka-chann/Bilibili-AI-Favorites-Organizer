@@ -5,7 +5,7 @@
 
 import { get } from 'svelte/store';
 import type { Settings, FavFolder } from '$types/index';
-import { isRunning, logs } from '$stores/state';
+import { logs } from '$stores/state';
 import { settings } from '$stores/settings';
 import { getBiliData, getAllFoldersWithIds } from '$api/bilibili';
 import { startProcess } from '$core/process';
@@ -71,7 +71,6 @@ export async function handleStart(callbacks: StartProcessCallbacks): Promise<voi
     await startProcess(s, biliData);
   } catch (e: unknown) {
     logs.add(`整理流程出错: ${getErrorMessage(e)}`, 'error');
-    isRunning.set(false);
   }
 }
 

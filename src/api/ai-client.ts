@@ -28,11 +28,6 @@ export function callAISingle(
   const { url, headers, body } = builder(prompt, settings);
 
   return new Promise((resolve, reject) => {
-    const timeoutId = setTimeout(
-      () => reject({ retryable: true, message: 'AI 请求超时 (120秒)' }),
-      AI_TIMEOUT_MS
-    );
-
     gmXmlHttpRequest({
       method: 'POST',
       url,
@@ -40,8 +35,6 @@ export function callAISingle(
       data: body,
       timeout: AI_TIMEOUT_MS,
       onload(response) {
-        clearTimeout(timeoutId);
-
         // 可重试的状态码
         if ([429, 503, 529].includes(response.status)) {
           reject({
@@ -81,7 +74,6 @@ export function callAISingle(
         }
       },
       onerror(resp) {
-        clearTimeout(timeoutId);
         const detail =
           resp && typeof resp === 'object' && 'error' in resp ? ` (${(resp as Record<string, unknown>).error})` : '';
         reject({
@@ -90,7 +82,6 @@ export function callAISingle(
         });
       },
       ontimeout() {
-        clearTimeout(timeoutId);
         reject({ retryable: true, message: 'AI 请求超时' });
       },
     });
@@ -135,7 +126,10 @@ export async function fetchModelList(settings: Settings): Promise<string[]> {
   if (fmt === 'gemini') {
     const allModels: string[] = [];
     let pageToken = '';
+    const MAX_PAGES = 20;
+    let page = 0;
     do {
+      if (++page > MAX_PAGES) break;
       const params = new URLSearchParams({ key: settings.apiKey, pageSize: '100' });
       if (pageToken) params.set('pageToken', pageToken);
       const pageUrl = `${config.baseUrl}/models?${params}`;

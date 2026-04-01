@@ -103,8 +103,12 @@ export async function undoOperation(
         const move = undo.moves[i];
         logs.add(`[${i + 1}/${undo.moves.length}] 移回 ${move.count} 个视频到原收藏夹...`, 'info');
 
-        await moveVideos(move.toMediaId, move.fromMediaId, move.resources, biliData);
-        restored += move.count;
+        const ok = await moveVideos(move.toMediaId, move.fromMediaId, move.resources, biliData);
+        if (ok) {
+          restored += move.count;
+        } else {
+          logs.add(`第 ${i + 1} 批移回失败，跳过`, 'warning');
+        }
         await humanDelay(writeDelay);
       }
 

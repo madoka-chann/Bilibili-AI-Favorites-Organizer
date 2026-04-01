@@ -1,6 +1,54 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-01, 第十三次)
+## 最近一次会话 (2026-04-01, 第十四次)
+
+### 本次完成内容
+
+**深度代码审计 — 架构级 Code Review + 7 处缺陷修复**
+
+#### 发现并修复的问题
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `ai-client.ts` | `setTimeout` 与 `gmXmlHttpRequest.timeout` 双超时竞争 — 可导致 Promise 被拒两次 | HIGH | 移除冗余 `setTimeout`，仅保留 `gmXmlHttpRequest` 内置的 `ontimeout` 回调 |
+| `ai-client.ts` | `fetchModelList` Gemini 分页无上限 — API 返回重复 pageToken 时死循环 | MEDIUM | 添加 `MAX_PAGES = 20` 安全阈值 |
+| `undo.ts` | `moveVideos` 返回值被忽略 — 移动失败时 `restored` 仍计数 | HIGH | 检查 `ok` 返回值，失败时输出警告日志并跳过计数 |
+| `bilibili-http.ts` | `postBiliApi` 重试循环中 `fetch` 无 try-catch — 网络错误直接抛出不重试 | HIGH | 包裹 try-catch，网络异常时指数退避重试 |
+| `progress.ts` | `resetProgress` 用正则剥离标题前缀 — 其他扩展修改标题时会损坏 | MEDIUM | 改为保存/恢复原始 `document.title` |
+| `process.ts` | 日志显示 `settings.aiConcurrency` 原始值而非 `Math.min(10, ...)` 约束后的值 | LOW | 改为输出实际使用的 `concurrency` 变量 |
+| `panel-actions.ts` | `handleStart` catch 块调用 `isRunning.set(false)` 与 `startProcess.finally` 重复 | LOW | 移除冗余的 `isRunning.set(false)` 及未使用的 `isRunning` 导入 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `gm.ts` | `gmCache` Map 无大小限制 | userscript 单页生命周期内缓存键有限 (~30 个设置键)，不会 OOM |
+| `ai-providers.ts` | HTTP 自定义 URL 仅警告不阻止 | 用户自托管 Ollama 等可能使用 HTTP，阻止会破坏功能 |
+| `json-extract.ts` | 尾逗号修复是唯一的 JSON 修复策略 | AI 输出中尾逗号是最常见的格式错误，其他错误由上层 catch 处理 |
+| `running-state.ts` | `cancelRequested` 在 finally 中重置 | 符合一次性操作语义，取消标志在操作结束后应重置 |
+| `PreviewConfirm.svelte` | 虚拟滚动硬编码行高 38px | CSS 中行高受控且一致，动态测量会增加不必要的复杂度 |
+
+### 关键设计决策
+
+1. **移除 setTimeout 双超时**: `gmXmlHttpRequest` 的 `ontimeout` 回调已足够可靠。双超时导致在边界条件下 Promise 状态异常 (虽然 JS Promise 语义确保只执行一次，但 `clearTimeout` 后回调函数仍可能执行)
+2. **postBiliApi 重试一致性**: `fetchBiliJson` (GET) 已有完善的 try-catch 重试；`postBiliApi` (POST) 之前缺失，导致网络闪断时写操作不重试
+3. **标题保存/恢复**: 比正则匹配更健壮，且兼容 B 站自身的标题变化和其他扩展
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%**
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 7 处缺陷修复 + 深度架构审计)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 errors。代码质量经 14 次迭代持续强化。**
+
+---
+
+## 上一次会话 (2026-04-01, 第十三次)
 
 ### 本次完成内容
 

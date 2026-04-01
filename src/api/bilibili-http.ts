@@ -46,12 +46,27 @@ export async function postBiliApi<T = unknown>(
   const { label, maxRetries = 3, baseWaitMs = 3000 } = opts;
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    const res: BiliApiResponse<T> = await fetch(url, {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: formData,
-    }).then((r) => r.json());
+    let res: BiliApiResponse<T>;
+    try {
+      const resp = await fetch(url, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: formData,
+      });
+      res = await resp.json();
+    } catch (e: unknown) {
+      if (attempt < maxRetries) {
+        const waitMs = backoffMs(attempt, baseWaitMs);
+        logs.add(
+          `${label}网络异常，${(waitMs / 1000).toFixed(0)}s 后重试 (${attempt}/${maxRetries})...`,
+          'warning',
+        );
+        await sleep(waitMs);
+        continue;
+      }
+      throw e;
+    }
 
     if (res.code === 0) return res;
 
@@ -68,7 +83,7 @@ export async function postBiliApi<T = unknown>(
     return res;
   }
 
-  throw new Error(`${label}重试 ${maxRetries} 次仍被限流`);
+  throw new Error(`${label}重试 ${maxRetries} 次仍失败`);
 }
 
 // ================= GET JSON 请求 =================

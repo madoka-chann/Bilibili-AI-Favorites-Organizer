@@ -118,7 +118,7 @@ async function classifyWithAI(
   const totalAiCalls = chunks.length;
   let aiCompleted = 0;
 
-  logs.add(`分为 ${totalAiCalls} 批次，并发 ${settings.aiConcurrency}`, 'info');
+  logs.add(`分为 ${totalAiCalls} 批次，并发 ${concurrency}`, 'info');
 
   const aiPromises: Promise<void>[] = [];
 
