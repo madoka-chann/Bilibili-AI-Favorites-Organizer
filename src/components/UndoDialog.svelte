@@ -3,12 +3,16 @@
   import { Undo2 } from 'lucide-svelte';
   import type { UndoRecord } from '$core/undo';
 
-  export let history: UndoRecord[];
-  export let onundo: ((index: number) => void) | undefined = undefined;
-  export let onclose: (() => void) | undefined = undefined;
-  export let processing = false;
+  interface Props {
+    history: UndoRecord[];
+    onundo?: (index: number) => void;
+    onclose?: () => void;
+    processing?: boolean;
+  }
 
-  let selectedIndex = 0;
+  let { history, onundo, onclose, processing = false }: Props = $props();
+
+  let selectedIndex = $state(0);
 </script>
 
 <Modal
@@ -18,7 +22,7 @@
   onclose={() => onclose?.()}
   onconfirm={() => onundo?.(selectedIndex)}
 >
-  <svelte:fragment slot="icon"><Undo2 size={18} /></svelte:fragment>
+  {#snippet icon()}<Undo2 size={18} />{/snippet}
 
   <div class="bfao-modal-body">
     {#if history.length === 0}

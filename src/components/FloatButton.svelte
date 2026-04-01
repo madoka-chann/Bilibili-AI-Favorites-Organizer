@@ -6,14 +6,18 @@
   import { magnetic } from '$actions/magnetic';
   import { gmGetValue, gmSetValue } from '$utils/gm';
 
-  export let visible = true;
-  export let onclick: (() => void) | undefined = undefined;
+  interface Props {
+    visible?: boolean;
+    onclick?: () => void;
+  }
 
-  let btnEl: HTMLButtonElement;
-  let orbitsContainer: HTMLDivElement;
+  let { visible = true, onclick }: Props = $props();
+
+  let btnEl = $state<HTMLButtonElement>(undefined!);
+  let orbitsContainer = $state<HTMLDivElement>(undefined!);
   let ctx: gsap.Context;
   let dragged = false;
-  let magneticOpts = { radius: 120, strength: 0.3, enabled: true };
+  let magneticOpts = $state({ radius: 120, strength: 0.3, enabled: true });
 
   onMount(() => {
     ctx = gsap.context(() => {
@@ -172,9 +176,9 @@
   }
 </script>
 
-{#if visible}
   <button
     class="float-btn"
+    class:hidden={!visible}
     bind:this={btnEl}
     onclick={handleClick}
     use:magnetic={magneticOpts}
@@ -183,7 +187,6 @@
     <Bot size={24} />
     <div class="orbits" bind:this={orbitsContainer}></div>
   </button>
-{/if}
 
 <style>
   .float-btn {
@@ -205,6 +208,10 @@
     box-shadow: 0 0 14px rgba(var(--ai-primary-rgb), 0.18), 0 0 28px rgba(155, 89, 246, 0.08);
     will-change: transform, box-shadow, border-radius;
     user-select: none;
+  }
+
+  .float-btn.hidden {
+    display: none;
   }
 
   .orbits {

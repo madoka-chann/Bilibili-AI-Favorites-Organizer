@@ -10,17 +10,24 @@
 
   const magneticSmall = { radius: 40, strength: 0.25 };
 
-  export let onstart: (() => void) | undefined = undefined;
-  export let onstop: (() => void) | undefined = undefined;
-  export let oncleandead: (() => void) | undefined = undefined;
-  export let onfinddups: (() => void) | undefined = undefined;
-  export let onundo: (() => void) | undefined = undefined;
-  export let onbackup: (() => void) | undefined = undefined;
-  export let onstats: (() => void) | undefined = undefined;
-  export let onhealth: (() => void) | undefined = undefined;
-  export let onexportlogs: (() => void) | undefined = undefined;
-  export let onhelp: (() => void) | undefined = undefined;
-  export let onhistory: (() => void) | undefined = undefined;
+  interface Props {
+    onstart?: () => void;
+    onstop?: () => void;
+    oncleandead?: () => void;
+    onfinddups?: () => void;
+    onundo?: () => void;
+    onbackup?: () => void;
+    onstats?: () => void;
+    onhealth?: () => void;
+    onexportlogs?: () => void;
+    onhelp?: () => void;
+    onhistory?: () => void;
+  }
+
+  let {
+    onstart, onstop, oncleandead, onfinddups, onundo,
+    onbackup, onstats, onhealth, onexportlogs, onhelp, onhistory,
+  }: Props = $props();
 
   function handleStartStop() {
     if ($isRunning) {

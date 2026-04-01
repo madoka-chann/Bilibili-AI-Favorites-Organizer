@@ -9,13 +9,13 @@
   import { focusGlow } from '$animations/micro';
   import type { AIProviderId } from '$types/index';
 
-  let showApiKey = false;
-  let modelLoading = false;
-  let modelList: string[] = [];
-  let showModelDropdown = false;
+  let showApiKey = $state(false);
+  let modelLoading = $state(false);
+  let modelList = $state<string[]>([]);
+  let showModelDropdown = $state(false);
 
-  $: providerConfig = AI_PROVIDERS[$settings.provider];
-  $: isCustomProvider = providerConfig?.isCustom ?? false;
+  let providerConfig = $derived(AI_PROVIDERS[$settings.provider]);
+  let isCustomProvider = $derived(providerConfig?.isCustom ?? false);
 
   function handleProviderChange(e: Event) {
     const value = (e.target as HTMLSelectElement).value as AIProviderId;

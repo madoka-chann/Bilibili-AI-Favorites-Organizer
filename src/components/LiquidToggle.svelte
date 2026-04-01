@@ -2,12 +2,16 @@
   import { onMount } from 'svelte';
   import { gsap, EASINGS, shouldAnimate } from '$animations/gsap-config';
 
-  export let checked = false;
-  export let label = '';
-  export let onchange: ((checked: boolean) => void) | undefined = undefined;
+  interface Props {
+    checked?: boolean;
+    label?: string;
+    onchange?: (checked: boolean) => void;
+  }
 
-  let thumbEl: HTMLElement;
-  let trackEl: HTMLElement;
+  let { checked = false, label = '', onchange }: Props = $props();
+
+  let thumbEl = $state<HTMLElement>(undefined!);
+  let trackEl = $state<HTMLElement>(undefined!);
   let mounted = false;
 
   onMount(() => {
@@ -18,8 +22,8 @@
   });
 
   function toggle() {
-    checked = !checked;
-    onchange?.(checked);
+    const newChecked = !checked;
+    onchange?.(newChecked);
 
     if (!mounted || !shouldAnimate() || !thumbEl || !trackEl) return;
 
@@ -32,7 +36,7 @@
       ease: 'power2.in',
     });
     tl.to(thumbEl, {
-      x: checked ? 18 : 0,
+      x: newChecked ? 18 : 0,
       scaleX: 1,
       scaleY: 1,
       duration: 0.28,

@@ -5,7 +5,7 @@
   import { debounce } from '$utils/timing';
   import { focusGlow } from '$animations/micro';
 
-  let promptValue = $settings.lastPrompt;
+  let promptValue = $state($settings.lastPrompt);
 
   // 1 秒防抖保存
   const savePrompt = debounce((value: string) => {

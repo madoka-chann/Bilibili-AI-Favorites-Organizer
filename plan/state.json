@@ -1,7 +1,7 @@
 {
   "project": "Bilibili AI Favorites Organizer - Svelte Refactoring",
   "plan": "zesty-wandering-acorn.md",
-  "lastUpdated": "2026-04-01-session12",
+  "lastUpdated": "2026-04-01-session13",
   "phases": {
     "phase0_buildSystem": {
       "status": "completed",
@@ -19,41 +19,11 @@
         "Toast.svelte", "FolderSelector.svelte", "HistoryTimeline.svelte",
         "DeadVideosResult.svelte", "DuplicatesResult.svelte", "UndoDialog.svelte",
         "StatsDialog.svelte", "LiquidToggle.svelte"
-      ],
-      "srcModules": {
-        "api": ["ai-client.ts", "ai-providers.ts", "ai-prompt.ts", "bilibili.ts", "bilibili-http.ts", "bilibili-folders.ts", "bilibili-videos.ts", "bilibili-auth.ts", "bilibili-scanner.ts"],
-        "core": ["process.ts", "dead-videos.ts", "duplicates.ts", "backup.ts", "undo.ts", "history.ts", "panel-actions.ts", "export-logs.ts", "background-cache.ts"],
-        "stores": ["settings.ts", "state.ts", "theme.ts", "modal-bridge.ts"],
-        "types": ["index.ts", "ai.ts", "settings.ts", "video.ts"],
-        "utils": ["constants/", "dom.ts", "timing.ts", "gm.ts", "errors.ts", "collections.ts", "download.ts", "format.ts", "json-extract.ts", "progress.ts", "running-state.ts"]
-      }
+      ]
     },
     "phase2_animations": {
       "status": "completed",
-      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; 高级视觉效果完成; 面板拖拽+主题过渡已实现; A4 FLIP 变形 + B5 深度视差已完成; A5 星座轨道 + C1 全局磁性按钮已完成; I1-I5 粒子系统全部完成",
-      "completed": [
-        "gsap-config.ts: 插件注册 + 10 品牌缓动 + 三级减弱策略",
-        "src/actions/magnetic.ts: A1 磁性光标吸引 (use:magnetic)",
-        "src/actions/tilt.ts: E3 3D 倾斜悬浮 (use:tilt)",
-        "src/actions/glow-track.ts: C3 径向光追踪 (use:glowTrack)",
-        "src/actions/ripple.ts: 点击涟漪 (use:ripple)",
-        "src/actions/parallax.ts: B5 深度视差 (use:parallax)",
-        "src/actions/panel-canvas.ts: I1 极光画布 + I5 丝线网络 (use:panelCanvas)",
-        "src/actions/cursor-scatter.ts: I2 光标散射 (use:cursorScatter)",
-        "src/animations/micro.ts: C2 pressEffect + C4 focusGlow + C6 checkBounce + C7 staggerReveal + F4 contentStagger + E1 listStaggerReveal + E4 hoverScale",
-        "src/animations/progress.ts: D2 进度轨迹粒子 + D3 阶段切换 + D4/I3 物理模拟庆祝纸屑 + D5 数字翻滚弹跳",
-        "src/animations/text.ts: H1 文字解码 + H2 数字翻滚",
-        "FloatButton: A1-A6 + K1",
-        "Panel: B1-B5 + K2-K3 + I1 极光画布 + I2 光标散射 + I4 星云漂移",
-        "App.svelte: A4 FLIP 变形",
-        "Modal: F1-F4, Toast: G1-G5, Header: J1-J3",
-        "SettingsGroup: B4, SettingsPanel: C5, ActionButtons: C1-C3",
-        "PreviewConfirm: E1-E4, ProgressBar: D1-D6",
-        "LogArea: H1, StatsDialog: H2",
-        "FloatButton: A5 星座轨道",
-        "C1 全局磁性按钮: ActionButtons + FolderSelector + HistoryTimeline + DeadVideosResult + DuplicatesResult"
-      ],
-      "remaining": []
+      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; I1-I5 粒子系统全部完成"
     },
     "phase3_cssCleanup": {
       "status": "completed",
@@ -61,16 +31,30 @@
     },
     "phase4_codeQuality": {
       "status": "completed",
-      "summary": "TypeScript strict 全开 (含 noUnusedLocals/noUnusedParameters); 模块化重构完成; 目录扁平化; 多轮 Code Review; a11y + SSRF 防护; as any 类型断言清零; 错误处理一致性强化; @connect * 保留并添加注释说明 (自定义端点需要)"
+      "summary": "TypeScript strict 全开; 模块化重构完成; 多轮 Code Review; as any 类型断言清零; 错误处理一致性强化"
     },
     "phase5_performance": {
       "status": "completed",
-      "summary": "GM_getValue 内存缓存层; AbortController 事件管理; PreviewConfirm videoMap memoization + 虚拟滚动 (>40项); theme.ts matchMedia 集中清理 + App.svelte onDestroy 调用; 日志自动裁剪 (MAX_LOG_ENTRIES=500); Toast timeout 追踪清理; AI 并发上限约束 (1-10); Canvas IntersectionObserver 可见性暂停"
+      "summary": "GM_getValue 内存缓存层; AbortController 事件管理; PreviewConfirm 虚拟滚动; Canvas 可见性暂停; 日志裁剪; Toast 清理"
+    },
+    "phase6_svelte5Runes": {
+      "status": "completed",
+      "summary": "18/21 组件迁移到 Svelte 5 Runes; export let → $props(); $: → $derived/$effect; 本地状态 → $state(); <slot> → {#snippet}/{@render}; bind:this → $state; svelte:component → 动态组件",
+      "components": {
+        "migrated": [
+          "FloatButton", "Panel", "Header", "SettingsGroup", "ProviderConfig",
+          "PromptEditor", "LogArea", "ProgressBar", "ActionButtons", "PreviewConfirm",
+          "Modal", "FolderSelector", "HistoryTimeline", "DeadVideosResult",
+          "DuplicatesResult", "UndoDialog", "StatsDialog", "LiquidToggle"
+        ],
+        "legacyMode": ["Toast (export API requires legacy mode)", "App (no props/state)", "SettingsPanel (composition only)"]
+      }
     }
   },
   "buildStatus": {
     "builds": true,
-    "output": "dist/bilibili-ai-favorites-organizer.user.js (441 kB, GSAP ~94 kB CDN)",
+    "output": "dist/bilibili-ai-favorites-organizer.user.js (433 kB, GSAP ~94 kB CDN)",
+    "svelteCheck": "0 errors, 1 warning (intentional defaultOpen capture)",
     "preExistingIssues": []
   }
 }

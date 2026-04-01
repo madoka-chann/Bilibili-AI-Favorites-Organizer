@@ -3,17 +3,19 @@
   import { onMount, tick } from 'svelte';
   import { textDecode } from '$animations/text';
 
-  let logEl: HTMLDivElement;
+  let logEl = $state<HTMLDivElement>(undefined!);
 
   // 跟踪已解码的日志 ID，避免重复动画
   let decodedIds = new Set<number>();
 
   // 自动滚动到底部
-  $: if ($logs.length && logEl) {
-    tick().then(() => {
-      logEl.scrollTop = logEl.scrollHeight;
-    });
-  }
+  $effect(() => {
+    if ($logs.length && logEl) {
+      tick().then(() => {
+        logEl.scrollTop = logEl.scrollHeight;
+      });
+    }
+  });
 
   /** H1: 日志条目文字解码效果 */
   function decodeEntry(node: HTMLElement) {

@@ -4,18 +4,22 @@
   import type { FavFolder } from '$types/index';
   import { numberRoll } from '$animations/text';
 
-  export let folders: FavFolder[];
-  export let totalVideos: number;
-  export let deadCount: number;
-  export let mode: 'stats' | 'health' = 'stats';
-  export let onclose: (() => void) | undefined = undefined;
+  interface Props {
+    folders: FavFolder[];
+    totalVideos: number;
+    deadCount: number;
+    mode?: 'stats' | 'health';
+    onclose?: () => void;
+  }
 
-  $: healthScore = totalVideos > 0
+  let { folders, totalVideos, deadCount, mode = 'stats', onclose }: Props = $props();
+
+  let healthScore = $derived(totalVideos > 0
     ? Math.max(0, Math.round(100 - (deadCount / totalVideos) * 100))
-    : 100;
+    : 100);
 
-  $: healthColor = healthScore >= 80 ? 'var(--ai-success)' : healthScore >= 60 ? 'var(--ai-warning)' : 'var(--ai-error)';
-  $: deadRate = totalVideos > 0 ? ((deadCount / totalVideos) * 100).toFixed(1) : '0';
+  let healthColor = $derived(healthScore >= 80 ? 'var(--ai-success)' : healthScore >= 60 ? 'var(--ai-warning)' : 'var(--ai-error)');
+  let deadRate = $derived(totalVideos > 0 ? ((deadCount / totalVideos) * 100).toFixed(1) : '0');
 
   /** H2: 数字翻滚 action */
   function rollNumber(node: HTMLElement, value: number) {
@@ -38,13 +42,13 @@
   onclose={() => onclose?.()}
   onconfirm={() => onclose?.()}
 >
-  <svelte:fragment slot="icon">
+  {#snippet icon()}
     {#if mode === 'health'}
       <Heart size={18} />
     {:else}
       <BarChart3 size={18} />
     {/if}
-  </svelte:fragment>
+  {/snippet}
 
   <div class="bfao-modal-body">
     {#if mode === 'health'}

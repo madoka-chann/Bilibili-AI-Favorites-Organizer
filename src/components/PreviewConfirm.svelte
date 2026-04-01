@@ -7,27 +7,26 @@
   import { listStaggerReveal, hoverScale } from '$animations/micro';
   import type { CategoryResult, VideoResource } from '$types/index';
 
-  export let categories: CategoryResult = {};
-  export let videos: VideoResource[] = [];
-  export let onconfirm: ((data: CategoryResult) => void) | undefined = undefined;
-  export let onclose: (() => void) | undefined = undefined;
-
-  // Build video lookup map (memoized — only rebuild when videos array actually changes)
-  let _prevVideos: VideoResource[] = [];
-  let videoMap = new Map<number, VideoResource>();
-  $: if (videos !== _prevVideos) {
-    _prevVideos = videos;
-    videoMap = new Map(videos.map(v => [v.id, v]));
+  interface Props {
+    categories?: CategoryResult;
+    videos?: VideoResource[];
+    onconfirm?: (data: CategoryResult) => void;
+    onclose?: () => void;
   }
 
-  // Sorted entries by video count descending
-  $: entries = Object.entries(categories).sort((a, b) => b[1].length - a[1].length);
+  let { categories = {}, videos = [], onconfirm, onclose }: Props = $props();
 
-  $: totalVideos = entries.reduce((sum, [, vids]) => sum + vids.length, 0);
+  // Build video lookup map
+  let videoMap = $derived(new Map(videos.map(v => [v.id, v])));
+
+  // Sorted entries by video count descending
+  let entries = $derived(Object.entries(categories).sort((a, b) => b[1].length - a[1].length));
+
+  let totalVideos = $derived(entries.reduce((sum, [, vids]) => sum + vids.length, 0));
 
   // Track expanded categories
-  let expanded = new Set<string>();
-  let categoryListEl: HTMLElement;
+  let expanded = $state(new Set<string>());
+  let categoryListEl = $state<HTMLElement>(undefined!);
 
   // Virtual scrolling constants
   const ITEM_H = 34;
@@ -38,12 +37,11 @@
   const OVERSCAN = 4;
 
   // Per-category scroll tracking for virtual scrolling
-  let scrollTops: Record<string, number> = {};
+  let scrollTops = $state<Record<string, number>>({});
 
   function onVirtualScroll(name: string, e: Event) {
     const el = e.currentTarget as HTMLElement;
     scrollTops[name] = el.scrollTop;
-    scrollTops = scrollTops; // trigger reactivity
   }
 
   function getVisibleRange(name: string, total: number): { start: number; end: number } {
@@ -66,7 +64,7 @@
     } else {
       expanded.add(name);
     }
-    expanded = expanded;
+    expanded = new Set(expanded);
 
     await tick();
 
@@ -101,7 +99,7 @@
   onclose={() => onclose?.()}
   onconfirm={() => onconfirm?.(categories)}
 >
-  <svelte:fragment slot="icon"><Eye size={18} /></svelte:fragment>
+  {#snippet icon()}<Eye size={18} />{/snippet}
 
   <div class="bfao-modal-body preview-content">
     <div class="bfao-modal-summary">

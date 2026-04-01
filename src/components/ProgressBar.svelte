@@ -12,7 +12,7 @@
   // D1: 平滑进度条 — Svelte tweened
   const smoothProgress = tweened(0, { duration: 400, easing: cubicOut });
 
-  $: smoothProgress.set($progressPercent);
+  $effect(() => { smoothProgress.set($progressPercent); });
 
   const PHASE_LABELS: Record<string, string> = {
     fetch: '抓取视频',
@@ -20,52 +20,62 @@
     move: '移动视频',
   };
 
-  let trackEl: HTMLDivElement;
-  let barEl: HTMLDivElement;
-  let labelEl: HTMLSpanElement;
-  let percentEl: HTMLSpanElement;
-  let containerEl: HTMLDivElement;
+  let trackEl = $state<HTMLDivElement>(undefined!);
+  let barEl = $state<HTMLDivElement>(undefined!);
+  let labelEl = $state<HTMLSpanElement>(undefined!);
+  let percentEl = $state<HTMLSpanElement>(undefined!);
+  let containerEl = $state<HTMLDivElement>(undefined!);
 
   // D2: 进度轨迹粒子 — 节流触发
   let lastParticlePercent = 0;
-  $: if (trackEl && $progressPercent > lastParticlePercent + 4) {
-    spawnTrailParticles(trackEl, $smoothProgress);
-    lastParticlePercent = $progressPercent;
-  }
+  $effect(() => {
+    if (trackEl && $progressPercent > lastParticlePercent + 4) {
+      spawnTrailParticles(trackEl, $smoothProgress);
+      lastParticlePercent = $progressPercent;
+    }
+  });
 
   // D3: 阶段切换动画
   let prevPhase = '';
-  $: if (labelEl && barEl && $progressPhase && $progressPhase !== prevPhase) {
-    const newLabel = PHASE_LABELS[$progressPhase] ?? '准备中';
-    if (prevPhase) {
-      phaseTransition(labelEl, barEl, newLabel);
+  $effect(() => {
+    if (labelEl && barEl && $progressPhase && $progressPhase !== prevPhase) {
+      const newLabel = PHASE_LABELS[$progressPhase] ?? '准备中';
+      if (prevPhase) {
+        phaseTransition(labelEl, barEl, newLabel);
+      }
+      prevPhase = $progressPhase;
     }
-    prevPhase = $progressPhase;
-  }
+  });
 
   // D4: 胜利庆祝
   let celebrated = false;
-  $: if (containerEl && $progressPercent >= 100 && !celebrated) {
-    celebrated = true;
-    victoryCelebration(containerEl);
-  }
+  $effect(() => {
+    if (containerEl && $progressPercent >= 100 && !celebrated) {
+      celebrated = true;
+      victoryCelebration(containerEl);
+    }
+  });
 
   // D5: 数字翻滚弹跳
   let prevPercent = 0;
-  $: if (percentEl && $progressPercent !== prevPercent) {
-    if ($progressPercent > prevPercent) {
-      numberBounce(percentEl);
+  $effect(() => {
+    if (percentEl && $progressPercent !== prevPercent) {
+      if ($progressPercent > prevPercent) {
+        numberBounce(percentEl);
+      }
+      prevPercent = $progressPercent;
     }
-    prevPercent = $progressPercent;
-  }
+  });
 
   // 重置状态
-  $: if (!$isRunning) {
-    lastParticlePercent = 0;
-    celebrated = false;
-    prevPhase = '';
-    prevPercent = 0;
-  }
+  $effect(() => {
+    if (!$isRunning) {
+      lastParticlePercent = 0;
+      celebrated = false;
+      prevPhase = '';
+      prevPercent = 0;
+    }
+  });
 </script>
 
 {#if $isRunning}

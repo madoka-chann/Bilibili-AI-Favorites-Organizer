@@ -1,17 +1,23 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import type { Snippet, ComponentType } from 'svelte';
   import { ChevronRight } from 'lucide-svelte';
   import { gsap, EASINGS, shouldAnimate } from '$animations/gsap-config';
-  import type { ComponentType } from 'svelte';
 
-  export let title: string;
-  export let icon: ComponentType | null = null;
-  export let iconColor: string = '#7C5CFC';
-  export let defaultOpen: boolean = false;
+  interface Props {
+    title: string;
+    icon?: ComponentType | null;
+    iconColor?: string;
+    defaultOpen?: boolean;
+    children?: Snippet;
+  }
 
-  let open = defaultOpen;
-  let bodyEl: HTMLElement;
-  let chevronEl: HTMLElement;
+  let { title, icon = null, iconColor = '#7C5CFC', defaultOpen = false, children }: Props = $props();
+
+  let _initOpen = defaultOpen;
+  let open = $state(_initOpen);
+  let bodyEl = $state<HTMLElement>(undefined!);
+  let chevronEl = $state<HTMLElement>(undefined!);
 
   onMount(() => {
     // Set initial state for GSAP control — body element is now bound
@@ -45,7 +51,7 @@
         gsap.fromTo(bodyEl,
           { height: 0, opacity: 0 },
           { height: h, opacity: 1, duration: 0.35, ease: EASINGS.velvetSpring,
-            onComplete: () => gsap.set(bodyEl, { height: 'auto', overflow: '', clearProps: 'opacity' }) }
+            onComplete: () => { gsap.set(bodyEl, { height: 'auto', overflow: '', clearProps: 'opacity' }); } }
         );
       } else {
         gsap.to(bodyEl, {
@@ -76,8 +82,9 @@
     aria-expanded={open}
   >
     {#if icon}
+      {@const Icon = icon}
       <span class="group-icon" style:background={hexToRgba(iconColor, 0.1)} style:color={iconColor}>
-        <svelte:component this={icon} size={14} />
+        <Icon size={14} />
       </span>
     {/if}
     <span class="group-title">{title}</span>
@@ -87,7 +94,7 @@
   </button>
 
   <div class="group-body" bind:this={bodyEl} class:initially-open={defaultOpen}>
-    <slot />
+    {#if children}{@render children()}{/if}
   </div>
 </div>
 

@@ -1,22 +1,36 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
+  import type { Snippet } from 'svelte';
   import { gsap, EASINGS } from '$animations/gsap-config';
   import { shouldAnimateFunctional, shouldAnimate } from '$animations/gsap-config';
   import { X } from 'lucide-svelte';
   import { Z_INDEX } from '$utils/constants';
 
-  export let title: string = '';
-  export let showFooter: boolean = true;
-  export let confirmText: string = '确认';
-  export let cancelText: string = '取消';
-  export let confirmDisabled: boolean = false;
-  export let width: string = 'min(600px, 90vw)';
-  export let onclose: (() => void) | undefined = undefined;
-  export let onconfirm: (() => void) | undefined = undefined;
+  interface Props {
+    title?: string;
+    showFooter?: boolean;
+    confirmText?: string;
+    cancelText?: string;
+    confirmDisabled?: boolean;
+    width?: string;
+    onclose?: () => void;
+    onconfirm?: () => void;
+    children?: Snippet;
+    icon?: Snippet;
+    toolbar?: Snippet;
+    footer?: Snippet;
+  }
 
-  let backdropEl: HTMLDivElement;
-  let modalEl: HTMLDivElement;
-  let bodyEl: HTMLDivElement;
+  let {
+    title = '', showFooter = true, confirmText = '确认', cancelText = '取消',
+    confirmDisabled = false, width = 'min(600px, 90vw)',
+    onclose, onconfirm,
+    children, icon, toolbar, footer,
+  }: Props = $props();
+
+  let backdropEl = $state<HTMLDivElement>(undefined!);
+  let modalEl = $state<HTMLDivElement>(undefined!);
+  let bodyEl = $state<HTMLDivElement>(undefined!);
   let ctx: gsap.Context;
   let abortCtrl: AbortController;
 
@@ -112,7 +126,7 @@
   <div class="modal" bind:this={modalEl} style:width role="dialog" aria-modal="true">
     <div class="modal-header">
       <h3>
-        <slot name="icon"></slot>
+        {#if icon}{@render icon()}{/if}
         {title}
       </h3>
       <button class="close-btn" onclick={handleClose} aria-label="关闭">
@@ -120,15 +134,17 @@
       </button>
     </div>
 
-    <slot name="toolbar"></slot>
+    {#if toolbar}{@render toolbar()}{/if}
 
     <div class="modal-body" bind:this={bodyEl}>
-      <slot></slot>
+      {#if children}{@render children()}{/if}
     </div>
 
     {#if showFooter}
       <div class="modal-footer">
-        <slot name="footer">
+        {#if footer}
+          {@render footer()}
+        {:else}
           <button class="modal-btn cancel" onclick={handleClose}>
             {cancelText}
           </button>
@@ -139,7 +155,7 @@
           >
             {confirmText}
           </button>
-        </slot>
+        {/if}
       </div>
     {/if}
   </div>

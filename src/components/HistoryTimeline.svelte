@@ -4,13 +4,17 @@
   import { magnetic } from '$actions/magnetic';
   import type { HistoryEntry } from '$core/history';
 
-  export let history: HistoryEntry[];
-  export let onclear: (() => void) | undefined = undefined;
-  export let onclose: (() => void) | undefined = undefined;
+  interface Props {
+    history: HistoryEntry[];
+    onclear?: () => void;
+    onclose?: () => void;
+  }
+
+  let { history, onclear, onclose }: Props = $props();
 </script>
 
 <Modal title="整理历史" showFooter={true} cancelText="关闭" confirmText="" onclose={() => onclose?.()}>
-  <svelte:fragment slot="icon"><Clock size={18} /></svelte:fragment>
+  {#snippet icon()}<Clock size={18} />{/snippet}
 
   <div class="bfao-modal-body">
     {#if history.length === 0}
@@ -36,14 +40,14 @@
     {/if}
   </div>
 
-  <svelte:fragment slot="footer">
+  {#snippet footer()}
     <button class="bfao-btn bfao-btn-muted clear-btn" onclick={() => onclear?.()} use:magnetic={{ radius: 40, strength: 0.25 }}>
       <Trash2 size={14} /> 清空
     </button>
     <button class="bfao-btn bfao-btn-muted" onclick={() => onclose?.()} use:magnetic={{ radius: 40, strength: 0.25 }}>
       关闭
     </button>
-  </svelte:fragment>
+  {/snippet}
 </Modal>
 
 <style>

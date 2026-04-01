@@ -4,22 +4,26 @@
   import { magnetic } from '$actions/magnetic';
   import type { DeadVideoEntry } from '$core/dead-videos';
 
-  export let deadVideos: DeadVideoEntry[];
-  export let onarchive: (() => void) | undefined = undefined;
-  export let ondelete: (() => void) | undefined = undefined;
-  export let onclose: (() => void) | undefined = undefined;
-  export let processing = false;
+  interface Props {
+    deadVideos: DeadVideoEntry[];
+    onarchive?: () => void;
+    ondelete?: () => void;
+    onclose?: () => void;
+    processing?: boolean;
+  }
+
+  let { deadVideos, onarchive, ondelete, onclose, processing = false }: Props = $props();
 
   // 按来源收藏夹分组
-  $: byFolder = deadVideos.reduce<Record<string, DeadVideoEntry[]>>((acc, v) => {
+  let byFolder = $derived(deadVideos.reduce<Record<string, DeadVideoEntry[]>>((acc, v) => {
     if (!acc[v.folderTitle]) acc[v.folderTitle] = [];
     acc[v.folderTitle].push(v);
     return acc;
-  }, {});
+  }, {}));
 </script>
 
 <Modal title="失效视频扫描结果" showFooter={false} onclose={() => onclose?.()}>
-  <svelte:fragment slot="icon"><Archive size={18} /></svelte:fragment>
+  {#snippet icon()}<Archive size={18} />{/snippet}
 
   <div class="bfao-modal-body">
     <div class="bfao-modal-summary">

@@ -29,42 +29,45 @@
   import {
     handleStart, handleCleanDead, handleArchiveDead, handleDeleteDead,
     handleFindDups, handleDedup, handleUndoConfirm, handleBackup,
-    handleStats, handleHistoryClear, type StatsState,
+    handleStats, handleHistoryClear,
   } from '$core/panel-actions';
   import type { DeadVideoEntry } from '$core/dead-videos';
   import type { DuplicateEntry } from '$core/duplicates';
   import type { FavFolder } from '$types/index';
 
-  export let onclose: (() => void) | undefined = undefined;
-  export let flipState: Flip.FlipState | null = null;
+  interface Props {
+    onclose?: () => void;
+    flipState?: Flip.FlipState | null;
+  }
 
-  let panelEl: HTMLDivElement;
-  let headerEl: HTMLElement;
-  let settingsEl: HTMLElement;
-  let mainAreaEl: HTMLElement;
+  let { onclose, flipState = null }: Props = $props();
+
+  let panelEl = $state<HTMLDivElement>(undefined!);
+  let headerEl = $state<HTMLElement>(undefined!);
+  let settingsEl = $state<HTMLElement>(undefined!);
   let ctx: gsap.Context;
-  let settingsOpen = false;
-  let settingsVisible = false;
+  let settingsOpen = $state(false);
+  let settingsVisible = $state(false);
   let abortCtrl: AbortController;
 
   // Modal 状态
-  let showDeadResult = false;
-  let deadVideos: DeadVideoEntry[] = [];
-  let deadProcessing = false;
+  let showDeadResult = $state(false);
+  let deadVideos = $state<DeadVideoEntry[]>([]);
+  let deadProcessing = $state(false);
 
-  let showDupResult = false;
-  let duplicates: DuplicateEntry[] = [];
-  let dupProcessing = false;
+  let showDupResult = $state(false);
+  let duplicates = $state<DuplicateEntry[]>([]);
+  let dupProcessing = $state(false);
 
-  let showUndo = false;
+  let showUndo = $state(false);
 
-  let showHistory = false;
+  let showHistory = $state(false);
 
-  let showStats = false;
-  let statsMode: 'stats' | 'health' = 'stats';
-  let statsFolders: FavFolder[] = [];
-  let statsTotalVideos = 0;
-  let statsDeadCount = 0;
+  let showStats = $state(false);
+  let statsMode = $state<'stats' | 'health'>('stats');
+  let statsFolders = $state<FavFolder[]>([]);
+  let statsTotalVideos = $state(0);
+  let statsDeadCount = $state(0);
 
   /** K3: 恢复保存的面板位置，钳制到视口范围内 */
   function restoreSavedPosition() {
@@ -151,11 +154,13 @@
 
   /** B3: 标签交叉淡入 — settings panel toggle with cross-fade */
   let prevSettingsOpen = false;
-  $: if (settingsOpen !== prevSettingsOpen) {
-    const opening = settingsOpen;
-    prevSettingsOpen = settingsOpen;
-    animateSettingsToggle(opening);
-  }
+  $effect(() => {
+    if (settingsOpen !== prevSettingsOpen) {
+      const opening = settingsOpen;
+      prevSettingsOpen = settingsOpen;
+      animateSettingsToggle(opening);
+    }
+  });
 
   async function animateSettingsToggle(open: boolean) {
     if (!shouldAnimate()) {
@@ -264,7 +269,7 @@
       </div>
     {/if}
 
-    <div class="main-area" bind:this={mainAreaEl}>
+    <div class="main-area">
       <PromptEditor />
       <LogArea />
       <ProgressBar />

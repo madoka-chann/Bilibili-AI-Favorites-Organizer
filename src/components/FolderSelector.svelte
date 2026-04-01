@@ -4,11 +4,15 @@
   import { magnetic } from '$actions/magnetic';
   import type { FavFolder } from '$types/index';
 
-  export let folders: FavFolder[] = [];
-  export let onconfirm: ((ids: number[]) => void) | undefined = undefined;
-  export let onclose: (() => void) | undefined = undefined;
+  interface Props {
+    folders?: FavFolder[];
+    onconfirm?: (ids: number[]) => void;
+    onclose?: () => void;
+  }
 
-  let selected = new Set<number>();
+  let { folders = [], onconfirm, onclose }: Props = $props();
+
+  let selected = $state(new Set<number>());
 
   function toggle(id: number) {
     if (selected.has(id)) {
@@ -16,7 +20,7 @@
     } else {
       selected.add(id);
     }
-    selected = selected; // trigger reactivity
+    selected = new Set(selected);
   }
 
   function toggleAll() {
@@ -27,7 +31,7 @@
     }
   }
 
-  $: allSelected = selected.size === folders.length && folders.length > 0;
+  let allSelected = $derived(selected.size === folders.length && folders.length > 0);
 </script>
 
 <Modal
@@ -37,7 +41,7 @@
   onclose={() => onclose?.()}
   onconfirm={() => onconfirm?.([...selected])}
 >
-  <svelte:fragment slot="icon"><FolderOpen size={18} /></svelte:fragment>
+  {#snippet icon()}<FolderOpen size={18} />{/snippet}
 
   <div class="selector-content">
     <div class="toolbar">

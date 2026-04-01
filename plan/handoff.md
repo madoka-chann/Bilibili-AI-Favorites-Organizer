@@ -1,6 +1,64 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-01, 第十二次)
+## 最近一次会话 (2026-04-01, 第十三次)
+
+### 本次完成内容
+
+**Phase 6: Svelte 5 Runes 全量迁移 + 深度 Code Review**
+
+#### Svelte 5 Runes 迁移
+
+| 改动 | 范围 | 详情 |
+|------|------|------|
+| `export let` → `$props()` | 16 个组件 | 所有带 props 的组件添加 `interface Props` + `$props()` 解构 |
+| `$:` 声明 → `$derived()` | 7 处 | DeadVideosResult/DuplicatesResult/FolderSelector/StatsDialog/PreviewConfirm/ProviderConfig |
+| `$:` 副作用 → `$effect()` | 8 处 | Panel settings toggle、ProgressBar 5 个进度效果、LogArea 自动滚动 |
+| 本地状态 → `$state()` | 全部 | Panel 15 个模态/UI 状态；FolderSelector/PreviewConfirm 的 Set；ProviderConfig 4 个 UI 状态等 |
+| `bind:this` → `$state<T>(undefined!)` | 全部 | 所有 bind:this 目标改为 `$state` 声明 |
+| `<slot>` → Snippets | Modal + 7 消费者 | Modal: `children/icon/toolbar/footer` Snippet props；子组件: `{#snippet}` |
+| `<svelte:component>` → 动态组件 | SettingsGroup | `{@const Icon = icon} <Icon>` |
+| `PromptEditor` | `promptValue` | `let` → `$state($settings.lastPrompt)` |
+
+#### 深度 Code Review 发现并修复
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `LiquidToggle.svelte` | `checked` prop 在 runes 模式下被直接 mutate | HIGH | 改为 `const newChecked = !checked; onchange?.(newChecked)` |
+| `FloatButton.svelte` | `{#if visible}` 销毁 DOM 导致 GSAP 丢失 | MEDIUM | 改为 CSS `class:hidden={!visible}` + `display: none` |
+| `Panel.svelte` | `StatsState` 类型导入未使用; `mainAreaEl` 未使用 | LOW | 删除 |
+| `SettingsGroup.svelte` | `onComplete` 回调隐式返回 Tween | LOW | 添加 `{ }` 块 |
+| `FolderSelector.svelte` | Set `selected = selected` 不触发 runes 响应性 | HIGH | 改为 `selected = new Set(selected)` |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `Toast.svelte` | 未迁移到 runes | `export { addToast as show }` 需要 legacy 模式 |
+| `SettingsGroup.svelte` | `state_referenced_locally` warning | 手风琴组件故意捕获初始值 |
+
+### 关键设计决策
+
+1. **Toast 保留 legacy 模式**: Svelte 5 不支持 `export { fn }` 组件导出在 runes 模式下
+2. **`bind:this` 使用 `$state<T>(undefined!)`**: Svelte 5 要求 bind:this 为 `$state`
+3. **FloatButton CSS hide**: 保留 DOM 和 GSAP 动画生命周期
+4. **LiquidToggle 单向数据流**: 不再 mutate prop，纯回调通知
+5. **Set 响应性**: 所有 Set 变更后 `new Set(...)` 重新赋值
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%**
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%**
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%** (本次新增)
+
+**所有 Phase 均已 100% 完成。svelte-check 0 errors。**
+
+---
+
+## 上一次会话 (2026-04-01, 第十二次)
 
 ### 本次完成内容
 

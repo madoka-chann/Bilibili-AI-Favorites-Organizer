@@ -4,16 +4,20 @@
   import { magnetic } from '$actions/magnetic';
   import type { DuplicateEntry } from '$core/duplicates';
 
-  export let duplicates: DuplicateEntry[];
-  export let ondedup: (() => void) | undefined = undefined;
-  export let onclose: (() => void) | undefined = undefined;
-  export let processing = false;
+  interface Props {
+    duplicates: DuplicateEntry[];
+    ondedup?: () => void;
+    onclose?: () => void;
+    processing?: boolean;
+  }
 
-  const showCount = Math.min(duplicates.length, 50);
+  let { duplicates, ondedup, onclose, processing = false }: Props = $props();
+
+  let showCount = $derived(Math.min(duplicates.length, 50));
 </script>
 
 <Modal title="重复视频扫描结果" showFooter={false} onclose={() => onclose?.()}>
-  <svelte:fragment slot="icon"><Copy size={18} /></svelte:fragment>
+  {#snippet icon()}<Copy size={18} />{/snippet}
 
   <div class="bfao-modal-body">
     <div class="bfao-modal-summary">
