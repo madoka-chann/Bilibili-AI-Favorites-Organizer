@@ -108,11 +108,12 @@ async function classifyWithAI(
   const allCategories: CategoryResult = {};
   const systemPrompt = buildSystemPrompt(existingFolderNames, settings.lastPrompt);
   const concurrency = Math.max(1, Math.min(10, settings.aiConcurrency));
+  const chunkSize = Math.max(1, settings.aiChunkSize);
   const limiter = createConcurrencyLimiter(concurrency);
 
   const chunks: VideoResource[][] = [];
-  for (let i = 0; i < allVideos.length; i += settings.aiChunkSize) {
-    chunks.push(allVideos.slice(i, i + settings.aiChunkSize));
+  for (let i = 0; i < allVideos.length; i += chunkSize) {
+    chunks.push(allVideos.slice(i, i + chunkSize));
   }
 
   const totalAiCalls = chunks.length;
@@ -272,11 +273,12 @@ async function moveVideosToFolders(
       }
     }
 
-    // Move in chunks
-    for (let i = 0; i < vids.length; i += settings.moveChunkSize) {
+    // Move in chunks (floor guard: 0 → 1 prevents infinite loop)
+    const moveChunk = Math.max(1, settings.moveChunkSize);
+    for (let i = 0; i < vids.length; i += moveChunk) {
       if (isCancelled()) break;
 
-      const chunk = vids.slice(i, i + settings.moveChunkSize);
+      const chunk = vids.slice(i, i + moveChunk);
 
       // Group by source
       const bySource = groupBy(chunk, (v) => videoSourceMap.get(v.id) ?? sourceMediaIds[0]);

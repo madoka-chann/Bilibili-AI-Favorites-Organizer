@@ -35,8 +35,13 @@
 
     toasts = [...toasts, { id, message, type, duration }];
 
-    // 限制最大数量
+    // 限制最大数量 — 清理被丢弃 toast 的 timeout 防止泄漏
     if (toasts.length > MAX_TOAST_COUNT) {
+      const discarded = toasts.slice(0, -MAX_TOAST_COUNT);
+      for (const t of discarded) {
+        const tid = toastTimeouts.get(t.id);
+        if (tid) { clearTimeout(tid); toastTimeouts.delete(t.id); }
+      }
       toasts = toasts.slice(-MAX_TOAST_COUNT);
     }
 

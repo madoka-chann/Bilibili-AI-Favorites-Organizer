@@ -102,4 +102,6 @@ export function stopBackgroundCache(): void {
     clearInterval(intervalId);
     intervalId = null;
   }
+  // 重置扫描标记，确保 stop→setup 后不会因残留 flag 阻塞新扫描
+  scanInProgress = false;
 }

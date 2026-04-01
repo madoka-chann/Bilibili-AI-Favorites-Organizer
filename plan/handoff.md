@@ -1,6 +1,54 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-01, 第十八次)
+## 最近一次会话 (2026-04-01, 第十九次)
+
+### 本次完成内容
+
+**资源泄漏修复 + 零值防护 + 类型安全强化 — 5 处代码质量改进 + 深度架构级 Code Review**
+
+#### 发现并修复的问题
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `Toast.svelte` | `toasts.length > MAX_TOAST_COUNT` 时 `slice` 丢弃旧 toast，但 `toastTimeouts` Map 中对应的 setTimeout 未清除 — 超时后触发 `removeToast()` 操作不存在的 toast，且 Map 条目永不释放 | MEDIUM | 在 `slice` 前遍历被丢弃 toast，`clearTimeout` + `delete` 清理 |
+| `process.ts` | `settings.aiChunkSize` 无下界保护 — 存储损坏或用户设为 0 时，`for (i += 0)` 死循环锁死 UI | MEDIUM | 新增 `Math.max(1, settings.aiChunkSize)` 提取为 `chunkSize` 常量 |
+| `process.ts` | `settings.moveChunkSize` 同理无下界保护 — 0 值导致移动阶段死循环 | MEDIUM | 新增 `Math.max(1, settings.moveChunkSize)` 提取为 `moveChunk` 常量 |
+| `ai-client.ts` | `fetchModelList` 非 GitHub 分支中 `json` 变量类型为 `{ data?; models? }` — 但 GitHub catalog API 可返回裸数组，类型断言不匹配 | LOW | 将 `json` 类型改为 `unknown`，各分支独立做安全类型断言 |
+| `background-cache.ts` | `stopBackgroundCache()` 后 `scanInProgress` flag 可能残留为 `true` — 若 `stop()` 时恰好有扫描在运行，后续 `setup()` 的新扫描被永久阻塞 | LOW | 在 `stop()` 末尾重置 `scanInProgress = false` |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `magnetic.ts` | 每个 magnetic action 实例注册全局 mousemove | 120px 近距离检测需要全局追踪；`destroy()` 正确清理；各实例独立注册/移除自身回调 |
+| `bilibili-folders.ts` | `_folderListCache` 模块级缓存无并发保护 | JS 单线程 + await 点保证不会并发进入；由 UI 串行触发 |
+| `bilibili-folders.ts` | `res.data.fid ?? res.data.id` — `fid` 为 0 时 nullish 会穿透 | B 站 API `fid` 不会为 0 (0 是无效 ID)；`id` 是主键字段，两者语义不同 |
+| `progress.ts` | `document.title` 直接访问无 SSR 检查 | userscript 只在浏览器运行，不存在 SSR 场景 |
+| `ai-providers.ts` | IPv6 regex `\[::1?\]` 匹配 `[::]` 和 `[::1]` | 两者分别是 all-zeros 和 loopback，都应该被 SSRF 拦截，行为正确 |
+| `process.ts` | AI 阶段完成后无取消检查直接 `updateProgress` | 进度更新是幂等 UI 操作，取消后 `finally` 会 `resetProgress`，无副作用 |
+
+### 关键设计决策
+
+1. **Toast timeout 清理时机**: 在 `slice` 之前遍历被丢弃的 toast 并清理——必须在 `toasts` 数组被截断前完成，否则丢失 ID 引用。
+2. **chunkSize/moveChunkSize 下界而非 settings 层校验**: 防御在消费处而非 settings store，因为 settings 可能被直接写入 GM storage 绕过 store。
+3. **`json: unknown` 而非联合类型**: GitHub API 返回格式不稳定（数组 vs 对象），`unknown` 强制每个分支做显式类型断言，比窄类型 + `as` 更安全。
+4. **`scanInProgress` 重置**: 即使当前无扫描在运行，重置也是幂等操作，不会引入副作用。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%**
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: Toast 资源泄漏修复 + 死循环防护 + 类型安全)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 errors。代码质量经 19 次迭代持续强化。**
+
+---
+
+## 上一次会话 (2026-04-01, 第十八次)
 
 ### 本次完成内容
 

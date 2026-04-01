@@ -213,7 +213,7 @@ export async function fetchModelList(settings: Settings): Promise<string[]> {
   }
 
   const resp = await gmFetch(url, { headers });
-  let json: { data?: ModelEntry[]; models?: ModelEntry[] };
+  let json: unknown;
   try {
     json = JSON.parse(resp.responseText);
   } catch {
@@ -222,10 +222,14 @@ export async function fetchModelList(settings: Settings): Promise<string[]> {
   let models: string[];
 
   if (fmt === 'github') {
-    const list: ModelEntry[] = Array.isArray(json) ? json : (json.data ?? json.models ?? []);
+    // GitHub catalog API 可能直接返回数组或 { data/models } 对象
+    const list: ModelEntry[] = Array.isArray(json)
+      ? json
+      : ((json as Record<string, unknown>).data ?? (json as Record<string, unknown>).models ?? []) as ModelEntry[];
     models = list.map((m) => m.id ?? m.name ?? '').filter(Boolean);
   } else {
-    const list: ModelEntry[] = json.data ?? [];
+    const obj = json as { data?: ModelEntry[] };
+    const list: ModelEntry[] = obj.data ?? [];
     models = list.map((m) => m.id ?? '').filter(Boolean);
   }
   models.sort();
