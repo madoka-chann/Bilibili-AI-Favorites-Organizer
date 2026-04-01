@@ -1,6 +1,8 @@
 <script lang="ts">
   import { X, Settings, Moon, Sun } from 'lucide-svelte';
   import { isDark, toggleTheme } from '$lib/stores/theme';
+  import { ripple } from '$actions/ripple';
+  import { pressEffect } from '$animations/micro';
 
   export let settingsOpen = false;
   export let onclose: (() => void) | undefined = undefined;
@@ -17,6 +19,8 @@
       class="header-btn"
       onclick={toggleTheme}
       title={$isDark ? '切换到亮色模式' : '切换到暗色模式'}
+      use:ripple={{ color: 'rgba(255,255,255,0.25)' }}
+      use:pressEffect
     >
       {#if $isDark}
         <Sun size={16} />
@@ -30,6 +34,8 @@
       class:active={settingsOpen}
       title="设置"
       onclick={() => (settingsOpen = !settingsOpen)}
+      use:ripple={{ color: 'rgba(255,255,255,0.25)' }}
+      use:pressEffect
     >
       <Settings size={16} />
     </button>
@@ -38,6 +44,8 @@
       class="header-btn"
       onclick={() => onclose?.()}
       title="关闭"
+      use:ripple={{ color: 'rgba(255,255,255,0.25)' }}
+      use:pressEffect
     >
       <X size={16} />
     </button>
@@ -94,12 +102,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.35s cubic-bezier(0.2, 1.04, 0.42, 1);
+    transition: background 0.2s ease;
   }
 
   .header-btn:hover {
     background: rgba(255, 255, 255, 0.3);
-    transform: scale(1.12) translateY(-1px);
   }
 
   .header-btn.active {

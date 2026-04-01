@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { gsap, EASINGS } from '$animations/gsap-config';
-  import { shouldAnimateFunctional } from '$animations/gsap-config';
+  import { shouldAnimateFunctional, shouldAnimate } from '$animations/gsap-config';
   import { X } from 'lucide-svelte';
   import { Z_INDEX } from '$lib/utils/constants';
 
@@ -16,6 +16,7 @@
 
   let backdropEl: HTMLDivElement;
   let modalEl: HTMLDivElement;
+  let bodyEl: HTMLDivElement;
   let ctx: gsap.Context;
 
   onMount(() => {
@@ -45,6 +46,22 @@
             duration: 0.55,
             ease: EASINGS.velvetSpring,
             delay: 0.05,
+            onComplete: () => {
+              // F4: 内容交错入场
+              if (shouldAnimate() && bodyEl?.children.length) {
+                gsap.fromTo(
+                  bodyEl.children,
+                  { opacity: 0, y: 15 },
+                  {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.3,
+                    stagger: 0.05,
+                    ease: EASINGS.velvetSpring,
+                  }
+                );
+              }
+            },
           }
         );
       }
@@ -104,7 +121,7 @@
 
     <slot name="toolbar"></slot>
 
-    <div class="modal-body">
+    <div class="modal-body" bind:this={bodyEl}>
       <slot></slot>
     </div>
 
