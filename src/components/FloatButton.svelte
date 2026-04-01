@@ -5,6 +5,7 @@
   import { shouldAnimate } from '$animations/gsap-config';
   import { magnetic } from '$actions/magnetic';
   import { gmGetValue, gmSetValue } from '$utils/gm';
+  import { Z_INDEX } from '$utils/constants';
 
   interface Props {
     visible?: boolean;
@@ -159,7 +160,7 @@
         border-radius: 50%;
         background: var(--ai-primary, #7364FF);
         pointer-events: none;
-        z-index: 2147483647;
+        z-index: ${Z_INDEX.TOAST};
       `;
       document.body.appendChild(dot);
 
@@ -193,7 +194,7 @@
     position: fixed;
     bottom: 30px;
     left: 30px;
-    z-index: 2147483640;
+    z-index: 2147483640; /* Z_INDEX.FLOAT — CSS cannot reference JS constants */
     width: 58px;
     height: 58px;
     border-radius: 50%;

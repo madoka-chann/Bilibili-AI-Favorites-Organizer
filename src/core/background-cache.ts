@@ -66,6 +66,7 @@ async function scanAndCache(): Promise<void> {
 }
 
 let intervalId: ReturnType<typeof setInterval> | null = null;
+let initialTimeoutId: ReturnType<typeof setTimeout> | null = null;
 let scanInProgress = false;
 
 /** 带重入保护的扫描 — 防止上次扫描未完成时再次触发 */
@@ -86,13 +87,17 @@ export function setupBackgroundCache(): void {
   if (intervalId !== null) return;
 
   // Initial scan after a short delay to avoid blocking page load
-  setTimeout(safeScan, 5000);
+  initialTimeoutId = setTimeout(safeScan, 5000);
 
   // Periodic rescan
   intervalId = setInterval(safeScan, SCAN_INTERVAL);
 }
 
 export function stopBackgroundCache(): void {
+  if (initialTimeoutId !== null) {
+    clearTimeout(initialTimeoutId);
+    initialTimeoutId = null;
+  }
   if (intervalId !== null) {
     clearInterval(intervalId);
     intervalId = null;

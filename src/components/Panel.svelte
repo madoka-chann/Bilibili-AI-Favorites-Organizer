@@ -358,7 +358,7 @@
     position: fixed;
     bottom: 30px;
     left: 30px;
-    z-index: 2147483641;
+    z-index: 2147483641; /* Z_INDEX.PANEL */
     width: min(400px, calc(100vw - 60px));
     display: flex;
     flex-direction: column;

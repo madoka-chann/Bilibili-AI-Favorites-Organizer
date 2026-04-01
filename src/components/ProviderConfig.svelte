@@ -207,7 +207,8 @@
     color: var(--ai-primary);
   }
 
-  :global(.spinning) {
+  /* :global() needed: .spinning is applied to Lucide SVG child component */
+  .bfao-icon-btn :global(.spinning) {
     animation: spin 0.8s linear infinite;
   }
 

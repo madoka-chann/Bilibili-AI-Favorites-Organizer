@@ -52,7 +52,7 @@
     position: fixed;
     inset: 0;
     pointer-events: none;
-    z-index: 2147483640;
+    z-index: 2147483640; /* Z_INDEX.FLOAT */
   }
 
   .bfao-app :global(*) {

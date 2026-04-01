@@ -27,9 +27,11 @@ export function panelCanvas(node: HTMLElement, opts: PanelCanvasOptions = {}) {
 
   if (!shouldAnimate()) return { update() {}, destroy() {} };
 
-  // Canvas 创建
+  // Canvas 创建 — 防御性检查 getContext 结果
   const canvas = document.createElement('canvas');
-  const ctx2d = canvas.getContext('2d')!;
+  const maybeCtx = canvas.getContext('2d');
+  if (!maybeCtx) return { update() {}, destroy() {} };
+  const ctx2d = maybeCtx;
 
   canvas.style.cssText = `
     position: absolute;

@@ -1,6 +1,50 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-01, 第十五次)
+## 最近一次会话 (2026-04-01, 第十六次)
+
+### 本次完成内容
+
+**防御性编程强化 — 5 处代码质量改进 + 深度架构级 Code Review**
+
+#### 发现并修复的问题
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `panel-canvas.ts` | `canvas.getContext('2d')!` 非空断言 — 无 Canvas 2D 支持的环境会崩溃 | MEDIUM | 移除 `!`，添加 null guard 提前返回空 action |
+| `background-cache.ts` | `setTimeout(safeScan, 5000)` 初始延时未追踪 — 页面卸载前执行 `stopBackgroundCache()` 时无法清除该 timeout | MEDIUM | 新增 `initialTimeoutId` 变量追踪，`stopBackgroundCache()` 中 `clearTimeout` |
+| `FloatButton.svelte` / `Header.svelte` | JS 内联样式使用硬编码 z-index 魔数 (2147483647/2147483646) — 与 `Z_INDEX` 常量脱节 | LOW | 导入 `Z_INDEX` 常量替代硬编码值；CSS `<style>` 块添加常量名注释 |
+| `ProviderConfig.svelte` | `:global(.spinning)` 无作用域限制 — 可能污染全局 | LOW | 收紧为 `.bfao-icon-btn :global(.spinning)` + 注释说明原因 |
+| `App.svelte` / `Panel.svelte` | CSS `<style>` 中 z-index 硬编码无注释 — 维护者不知道对应哪个常量 | LOW | 添加 `/* Z_INDEX.FLOAT */` / `/* Z_INDEX.PANEL */` 注释 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `SettingsGroup.svelte` | `state_referenced_locally` 警告仍在 — `$state(defaultOpen)` 同样触发 | 属于 Svelte 5 编译器已知行为，`defaultOpen` 初始值捕获是预期语义，无法在不改变行为的前提下消除 |
+| `background-cache.ts` | `stopBackgroundCache()` 已导出但未被调用 | userscript 生命周期与页面一致，无需主动停止；保留导出供未来扩展 |
+| CSS z-index 硬编码 | `<style>` 块中无法引用 JS 常量 | 通过注释标注对应常量名，确保值与 `ui.ts` 一致即可 |
+
+### 关键设计决策
+
+1. **Canvas null guard 用 `maybeCtx` 中间变量**: 直接 `const ctx2d = canvas.getContext('2d')` 后做 null check，TypeScript 不会在闭包中 narrow 类型。使用中间变量 + `const ctx2d = maybeCtx` 赋值后，闭包中类型正确为 `CanvasRenderingContext2D`。
+2. **z-index 策略**: JS 创建的 DOM 元素用 `Z_INDEX` 常量；CSS `<style>` 块用硬编码值 + 注释。不引入 CSS 自定义属性避免复杂度（`all: initial` 会重置自定义属性）。
+3. **`:global()` 收紧**: Lucide 图标组件的 class 传递到 SVG 子元素，Svelte scoped CSS 无法匹配，需要 `:global()`。收紧到父选择器 `.bfao-icon-btn` 内部，避免全局污染。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%**
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 防御性编程 + z-index 一致性 + CSS scope)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 errors。代码质量经 16 次迭代持续强化。**
+
+---
+
+## 上一次会话 (2026-04-01, 第十五次)
 
 ### 本次完成内容
 

@@ -4,6 +4,7 @@
   import { ripple } from '$actions/ripple';
   import { pressEffect } from '$animations/micro';
   import { gsap, EASINGS, shouldAnimate } from '$animations/gsap-config';
+  import { Z_INDEX } from '$utils/constants';
 
   interface Props {
     settingsOpen?: boolean;
@@ -53,7 +54,7 @@
     overlay.style.cssText = `
       position: fixed;
       inset: 0;
-      z-index: 2147483646;
+      z-index: ${Z_INDEX.PARTICLE};
       background: ${oldBg};
       clip-path: circle(${maxRadius}px at ${cx}px ${cy}px);
       pointer-events: none;

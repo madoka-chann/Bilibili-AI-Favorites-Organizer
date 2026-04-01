@@ -14,7 +14,7 @@
 
   let { title, icon = null, iconColor = '#7C5CFC', defaultOpen = false, children }: Props = $props();
 
-  let _initOpen = defaultOpen;
+  let _initOpen = defaultOpen; // eslint-disable-line -- intentional initial capture
   let open = $state(_initOpen);
   let bodyEl = $state<HTMLElement>(undefined!);
   let chevronEl = $state<HTMLElement>(undefined!);
