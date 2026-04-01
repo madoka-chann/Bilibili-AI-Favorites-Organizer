@@ -19,8 +19,9 @@
   <SettingsGroup title="请求参数" icon={SlidersHorizontal} iconColor="#6366f1">
     <div class="field-grid">
       <div class="bfao-field">
-        <label class="bfao-label">AI 批次大小</label>
+        <label class="bfao-label" for="bfao-chunk-size">AI 批次大小</label>
         <select
+          id="bfao-chunk-size"
           class="bfao-select"
           value={$settings.aiChunkSize}
           onchange={(e) =>
@@ -34,8 +35,9 @@
       </div>
 
       <div class="bfao-field">
-        <label class="bfao-label">请求速度</label>
+        <label class="bfao-label" for="bfao-fetch-delay">请求速度</label>
         <select
+          id="bfao-fetch-delay"
           class="bfao-select"
           value={$settings.fetchDelay}
           onchange={(e) =>
@@ -48,8 +50,9 @@
       </div>
 
       <div class="bfao-field">
-        <label class="bfao-label">写操作间隔 (ms)</label>
+        <label class="bfao-label" for="bfao-write-delay">写操作间隔 (ms)</label>
         <input
+          id="bfao-write-delay"
           class="bfao-input"
           type="number"
           min="500"
@@ -63,8 +66,9 @@
       </div>
 
       <div class="bfao-field">
-        <label class="bfao-label">每次移动视频数</label>
+        <label class="bfao-label" for="bfao-move-chunk">每次移动视频数</label>
         <input
+          id="bfao-move-chunk"
           class="bfao-input"
           type="number"
           min="1"
@@ -101,8 +105,9 @@
       </div>
 
       <div class="bfao-field">
-        <label class="bfao-label">批量休息间隔</label>
+        <label class="bfao-label" for="bfao-rest-interval">批量休息间隔</label>
         <select
+          id="bfao-rest-interval"
           class="bfao-select"
           value={$settings.batchRestInterval}
           onchange={(e) =>
@@ -118,8 +123,9 @@
       </div>
 
       <div class="bfao-field">
-        <label class="bfao-label">休息时长 (分)</label>
+        <label class="bfao-label" for="bfao-rest-minutes">休息时长 (分)</label>
         <select
+          id="bfao-rest-minutes"
           class="bfao-select"
           value={$settings.batchRestMinutes}
           onchange={(e) =>
@@ -141,44 +147,45 @@
     <div class="toggle-list">
       <div class="toggle-row">
         <span>跳过失效视频</span>
-        <LiquidToggle checked={$settings.skipDeadVideos}
+        <LiquidToggle label="跳过失效视频" checked={$settings.skipDeadVideos}
           onchange={(v) => settings.update({ skipDeadVideos: v })} />
       </div>
 
       <div class="toggle-row">
         <span>自适应限速</span>
-        <LiquidToggle checked={$settings.adaptiveRate}
+        <LiquidToggle label="自适应限速" checked={$settings.adaptiveRate}
           onchange={(v) => settings.update({ adaptiveRate: v })} />
       </div>
 
       <div class="toggle-row">
         <span>完成后通知</span>
-        <LiquidToggle checked={$settings.notifyOnComplete}
+        <LiquidToggle label="完成后通知" checked={$settings.notifyOnComplete}
           onchange={(v) => settings.update({ notifyOnComplete: v })} />
       </div>
 
       <div class="toggle-row">
         <span>多收藏夹模式</span>
-        <LiquidToggle checked={$settings.multiFolderEnabled}
+        <LiquidToggle label="多收藏夹模式" checked={$settings.multiFolderEnabled}
           onchange={(v) => settings.update({ multiFolderEnabled: v })} />
       </div>
 
       <div class="toggle-row">
         <span>增量整理 (仅新增)</span>
-        <LiquidToggle checked={$settings.incrementalMode}
+        <LiquidToggle label="增量整理" checked={$settings.incrementalMode}
           onchange={(v) => settings.update({ incrementalMode: v })} />
       </div>
 
       <div class="toggle-row">
         <span>后台自动缓存</span>
-        <LiquidToggle checked={$settings.bgCacheEnabled}
+        <LiquidToggle label="后台自动缓存" checked={$settings.bgCacheEnabled}
           onchange={(v) => settings.update({ bgCacheEnabled: v })} />
       </div>
 
       {#if $settings.bgCacheEnabled}
         <div class="sub-field">
-          <label class="bfao-label">缓存间隔 (分)</label>
+          <label class="bfao-label" for="bfao-cache-interval">缓存间隔 (分)</label>
           <select
+            id="bfao-cache-interval"
             class="bfao-select bfao-input-small"
             value={$settings.cacheScanInterval}
             onchange={(e) =>
@@ -198,7 +205,7 @@
   <SettingsGroup title="动画效果" icon={Sparkles} iconColor="#f59e0b">
     <div class="toggle-row">
       <span>启用极致动画效果</span>
-      <LiquidToggle checked={$settings.animEnabled}
+      <LiquidToggle label="启用极致动画效果" checked={$settings.animEnabled}
         onchange={(v) => settings.update({ animEnabled: v })} />
     </div>
   </SettingsGroup>

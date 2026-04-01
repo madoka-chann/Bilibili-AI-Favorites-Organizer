@@ -18,6 +18,7 @@
   let modalEl: HTMLDivElement;
   let bodyEl: HTMLDivElement;
   let ctx: gsap.Context;
+  let abortCtrl: AbortController;
 
   onMount(() => {
     ctx = gsap.context(() => {
@@ -68,15 +69,15 @@
     });
 
     // ESC 关闭
-    const handleKeydown = (e: KeyboardEvent) => {
+    abortCtrl = new AbortController();
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
       if (e.key === 'Escape') handleClose();
-    };
-    document.addEventListener('keydown', handleKeydown);
-    return () => document.removeEventListener('keydown', handleKeydown);
+    }, { signal: abortCtrl.signal });
   });
 
   onDestroy(() => {
     ctx?.revert();
+    abortCtrl?.abort();
   });
 
   function handleClose() {

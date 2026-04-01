@@ -29,12 +29,28 @@ export interface GMXMLHttpResponse {
   finalUrl: string;
 }
 
+/**
+ * 内存缓存层 — 避免对同一 key 的重复 GM_getValue 调用。
+ * GM_getValue 虽然是同步的，但在某些 Tampermonkey 实现中存在
+ * JSON parse 开销；缓存可消除同一会话内的冗余反序列化。
+ */
+const gmCache = new Map<string, unknown>();
+
 export const gmGetValue = <T>(key: string, defaultValue: T): T => {
-  return GM_getValue(key, defaultValue);
+  if (gmCache.has(key)) return gmCache.get(key) as T;
+  const val = GM_getValue(key, defaultValue);
+  gmCache.set(key, val);
+  return val;
 };
 
 export const gmSetValue = (key: string, value: unknown): void => {
+  gmCache.set(key, value);
   GM_setValue(key, value);
+};
+
+/** 清除单个缓存条目 (用于强制重新读取) */
+export const gmCacheInvalidate = (key: string): void => {
+  gmCache.delete(key);
 };
 
 export const gmAddStyle = (css: string): void => {

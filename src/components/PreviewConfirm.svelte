@@ -12,8 +12,13 @@
   export let onconfirm: ((data: CategoryResult) => void) | undefined = undefined;
   export let onclose: (() => void) | undefined = undefined;
 
-  // Build video lookup map
-  $: videoMap = new Map(videos.map(v => [v.id, v]));
+  // Build video lookup map (memoized — only rebuild when videos array actually changes)
+  let _prevVideos: VideoResource[] = [];
+  let videoMap = new Map<number, VideoResource>();
+  $: if (videos !== _prevVideos) {
+    _prevVideos = videos;
+    videoMap = new Map(videos.map(v => [v.id, v]));
+  }
 
   // Sorted entries by video count descending
   $: entries = Object.entries(categories).sort((a, b) => b[1].length - a[1].length);

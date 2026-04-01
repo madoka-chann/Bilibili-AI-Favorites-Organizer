@@ -52,9 +52,10 @@
 <div class="provider-config">
   <!-- 服务商选择 -->
   <div class="bfao-field">
-    <label class="bfao-label">AI 服务商</label>
+    <label class="bfao-label" for="bfao-provider">AI 服务商</label>
     <div class="bfao-input-row">
       <select
+        id="bfao-provider"
         class="bfao-select"
         value={$settings.provider}
         onchange={handleProviderChange}
@@ -80,8 +81,9 @@
   <!-- 自定义 URL (仅自定义 provider) -->
   {#if isCustomProvider}
     <div class="bfao-field">
-      <label class="bfao-label">API 地址</label>
+      <label class="bfao-label" for="bfao-custom-url">API 地址</label>
       <input
+        id="bfao-custom-url"
         class="bfao-input"
         type="text"
         placeholder="https://your-api.com/v1"
@@ -95,9 +97,10 @@
 
   <!-- API Key -->
   <div class="bfao-field">
-    <label class="bfao-label">API Key</label>
+    <label class="bfao-label" for="bfao-api-key">API Key</label>
     <div class="bfao-input-row">
       <input
+        id="bfao-api-key"
         class="bfao-input bfao-input-flex"
         type={showApiKey ? 'text' : 'password'}
         placeholder={providerConfig?.keyPlaceholder ?? '填入 API Key'}
@@ -122,9 +125,10 @@
 
   <!-- 模型选择 -->
   <div class="bfao-field">
-    <label class="bfao-label">模型</label>
+    <label class="bfao-label" for="bfao-model">模型</label>
     <div class="bfao-input-row">
       <input
+        id="bfao-model"
         class="bfao-input bfao-input-flex"
         type="text"
         placeholder="输入模型名称"
@@ -160,8 +164,9 @@
 
   <!-- 并发数 -->
   <div class="bfao-field">
-    <label class="bfao-label">AI 并发数</label>
+    <label class="bfao-label" for="bfao-concurrency">AI 并发数</label>
     <input
+      id="bfao-concurrency"
       class="bfao-input bfao-input-small"
       type="number"
       min="1"

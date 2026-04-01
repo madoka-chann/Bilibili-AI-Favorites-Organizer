@@ -55,13 +55,18 @@ export function callAISingle(
         if (response.status !== 200) {
           let errSnippet = (response.responseText || '').substring(0, 300);
           if (settings.apiKey && settings.apiKey.length > 8) {
-            errSnippet = errSnippet.replace(
-              new RegExp(
-                settings.apiKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
-                'g'
-              ),
-              '***'
-            );
+            try {
+              errSnippet = errSnippet.replace(
+                new RegExp(
+                  settings.apiKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
+                  'g'
+                ),
+                '***'
+              );
+            } catch {
+              // Fallback: simple string replace if regex construction fails
+              errSnippet = errSnippet.replaceAll(settings.apiKey, '***');
+            }
           }
           reject(new Error(`API 报错 ${response.status}：${errSnippet}`));
           return;
@@ -134,8 +139,12 @@ export async function fetchModelList(settings: Settings): Promise<string[]> {
       if (pageToken) params.set('pageToken', pageToken);
       const pageUrl = `${config.baseUrl}/models?${params}`;
       const resp = await gmFetch(pageUrl);
-      const json: { models?: GeminiModelEntry[]; nextPageToken?: string } =
-        JSON.parse(resp.responseText);
+      let json: { models?: GeminiModelEntry[]; nextPageToken?: string };
+      try {
+        json = JSON.parse(resp.responseText);
+      } catch {
+        throw new Error('Gemini 模型列表返回了无效 JSON');
+      }
       const models = (json.models ?? [])
         .filter((m) => m.supportedGenerationMethods?.includes('generateContent'))
         .map((m) => m.name.replace('models/', ''));
@@ -166,8 +175,12 @@ export async function fetchModelList(settings: Settings): Promise<string[]> {
   }
 
   const resp = await gmFetch(url, { headers });
-  const json: { data?: ModelEntry[]; models?: ModelEntry[] } =
-    JSON.parse(resp.responseText);
+  let json: { data?: ModelEntry[]; models?: ModelEntry[] };
+  try {
+    json = JSON.parse(resp.responseText);
+  } catch {
+    throw new Error('模型列表返回了无效 JSON');
+  }
   let models: string[];
 
   if (fmt === 'github') {

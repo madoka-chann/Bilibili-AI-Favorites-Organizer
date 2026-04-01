@@ -36,13 +36,16 @@ const systemPrefersDark = writable(
     : false
 );
 
+/** 集中管理 matchMedia 监听器的 AbortController */
+const mediaAbort = typeof window !== 'undefined' ? new AbortController() : null;
+
 // 监听系统主题变化
 if (typeof window !== 'undefined') {
   window
     .matchMedia('(prefers-color-scheme: dark)')
     .addEventListener('change', (e) => {
       systemPrefersDark.set(e.matches);
-    });
+    }, { signal: mediaAbort!.signal });
 }
 
 /** 实际是否为暗色 (auto 模式跟随系统) */
@@ -82,5 +85,10 @@ if (typeof window !== 'undefined') {
     .matchMedia('(prefers-reduced-motion: reduce)')
     .addEventListener('change', (e) => {
       prefersReducedMotion.set(e.matches);
-    });
+    }, { signal: mediaAbort!.signal });
+}
+
+/** 清理所有 matchMedia 监听器 (脚本卸载时调用) */
+export function destroyThemeListeners(): void {
+  mediaAbort?.abort();
 }

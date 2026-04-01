@@ -14,14 +14,48 @@ const FALLBACK_SYSTEM =
 /** Prompt 可以是字符串 (旧格式) 或 {system, user} 对象 */
 export type AIPrompt = string | { system: string; user: string };
 
+// ================= SSRF 防护 =================
+
+/** 检测 hostname 是否为私有/保留 IP 范围 */
+function isPrivateHost(hostname: string): boolean {
+  // IPv4 私有/保留地址
+  const PRIVATE_PATTERNS = [
+    /^127\./,             // loopback
+    /^10\./,              // Class A private
+    /^172\.(1[6-9]|2\d|3[01])\./,  // Class B private
+    /^192\.168\./,        // Class C private
+    /^0\./,               // "this" network
+    /^169\.254\./,        // link-local
+    /^100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7])\./, // CGN (RFC 6598)
+  ];
+  // 特殊 hostnames
+  if (/^(localhost|0\.0\.0\.0|\[::1?\])$/i.test(hostname)) return true;
+  return PRIVATE_PATTERNS.some(p => p.test(hostname));
+}
+
 // ================= Provider Base URL =================
 export function getProviderBaseUrl(settings: Settings): string {
   const config = AI_PROVIDERS[settings.provider];
   if (config?.isCustom) {
     let url = (settings.customBaseUrl || '').trim().replace(/\/+$/, '');
     if (url && !/^https?:\/\//i.test(url)) url = 'https://' + url;
-    if (url && /^http:\/\//i.test(url) && !/^http:\/\/(localhost|127\.|0\.0\.0\.0)/i.test(url)) {
-      logs.add('自定义 API 地址使用了 HTTP 而非 HTTPS，存在中间人攻击风险', 'warning');
+
+    // SSRF 防护: 验证 URL 格式 + 拒绝私有地址
+    if (url) {
+      try {
+        const parsed = new URL(url);
+        if (isPrivateHost(parsed.hostname)) {
+          logs.add('自定义 API 地址指向内网地址，已拒绝 (SSRF 防护)', 'error');
+          return '';
+        }
+      } catch {
+        logs.add('自定义 API 地址格式无效', 'error');
+        return '';
+      }
+
+      if (/^http:\/\//i.test(url)) {
+        logs.add('自定义 API 地址使用了 HTTP 而非 HTTPS，存在中间人攻击风险', 'warning');
+      }
     }
     return url;
   }

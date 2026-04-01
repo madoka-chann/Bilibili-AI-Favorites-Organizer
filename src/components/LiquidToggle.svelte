@@ -3,6 +3,7 @@
   import { gsap, EASINGS, shouldAnimate } from '$animations/gsap-config';
 
   export let checked = false;
+  export let label = '';
   export let onchange: ((checked: boolean) => void) | undefined = undefined;
 
   let thumbEl: HTMLElement;
@@ -53,6 +54,7 @@
   class:on={checked}
   role="switch"
   aria-checked={checked}
+  aria-label={label || undefined}
   onclick={toggle}
   bind:this={trackEl}
 >

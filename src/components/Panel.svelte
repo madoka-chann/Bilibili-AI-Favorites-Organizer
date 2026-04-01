@@ -41,6 +41,7 @@
   let ctx: gsap.Context;
   let settingsOpen = false;
   let settingsVisible = false;
+  let abortCtrl: AbortController;
 
   // Modal 状态
   let showDeadResult = false;
@@ -109,14 +110,13 @@
       }
     }, panelEl);
 
-    const handleKeydown = (e: KeyboardEvent) => {
+    abortCtrl = new AbortController();
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
       if (e.ctrlKey && e.key === 'Enter' && !$isRunning) onStart();
-    };
-    document.addEventListener('keydown', handleKeydown);
-    return () => document.removeEventListener('keydown', handleKeydown);
+    }, { signal: abortCtrl.signal });
   });
 
-  onDestroy(() => { ctx?.revert(); });
+  onDestroy(() => { ctx?.revert(); abortCtrl?.abort(); });
 
   function doClose() {
     if (!panelEl) { onclose?.(); return; }
