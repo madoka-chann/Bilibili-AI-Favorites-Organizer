@@ -1,6 +1,9 @@
 <script lang="ts">
+  import { tick } from 'svelte';
   import Modal from './Modal.svelte';
   import { Eye, ChevronDown, ChevronRight } from 'lucide-svelte';
+  import { tilt } from '$actions/tilt';
+  import { listStaggerReveal } from '$animations/micro';
   import type { CategoryResult, VideoResource } from '$lib/types';
 
   export let categories: CategoryResult = {};
@@ -19,13 +22,23 @@
   // Track expanded categories
   let expanded = new Set<string>();
 
-  function toggleExpand(name: string) {
-    if (expanded.has(name)) {
+  async function toggleExpand(name: string) {
+    const wasExpanded = expanded.has(name);
+    if (wasExpanded) {
       expanded.delete(name);
     } else {
       expanded.add(name);
     }
     expanded = expanded;
+
+    // E1: Stagger reveal newly expanded video items
+    if (!wasExpanded) {
+      await tick();
+      const listEl = document.querySelector(`[data-category="${CSS.escape(name)}"] .video-list`);
+      if (listEl) {
+        listStaggerReveal(listEl.querySelectorAll('.video-item'));
+      }
+    }
   }
 </script>
 
@@ -46,7 +59,7 @@
     <div class="category-list">
       {#each entries as [name, vids] (name)}
         {@const isExpanded = expanded.has(name)}
-        <div class="category-group">
+        <div class="category-group" data-category={name}>
           <button class="category-header" onclick={() => toggleExpand(name)}>
             <span class="expand-icon">
               {#if isExpanded}
@@ -63,7 +76,7 @@
             <div class="video-list">
               {#each vids as vid (vid.id)}
                 {@const info = videoMap.get(vid.id)}
-                <div class="video-item">
+                <div class="video-item" use:tilt={{ maxDeg: 2, perspective: 600, scale: 1.01 }}>
                   <span class="video-title" title={info?.title ?? `av${vid.id}`}>
                     {info?.title ?? `av${vid.id}`}
                   </span>

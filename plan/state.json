@@ -30,7 +30,7 @@
     },
     "phase2_animations": {
       "status": "in_progress",
-      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 基础组件动画就位",
+      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; actions 已集成到更多组件",
       "completed": [
         "gsap-config.ts: 插件注册 + 10 品牌缓动 + 三级减弱策略",
         "src/actions/magnetic.ts: A1 磁性光标吸引 (use:magnetic)",
@@ -42,18 +42,23 @@
         "Panel: B1 velvet bloom + B2 curtain exit",
         "Modal: F1 bloom enter + F3 physics exit + F4 content stagger",
         "Toast: G1 elastic slide-in + G2 timer ring + G5 slide-out",
-        "Header: aurora-flow + ripple + pressEffect on buttons"
+        "Header: aurora-flow + ripple + pressEffect on buttons",
+        "SettingsGroup: B4 GSAP 弹簧手风琴 (替代 Svelte transition:slide)",
+        "ActionButtons: C1/C2 pressEffect + C3 glowTrack (所有按钮 + 主按钮)",
+        "PreviewConfirm: E3 tilt 视频卡片 + E1 listStaggerReveal 展开交错",
+        "ProviderConfig: C4 focusGlow (所有 input 元素)",
+        "SettingsPanel: C4 focusGlow (number inputs)",
+        "PromptEditor: C4 focusGlow (textarea)"
       ],
       "remaining": [
         "A4 FLIP 变形为面板",
         "A5 星座轨道",
         "B3 标签交叉淡入",
-        "B4 弹簧手风琴",
         "B5 深度视差",
-        "C1 全局磁性按钮 (批量集成)",
+        "C1 全局磁性按钮 (更多组件集成)",
         "C5 液态开关",
         "D2-D6 进度条高级动画",
-        "E1-E2 列表 FLIP/交错 (集成到 PreviewConfirm)",
+        "E2 FLIP 展开折叠",
         "E4 缩略图缩放",
         "G3 Toast FLIP 堆栈重排",
         "G4 类型化入场",

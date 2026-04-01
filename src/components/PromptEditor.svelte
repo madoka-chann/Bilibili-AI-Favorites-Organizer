@@ -3,6 +3,7 @@
   import { settings } from '$lib/stores/settings';
   import { BUILTIN_PRESETS } from '$lib/utils/constants';
   import { debounce } from '$lib/utils/timing';
+  import { focusGlow } from '$animations/micro';
 
   let promptValue = $settings.lastPrompt;
 
@@ -39,6 +40,7 @@
     placeholder="输入自定义整理规则（留空则 AI 自动判断最佳分类方式）&#10;&#10;示例：按游戏类型分类，如 MOBA、FPS、RPG..."
     value={promptValue}
     oninput={handleInput}
+    use:focusGlow
   ></textarea>
 </div>
 

@@ -6,6 +6,7 @@
   import { logs } from '$lib/stores/state';
   import { Eye, EyeOff, RefreshCw, ExternalLink } from 'lucide-svelte';
   import { getErrorMessage } from '$lib/utils/errors';
+  import { focusGlow } from '$animations/micro';
   import type { AIProviderId } from '$lib/types';
 
   let showApiKey = false;
@@ -87,6 +88,7 @@
         value={$settings.customBaseUrl}
         oninput={(e) =>
           settings.update({ customBaseUrl: (e.target as HTMLInputElement).value })}
+        use:focusGlow
       />
     </div>
   {/if}
@@ -102,6 +104,7 @@
         value={$settings.apiKey}
         oninput={(e) =>
           settings.update({ apiKey: (e.target as HTMLInputElement).value })}
+        use:focusGlow
       />
       <button
         class="bfao-icon-btn"
@@ -128,6 +131,7 @@
         value={$settings.modelName}
         oninput={(e) =>
           settings.update({ modelName: (e.target as HTMLInputElement).value })}
+        use:focusGlow
       />
       <button
         class="bfao-icon-btn"
@@ -167,6 +171,7 @@
         settings.update({
           aiConcurrency: Number((e.target as HTMLInputElement).value) || 2,
         })}
+      use:focusGlow
     />
   </div>
 </div>

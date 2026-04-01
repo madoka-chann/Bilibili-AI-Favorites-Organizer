@@ -4,6 +4,7 @@
   import { SPEED_PRESETS, AI_CHUNK_PRESETS } from '$lib/utils/constants';
   import SettingsGroup from './SettingsGroup.svelte';
   import ProviderConfig from './ProviderConfig.svelte';
+  import { focusGlow } from '$animations/micro';
   import { Cpu, SlidersHorizontal, ToggleRight, Sparkles } from 'lucide-svelte';
 </script>
 
@@ -56,6 +57,7 @@
           value={$settings.writeDelay}
           oninput={(e) =>
             settings.update({ writeDelay: Number((e.target as HTMLInputElement).value) || 2500 })}
+          use:focusGlow
         />
       </div>
 
@@ -69,6 +71,7 @@
           value={$settings.moveChunkSize}
           oninput={(e) =>
             settings.update({ moveChunkSize: Number((e.target as HTMLInputElement).value) || 20 })}
+          use:focusGlow
         />
       </div>
 
@@ -91,6 +94,7 @@
             value={$settings.limitCount}
             oninput={(e) =>
               settings.update({ limitCount: Number((e.target as HTMLInputElement).value) || 200 })}
+            use:focusGlow
           />
         {/if}
       </div>

@@ -4,6 +4,8 @@
     Play, Square, Archive, Copy, Undo2, Download,
     BarChart3, Heart, FileText, HelpCircle, History,
   } from 'lucide-svelte';
+  import { glowTrack } from '$actions/glow-track';
+  import { pressEffect } from '$animations/micro';
 
   export let onstart: (() => void) | undefined = undefined;
   export let onstop: (() => void) | undefined = undefined;
@@ -28,7 +30,7 @@
 </script>
 
 <div class="actions">
-  <button class="btn-primary" class:running={$isRunning} onclick={handleStartStop}>
+  <button class="btn-primary" class:running={$isRunning} onclick={handleStartStop} use:glowTrack use:pressEffect>
     {#if $isRunning}
       <Square size={16} /><span>停止整理</span><kbd class="kbd">Esc</kbd>
     {:else}
@@ -37,37 +39,37 @@
   </button>
 
   <div class="tool-row">
-    <button class="btn-tool" onclick={() => oncleandead?.()} disabled={$isRunning}>
+    <button class="btn-tool" onclick={() => oncleandead?.()} disabled={$isRunning} use:glowTrack use:pressEffect>
       <Archive size={14} /><span>失效归档</span>
     </button>
-    <button class="btn-tool" onclick={() => onfinddups?.()} disabled={$isRunning}>
+    <button class="btn-tool" onclick={() => onfinddups?.()} disabled={$isRunning} use:glowTrack use:pressEffect>
       <Copy size={14} /><span>查重</span>
     </button>
-    <button class="btn-tool" onclick={() => onundo?.()} disabled={$isRunning}>
+    <button class="btn-tool" onclick={() => onundo?.()} disabled={$isRunning} use:glowTrack use:pressEffect>
       <Undo2 size={14} /><span>撤销</span>
     </button>
   </div>
 
   <div class="tool-row">
-    <button class="btn-tool" onclick={() => onbackup?.()} disabled={$isRunning}>
+    <button class="btn-tool" onclick={() => onbackup?.()} disabled={$isRunning} use:glowTrack use:pressEffect>
       <Download size={14} /><span>备份</span>
     </button>
-    <button class="btn-tool" onclick={() => onstats?.()}>
+    <button class="btn-tool" onclick={() => onstats?.()} use:glowTrack use:pressEffect>
       <BarChart3 size={14} /><span>统计</span>
     </button>
-    <button class="btn-tool" onclick={() => onhealth?.()} disabled={$isRunning}>
+    <button class="btn-tool" onclick={() => onhealth?.()} disabled={$isRunning} use:glowTrack use:pressEffect>
       <Heart size={14} /><span>健康</span>
     </button>
   </div>
 
   <div class="tool-row">
-    <button class="btn-tool" onclick={() => onexportlogs?.()}>
+    <button class="btn-tool" onclick={() => onexportlogs?.()} use:glowTrack use:pressEffect>
       <FileText size={14} /><span>日志</span>
     </button>
-    <button class="btn-tool" onclick={() => onhelp?.()}>
+    <button class="btn-tool" onclick={() => onhelp?.()} use:glowTrack use:pressEffect>
       <HelpCircle size={14} /><span>帮助</span>
     </button>
-    <button class="btn-tool" onclick={() => onhistory?.()}>
+    <button class="btn-tool" onclick={() => onhistory?.()} use:glowTrack use:pressEffect>
       <History size={14} /><span>历史</span>
     </button>
   </div>
@@ -89,8 +91,10 @@
     font-size: 14px;
     font-weight: 700;
     color: #fff;
-    background: linear-gradient(135deg, var(--ai-primary), var(--ai-gradient-accent), var(--ai-primary));
-    background-size: 500% 500%;
+    background:
+      radial-gradient(circle at var(--glow-x, -100px) var(--glow-y, -100px), rgba(255,255,255,0.2), transparent 60%),
+      linear-gradient(135deg, var(--ai-primary), var(--ai-gradient-accent), var(--ai-primary));
+    background-size: auto, 500% 500%;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -135,7 +139,9 @@
     padding: 8px 6px;
     border: 1.5px solid var(--ai-border);
     border-radius: 10px;
-    background: var(--ai-bg-tertiary);
+    background:
+      radial-gradient(circle at var(--glow-x, -100px) var(--glow-y, -100px), rgba(var(--ai-primary-rgb), 0.12), transparent 60%),
+      var(--ai-bg-tertiary);
     color: var(--ai-text-secondary);
     font-size: 11px;
     font-weight: 500;

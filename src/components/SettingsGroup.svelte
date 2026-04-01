@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { slide } from 'svelte/transition';
+  import { onMount } from 'svelte';
   import { ChevronRight } from 'lucide-svelte';
+  import { gsap, EASINGS, shouldAnimate } from '$animations/gsap-config';
   import type { ComponentType } from 'svelte';
 
   export let title: string;
@@ -9,6 +10,19 @@
   export let defaultOpen: boolean = false;
 
   let open = defaultOpen;
+  let bodyEl: HTMLElement;
+  let chevronEl: HTMLElement;
+
+  onMount(() => {
+    // Set initial state for GSAP control — body element is now bound
+    if (!open && bodyEl) {
+      bodyEl.style.height = '0px';
+      bodyEl.style.overflow = 'hidden';
+    }
+    if (open && chevronEl) {
+      gsap.set(chevronEl, { rotation: 90 });
+    }
+  });
 
   /** Convert hex to rgba string for background tint */
   function hexToRgba(hex: string, alpha: number): string {
@@ -18,12 +32,47 @@
     const b = parseInt(h.substring(4, 6), 16);
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
   }
+
+  function toggle() {
+    open = !open;
+    if (!bodyEl) return;
+
+    if (shouldAnimate()) {
+      // B4: GSAP spring accordion
+      if (open) {
+        gsap.set(bodyEl, { height: 'auto', overflow: 'hidden' });
+        const h = bodyEl.offsetHeight;
+        gsap.fromTo(bodyEl,
+          { height: 0, opacity: 0 },
+          { height: h, opacity: 1, duration: 0.35, ease: EASINGS.velvetSpring,
+            onComplete: () => gsap.set(bodyEl, { height: 'auto', overflow: '', clearProps: 'opacity' }) }
+        );
+      } else {
+        gsap.to(bodyEl, {
+          height: 0, opacity: 0, duration: 0.28, ease: EASINGS.silkOut,
+          overflow: 'hidden',
+        });
+      }
+
+      if (chevronEl) {
+        gsap.to(chevronEl, {
+          rotation: open ? 90 : 0,
+          duration: 0.3,
+          ease: EASINGS.velvetSpring,
+        });
+      }
+    } else {
+      // No animation — instant toggle
+      bodyEl.style.height = open ? 'auto' : '0px';
+      bodyEl.style.overflow = open ? '' : 'hidden';
+    }
+  }
 </script>
 
 <div class="group">
   <button
     class="group-header"
-    onclick={() => (open = !open)}
+    onclick={toggle}
     aria-expanded={open}
   >
     {#if icon}
@@ -32,16 +81,14 @@
       </span>
     {/if}
     <span class="group-title">{title}</span>
-    <span class="chevron" class:open>
+    <span class="chevron" class:open bind:this={chevronEl}>
       <ChevronRight size={14} />
     </span>
   </button>
 
-  {#if open}
-    <div class="group-body" transition:slide={{ duration: 250 }}>
-      <slot />
-    </div>
-  {/if}
+  <div class="group-body" bind:this={bodyEl} class:initially-open={defaultOpen}>
+    <slot />
+  </div>
 </div>
 
 <style>
@@ -93,15 +140,17 @@
 
   .chevron {
     display: flex;
-    transition: transform 0.25s cubic-bezier(0.2, 1.04, 0.42, 1);
-  }
-
-  .chevron.open {
-    transform: rotate(90deg);
   }
 
   .group-body {
     padding-left: 2px;
     padding-bottom: 8px;
+    height: 0;
+    overflow: hidden;
+  }
+
+  .group-body.initially-open {
+    height: auto;
+    overflow: visible;
   }
 </style>
