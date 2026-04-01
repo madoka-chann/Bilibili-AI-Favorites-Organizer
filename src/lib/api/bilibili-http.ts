@@ -121,7 +121,7 @@ export async function fetchBiliJson<T = unknown>(
         continue;
       }
       return json;
-    } catch (e) {
+    } catch (e: unknown) {
       clearTimeout(timer);
       if (attempt < maxRetries) {
         await sleep(handleRateLimit ? 2000 * attempt : 1000 * attempt);

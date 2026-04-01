@@ -70,8 +70,8 @@ export function callAISingle(
         try {
           const content = parser(response.responseText);
           resolve(extractJsonObject(content) as AIClassificationResult);
-        } catch (e) {
-          reject(new Error(`解析 AI 回复失败: ${e instanceof Error ? e.message : String(e)}`));
+        } catch (e: unknown) {
+          reject(new Error(`解析 AI 回复失败: ${getErrorMessage(e)}`));
         }
       },
       onerror(resp) {
