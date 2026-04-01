@@ -90,7 +90,7 @@
   },
   "buildStatus": {
     "builds": true,
-    "output": "dist/bilibili-ai-favorites-organizer.user.js (403 kB)",
+    "output": "dist/bilibili-ai-favorites-organizer.user.js (403 kB, GSAP ~94 kB CDN)",
     "preExistingIssues": [
       "1 TS error: settings.ts:14 type cast",
       "1 TS error: SettingsGroup.svelte:48 callback type",
