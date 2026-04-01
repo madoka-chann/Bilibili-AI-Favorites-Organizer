@@ -26,6 +26,28 @@
 - **vite-plugin-monkey** — 自动处理 userscript 头部元数据、GM_* API 声明、外部资源
 - **Svelte 5** — 最新版，runes 响应式系统，内置 transition/animate
 - **TypeScript** — 严格模式，类型安全
+- **GSAP via CDN** — 通过 `vite-plugin-monkey` 的 `externalGlobals` + `cdn.jsdelivr()` 外部化 GSAP，不打包进产物
+
+**GSAP CDN 加载方案：**
+
+`vite.config.ts` 中配置 `externalGlobals`，将 gsap 核心及插件通过 jsDelivr CDN 加载：
+
+```ts
+import monkey, { cdn } from 'vite-plugin-monkey';
+
+// build.externalGlobals 配置:
+externalGlobals: {
+  gsap: cdn.jsdelivr('gsap', 'dist/gsap.min.js'),
+  'gsap/Flip': cdn.jsdelivr('gsap', 'dist/Flip.min.js'),
+  'gsap/Draggable': cdn.jsdelivr('gsap', 'dist/Draggable.min.js'),
+  'gsap/CustomEase': cdn.jsdelivr('gsap', 'dist/CustomEase.min.js'),
+},
+```
+
+- GSAP 核心 (~70 kB gzipped) + 插件从 CDN 加载，不计入 userscript 体积
+- `@require` 标签由 vite-plugin-monkey 自动生成
+- 开发模式 (vite dev) 仍从 node_modules 导入，不受影响
+- gsap-config.ts 中的 `import gsap from 'gsap'` 等导入语句无需修改，构建时自动映射为全局变量
 
 **构建产出：**
 - `dist/bilibili-favorites-ai-organizer.user.js` — 单文件 userscript (IIFE)
@@ -128,7 +150,9 @@ src/actions/
 
 ### GSAP 全局配置 (gsap-config.ts)
 
-- 注册所有插件: `Flip, Draggable, MotionPathPlugin, Physics2DPlugin, CustomEase, CustomBounce, SplitText`
+- **GSAP 通过 CDN 加载** — `import gsap from 'gsap'` 在构建时映射为 jsDelivr CDN 的 `@require`，不打包进产物
+- 注册所有插件: `Flip, Draggable, CustomEase` (均通过 CDN 各自独立 `@require`)
+- 未来如需 `MotionPathPlugin, Physics2DPlugin, SplitText` 等付费/高级插件，同样添加到 `externalGlobals` CDN 配置中
 - 全局默认: `gsap.defaults({ force3D: true, overwrite: 'auto' })`
 - 每个 Svelte 组件用 `gsap.context()` 在 `onMount` 中创建，`onDestroy` 自动清理
 - 三级减弱动画策略：OS `prefers-reduced-motion` → 用户 `animEnabled` 开关 → 全开
@@ -296,6 +320,9 @@ src/actions/
 ### 性能预算
 
 - **目标**: 中端硬件 60fps (i5 / Ryzen 5, 核显)
+- **产物体积**: GSAP 通过 CDN `@require` 加载 (用户浏览器缓存)，userscript 自身体积大幅缩小
+  - GSAP 核心 (~70 kB gz) + Flip (~8 kB) + Draggable (~12 kB) + CustomEase (~4 kB) = ~94 kB 由 CDN 承担
+  - userscript 自身目标: <200 kB (不含 CDN 依赖)
 - **最大并发 GSAP tween**: ~20 (`overwrite: 'auto'`)
 - **最大 DOM 粒子**: ~80 (confetti 60 + scatter 5 + trail 3 + orbs 5 + dust 8)
 - **Canvas**: 同时最多 1 个 (从当前 MAX=6 减少)
