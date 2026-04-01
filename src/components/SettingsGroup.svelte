@@ -1,9 +1,10 @@
 <script lang="ts">
   import { slide } from 'svelte/transition';
   import { ChevronRight } from 'lucide-svelte';
+  import type { ComponentType } from 'svelte';
 
   export let title: string;
-  export let icon: any = null;
+  export let icon: ComponentType | null = null;
   export let iconColor: string = '#7C5CFC';
   export let defaultOpen: boolean = false;
 

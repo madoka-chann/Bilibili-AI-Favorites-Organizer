@@ -75,8 +75,8 @@
   }
 
   onMount(() => {
-    // 暴露全局 API
-    (window as any).__bfao_toast = addToast;
+    // 暴露全局 API (类型安全)
+    (window as Window & { __bfao_toast?: typeof addToast }).__bfao_toast = addToast;
   });
 
   // 导出供其他 Svelte 组件使用

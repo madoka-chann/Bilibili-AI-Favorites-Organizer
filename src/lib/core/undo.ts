@@ -1,10 +1,12 @@
 import { get } from 'svelte/store';
 import type { BiliData } from '$lib/types';
-import { isRunning, cancelRequested, logs } from '$lib/stores/state';
+import { cancelRequested, logs } from '$lib/stores/state';
 import { moveVideos, invalidateFolderCache } from '$lib/api/bilibili';
 import { humanDelay } from '$lib/utils/timing';
 import { gmGetValue, gmSetValue } from '$lib/utils/gm';
 import { MAX_UNDO_HISTORY } from '$lib/utils/constants';
+import { getErrorMessage } from '$lib/utils/errors';
+import { withRunningState } from '$lib/utils/running-state';
 
 export interface UndoRecord {
   time: string;
@@ -49,8 +51,8 @@ export function saveUndoData(record: UndoRecord): void {
     history.unshift(record);
     gmSetValue(UNDO_KEY, JSON.stringify(history.slice(0, MAX_UNDO_HISTORY)));
     gmSetValue('bfao_undoData', JSON.stringify(record));
-  } catch (e) {
-    console.error('[AI整理] 保存撤销数据失败:', e);
+  } catch (e: unknown) {
+    logs.add(`保存撤销数据失败: ${getErrorMessage(e)}`, 'warning');
   }
 }
 
@@ -63,8 +65,8 @@ export function clearUndoRecord(index: number): void {
     }
     gmSetValue(UNDO_KEY, JSON.stringify(history));
     gmSetValue('bfao_undoData', history.length > 0 ? JSON.stringify(history[0]) : null);
-  } catch (e) {
-    console.error('[AI整理] 清除撤销数据失败:', e);
+  } catch (e: unknown) {
+    logs.add(`清除撤销数据失败: ${getErrorMessage(e)}`, 'warning');
   }
 }
 
@@ -81,33 +83,29 @@ export async function undoOperation(
     return;
   }
 
-  isRunning.set(true);
-  cancelRequested.set(false);
   logs.add('正在撤销操作...', 'info');
 
-  let restored = 0;
+  await withRunningState(async () => {
+    let restored = 0;
+    try {
+      for (let i = 0; i < undo.moves.length; i++) {
+        if (get(cancelRequested)) {
+          logs.add('用户已取消撤销', 'warning');
+          break;
+        }
+        const move = undo.moves[i];
+        logs.add(`[${i + 1}/${undo.moves.length}] 移回 ${move.count} 个视频到原收藏夹...`, 'info');
 
-  try {
-    for (let i = 0; i < undo.moves.length; i++) {
-      if (get(cancelRequested)) {
-        logs.add('用户已取消撤销', 'warning');
-        break;
+        await moveVideos(move.toMediaId, move.fromMediaId, move.resources, biliData);
+        restored += move.count;
+        await humanDelay(writeDelay);
       }
-      const move = undo.moves[i];
-      logs.add(`[${i + 1}/${undo.moves.length}] 移回 ${move.count} 个视频到原收藏夹...`, 'info');
 
-      await moveVideos(move.toMediaId, move.fromMediaId, move.resources, biliData);
-      restored += move.count;
-      await humanDelay(writeDelay);
+      logs.add(`撤销完成！共恢复 ${restored} 个视频。请刷新页面。`, 'success');
+      clearUndoRecord(selectedIndex);
+      invalidateFolderCache();
+    } catch (err: unknown) {
+      logs.add(`撤销失败: ${getErrorMessage(err)}`, 'error');
     }
-
-    logs.add(`撤销完成！共恢复 ${restored} 个视频。请刷新页面。`, 'success');
-    clearUndoRecord(selectedIndex);
-    invalidateFolderCache();
-  } catch (err: any) {
-    logs.add(`撤销失败: ${err.message}`, 'error');
-  } finally {
-    isRunning.set(false);
-    cancelRequested.set(false);
-  }
+  }, { trackCancel: true });
 }

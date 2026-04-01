@@ -1,7 +1,9 @@
+import type { AIProviderId } from './ai';
+
 /** 用户设置接口 — 持久化到 GM_getValue/GM_setValue */
 export interface Settings {
   // AI 服务商
-  provider: string;
+  provider: AIProviderId;
   customBaseUrl: string;
   apiKey: string;
   modelName: string;

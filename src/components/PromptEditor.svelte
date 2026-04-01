@@ -1,4 +1,5 @@
 <script lang="ts">
+  import '$styles/forms.css';
   import { settings } from '$lib/stores/settings';
   import { BUILTIN_PRESETS } from '$lib/utils/constants';
   import { debounce } from '$lib/utils/timing';
@@ -26,7 +27,7 @@
 
 <div class="prompt-editor">
   <div class="prompt-header">
-    <select class="select" onchange={handlePresetChange}>
+    <select class="bfao-select" onchange={handlePresetChange}>
       {#each BUILTIN_PRESETS as preset}
         <option value={preset.value}>{preset.label}</option>
       {/each}
@@ -48,24 +49,6 @@
 
   .prompt-header {
     margin-bottom: 6px;
-  }
-
-  .select {
-    width: 100%;
-    padding: 7px 10px;
-    border: 1.5px solid var(--ai-border);
-    border-radius: 8px;
-    font-size: 12px;
-    outline: none;
-    background: var(--ai-input-bg);
-    color: var(--ai-text);
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.2, 0.98, 0.28, 1);
-  }
-
-  .select:focus {
-    border-color: var(--ai-primary);
-    box-shadow: 0 0 0 3px var(--ai-primary-shadow);
   }
 
   .prompt-textarea {

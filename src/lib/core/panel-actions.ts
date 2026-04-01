@@ -17,6 +17,8 @@ import type { DeadVideoEntry } from '$lib/core/dead-videos';
 import { scanDuplicates, deduplicateVideos } from '$lib/core/duplicates';
 import type { DuplicateEntry } from '$lib/core/duplicates';
 import { loadHistory, clearHistory } from '$lib/core/history';
+import { getErrorMessage } from '$lib/utils/errors';
+import { withRunningState } from '$lib/utils/running-state';
 
 // ================= Auth Helper =================
 
@@ -27,6 +29,28 @@ export function ensureBiliData() {
     return null;
   }
   return biliData;
+}
+
+/**
+ * 通用操作包装器：认证校验 + settings获取 + isRunning生命周期管理
+ * 消除 handleCleanDead / handleArchiveDead / handleDeleteDead / handleFindDups / handleDedup / handleStats 中的重复模板
+ */
+async function withAuthAndRunning<T>(
+  fallback: T,
+  action: (biliData: import('$lib/types').BiliData, s: Settings) => Promise<T>,
+  opts?: { trackCancel?: boolean },
+): Promise<T> {
+  const biliData = ensureBiliData();
+  if (!biliData) return fallback;
+  const s = get(settings);
+  return withRunningState(async () => {
+    try {
+      return await action(biliData, s);
+    } catch (e: unknown) {
+      logs.add(`操作失败: ${getErrorMessage(e)}`, 'error');
+      return fallback;
+    }
+  }, opts);
 }
 
 // ================= Start Process =================
@@ -46,8 +70,8 @@ export async function handleStart(callbacks: StartProcessCallbacks): Promise<voi
   if (!biliData) return;
   try {
     await startProcess(s, biliData);
-  } catch (e: any) {
-    logs.add(`整理流程出错: ${e.message}`, 'error');
+  } catch (e: unknown) {
+    logs.add(`整理流程出错: ${getErrorMessage(e)}`, 'error');
     isRunning.set(false);
   }
 }
@@ -61,62 +85,31 @@ export interface DeadVideoState {
 }
 
 export async function handleCleanDead(state: DeadVideoState): Promise<DeadVideoState> {
-  const biliData = ensureBiliData();
-  if (!biliData) return state;
-
-  const s = get(settings);
-  isRunning.set(true);
-  cancelRequested.set(false);
-  try {
+  return withAuthAndRunning(state, async (biliData, s) => {
     const deadVideos = await scanDeadVideos(biliData, s.fetchDelay);
     if (deadVideos.length === 0) {
       logs.add('没有发现失效视频！收藏夹很健康！', 'success');
       return { ...state, deadVideos, showDeadResult: false };
-    } else {
-      logs.add(`发现 ${deadVideos.length} 个失效视频`, 'warning');
-      return { ...state, deadVideos, showDeadResult: true };
     }
-  } catch (e: any) {
-    logs.add(`扫描失败: ${e.message}`, 'error');
-    return state;
-  } finally {
-    isRunning.set(false);
-    cancelRequested.set(false);
-  }
+    logs.add(`发现 ${deadVideos.length} 个失效视频`, 'warning');
+    return { ...state, deadVideos, showDeadResult: true };
+  }, { trackCancel: true });
 }
 
 export async function handleArchiveDead(deadVideos: DeadVideoEntry[]): Promise<boolean> {
-  const biliData = ensureBiliData();
-  if (!biliData) return false;
-  const s = get(settings);
-  isRunning.set(true);
-  try {
+  return withAuthAndRunning(false, async (biliData, s) => {
     const moved = await archiveDeadVideos(deadVideos, biliData, s.moveChunkSize, s.writeDelay);
     logs.add(`完成！共 ${moved} 个失效视频已归档。请刷新页面。`, 'success');
     return true;
-  } catch (e: any) {
-    logs.add(`归档失败: ${e.message}`, 'error');
-    return false;
-  } finally {
-    isRunning.set(false);
-  }
+  });
 }
 
 export async function handleDeleteDead(deadVideos: DeadVideoEntry[]): Promise<boolean> {
-  const biliData = ensureBiliData();
-  if (!biliData) return false;
-  const s = get(settings);
-  isRunning.set(true);
-  try {
+  return withAuthAndRunning(false, async (biliData, s) => {
     const deleted = await deleteDeadVideos(deadVideos, biliData, s.writeDelay);
     logs.add(`删除完成！共删除 ${deleted} 个失效视频。请刷新页面。`, 'success');
     return true;
-  } catch (e: any) {
-    logs.add(`删除失败: ${e.message}`, 'error');
-    return false;
-  } finally {
-    isRunning.set(false);
-  }
+  });
 }
 
 // ================= Duplicates =================
@@ -128,47 +121,23 @@ export interface DuplicateState {
 }
 
 export async function handleFindDups(state: DuplicateState): Promise<DuplicateState> {
-  const biliData = ensureBiliData();
-  if (!biliData) return state;
-
-  const s = get(settings);
-  isRunning.set(true);
-  cancelRequested.set(false);
-  try {
+  return withAuthAndRunning(state, async (biliData, s) => {
     const duplicates = await scanDuplicates(biliData, s.fetchDelay);
     if (duplicates.length === 0) {
       logs.add('没有发现重复视频！', 'success');
       return { ...state, duplicates, showDupResult: false };
-    } else {
-      logs.add(`发现 ${duplicates.length} 个重复视频`, 'warning');
-      return { ...state, duplicates, showDupResult: true };
     }
-  } catch (e: any) {
-    logs.add(`扫描失败: ${e.message}`, 'error');
-    return state;
-  } finally {
-    isRunning.set(false);
-    cancelRequested.set(false);
-  }
+    logs.add(`发现 ${duplicates.length} 个重复视频`, 'warning');
+    return { ...state, duplicates, showDupResult: true };
+  }, { trackCancel: true });
 }
 
 export async function handleDedup(duplicates: DuplicateEntry[]): Promise<boolean> {
-  const biliData = ensureBiliData();
-  if (!biliData) return false;
-  const s = get(settings);
-  isRunning.set(true);
-  cancelRequested.set(false);
-  try {
+  return withAuthAndRunning(false, async (biliData, s) => {
     const removed = await deduplicateVideos(duplicates, biliData, s.writeDelay);
     logs.add(`去重完成！共删除 ${removed} 个重复副本。请刷新页面。`, 'success');
     return true;
-  } catch (e: any) {
-    logs.add(`去重失败: ${e.message}`, 'error');
-    return false;
-  } finally {
-    isRunning.set(false);
-    cancelRequested.set(false);
-  }
+  }, { trackCancel: true });
 }
 
 // ================= Undo =================
@@ -183,14 +152,13 @@ export async function handleUndoConfirm(index: number): Promise<void> {
 // ================= Backup =================
 
 export async function handleBackup(): Promise<void> {
-  const biliData = ensureBiliData();
-  if (!biliData) return;
-  const s = get(settings);
-  const backup = await backupFavorites(biliData, s.fetchDelay);
-  if (backup) {
-    downloadBackupFile(backup);
-    logs.add('备份文件已下载', 'success');
-  }
+  return withAuthAndRunning(undefined, async (biliData, s) => {
+    const backup = await backupFavorites(biliData, s.fetchDelay);
+    if (backup) {
+      downloadBackupFile(backup);
+      logs.add('备份文件已下载', 'success');
+    }
+  });
 }
 
 // ================= Stats / Health =================
@@ -204,13 +172,8 @@ export interface StatsState {
 }
 
 export async function handleStats(mode: 'stats' | 'health'): Promise<StatsState | null> {
-  const biliData = ensureBiliData();
-  if (!biliData) return null;
-
-  isRunning.set(true);
   logs.add('正在统计收藏夹信息...', 'info');
-
-  try {
+  return withAuthAndRunning(null, async (biliData) => {
     const statsFolders = await getAllFoldersWithIds(biliData);
     const statsTotalVideos = statsFolders.reduce((s, f) => s + (f.media_count || 0), 0);
     logs.add(`统计完成：${statsFolders.length} 个收藏夹，${statsTotalVideos} 个视频`, 'success');
@@ -221,12 +184,7 @@ export async function handleStats(mode: 'stats' | 'health'): Promise<StatsState 
       statsTotalVideos,
       statsDeadCount: 0,
     };
-  } catch (e: any) {
-    logs.add(`统计失败: ${e.message}`, 'error');
-    return null;
-  } finally {
-    isRunning.set(false);
-  }
+  });
 }
 
 // ================= History =================

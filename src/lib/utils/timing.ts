@@ -11,7 +11,7 @@ export function humanDelay(baseMs: number): Promise<void> {
 }
 
 /** 防抖函数 */
-export function debounce<T extends (...args: unknown[]) => void>(
+export function debounce<T extends (...args: never[]) => void>(
   fn: T,
   delayMs: number
 ): (...args: Parameters<T>) => void {
@@ -23,7 +23,7 @@ export function debounce<T extends (...args: unknown[]) => void>(
 }
 
 /** 节流函数 */
-export function throttle<T extends (...args: unknown[]) => void>(
+export function throttle<T extends (...args: never[]) => void>(
   fn: T,
   delayMs: number
 ): (...args: Parameters<T>) => void {
@@ -35,6 +35,20 @@ export function throttle<T extends (...args: unknown[]) => void>(
       fn(...args);
     }
   };
+}
+
+/** 生成统一的时间戳对 (ISO + 本地化) */
+export function formatNow(): { time: string; timeLocal: string } {
+  const now = new Date();
+  return {
+    time: now.toISOString(),
+    timeLocal: now.toLocaleString('zh-CN'),
+  };
+}
+
+/** 计算指数退避延迟 (ms) */
+export function backoffMs(attempt: number, baseMs: number, maxMs = Infinity): number {
+  return Math.min(baseMs * Math.pow(2, attempt - 1), maxMs);
 }
 
 /** 创建并发限制器 */

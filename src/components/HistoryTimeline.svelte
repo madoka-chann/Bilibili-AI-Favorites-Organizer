@@ -11,9 +11,9 @@
 <Modal title="整理历史" showFooter={true} cancelText="关闭" confirmText="" onclose={() => onclose?.()}>
   <svelte:fragment slot="icon"><Clock size={18} /></svelte:fragment>
 
-  <div class="timeline-content">
+  <div class="bfao-modal-body">
     {#if history.length === 0}
-      <div class="empty">暂无整理历史记录</div>
+      <div class="bfao-modal-empty">暂无整理历史记录</div>
     {:else}
       <div class="timeline">
         {#each history as entry, i}
@@ -36,24 +36,16 @@
   </div>
 
   <svelte:fragment slot="footer">
-    <button class="modal-btn clear-btn" onclick={() => onclear?.()}>
+    <button class="bfao-btn bfao-btn-muted clear-btn" onclick={() => onclear?.()}>
       <Trash2 size={14} /> 清空
     </button>
-    <button class="modal-btn close-btn" onclick={() => onclose?.()}>
+    <button class="bfao-btn bfao-btn-muted" onclick={() => onclose?.()}>
       关闭
     </button>
   </svelte:fragment>
 </Modal>
 
 <style>
-  .timeline-content { padding: 16px 20px; }
-  .empty {
-    text-align: center;
-    color: var(--ai-text-muted);
-    padding: 24px 0;
-    font-size: 13px;
-  }
-
   .timeline {
     position: relative;
     padding-left: 20px;
@@ -110,33 +102,7 @@
     line-height: 1.4;
   }
 
-  .modal-btn {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    border-radius: 10px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    transition: all 0.2s ease;
-  }
-  .clear-btn {
-    max-width: 120px;
-    background: var(--ai-border-lighter);
-    color: var(--ai-text-muted);
-    font-size: 12px;
-  }
-  .clear-btn:hover { background: var(--ai-bg-tertiary); color: var(--ai-error); }
-  .close-btn {
-    max-width: 120px;
-    background: var(--ai-border-lighter);
-    color: var(--ai-text-secondary);
-  }
-  .close-btn:hover { background: var(--ai-bg-tertiary); }
+  .clear-btn:hover { color: var(--ai-error); }
 
   @keyframes slideIn {
     from { opacity: 0; transform: translateX(-10px); }

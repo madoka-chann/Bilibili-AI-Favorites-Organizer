@@ -1,77 +1,71 @@
 import { writable, get } from 'svelte/store';
 import type { FavFolder, CategoryResult, VideoResource } from '$lib/types';
 
-// ================= Folder Select Bridge =================
+// ================= Generic Modal Bridge =================
 
-export interface FolderSelectRequest {
-  folders: FavFolder[];
-  resolve: (ids: number[]) => void;
+interface ModalRequest<TInput, TResult> {
+  input: TInput;
+  resolve: (value: TResult) => void;
   reject: (reason?: unknown) => void;
 }
 
-export const folderSelectRequest = writable<FolderSelectRequest | null>(null);
+/**
+ * 创建一个 Promise 桥接模式的 modal store
+ * 返回可直接订阅的 store + request/resolve/reject 方法
+ */
+function createModalBridge<TInput, TResult>() {
+  const store = writable<ModalRequest<TInput, TResult> | null>(null);
 
-export function requestFolderSelect(folders: FavFolder[]): Promise<number[]> {
-  return new Promise((resolve, reject) => {
-    folderSelectRequest.set({ folders, resolve, reject });
-  });
-}
+  function request(input: TInput): Promise<TResult> {
+    const pending = get(store);
+    if (pending) pending.reject(new Error('被新请求覆盖'));
 
-export function resolveFolderSelect(ids: number[]): void {
-  const req = get(folderSelectRequest);
-  if (req) {
-    folderSelectRequest.set(null);
-    req.resolve(ids);
+    return new Promise((resolve, reject) => {
+      store.set({ input, resolve, reject });
+    });
   }
-}
 
-export function rejectFolderSelect(): void {
-  const req = get(folderSelectRequest);
-  if (req) {
-    folderSelectRequest.set(null);
-    req.reject(new Error('用户取消选择'));
+  function resolve(value: TResult): void {
+    const req = get(store);
+    if (req) {
+      store.set(null);
+      req.resolve(value);
+    }
   }
+
+  function reject(): void {
+    const req = get(store);
+    if (req) {
+      store.set(null);
+      req.reject(new Error('用户取消'));
+    }
+  }
+
+  return { subscribe: store.subscribe, request, resolve, reject };
 }
 
-// ================= Preview Confirm Bridge =================
+// ================= Bridge Instances =================
 
-export interface PreviewConfirmRequest {
+export const folderSelect = createModalBridge<FavFolder[], number[]>();
+
+interface PreviewInput {
   categories: CategoryResult;
   videos: VideoResource[];
-  resolve: (data: CategoryResult) => void;
-  reject: (reason?: unknown) => void;
 }
 
-export const previewConfirmRequest = writable<PreviewConfirmRequest | null>(null);
+export const previewConfirm = createModalBridge<PreviewInput, CategoryResult>();
 
+/** 便捷方法：组合 categories + videos 发起预览请求 */
 export function requestPreviewConfirm(
   categories: CategoryResult,
   videos: VideoResource[],
 ): Promise<CategoryResult> {
-  return new Promise((resolve, reject) => {
-    previewConfirmRequest.set({ categories, videos, resolve, reject });
-  });
-}
-
-export function resolvePreviewConfirm(data: CategoryResult): void {
-  const req = get(previewConfirmRequest);
-  if (req) {
-    previewConfirmRequest.set(null);
-    req.resolve(data);
-  }
-}
-
-export function rejectPreviewConfirm(): void {
-  const req = get(previewConfirmRequest);
-  if (req) {
-    previewConfirmRequest.set(null);
-    req.reject(new Error('用户取消确认'));
-  }
+  return previewConfirm.request({ categories, videos });
 }
 
 // ================= Reject All =================
 
 export function rejectAllModals(): void {
-  rejectFolderSelect();
-  rejectPreviewConfirm();
+  folderSelect.reject();
+  previewConfirm.reject();
 }

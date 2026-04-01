@@ -33,7 +33,7 @@
     {/if}
   </svelte:fragment>
 
-  <div class="stats-content">
+  <div class="bfao-modal-body">
     {#if mode === 'health'}
       <div class="health-score" style:color={healthColor}>
         <div class="score-number">{healthScore}</div>
@@ -79,7 +79,7 @@
           </div>
         {/each}
         {#if folders.length > 15}
-          <div class="more-hint">...及其他 {folders.length - 15} 个收藏夹</div>
+          <div class="bfao-modal-more">...及其他 {folders.length - 15} 个收藏夹</div>
         {/if}
       </div>
     {/if}
@@ -87,8 +87,6 @@
 </Modal>
 
 <style>
-  .stats-content { padding: 16px 20px; }
-
   .health-score {
     text-align: center;
     padding: 16px 0 8px;
@@ -165,10 +163,5 @@
   .folder-count {
     color: var(--ai-text-muted);
     white-space: nowrap;
-  }
-  .more-hint {
-    font-size: 10px;
-    color: var(--ai-text-muted);
-    padding: 4px 0;
   }
 </style>

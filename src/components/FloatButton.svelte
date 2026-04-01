@@ -8,7 +8,7 @@
   export let visible = true;
   export let onclick: (() => void) | undefined = undefined;
 
-  let btnEl: HTMLDivElement;
+  let btnEl: HTMLButtonElement;
   let ctx: gsap.Context;
   let dragged = false;
 

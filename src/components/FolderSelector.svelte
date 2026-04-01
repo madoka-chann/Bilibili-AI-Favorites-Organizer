@@ -52,7 +52,7 @@
 
     <div class="folder-list">
       {#each folders as folder (folder.id)}
-        <label class="folder-item" class:selected={selected.has(folder.id)}>
+        <label class="bfao-selectable-item" class:selected={selected.has(folder.id)}>
           <input
             type="checkbox"
             checked={selected.has(folder.id)}
@@ -108,25 +108,6 @@
     max-height: 340px;
     overflow-y: auto;
   }
-
-  .folder-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
-    border: 1.5px solid var(--ai-border);
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    background: var(--ai-bg);
-  }
-  .folder-item:hover { border-color: var(--ai-primary-light); }
-  .folder-item.selected {
-    border-color: var(--ai-primary);
-    background: var(--ai-bg-tertiary);
-  }
-
-  .folder-item input[type="checkbox"] { margin: 0; }
 
   .folder-info { flex: 1; }
   .folder-title {

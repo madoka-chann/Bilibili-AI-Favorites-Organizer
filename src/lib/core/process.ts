@@ -2,54 +2,29 @@ import type { Settings, BiliData, VideoResource, CategoryResult } from '$lib/typ
 import { get } from 'svelte/store';
 import {
   isRunning, cancelRequested, logs,
-  progressPhase, progressCurrent, progressTotal, progressStartTime,
-  resetTokenUsage, tokenUsage,
+  progressStartTime, resetTokenUsage, tokenUsage,
 } from '$lib/stores/state';
 import {
   getSourceMediaId, getAllFoldersWithIds, getMyFolders,
   createFolder, moveVideos, fetchAllVideos, invalidateFolderCache,
 } from '$lib/api/bilibili';
 import { callAI } from '$lib/api/ai-client';
+import { buildSystemPrompt } from '$lib/api/ai-prompt';
 import { estimateCost, formatTokenCount } from '$lib/api/ai-providers';
-import { requestFolderSelect, requestPreviewConfirm } from '$lib/stores/modal-bridge';
+import { folderSelect, requestPreviewConfirm } from '$lib/stores/modal-bridge';
 import { isDeadVideo } from '$lib/utils/dom';
-import { humanDelay, createConcurrencyLimiter } from '$lib/utils/timing';
+import { humanDelay, createConcurrencyLimiter, formatNow } from '$lib/utils/timing';
 import { gmSetValue, gmGetValue } from '$lib/utils/gm';
 import { saveUndoData, type UndoRecord } from '$lib/core/undo';
 import { saveHistoryEntry } from '$lib/core/history';
+import { getErrorMessage } from '$lib/utils/errors';
+import { groupBy } from '$lib/utils/collections';
+import { UNCATEGORIZED_FOLDER } from '$lib/utils/constants';
+import { updateProgress, resetProgress } from '$lib/utils/progress';
 
 // ================= Helpers =================
 
 type CancelCheck = () => boolean;
-
-function updateProgress(phase: string, current: number, total: number) {
-  progressPhase.set(phase as any);
-  progressCurrent.set(current);
-  progressTotal.set(total);
-  const pct = total > 0 ? Math.round((current / total) * 100) : 0;
-  document.title = `[${phase} ${pct}%] B站收藏夹整理`;
-}
-
-function buildSystemPrompt(existingFolderNames: string[], customPrompt: string): string {
-  const existingPart = existingFolderNames.length > 0
-    ? `\n\n【已有收藏夹列表】\n${existingFolderNames.map(n => `• ${n}`).join('\n')}\n\n必须优先使用以上已有收藏夹名！只有当视频完全不适合任何已有分类时，才可新建。`
-    : '';
-
-  const customPart = customPrompt
-    ? `\n\n【用户自定义规则（最高优先级）】\n${customPrompt}`
-    : '';
-
-  return `你是逻辑严密的B站收藏夹视频分类专家。
-
-【任务】
-将以下视频分类到合适的收藏夹。
-
-【规则】
-1. 每个视频必须且只能属于一个分类
-2. 输出纯JSON，格式：{"thoughts":"分析过程","categories":{"收藏夹名":[{"id":数字,"type":数字,"conf":置信度0-1}]}}
-3. conf 表示分类置信度，1.0=非常确定，0.5=不太确定
-4. 绝不遗漏任何视频${existingPart}${customPart}`.trim();
-}
 
 // ================= Phase 1: Resolve source folders =================
 
@@ -60,7 +35,7 @@ async function resolveSourceFolders(
   if (settings.multiFolderEnabled) {
     const allFolders = await getAllFoldersWithIds(biliData);
     logs.add('请在弹出的面板中选择要整理的收藏夹...', 'info');
-    const ids = await requestFolderSelect(allFolders);
+    const ids = await folderSelect.request(allFolders);
     if (ids.length === 0) throw new Error('未选择任何收藏夹');
     return ids;
   }
@@ -174,17 +149,17 @@ async function classifyWithAI(
         if (aiResult?.categories) {
           for (const [catName, vids] of Object.entries(aiResult.categories)) {
             if (!allCategories[catName]) allCategories[catName] = [];
-            allCategories[catName].push(...(vids as any[]));
+            allCategories[catName].push(...vids);
           }
         }
 
         aiCompleted++;
         updateProgress('ai', aiCompleted, totalAiCalls);
         logs.add(`AI 批次 ${idx} 完成`, 'success');
-      } catch (err: any) {
+      } catch (err: unknown) {
         aiCompleted++;
         updateProgress('ai', aiCompleted, totalAiCalls);
-        logs.add(`AI 批次 ${idx} 失败: ${err.message}`, 'error');
+        logs.add(`AI 批次 ${idx} 失败: ${getErrorMessage(err)}`, 'error');
       }
     });
 
@@ -204,18 +179,16 @@ function postProcessCategories(
 ): CategoryResult {
   // Deduplicate within and across categories
   const assignedIds = new Set<string>();
-  for (const [, vids] of Object.entries(allCategories)) {
+  for (const catName of Object.keys(allCategories)) {
+    const vids = allCategories[catName];
     const seen = new Set<string>();
-    const deduped = (vids as any[]).filter((v) => {
+    allCategories[catName] = vids.filter((v) => {
       const key = `${v.id}:${v.type}`;
       if (seen.has(key) || assignedIds.has(key)) return false;
       seen.add(key);
       assignedIds.add(key);
       return true;
     });
-    (allCategories as any)[Object.keys(allCategories).find((k) =>
-      allCategories[k] === vids
-    )!] = deduped;
   }
 
   // Detect missed videos
@@ -224,7 +197,7 @@ function postProcessCategories(
   );
   if (missedVideos.length > 0) {
     logs.add(`发现 ${missedVideos.length} 个遗漏视频，归入「未分类」`, 'warning');
-    allCategories['未分类'] = missedVideos.map((v) => ({
+    allCategories[UNCATEGORIZED_FOLDER] = missedVideos.map((v) => ({
       id: v.id,
       type: v.type,
       conf: 0.3,
@@ -234,15 +207,15 @@ function postProcessCategories(
   // Merge tiny categories
   const tinyCats = Object.entries(allCategories).filter(
     ([name, vids]) =>
-      (vids as any[]).length === 1 &&
+      vids.length === 1 &&
       !existingFoldersMap[name] &&
-      name !== '未分类',
+      name !== UNCATEGORIZED_FOLDER,
   );
   if (tinyCats.length >= 3) {
     logs.add(`合并 ${tinyCats.length} 个碎片分类`, 'info');
-    if (!allCategories['未分类']) allCategories['未分类'] = [];
+    if (!allCategories[UNCATEGORIZED_FOLDER]) allCategories[UNCATEGORIZED_FOLDER] = [];
     for (const [name, vids] of tinyCats) {
-      allCategories['未分类'].push(...(vids as any[]));
+      allCategories[UNCATEGORIZED_FOLDER].push(...vids);
       delete allCategories[name];
     }
   }
@@ -285,31 +258,25 @@ async function moveVideosToFolders(
       try {
         targetFolderId = await createFolder(categoryName, biliData);
         existingFoldersMap[categoryName] = targetFolderId;
-      } catch (e: any) {
-        logs.add(`创建收藏夹「${categoryName}」失败: ${e.message}`, 'error');
+      } catch (e: unknown) {
+        logs.add(`创建收藏夹「${categoryName}」失败: ${getErrorMessage(e)}`, 'error');
         continue;
       }
     }
 
     // Move in chunks
-    const videos = vids as any[];
-    for (let i = 0; i < videos.length; i += settings.moveChunkSize) {
+    for (let i = 0; i < vids.length; i += settings.moveChunkSize) {
       if (isCancelled()) break;
 
-      const chunk = videos.slice(i, i + settings.moveChunkSize);
+      const chunk = vids.slice(i, i + settings.moveChunkSize);
 
       // Group by source
-      const bySource: Record<number, any[]> = {};
-      for (const v of chunk) {
-        const src = videoSourceMap.get(v.id) ?? sourceMediaIds[0];
-        if (!bySource[src]) bySource[src] = [];
-        bySource[src].push(v);
-      }
+      const bySource = groupBy(chunk, (v) => videoSourceMap.get(v.id) ?? sourceMediaIds[0]);
 
       for (const [fromStr, subChunk] of Object.entries(bySource)) {
         const from = Number(fromStr);
         const resourcesStr = subChunk
-          .map((v: any) => `${v.id}:${v.type}`)
+          .map((v) => `${v.id}:${v.type}`)
           .join(',');
         const success = await moveVideos(from, targetFolderId, resourcesStr, biliData);
 
@@ -368,9 +335,10 @@ function emitFinalReport(
   }
 
   if (undoMoves.length > 0) {
+    const { time, timeLocal } = formatNow();
     saveUndoData({
-      time: new Date().toISOString(),
-      timeLocal: new Date().toLocaleString('zh-CN'),
+      time,
+      timeLocal,
       totalVideos: allVideos.length,
       totalCategories: Object.keys(allCategories).length,
       sourceMediaIds,
@@ -379,14 +347,13 @@ function emitFinalReport(
   }
 
   saveHistoryEntry({
-    time: new Date().toLocaleString('zh-CN'),
+    time: formatNow().timeLocal,
     videoCount: allVideos.length,
     categoryCount: Object.keys(allCategories).length,
     categories: Object.keys(allCategories).join(', '),
   });
 
   gmSetValue('bfao_lastRunTime', Math.floor(Date.now() / 1000));
-  document.title = document.title.replace(/^\[.*?\]\s*/, '');
 }
 
 // ================= Main Orchestrator =================
@@ -445,7 +412,7 @@ export async function startProcess(settings: Settings, biliData: BiliData): Prom
     // Phase 5: Preview & confirm
     logs.add(
       `分类结果: ${Object.entries(allCategories)
-        .map(([k, v]) => `${k}(${(v as any[]).length})`)
+        .map(([k, v]) => `${k}(${v.length})`)
         .join(', ')}`,
       'info',
     );
@@ -466,9 +433,6 @@ export async function startProcess(settings: Settings, biliData: BiliData): Prom
   } finally {
     isRunning.set(false);
     cancelRequested.set(false);
-    progressPhase.set('');
-    progressCurrent.set(0);
-    progressTotal.set(0);
-    document.title = document.title.replace(/^\[.*?\]\s*/, '');
+    resetProgress();
   }
 }

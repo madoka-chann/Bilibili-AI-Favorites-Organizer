@@ -1,6 +1,10 @@
-import type { Settings, AIFormat, AIRequestConfig, AIResponseParsed } from '$lib/types';
+import type {
+  Settings, AIFormat, AIRequestConfig,
+  GeminiResponse, OpenAIResponse, AnthropicResponse,
+  GeminiUsageMetadata, StandardUsage,
+} from '$lib/types';
 import { AI_PROVIDERS } from '$lib/utils/constants';
-import { tokenUsage } from '$lib/stores/state';
+import { tokenUsage, logs } from '$lib/stores/state';
 import { get } from 'svelte/store';
 
 // ================= 常量 =================
@@ -17,7 +21,7 @@ export function getProviderBaseUrl(settings: Settings): string {
     let url = (settings.customBaseUrl || '').trim().replace(/\/+$/, '');
     if (url && !/^https?:\/\//i.test(url)) url = 'https://' + url;
     if (url && /^http:\/\//i.test(url) && !/^http:\/\/(localhost|127\.|0\.0\.0\.0)/i.test(url)) {
-      console.warn('[BFAO] 自定义 API 地址使用了 HTTP 而非 HTTPS，存在中间人攻击风险');
+      logs.add('自定义 API 地址使用了 HTTP 而非 HTTPS，存在中间人攻击风险', 'warning');
     }
     return url;
   }
@@ -26,10 +30,17 @@ export function getProviderBaseUrl(settings: Settings): string {
 
 // ================= Request Builders =================
 
+/** 解析 prompt 为 system + user 文本对 (统一入口) */
+function resolvePrompt(prompt: AIPrompt): { system: string; user: string } {
+  if (typeof prompt === 'string') {
+    return { system: FALLBACK_SYSTEM, user: prompt };
+  }
+  return { system: prompt.system ?? FALLBACK_SYSTEM, user: prompt.user };
+}
+
 function buildGeminiRequest(prompt: AIPrompt, s: Settings): AIRequestConfig {
   const base = AI_PROVIDERS.gemini.baseUrl;
-  const userText = typeof prompt === 'string' ? prompt : prompt.user;
-  const systemText = typeof prompt === 'string' ? FALLBACK_SYSTEM : prompt.system;
+  const { system: systemText, user: userText } = resolvePrompt(prompt);
   return {
     url: `${base}/models/${s.modelName}:generateContent?key=${s.apiKey}`,
     method: 'POST',
@@ -42,18 +53,26 @@ function buildGeminiRequest(prompt: AIPrompt, s: Settings): AIRequestConfig {
   };
 }
 
-function buildOpenAIRequest(prompt: AIPrompt, s: Settings): AIRequestConfig {
-  const baseUrl = getProviderBaseUrl(s);
+/** 构建 OpenAI 兼容格式的消息列表 (复用 resolvePrompt) */
+function buildChatMessages(
+  prompt: AIPrompt,
+): Array<{ role: string; content: string }> {
+  const { system, user } = resolvePrompt(prompt);
   const messages: Array<{ role: string; content: string }> = [];
-  if (typeof prompt === 'string') {
-    messages.push({ role: 'system', content: FALLBACK_SYSTEM });
-    messages.push({ role: 'user', content: prompt });
-  } else {
-    if (prompt.system) messages.push({ role: 'system', content: prompt.system });
-    messages.push({ role: 'user', content: prompt.user });
-  }
+  if (system) messages.push({ role: 'system', content: system });
+  messages.push({ role: 'user', content: user });
+  return messages;
+}
+
+/** 构建 OpenAI 兼容格式请求 (OpenAI / GitHub / 第三方) */
+function buildChatCompletionRequest(
+  prompt: AIPrompt,
+  s: Settings,
+  baseUrl: string,
+  endpoint: string,
+): AIRequestConfig {
   return {
-    url: `${baseUrl}/chat/completions`,
+    url: `${baseUrl}${endpoint}`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -61,17 +80,20 @@ function buildOpenAIRequest(prompt: AIPrompt, s: Settings): AIRequestConfig {
     },
     body: JSON.stringify({
       model: s.modelName,
-      messages,
+      messages: buildChatMessages(prompt),
       temperature: 0.1,
       response_format: { type: 'json_object' },
     }),
   };
 }
 
+function buildOpenAIRequest(prompt: AIPrompt, s: Settings): AIRequestConfig {
+  return buildChatCompletionRequest(prompt, s, getProviderBaseUrl(s), '/chat/completions');
+}
+
 function buildAnthropicRequest(prompt: AIPrompt, s: Settings): AIRequestConfig {
   const base = AI_PROVIDERS.anthropic.baseUrl;
-  const userText = typeof prompt === 'string' ? prompt : prompt.user;
-  const systemText = typeof prompt === 'string' ? FALLBACK_SYSTEM : prompt.system;
+  const { system: systemText, user: userText } = resolvePrompt(prompt);
   return {
     url: `${base}/v1/messages`,
     method: 'POST',
@@ -92,79 +114,55 @@ function buildAnthropicRequest(prompt: AIPrompt, s: Settings): AIRequestConfig {
 }
 
 function buildGitHubRequest(prompt: AIPrompt, s: Settings): AIRequestConfig {
-  const messages: Array<{ role: string; content: string }> = [];
-  if (typeof prompt === 'string') {
-    messages.push({ role: 'system', content: FALLBACK_SYSTEM });
-    messages.push({ role: 'user', content: prompt });
-  } else {
-    if (prompt.system) messages.push({ role: 'system', content: prompt.system });
-    messages.push({ role: 'user', content: prompt.user });
-  }
-  return {
-    url: `${AI_PROVIDERS.github.baseUrl}/inference/chat/completions`,
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${s.apiKey}`,
-    },
-    body: JSON.stringify({
-      model: s.modelName,
-      messages,
-      temperature: 0.1,
-      response_format: { type: 'json_object' },
-    }),
-  };
+  return buildChatCompletionRequest(
+    prompt, s, AI_PROVIDERS.github.baseUrl, '/inference/chat/completions',
+  );
 }
 
 // ================= Response Parsers =================
 
-function trackTokenUsageFromResponse(responseJson: any, format: AIFormat): void {
-  try {
-    let usage: any = null;
-    if (format === 'gemini') {
-      usage = responseJson.usageMetadata;
-    } else {
-      usage = responseJson.usage;
-    }
-    if (!usage) return;
-
-    tokenUsage.update((u) => {
-      const next = { ...u, callCount: u.callCount + 1 };
-      if (format === 'gemini') {
-        next.promptTokens += usage.promptTokenCount || 0;
-        next.completionTokens += usage.candidatesTokenCount || 0;
-        next.totalTokens += usage.totalTokenCount || 0;
-      } else {
-        next.promptTokens += usage.prompt_tokens || usage.input_tokens || 0;
-        next.completionTokens += usage.completion_tokens || usage.output_tokens || 0;
-        next.totalTokens +=
-          usage.total_tokens ||
-          (usage.input_tokens || 0) + (usage.output_tokens || 0) ||
-          0;
-      }
-      return next;
-    });
-  } catch {
-    /* 静默失败 */
-  }
+/** 统一 token 用量追踪 — 同时兼容 Gemini 与 OpenAI/Anthropic 字段命名 */
+function trackUsage(input: number, output: number, total?: number): void {
+  tokenUsage.update((u) => ({
+    ...u,
+    callCount: u.callCount + 1,
+    promptTokens: u.promptTokens + input,
+    completionTokens: u.completionTokens + output,
+    totalTokens: u.totalTokens + (total ?? (input + output)),
+  }));
 }
 
 function parseGeminiResponse(text: string): string {
-  const json = JSON.parse(text);
-  trackTokenUsageFromResponse(json, 'gemini');
-  return json.candidates[0].content.parts[0].text;
+  const json: GeminiResponse = JSON.parse(text);
+  if (json.usageMetadata) {
+    const u = json.usageMetadata;
+    trackUsage(u.promptTokenCount ?? 0, u.candidatesTokenCount ?? 0, u.totalTokenCount);
+  }
+  const content = json.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!content) throw new Error('Gemini 响应结构异常: 未找到有效内容');
+  return content;
 }
 
 function parseOpenAIResponse(text: string): string {
-  const json = JSON.parse(text);
-  trackTokenUsageFromResponse(json, 'openai');
-  return json.choices[0].message.content;
+  const json: OpenAIResponse = JSON.parse(text);
+  if (json.usage) {
+    const u = json.usage;
+    trackUsage(u.prompt_tokens ?? u.input_tokens ?? 0, u.completion_tokens ?? u.output_tokens ?? 0, u.total_tokens);
+  }
+  const content = json.choices?.[0]?.message?.content;
+  if (!content) throw new Error('OpenAI 响应结构异常: 未找到有效内容');
+  return content;
 }
 
 function parseAnthropicResponse(text: string): string {
-  const json = JSON.parse(text);
-  trackTokenUsageFromResponse(json, 'anthropic');
-  return json.content[0].text;
+  const json: AnthropicResponse = JSON.parse(text);
+  if (json.usage) {
+    const u = json.usage;
+    trackUsage(u.prompt_tokens ?? u.input_tokens ?? 0, u.completion_tokens ?? u.output_tokens ?? 0, u.total_tokens);
+  }
+  const content = json.content?.[0]?.text;
+  if (!content) throw new Error('Anthropic 响应结构异常: 未找到有效内容');
+  return content;
 }
 
 // ================= 注册表 =================
@@ -191,8 +189,8 @@ export { REQUEST_BUILDERS, RESPONSE_PARSERS };
 // ================= Token 格式化 =================
 
 export function formatTokenCount(n: number): string {
-  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M';
-  if (n >= 1_000) return (n / 1_000).toFixed(1) + 'K';
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
+  if (n >= 1_000) return (n / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
   return String(n);
 }
 

@@ -3,51 +3,24 @@ import type { Settings } from '$lib/types';
 import { DEFAULT_SETTINGS } from '$lib/types';
 import { gmGetValue, gmSetValue } from '$lib/utils/gm';
 
-/** 从 GM_getValue 加载所有设置 */
-function loadFromStorage(): Settings {
-  const provider = gmGetValue('bfao_provider', DEFAULT_SETTINGS.provider);
-  const apiKey =
-    gmGetValue('bfao_apiKey_' + provider, '') ||
-    gmGetValue('bfao_apiKey', '');
+/** 所有持久化键 — 从 DEFAULT_SETTINGS 自动推导，避免手动维护 */
+const SETTINGS_KEYS = Object.keys(DEFAULT_SETTINGS) as (keyof Settings)[];
 
-  return {
-    provider,
-    customBaseUrl: gmGetValue('bfao_customBaseUrl', DEFAULT_SETTINGS.customBaseUrl),
-    apiKey,
-    modelName: gmGetValue('bfao_modelName', DEFAULT_SETTINGS.modelName),
-    aiChunkSize: gmGetValue('bfao_aiChunkSize', DEFAULT_SETTINGS.aiChunkSize),
-    aiConcurrency: gmGetValue('bfao_aiConcurrency', DEFAULT_SETTINGS.aiConcurrency),
-    limitEnabled: gmGetValue('bfao_limitEnabled', DEFAULT_SETTINGS.limitEnabled),
-    limitCount: gmGetValue('bfao_limitCount', DEFAULT_SETTINGS.limitCount),
-    fetchDelay: gmGetValue('bfao_fetchDelay', DEFAULT_SETTINGS.fetchDelay),
-    writeDelay: gmGetValue('bfao_writeDelay', DEFAULT_SETTINGS.writeDelay),
-    moveChunkSize: gmGetValue('bfao_moveChunkSize', DEFAULT_SETTINGS.moveChunkSize),
-    skipDeadVideos: gmGetValue('bfao_skipDeadVideos', DEFAULT_SETTINGS.skipDeadVideos),
-    lastPrompt: gmGetValue('bfao_lastPrompt', DEFAULT_SETTINGS.lastPrompt),
-    adaptiveRate: gmGetValue('bfao_adaptiveRate', DEFAULT_SETTINGS.adaptiveRate),
-    notifyOnComplete: gmGetValue('bfao_notifyOnComplete', DEFAULT_SETTINGS.notifyOnComplete),
-    multiFolderEnabled: gmGetValue('bfao_multiFolderEnabled', DEFAULT_SETTINGS.multiFolderEnabled),
-    animEnabled: gmGetValue('bfao_animEnabled', DEFAULT_SETTINGS.animEnabled),
-    incrementalMode: gmGetValue('bfao_incrementalMode', DEFAULT_SETTINGS.incrementalMode),
-    batchRestInterval: gmGetValue('bfao_batchRestInterval', DEFAULT_SETTINGS.batchRestInterval),
-    batchRestMinutes: gmGetValue('bfao_batchRestMinutes', DEFAULT_SETTINGS.batchRestMinutes),
-    bgCacheEnabled: gmGetValue('bfao_bgCacheEnabled', DEFAULT_SETTINGS.bgCacheEnabled),
-    cacheScanInterval: gmGetValue('bfao_cacheScanInterval', DEFAULT_SETTINGS.cacheScanInterval),
-  };
+/** 从 GM_getValue 加载所有设置 (数据驱动，无需逐字段手写) */
+function loadFromStorage(): Settings {
+  const entries = SETTINGS_KEYS.map(
+    (key) => [key, gmGetValue('bfao_' + key, DEFAULT_SETTINGS[key])] as const,
+  );
+  const result = Object.fromEntries(entries) as Settings;
+  // apiKey 按服务商隔离存储，优先读取当前服务商的 Key
+  const providerKey = gmGetValue('bfao_apiKey_' + result.provider, '');
+  if (providerKey) result.apiKey = providerKey;
+  return result;
 }
 
 /** 保存设置到 GM_setValue */
 function saveToStorage(s: Settings): void {
-  const keys: (keyof Settings)[] = [
-    'provider', 'customBaseUrl', 'apiKey', 'modelName',
-    'aiChunkSize', 'aiConcurrency', 'limitEnabled', 'limitCount',
-    'fetchDelay', 'writeDelay', 'moveChunkSize', 'skipDeadVideos',
-    'lastPrompt', 'adaptiveRate', 'notifyOnComplete',
-    'multiFolderEnabled', 'animEnabled', 'incrementalMode',
-    'batchRestInterval', 'batchRestMinutes',
-    'bgCacheEnabled', 'cacheScanInterval',
-  ];
-  for (const k of keys) {
+  for (const k of SETTINGS_KEYS) {
     if (s[k] !== undefined) {
       gmSetValue('bfao_' + k, s[k]);
     }

@@ -1,27 +1,5 @@
 import type { AIProviderRegistry, SpeedPreset, ChunkPreset, PromptPreset } from '$lib/types';
 
-// ================= 时间常量 =================
-export const VIDEO_CACHE_TTL = 300_000; // 5 分钟
-export const AI_TIMEOUT_MS = 120_000; // 2 分钟
-export const FETCH_TIMEOUT_MS = 30_000; // 30 秒
-export const SAFETY_TIMEOUT_MS = 30 * 60 * 1000; // 30 分钟
-export const DEBOUNCE_DELAY_MS = 400;
-
-// ================= 分页与限制 =================
-export const BILIBILI_PAGE_SIZE = 40;
-export const MAX_UNDO_HISTORY = 5;
-export const MAX_TOAST_COUNT = 5;
-export const MAX_CANVAS_FX = 1; // 从 6 减少到 1
-
-// ================= Z-Index =================
-export const Z_INDEX = {
-  FLOAT: 2147483640,
-  PANEL: 2147483641,
-  MODAL: 2147483645,
-  PARTICLE: 2147483646,
-  TOAST: 2147483647,
-} as const;
-
 // ================= AI 服务商注册表 =================
 export const AI_PROVIDERS: AIProviderRegistry = {
   gemini: {
@@ -131,6 +109,9 @@ export const AI_PROVIDERS: AIProviderRegistry = {
   },
 };
 
+// ================= AI 相关超时 =================
+export const AI_TIMEOUT_MS = 120_000; // 2 分钟
+
 // ================= 速度预设 =================
 export const SPEED_PRESETS: SpeedPreset[] = [
   { label: '○  安全 (1.5s)', value: 1500, desc: '大收藏夹推荐，几乎不会触发风控' },
@@ -155,16 +136,4 @@ export const BUILTIN_PRESETS: PromptPreset[] = [
   { label: '精细分类 (多级)', value: '请尽量精细分类，同一大类下如果视频较多可拆分子类。例如"游戏"可细分为"单机游戏"、"网络游戏"、"手游"等。收藏夹名格式：大类-子类' },
   { label: '按语言/地区分类', value: '请按视频的语言或内容地区分类，如国产、日本动画、欧美、韩国等。同一地区内可按类型细分' },
   { label: '待看优先级', value: '请按视频的观看价值和紧迫程度分类为：必看精品、有空再看、背景音/BGM、已过时可清理。重点参考播放量和收藏时间判断' },
-];
-
-// ================= Confetti 颜色 =================
-export const CONFETTI_COLORS = [
-  '#7C5CFC', '#FF6B8A', '#A855F7', '#06B6D4',
-  '#10B981', '#F59E0B', '#F43F5E', '#D946EF',
-  '#FB7185', '#FBBF24', '#B4A0FF', '#34D399',
-];
-
-// ================= 极光颜色 (用于粒子/Canvas) =================
-export const AURORA_COLORS = [
-  '#B4A0FF', '#FF6B8A', '#22D3EE', '#34D399', '#E879F9', '#FBBF24',
 ];
