@@ -19,6 +19,12 @@ export default defineConfig({
         author: 'B站-是小圆_喲 & 感谢b站某不知名的根号三提供的最初模板',
         match: ['*://*.bilibili.com/*'],
         'run-at': 'document-idle',
+        require: [
+          'https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js',
+          'https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/Flip.min.js',
+          'https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/Draggable.min.js',
+          'https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/CustomEase.min.js',
+        ],
         grant: [
           'GM_xmlhttpRequest',
           'GM_getValue',
@@ -43,10 +49,7 @@ export default defineConfig({
       },
       build: {
         externalGlobals: {
-          gsap: cdn.jsdelivr('gsap', 'dist/gsap.min.js'),
-          'gsap/Flip': cdn.jsdelivr('gsap', 'dist/Flip.min.js'),
-          'gsap/Draggable': cdn.jsdelivr('gsap', 'dist/Draggable.min.js'),
-          'gsap/CustomEase': cdn.jsdelivr('gsap', 'dist/CustomEase.min.js'),
+          gsap: 'gsap',
         },
       },
     }),

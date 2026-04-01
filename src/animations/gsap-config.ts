@@ -1,10 +1,15 @@
 import gsap from 'gsap';
-import { Flip } from 'gsap/Flip';
-import { Draggable } from 'gsap/Draggable';
-import { CustomEase } from 'gsap/CustomEase';
 import { get } from 'svelte/store';
 import { prefersReducedMotion } from '$lib/stores/theme';
 import { settings } from '$lib/stores/settings';
+
+// ================= 插件获取 (CDN 全局变量) =================
+// GSAP 插件通过 CDN @require 加载，注册为 window 全局变量
+// 不使用 ESM 子路径导入 (import { Flip } from 'gsap/Flip')
+// 因为 IIFE 外部化会将命名导入编译为 Flip.Flip 而 UMD 全局不支持此模式
+const Flip = (globalThis as any).Flip as typeof import('gsap/Flip').Flip;
+const Draggable = (globalThis as any).Draggable as typeof import('gsap/Draggable').Draggable;
+const CustomEase = (globalThis as any).CustomEase as typeof import('gsap/CustomEase').CustomEase;
 
 // ================= 插件注册 =================
 gsap.registerPlugin(Flip, Draggable, CustomEase);
