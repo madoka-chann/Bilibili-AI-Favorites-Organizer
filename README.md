@@ -1,12 +1,19 @@
 # Bilibili 收藏夹 AI 智能整理器
 
 
-非常早期的版本演示视频，现在在抽空重构，后面做成一站式的收藏夹管理系统，
+现在在抽空重构，后面做成一站式的收藏夹管理系统，
 
 顺便接管下b站原生的收藏夹搜索和收藏按钮，应该会做成浏览器扩展。
 
 <img width="3782" height="1755" alt="image" src="https://github.com/user-attachments/assets/205cd6c1-48b2-4fb3-b34c-daba9ac1a5c1" />
 
+
+### 小demo
+
+https://github.com/user-attachments/assets/667ee058-fe73-4ca6-a6f1-511bae2ba299
+
+
+### 非常早期的版本演示视频
 
 https://github.com/user-attachments/assets/f23b1fa1-7da2-4f5e-b2c1-ab46e784517c
 
