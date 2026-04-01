@@ -1,7 +1,7 @@
 <script lang="ts">
   import Modal from './Modal.svelte';
   import { Copy } from 'lucide-svelte';
-  import type { DuplicateEntry } from '$lib/core/duplicates';
+  import type { DuplicateEntry } from '$core/duplicates';
 
   export let duplicates: DuplicateEntry[];
   export let ondedup: (() => void) | undefined = undefined;

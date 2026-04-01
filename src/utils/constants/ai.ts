@@ -1,4 +1,4 @@
-import type { AIProviderRegistry, SpeedPreset, ChunkPreset, PromptPreset } from '$lib/types';
+import type { AIProviderRegistry, SpeedPreset, ChunkPreset, PromptPreset } from '$types/index';
 
 // ================= AI 服务商注册表 =================
 export const AI_PROVIDERS: AIProviderRegistry = {

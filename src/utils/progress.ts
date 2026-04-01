@@ -5,7 +5,7 @@
 import {
   progressPhase, progressCurrent, progressTotal,
   type ProgressPhase,
-} from '$lib/stores/state';
+} from '$stores/state';
 
 /** 更新进度状态并同步到文档标题 */
 export function updateProgress(phase: ProgressPhase, current: number, total: number): void {

@@ -2,9 +2,9 @@ import type {
   Settings, AIFormat, AIRequestConfig,
   GeminiResponse, OpenAIResponse, AnthropicResponse,
   GeminiUsageMetadata, StandardUsage,
-} from '$lib/types';
-import { AI_PROVIDERS } from '$lib/utils/constants';
-import { tokenUsage, logs } from '$lib/stores/state';
+} from '$types/index';
+import { AI_PROVIDERS } from '$utils/constants';
+import { tokenUsage, logs } from '$stores/state';
 import { get } from 'svelte/store';
 
 // ================= 常量 =================

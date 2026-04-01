@@ -2,10 +2,10 @@
  * B站收藏夹操作 (列表查询 + 创建 + 缓存)
  */
 
-import type { BiliData, FavFolder, BiliFolderListData, BiliCreateFolderData } from '$lib/types';
-import { BILIBILI_URLS, DEFAULT_FOLDER_TITLE } from '$lib/utils/constants';
-import { humanDelay } from '$lib/utils/timing';
-import { logs } from '$lib/stores/state';
+import type { BiliData, FavFolder, BiliFolderListData, BiliCreateFolderData } from '$types/index';
+import { BILIBILI_URLS, DEFAULT_FOLDER_TITLE } from '$utils/constants';
+import { humanDelay } from '$utils/timing';
+import { logs } from '$stores/state';
 import { lightFetchJson, postBiliApi, buildFormData } from './bilibili-http';
 
 // ================= 文件夹列表 (带缓存) =================

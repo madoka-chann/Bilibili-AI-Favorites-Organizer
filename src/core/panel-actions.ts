@@ -4,21 +4,21 @@
  */
 
 import { get } from 'svelte/store';
-import type { Settings, FavFolder } from '$lib/types';
-import { isRunning, cancelRequested, logs } from '$lib/stores/state';
-import { settings } from '$lib/stores/settings';
-import { getBiliData, getSourceMediaId, getAllFoldersWithIds } from '$lib/api/bilibili';
-import { startProcess } from '$lib/core/process';
-import { exportLogs } from '$lib/core/export-logs';
-import { backupFavorites, downloadBackupFile } from '$lib/core/backup';
-import { loadUndoHistory, undoOperation } from '$lib/core/undo';
-import { scanDeadVideos, archiveDeadVideos, deleteDeadVideos } from '$lib/core/dead-videos';
-import type { DeadVideoEntry } from '$lib/core/dead-videos';
-import { scanDuplicates, deduplicateVideos } from '$lib/core/duplicates';
-import type { DuplicateEntry } from '$lib/core/duplicates';
-import { loadHistory, clearHistory } from '$lib/core/history';
-import { getErrorMessage } from '$lib/utils/errors';
-import { withRunningState } from '$lib/utils/running-state';
+import type { Settings, FavFolder } from '$types/index';
+import { isRunning, cancelRequested, logs } from '$stores/state';
+import { settings } from '$stores/settings';
+import { getBiliData, getSourceMediaId, getAllFoldersWithIds } from '$api/bilibili';
+import { startProcess } from '$core/process';
+import { exportLogs } from '$core/export-logs';
+import { backupFavorites, downloadBackupFile } from '$core/backup';
+import { loadUndoHistory, undoOperation } from '$core/undo';
+import { scanDeadVideos, archiveDeadVideos, deleteDeadVideos } from '$core/dead-videos';
+import type { DeadVideoEntry } from '$core/dead-videos';
+import { scanDuplicates, deduplicateVideos } from '$core/duplicates';
+import type { DuplicateEntry } from '$core/duplicates';
+import { loadHistory, clearHistory } from '$core/history';
+import { getErrorMessage } from '$utils/errors';
+import { withRunningState } from '$utils/running-state';
 
 // ================= Auth Helper =================
 
@@ -37,7 +37,7 @@ export function ensureBiliData() {
  */
 async function withAuthAndRunning<T>(
   fallback: T,
-  action: (biliData: import('$lib/types').BiliData, s: Settings) => Promise<T>,
+  action: (biliData: import('$types/index').BiliData, s: Settings) => Promise<T>,
   opts?: { trackCancel?: boolean },
 ): Promise<T> {
   const biliData = ensureBiliData();

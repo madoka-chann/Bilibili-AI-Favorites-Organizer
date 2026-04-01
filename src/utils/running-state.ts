@@ -1,4 +1,4 @@
-import { isRunning, cancelRequested } from '$lib/stores/state';
+import { isRunning, cancelRequested } from '$stores/state';
 
 interface RunningStateOptions {
   /** 是否同时管理 cancelRequested (默认 false) */

@@ -1,13 +1,13 @@
 <script lang="ts">
   import '$styles/forms.css';
-  import { settings } from '$lib/stores/settings';
-  import { AI_PROVIDERS } from '$lib/utils/constants';
-  import { fetchModelList } from '$lib/api/ai-client';
-  import { logs } from '$lib/stores/state';
+  import { settings } from '$stores/settings';
+  import { AI_PROVIDERS } from '$utils/constants';
+  import { fetchModelList } from '$api/ai-client';
+  import { logs } from '$stores/state';
   import { Eye, EyeOff, RefreshCw, ExternalLink } from 'lucide-svelte';
-  import { getErrorMessage } from '$lib/utils/errors';
+  import { getErrorMessage } from '$utils/errors';
   import { focusGlow } from '$animations/micro';
-  import type { AIProviderId } from '$lib/types';
+  import type { AIProviderId } from '$types/index';
 
   let showApiKey = false;
   let modelLoading = false;

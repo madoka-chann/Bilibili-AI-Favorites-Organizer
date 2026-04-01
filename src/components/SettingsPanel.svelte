@@ -1,7 +1,7 @@
 <script lang="ts">
   import '$styles/forms.css';
-  import { settings } from '$lib/stores/settings';
-  import { SPEED_PRESETS, AI_CHUNK_PRESETS } from '$lib/utils/constants';
+  import { settings } from '$stores/settings';
+  import { SPEED_PRESETS, AI_CHUNK_PRESETS } from '$utils/constants';
   import SettingsGroup from './SettingsGroup.svelte';
   import ProviderConfig from './ProviderConfig.svelte';
   import LiquidToggle from './LiquidToggle.svelte';

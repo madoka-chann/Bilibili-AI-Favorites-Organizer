@@ -1,7 +1,7 @@
 <script lang="ts">
   import { tweened } from 'svelte/motion';
   import { cubicOut } from 'svelte/easing';
-  import { progressPercent, progressPhase, isRunning } from '$lib/stores/state';
+  import { progressPercent, progressPhase, isRunning } from '$stores/state';
   import {
     spawnTrailParticles,
     phaseTransition,

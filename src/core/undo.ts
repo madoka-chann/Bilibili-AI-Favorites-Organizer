@@ -1,12 +1,12 @@
 import { get } from 'svelte/store';
-import type { BiliData } from '$lib/types';
-import { cancelRequested, logs } from '$lib/stores/state';
-import { moveVideos, invalidateFolderCache } from '$lib/api/bilibili';
-import { humanDelay } from '$lib/utils/timing';
-import { gmGetValue, gmSetValue } from '$lib/utils/gm';
-import { MAX_UNDO_HISTORY } from '$lib/utils/constants';
-import { getErrorMessage } from '$lib/utils/errors';
-import { withRunningState } from '$lib/utils/running-state';
+import type { BiliData } from '$types/index';
+import { cancelRequested, logs } from '$stores/state';
+import { moveVideos, invalidateFolderCache } from '$api/bilibili';
+import { humanDelay } from '$utils/timing';
+import { gmGetValue, gmSetValue } from '$utils/gm';
+import { MAX_UNDO_HISTORY } from '$utils/constants';
+import { getErrorMessage } from '$utils/errors';
+import { withRunningState } from '$utils/running-state';
 
 export interface UndoRecord {
   time: string;

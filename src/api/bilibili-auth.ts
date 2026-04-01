@@ -2,7 +2,7 @@
  * B站认证与页面上下文
  */
 
-import type { BiliData } from '$lib/types';
+import type { BiliData } from '$types/index';
 
 /** 从 cookie 提取用户 mid (不依赖 Svelte stores，后台缓存可安全使用) */
 export function getMidFromCookie(): string {

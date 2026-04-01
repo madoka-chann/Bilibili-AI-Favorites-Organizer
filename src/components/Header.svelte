@@ -1,6 +1,6 @@
 <script lang="ts">
   import { X, Settings, Moon, Sun } from 'lucide-svelte';
-  import { isDark, toggleTheme } from '$lib/stores/theme';
+  import { isDark, toggleTheme } from '$stores/theme';
   import { ripple } from '$actions/ripple';
   import { pressEffect } from '$animations/micro';
 

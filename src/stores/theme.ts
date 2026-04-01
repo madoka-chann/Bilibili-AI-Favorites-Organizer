@@ -1,5 +1,5 @@
 import { writable, derived } from 'svelte/store';
-import { gmGetValue, gmSetValue } from '$lib/utils/gm';
+import { gmGetValue, gmSetValue } from '$utils/gm';
 
 export type ThemeMode = 'light' | 'dark' | 'auto';
 

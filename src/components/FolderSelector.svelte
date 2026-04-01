@@ -1,7 +1,7 @@
 <script lang="ts">
   import Modal from './Modal.svelte';
   import { FolderOpen, CheckSquare, Square } from 'lucide-svelte';
-  import type { FavFolder } from '$lib/types';
+  import type { FavFolder } from '$types/index';
 
   export let folders: FavFolder[] = [];
   export let onconfirm: ((ids: number[]) => void) | undefined = undefined;

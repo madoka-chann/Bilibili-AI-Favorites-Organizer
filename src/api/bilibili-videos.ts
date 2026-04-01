@@ -2,11 +2,11 @@
  * B站视频操作 (移动 / 删除 / 拉取)
  */
 
-import type { BiliData, VideoResource, BiliApiResponse, BiliFavResourceData } from '$lib/types';
-import { BILIBILI_PAGE_SIZE, BILIBILI_URLS } from '$lib/utils/constants';
-import { humanDelay } from '$lib/utils/timing';
-import { logs } from '$lib/stores/state';
-import { getErrorMessage } from '$lib/utils/errors';
+import type { BiliData, VideoResource, BiliApiResponse, BiliFavResourceData } from '$types/index';
+import { BILIBILI_PAGE_SIZE, BILIBILI_URLS } from '$utils/constants';
+import { humanDelay } from '$utils/timing';
+import { logs } from '$stores/state';
+import { getErrorMessage } from '$utils/errors';
 import { postBiliApi, buildFormData, safeFetchJson } from './bilibili-http';
 
 // ================= 移动视频 =================

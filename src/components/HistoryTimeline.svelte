@@ -1,7 +1,7 @@
 <script lang="ts">
   import Modal from './Modal.svelte';
   import { Clock, Trash2 } from 'lucide-svelte';
-  import type { HistoryEntry } from '$lib/core/history';
+  import type { HistoryEntry } from '$core/history';
 
   export let history: HistoryEntry[];
   export let onclear: (() => void) | undefined = undefined;

@@ -15,7 +15,11 @@
     "types": ["vite-plugin-monkey/client"],
     "baseUrl": ".",
     "paths": {
-      "$lib/*": ["src/lib/*"],
+      "$api/*": ["src/api/*"],
+      "$core/*": ["src/core/*"],
+      "$stores/*": ["src/stores/*"],
+      "$types/*": ["src/types/*"],
+      "$utils/*": ["src/utils/*"],
       "$components/*": ["src/components/*"],
       "$animations/*": ["src/animations/*"],
       "$actions/*": ["src/actions/*"]

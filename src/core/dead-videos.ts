@@ -1,14 +1,14 @@
 import { get } from 'svelte/store';
-import type { BiliData } from '$lib/types';
-import { cancelRequested, logs } from '$lib/stores/state';
+import type { BiliData } from '$types/index';
+import { cancelRequested, logs } from '$stores/state';
 import {
   getMyFolders, createFolder,
   moveVideos, batchDeleteVideos, scanAllFolderVideos,
-} from '$lib/api/bilibili';
-import { humanDelay } from '$lib/utils/timing';
-import { isDeadVideo } from '$lib/utils/dom';
-import { groupBy } from '$lib/utils/collections';
-import { DEAD_ARCHIVE_FOLDER, DEFAULT_VIDEO_TYPE } from '$lib/utils/constants';
+} from '$api/bilibili';
+import { humanDelay } from '$utils/timing';
+import { isDeadVideo } from '$utils/dom';
+import { groupBy } from '$utils/collections';
+import { DEAD_ARCHIVE_FOLDER, DEFAULT_VIDEO_TYPE } from '$utils/constants';
 
 export interface DeadVideoEntry {
   id: number;

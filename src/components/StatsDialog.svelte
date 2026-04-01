@@ -1,7 +1,7 @@
 <script lang="ts">
   import Modal from './Modal.svelte';
   import { BarChart3, Heart } from 'lucide-svelte';
-  import type { FavFolder } from '$lib/types';
+  import type { FavFolder } from '$types/index';
   import { numberRoll } from '$animations/text';
 
   export let folders: FavFolder[];

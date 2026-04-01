@@ -1,7 +1,7 @@
 import { writable, get } from 'svelte/store';
-import type { Settings } from '$lib/types';
-import { DEFAULT_SETTINGS } from '$lib/types';
-import { gmGetValue, gmSetValue } from '$lib/utils/gm';
+import type { Settings } from '$types/index';
+import { DEFAULT_SETTINGS } from '$types/index';
+import { gmGetValue, gmSetValue } from '$utils/gm';
 
 /** 所有持久化键 — 从 DEFAULT_SETTINGS 自动推导，避免手动维护 */
 const SETTINGS_KEYS = Object.keys(DEFAULT_SETTINGS) as (keyof Settings)[];

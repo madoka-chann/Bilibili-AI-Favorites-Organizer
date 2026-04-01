@@ -1,7 +1,7 @@
 import gsap from 'gsap';
 import { get } from 'svelte/store';
-import { prefersReducedMotion } from '$lib/stores/theme';
-import { settings } from '$lib/stores/settings';
+import { prefersReducedMotion } from '$stores/theme';
+import { settings } from '$stores/settings';
 
 // ================= 插件获取 (CDN 全局变量) =================
 // GSAP 插件通过 CDN @require 加载，注册为 window 全局变量

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { logs } from '$lib/stores/state';
+  import { logs } from '$stores/state';
   import { onMount, tick } from 'svelte';
   import { textDecode } from '$animations/text';
 

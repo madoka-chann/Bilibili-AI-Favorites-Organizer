@@ -1,9 +1,9 @@
 import { get } from 'svelte/store';
-import type { BiliData } from '$lib/types';
-import { cancelRequested, logs } from '$lib/stores/state';
-import { batchDeleteVideos, scanAllFolderVideos } from '$lib/api/bilibili';
-import { humanDelay } from '$lib/utils/timing';
-import { DEFAULT_VIDEO_TYPE } from '$lib/utils/constants';
+import type { BiliData } from '$types/index';
+import { cancelRequested, logs } from '$stores/state';
+import { batchDeleteVideos, scanAllFolderVideos } from '$api/bilibili';
+import { humanDelay } from '$utils/timing';
+import { DEFAULT_VIDEO_TYPE } from '$utils/constants';
 
 interface VideoFolderRecord {
   folderTitle: string;

@@ -1,6 +1,6 @@
 import { get } from 'svelte/store';
-import { logs } from '$lib/stores/state';
-import { triggerDownload } from '$lib/utils/download';
+import { logs } from '$stores/state';
+import { triggerDownload } from '$utils/download';
 
 /** 导出日志为 .txt 文件下载 */
 export function exportLogs(): void {

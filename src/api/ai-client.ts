@@ -1,13 +1,13 @@
 import type {
   Settings, AIFormat, AIClassificationResult,
   GeminiModelEntry, ModelEntry,
-} from '$lib/types';
-import { AI_PROVIDERS, AI_TIMEOUT_MS } from '$lib/utils/constants';
-import { gmXmlHttpRequest, gmFetch } from '$lib/utils/gm';
-import { sleep, backoffMs } from '$lib/utils/timing';
-import { logs } from '$lib/stores/state';
-import { getErrorMessage } from '$lib/utils/errors';
-import { extractJsonObject } from '$lib/utils/json-extract';
+} from '$types/index';
+import { AI_PROVIDERS, AI_TIMEOUT_MS } from '$utils/constants';
+import { gmXmlHttpRequest, gmFetch } from '$utils/gm';
+import { sleep, backoffMs } from '$utils/timing';
+import { logs } from '$stores/state';
+import { getErrorMessage } from '$utils/errors';
+import { extractJsonObject } from '$utils/json-extract';
 import {
   REQUEST_BUILDERS,
   RESPONSE_PARSERS,

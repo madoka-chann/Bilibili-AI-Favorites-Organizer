@@ -2,7 +2,7 @@
   import { onMount, tick } from 'svelte';
   import { gsap, Flip, EASINGS } from '$animations/gsap-config';
   import { shouldAnimateFunctional, shouldAnimate } from '$animations/gsap-config';
-  import { Z_INDEX, MAX_TOAST_COUNT } from '$lib/utils/constants';
+  import { Z_INDEX, MAX_TOAST_COUNT } from '$utils/constants';
 
   interface ToastItem {
     id: number;

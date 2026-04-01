@@ -3,7 +3,7 @@
   import { gsap, EASINGS } from '$animations/gsap-config';
   import { shouldAnimateFunctional, shouldAnimate } from '$animations/gsap-config';
   import { X } from 'lucide-svelte';
-  import { Z_INDEX } from '$lib/utils/constants';
+  import { Z_INDEX } from '$utils/constants';
 
   export let title: string = '';
   export let showFooter: boolean = true;

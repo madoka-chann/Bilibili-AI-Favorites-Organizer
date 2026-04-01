@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { isRunning, cancelRequested } from '$lib/stores/state';
+  import { isRunning, cancelRequested } from '$stores/state';
   import {
     Play, Square, Archive, Copy, Undo2, Download,
     BarChart3, Heart, FileText, HelpCircle, History,

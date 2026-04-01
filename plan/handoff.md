@@ -39,6 +39,29 @@
 
 4. **E4 hoverScale 与 tilt 共存**: 两个 action 都操作同一 DOM 元素的 transform。解决方案: tilt 的 `scale` 参数设为 1 (不缩放，只做 3D 倾斜)，hoverScale 独立处理缩放。GSAP `overwrite: 'auto'` 确保不会堆叠冲突的 tween。
 
+### 目录结构扁平化重构
+
+移除 `src/lib/` 嵌套层，所有模块目录平铺到 `src/` 根目录：
+
+```
+src/
+├── api/          (was src/lib/api/)     → $api/
+├── core/         (was src/lib/core/)    → $core/
+├── stores/       (was src/lib/stores/)  → $stores/
+├── types/        (was src/lib/types/)   → $types/
+├── utils/        (was src/lib/utils/)   → $utils/
+├── components/                          → $components/
+├── animations/                          → $animations/
+├── actions/                             → $actions/
+├── styles/                              → $styles/
+├── App.svelte
+└── main.ts
+```
+
+- 143 处 `$lib/xxx` 导入替换为 `$api/`, `$core/`, `$stores/`, `$types/index`, `$utils/` 具体别名
+- 更新 `tsconfig.json` 和 `vite.config.ts` 的路径别名
+- 移除 `$lib` 别名，不再使用
+
 ### 下一步建议
 
 优先级从高到低:

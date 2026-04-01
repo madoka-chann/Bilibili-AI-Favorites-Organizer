@@ -1,11 +1,11 @@
 import { get } from 'svelte/store';
-import type { BiliData } from '$lib/types';
-import { cancelRequested, logs } from '$lib/stores/state';
-import { lightFetchJson, scanAllFolderVideos } from '$lib/api/bilibili';
-import { getErrorMessage } from '$lib/utils/errors';
-import { formatNow } from '$lib/utils/timing';
-import { triggerDownload } from '$lib/utils/download';
-import { withRunningState } from '$lib/utils/running-state';
+import type { BiliData } from '$types/index';
+import { cancelRequested, logs } from '$stores/state';
+import { lightFetchJson, scanAllFolderVideos } from '$api/bilibili';
+import { getErrorMessage } from '$utils/errors';
+import { formatNow } from '$utils/timing';
+import { triggerDownload } from '$utils/download';
+import { withRunningState } from '$utils/running-state';
 
 interface BackupVideoEntry {
   id: number;

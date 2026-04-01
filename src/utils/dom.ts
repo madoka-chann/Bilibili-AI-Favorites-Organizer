@@ -1,4 +1,4 @@
-import { VideoAttr } from '$lib/types';
+import { VideoAttr } from '$types/index';
 
 /** HTML 实体转义 (XSS 防护) */
 export function escapeHtml(str: string): string {

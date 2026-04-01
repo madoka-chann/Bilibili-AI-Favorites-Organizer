@@ -15,21 +15,21 @@
   import StatsDialog from './StatsDialog.svelte';
   import FolderSelector from './FolderSelector.svelte';
   import PreviewConfirm from './PreviewConfirm.svelte';
-  import { isRunning, cancelRequested, logs } from '$lib/stores/state';
+  import { isRunning, cancelRequested, logs } from '$stores/state';
   import {
     folderSelect, previewConfirm, rejectAllModals,
-  } from '$lib/stores/modal-bridge';
-  import { loadUndoHistory } from '$lib/core/undo';
-  import { loadHistory } from '$lib/core/history';
-  import { exportLogs } from '$lib/core/export-logs';
+  } from '$stores/modal-bridge';
+  import { loadUndoHistory } from '$core/undo';
+  import { loadHistory } from '$core/history';
+  import { exportLogs } from '$core/export-logs';
   import {
     handleStart, handleCleanDead, handleArchiveDead, handleDeleteDead,
     handleFindDups, handleDedup, handleUndoConfirm, handleBackup,
     handleStats, handleHistoryClear, type StatsState,
-  } from '$lib/core/panel-actions';
-  import type { DeadVideoEntry } from '$lib/core/dead-videos';
-  import type { DuplicateEntry } from '$lib/core/duplicates';
-  import type { FavFolder } from '$lib/types';
+  } from '$core/panel-actions';
+  import type { DeadVideoEntry } from '$core/dead-videos';
+  import type { DuplicateEntry } from '$core/duplicates';
+  import type { FavFolder } from '$types/index';
 
   export let onclose: (() => void) | undefined = undefined;
 

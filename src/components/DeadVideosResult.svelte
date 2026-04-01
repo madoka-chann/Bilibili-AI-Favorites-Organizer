@@ -1,7 +1,7 @@
 <script lang="ts">
   import Modal from './Modal.svelte';
   import { Archive, Trash2 } from 'lucide-svelte';
-  import type { DeadVideoEntry } from '$lib/core/dead-videos';
+  import type { DeadVideoEntry } from '$core/dead-videos';
 
   export let deadVideos: DeadVideoEntry[];
   export let onarchive: (() => void) | undefined = undefined;

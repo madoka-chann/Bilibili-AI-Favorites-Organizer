@@ -4,7 +4,7 @@
   import { gsap, Draggable, EASINGS } from '$animations/gsap-config';
   import { shouldAnimate } from '$animations/gsap-config';
   import { magnetic } from '$actions/magnetic';
-  import { gmGetValue, gmSetValue } from '$lib/utils/gm';
+  import { gmGetValue, gmSetValue } from '$utils/gm';
 
   export let visible = true;
   export let onclick: (() => void) | undefined = undefined;

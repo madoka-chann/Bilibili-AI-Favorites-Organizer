@@ -1,4 +1,4 @@
-import { gmGetValue, gmSetValue } from '$lib/utils/gm';
+import { gmGetValue, gmSetValue } from '$utils/gm';
 
 export interface HistoryEntry {
   time: string;

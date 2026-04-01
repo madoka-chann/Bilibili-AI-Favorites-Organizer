@@ -1,26 +1,26 @@
-import type { Settings, BiliData, VideoResource, CategoryResult } from '$lib/types';
+import type { Settings, BiliData, VideoResource, CategoryResult } from '$types/index';
 import { get } from 'svelte/store';
 import {
   isRunning, cancelRequested, logs,
   progressStartTime, resetTokenUsage, tokenUsage,
-} from '$lib/stores/state';
+} from '$stores/state';
 import {
   getSourceMediaId, getAllFoldersWithIds, getMyFolders,
   createFolder, moveVideos, fetchAllVideos, invalidateFolderCache,
-} from '$lib/api/bilibili';
-import { callAI } from '$lib/api/ai-client';
-import { buildSystemPrompt } from '$lib/api/ai-prompt';
-import { estimateCost, formatTokenCount } from '$lib/api/ai-providers';
-import { folderSelect, requestPreviewConfirm } from '$lib/stores/modal-bridge';
-import { isDeadVideo } from '$lib/utils/dom';
-import { humanDelay, createConcurrencyLimiter, formatNow } from '$lib/utils/timing';
-import { gmSetValue, gmGetValue } from '$lib/utils/gm';
-import { saveUndoData, type UndoRecord } from '$lib/core/undo';
-import { saveHistoryEntry } from '$lib/core/history';
-import { getErrorMessage } from '$lib/utils/errors';
-import { groupBy } from '$lib/utils/collections';
-import { UNCATEGORIZED_FOLDER } from '$lib/utils/constants';
-import { updateProgress, resetProgress } from '$lib/utils/progress';
+} from '$api/bilibili';
+import { callAI } from '$api/ai-client';
+import { buildSystemPrompt } from '$api/ai-prompt';
+import { estimateCost, formatTokenCount } from '$api/ai-providers';
+import { folderSelect, requestPreviewConfirm } from '$stores/modal-bridge';
+import { isDeadVideo } from '$utils/dom';
+import { humanDelay, createConcurrencyLimiter, formatNow } from '$utils/timing';
+import { gmSetValue, gmGetValue } from '$utils/gm';
+import { saveUndoData, type UndoRecord } from '$core/undo';
+import { saveHistoryEntry } from '$core/history';
+import { getErrorMessage } from '$utils/errors';
+import { groupBy } from '$utils/collections';
+import { UNCATEGORIZED_FOLDER } from '$utils/constants';
+import { updateProgress, resetProgress } from '$utils/progress';
 
 // ================= Helpers =================
 

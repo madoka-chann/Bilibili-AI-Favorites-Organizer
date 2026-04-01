@@ -2,8 +2,8 @@
   import FloatButton from '$components/FloatButton.svelte';
   import Panel from '$components/Panel.svelte';
   import Toast from '$components/Toast.svelte';
-  import { panelOpen } from '$lib/stores/state';
-  import { isDark, accentColor } from '$lib/stores/theme';
+  import { panelOpen } from '$stores/state';
+  import { isDark, accentColor } from '$stores/theme';
   import '$animations/gsap-config';
   import './styles/variables.css';
   import './styles/forms.css';

@@ -56,7 +56,11 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      $lib: '/src/lib',
+      $api: '/src/api',
+      $core: '/src/core',
+      $stores: '/src/stores',
+      $types: '/src/types',
+      $utils: '/src/utils',
       $components: '/src/components',
       $animations: '/src/animations',
       $styles: '/src/styles',

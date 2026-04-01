@@ -1,7 +1,7 @@
 <script lang="ts">
   import Modal from './Modal.svelte';
   import { Undo2 } from 'lucide-svelte';
-  import type { UndoRecord } from '$lib/core/undo';
+  import type { UndoRecord } from '$core/undo';
 
   export let history: UndoRecord[];
   export let onundo: ((index: number) => void) | undefined = undefined;

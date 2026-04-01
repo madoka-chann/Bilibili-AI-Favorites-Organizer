@@ -3,10 +3,10 @@
  * 不依赖 Svelte stores；getMidFromCookie 来自 bilibili-auth (无 store 依赖)
  */
 
-import { gmGetValue, gmSetValue } from '$lib/utils/gm';
-import type { FavFolder, GlobalVideoCache, BiliApiResponse, BiliFolderListData } from '$lib/types';
-import { BILIBILI_URLS } from '$lib/utils/constants';
-import { getMidFromCookie } from '$lib/api/bilibili-auth';
+import { gmGetValue, gmSetValue } from '$utils/gm';
+import type { FavFolder, GlobalVideoCache, BiliApiResponse, BiliFolderListData } from '$types/index';
+import { BILIBILI_URLS } from '$utils/constants';
+import { getMidFromCookie } from '$api/bilibili-auth';
 
 const CACHE_KEY = 'bfao_bg_folder_cache';
 const CACHE_TTL = 10 * 60 * 1000; // 10 min

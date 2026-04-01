@@ -1,5 +1,5 @@
 import { writable, get } from 'svelte/store';
-import type { FavFolder, CategoryResult, VideoResource } from '$lib/types';
+import type { FavFolder, CategoryResult, VideoResource } from '$types/index';
 
 // ================= Generic Modal Bridge =================
 

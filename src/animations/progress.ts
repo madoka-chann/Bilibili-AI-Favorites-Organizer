@@ -4,7 +4,7 @@
  */
 import { gsap, EASINGS } from './gsap-config';
 import { shouldAnimate, shouldAnimateFunctional } from './gsap-config';
-import { CONFETTI_COLORS, Z_INDEX } from '$lib/utils/constants';
+import { CONFETTI_COLORS, Z_INDEX } from '$utils/constants';
 
 /**
  * D2: 进度轨迹粒子

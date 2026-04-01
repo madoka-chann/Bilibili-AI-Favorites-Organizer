@@ -1,8 +1,8 @@
 <script lang="ts">
   import '$styles/forms.css';
-  import { settings } from '$lib/stores/settings';
-  import { BUILTIN_PRESETS } from '$lib/utils/constants';
-  import { debounce } from '$lib/utils/timing';
+  import { settings } from '$stores/settings';
+  import { BUILTIN_PRESETS } from '$utils/constants';
+  import { debounce } from '$utils/timing';
   import { focusGlow } from '$animations/micro';
 
   let promptValue = $settings.lastPrompt;

@@ -10,7 +10,7 @@
     },
     "phase1_componentArchitecture": {
       "status": "completed",
-      "summary": "20 个 Svelte 组件、stores、API 层、core 逻辑、类型定义全部迁移完成",
+      "summary": "20 个 Svelte 组件全部迁移完成; 目录结构已扁平化 (移除 src/lib/ 嵌套, 使用 $api/$core/$stores/$types/$utils 别名)",
       "components": [
         "App.svelte", "FloatButton.svelte", "Panel.svelte", "Header.svelte",
         "SettingsPanel.svelte", "SettingsGroup.svelte", "ProviderConfig.svelte",
@@ -20,7 +20,7 @@
         "DeadVideosResult.svelte", "DuplicatesResult.svelte", "UndoDialog.svelte",
         "StatsDialog.svelte", "LiquidToggle.svelte"
       ],
-      "libModules": {
+      "srcModules": {
         "api": ["ai-client.ts", "ai-providers.ts", "ai-prompt.ts", "bilibili.ts", "bilibili-http.ts", "bilibili-folders.ts", "bilibili-videos.ts", "bilibili-auth.ts", "bilibili-scanner.ts"],
         "core": ["process.ts", "dead-videos.ts", "duplicates.ts", "backup.ts", "undo.ts", "history.ts", "panel-actions.ts", "export-logs.ts", "background-cache.ts"],
         "stores": ["settings.ts", "state.ts", "theme.ts", "modal-bridge.ts"],
@@ -73,8 +73,10 @@
     },
     "phase4_codeQuality": {
       "status": "partially_done",
-      "summary": "TypeScript 类型定义完成; 模块化重构完成; Code Review 修复了多处代码异味",
+      "summary": "TypeScript 类型定义完成; 模块化重构完成; 目录扁平化重构完成; Code Review 修复了多处代码异味",
       "recentFixes": [
+        "移除 src/lib/ 嵌套层，api/core/stores/types/utils 平铺到 src/ 根目录",
+        "$lib/ 别名替换为 $api/$core/$stores/$types/$utils 具体别名 (143处)",
         "Panel.svelte 合并重复的 gsap-config 导入",
         "LiquidToggle.svelte 修复 CSS transition 与 GSAP 动画冲突",
         "PreviewConfirm.svelte 修复 tilt+hoverScale 的 scale 属性冲突"

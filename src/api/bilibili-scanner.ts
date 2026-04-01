@@ -3,11 +3,11 @@
  * 消除 dead-videos / duplicates / backup 中的重复分页代码
  */
 
-import type { BiliData, FavFolder, VideoResource, BiliFavResourceData } from '$lib/types';
-import { humanDelay } from '$lib/utils/timing';
-import { logs } from '$lib/stores/state';
-import { getErrorMessage } from '$lib/utils/errors';
-import { BILIBILI_URLS } from '$lib/utils/constants';
+import type { BiliData, FavFolder, VideoResource, BiliFavResourceData } from '$types/index';
+import { humanDelay } from '$utils/timing';
+import { logs } from '$stores/state';
+import { getErrorMessage } from '$utils/errors';
+import { BILIBILI_URLS } from '$utils/constants';
 import { safeFetchJson } from './bilibili-http';
 import { getAllFoldersWithIds } from './bilibili-folders';
 

@@ -5,9 +5,9 @@
  * - 表单数据构建
  */
 
-import type { BiliApiResponse } from '$lib/types';
-import { sleep, backoffMs } from '$lib/utils/timing';
-import { logs } from '$lib/stores/state';
+import type { BiliApiResponse } from '$types/index';
+import { sleep, backoffMs } from '$utils/timing';
+import { logs } from '$stores/state';
 
 // ================= 工具函数 =================
 

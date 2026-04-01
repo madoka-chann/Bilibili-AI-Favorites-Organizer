@@ -5,7 +5,7 @@
   import { tilt } from '$actions/tilt';
   import { Flip, EASINGS, shouldAnimate } from '$animations/gsap-config';
   import { listStaggerReveal, hoverScale } from '$animations/micro';
-  import type { CategoryResult, VideoResource } from '$lib/types';
+  import type { CategoryResult, VideoResource } from '$types/index';
 
   export let categories: CategoryResult = {};
   export let videos: VideoResource[] = [];

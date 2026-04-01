@@ -1,6 +1,6 @@
 import { mount } from 'svelte';
 import App from './App.svelte';
-import { setupBackgroundCache } from '$lib/core/background-cache';
+import { setupBackgroundCache } from '$core/background-cache';
 
 // 仅在 B站个人空间页面注入完整 UI
 const isSpacePage = /space\.bilibili\.com/.test(location.href);
