@@ -1,14 +1,31 @@
 <script lang="ts">
   import { logs } from '$lib/stores/state';
   import { onMount, tick } from 'svelte';
+  import { textDecode } from '$animations/text';
 
   let logEl: HTMLDivElement;
+
+  // 跟踪已解码的日志 ID，避免重复动画
+  let decodedIds = new Set<number>();
 
   // 自动滚动到底部
   $: if ($logs.length && logEl) {
     tick().then(() => {
       logEl.scrollTop = logEl.scrollHeight;
     });
+  }
+
+  /** H1: 日志条目文字解码效果 */
+  function decodeEntry(node: HTMLElement) {
+    const msgEl = node.querySelector('.log-msg') as HTMLElement;
+    if (!msgEl) return;
+
+    const id = Number(node.dataset.logId);
+    if (decodedIds.has(id)) return;
+    decodedIds.add(id);
+
+    const { destroy } = textDecode(msgEl, { charDelay: 20 });
+    return { destroy };
   }
 
   onMount(() => {
@@ -21,7 +38,11 @@
 
 <div class="log-area" bind:this={logEl}>
   {#each $logs as entry (entry.id)}
-    <div class="log-entry log-{entry.level}">
+    <div
+      class="log-entry log-{entry.level}"
+      data-log-id={entry.id}
+      use:decodeEntry
+    >
       <span class="log-time">{entry.time}</span>
       <span class="log-msg">{entry.message}</span>
     </div>
@@ -72,6 +93,8 @@
     flex: 1;
     min-width: 0;
     word-break: break-word;
+    font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+    letter-spacing: 0.02em;
   }
 
   .log-success {

@@ -2,6 +2,12 @@
   import { tweened } from 'svelte/motion';
   import { cubicOut } from 'svelte/easing';
   import { progressPercent, progressPhase, isRunning } from '$lib/stores/state';
+  import {
+    spawnTrailParticles,
+    phaseTransition,
+    victoryCelebration,
+    numberBounce,
+  } from '$animations/progress';
 
   // D1: 平滑进度条 — Svelte tweened
   const smoothProgress = tweened(0, { duration: 400, easing: cubicOut });
@@ -13,21 +19,69 @@
     ai: 'AI 分类',
     move: '移动视频',
   };
+
+  let trackEl: HTMLDivElement;
+  let barEl: HTMLDivElement;
+  let labelEl: HTMLSpanElement;
+  let percentEl: HTMLSpanElement;
+  let containerEl: HTMLDivElement;
+
+  // D2: 进度轨迹粒子 — 节流触发
+  let lastParticlePercent = 0;
+  $: if (trackEl && $progressPercent > lastParticlePercent + 4) {
+    spawnTrailParticles(trackEl, $smoothProgress);
+    lastParticlePercent = $progressPercent;
+  }
+
+  // D3: 阶段切换动画
+  let prevPhase = '';
+  $: if (labelEl && barEl && $progressPhase && $progressPhase !== prevPhase) {
+    const newLabel = PHASE_LABELS[$progressPhase] ?? '准备中';
+    if (prevPhase) {
+      phaseTransition(labelEl, barEl, newLabel);
+    }
+    prevPhase = $progressPhase;
+  }
+
+  // D4: 胜利庆祝
+  let celebrated = false;
+  $: if (containerEl && $progressPercent >= 100 && !celebrated) {
+    celebrated = true;
+    victoryCelebration(containerEl);
+  }
+
+  // D5: 数字翻滚弹跳
+  let prevPercent = 0;
+  $: if (percentEl && $progressPercent !== prevPercent) {
+    if ($progressPercent > prevPercent) {
+      numberBounce(percentEl);
+    }
+    prevPercent = $progressPercent;
+  }
+
+  // 重置状态
+  $: if (!$isRunning) {
+    lastParticlePercent = 0;
+    celebrated = false;
+    prevPhase = '';
+    prevPercent = 0;
+  }
 </script>
 
 {#if $isRunning}
-  <div class="progress-container">
+  <div class="progress-container" bind:this={containerEl}>
     <div class="progress-header">
-      <span class="phase-label">
+      <span class="phase-label" bind:this={labelEl}>
         {PHASE_LABELS[$progressPhase] ?? '准备中'}
       </span>
-      <span class="progress-text">{$progressPercent}%</span>
+      <span class="progress-text" bind:this={percentEl}>{$progressPercent}%</span>
     </div>
-    <div class="progress-track">
+    <div class="progress-track" bind:this={trackEl}>
       <div
         class="progress-bar"
         class:complete={$progressPercent >= 100}
         style:width="{$smoothProgress}%"
+        bind:this={barEl}
       ></div>
     </div>
   </div>
@@ -50,19 +104,21 @@
     font-size: 11px;
     font-weight: 600;
     color: var(--ai-primary);
+    display: inline-block;
   }
 
   .progress-text {
     font-size: 11px;
     font-weight: 700;
     color: var(--ai-text-secondary);
+    display: inline-block;
   }
 
   .progress-track {
     height: 6px;
     background: var(--ai-bg-tertiary);
     border-radius: 3px;
-    overflow: hidden;
+    overflow: visible;
     position: relative;
   }
 

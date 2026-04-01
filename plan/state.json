@@ -30,7 +30,7 @@
     },
     "phase2_animations": {
       "status": "in_progress",
-      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; actions 已集成到更多组件",
+      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; actions 已集成到更多组件; 进度条/Toast/文字特效动画已完成",
       "completed": [
         "gsap-config.ts: 插件注册 + 10 品牌缓动 + 三级减弱策略",
         "src/actions/magnetic.ts: A1 磁性光标吸引 (use:magnetic)",
@@ -38,17 +38,22 @@
         "src/actions/glow-track.ts: C3 径向光追踪 (use:glowTrack)",
         "src/actions/ripple.ts: 点击涟漪 (use:ripple)",
         "src/animations/micro.ts: C2 pressEffect + C4 focusGlow + C6 checkBounce + C7 staggerReveal + F4 contentStagger + E1 listStaggerReveal",
+        "src/animations/progress.ts: D2 进度轨迹粒子 + D3 阶段切换 + D4 胜利庆祝 + D5 数字翻滚弹跳",
+        "src/animations/text.ts: H1 文字解码 + H2 数字翻滚",
         "FloatButton: A1 magnetic + A2 aurora glow + A3 click particles + A6 liquid morph + K1 drag",
         "Panel: B1 velvet bloom + B2 curtain exit",
         "Modal: F1 bloom enter + F3 physics exit + F4 content stagger",
-        "Toast: G1 elastic slide-in + G2 timer ring + G5 slide-out",
+        "Toast: G1 elastic slide-in + G2 timer ring + G3 FLIP 堆栈重排 + G4 类型化入场 + G5 slide-out",
         "Header: aurora-flow + ripple + pressEffect on buttons",
         "SettingsGroup: B4 GSAP 弹簧手风琴 (替代 Svelte transition:slide)",
         "ActionButtons: C1/C2 pressEffect + C3 glowTrack (所有按钮 + 主按钮)",
         "PreviewConfirm: E3 tilt 视频卡片 + E1 listStaggerReveal 展开交错",
         "ProviderConfig: C4 focusGlow (所有 input 元素)",
         "SettingsPanel: C4 focusGlow (number inputs)",
-        "PromptEditor: C4 focusGlow (textarea)"
+        "PromptEditor: C4 focusGlow (textarea)",
+        "ProgressBar: D1 平滑进度 + D2 轨迹粒子 + D3 阶段切换 + D4 胜利庆祝 + D5 数字弹跳 + D6 微光效果",
+        "LogArea: H1 文字解码效果 (新日志条目乱码→逐位解码)",
+        "StatsDialog: H2 数字翻滚 (统计数字从0滚动到目标值)"
       ],
       "remaining": [
         "A4 FLIP 变形为面板",
@@ -57,13 +62,8 @@
         "B5 深度视差",
         "C1 全局磁性按钮 (更多组件集成)",
         "C5 液态开关",
-        "D2-D6 进度条高级动画",
         "E2 FLIP 展开折叠",
         "E4 缩略图缩放",
-        "G3 Toast FLIP 堆栈重排",
-        "G4 类型化入场",
-        "H1 文字解码",
-        "H2 数字翻滚",
         "I1-I5 粒子系统",
         "J1-J3 主题切换过渡",
         "K2 面板拖拽",
@@ -76,7 +76,12 @@
     },
     "phase4_codeQuality": {
       "status": "partially_done",
-      "summary": "TypeScript 类型定义完成; 模块化重构完成; 有 1 个 pre-existing TS error (settings.ts 类型转换)"
+      "summary": "TypeScript 类型定义完成; 模块化重构完成; 有 1 个 pre-existing TS error (settings.ts 类型转换); StatsDialog 移除未使用的 BiliData import",
+      "recentFixes": [
+        "移除 StatsDialog.svelte 中未使用的 BiliData 类型导入",
+        "移除 ProgressBar.svelte 中未使用的 onDestroy 导入",
+        "progress.ts 中使用 Z_INDEX.PARTICLE 常量替代硬编码 z-index"
+      ]
     },
     "phase5_performance": {
       "status": "not_started",
@@ -85,9 +90,10 @@
   },
   "buildStatus": {
     "builds": true,
-    "output": "dist/bilibili-ai-favorites-organizer.user.js (711 kB)",
+    "output": "dist/bilibili-ai-favorites-organizer.user.js (403 kB)",
     "preExistingIssues": [
       "1 TS error: settings.ts:14 type cast",
+      "1 TS error: SettingsGroup.svelte:48 callback type",
       "12 a11y warnings: ProviderConfig + SettingsPanel label associations"
     ]
   }

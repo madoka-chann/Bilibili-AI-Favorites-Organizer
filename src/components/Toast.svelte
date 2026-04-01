@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { gsap, EASINGS } from '$animations/gsap-config';
-  import { shouldAnimateFunctional } from '$animations/gsap-config';
+  import { onMount, tick } from 'svelte';
+  import { gsap, Flip, EASINGS } from '$animations/gsap-config';
+  import { shouldAnimateFunctional, shouldAnimate } from '$animations/gsap-config';
   import { Z_INDEX, MAX_TOAST_COUNT } from '$lib/utils/constants';
 
   interface ToastItem {
@@ -13,6 +13,7 @@
 
   let toasts: ToastItem[] = [];
   let nextId = 0;
+  let containerEl: HTMLDivElement;
 
   /** 全局 showToast 函数，挂载到 window 供其他模块调用 */
   function addToast(
@@ -21,11 +22,35 @@
     duration = 3500
   ) {
     const id = nextId++;
+
+    // G3: FLIP 堆栈重排 — 记录当前状态
+    let flipState: Flip.FlipState | null = null;
+    if (shouldAnimate() && containerEl) {
+      const existing = containerEl.querySelectorAll('.toast');
+      if (existing.length > 0) {
+        flipState = Flip.getState(existing);
+      }
+    }
+
     toasts = [...toasts, { id, message, type, duration }];
 
     // 限制最大数量
     if (toasts.length > MAX_TOAST_COUNT) {
       toasts = toasts.slice(-MAX_TOAST_COUNT);
+    }
+
+    // G3: 应用 FLIP 重排动画
+    if (flipState) {
+      tick().then(() => {
+        const current = containerEl?.querySelectorAll('.toast');
+        if (current && current.length > 1) {
+          Flip.from(flipState!, {
+            duration: 0.3,
+            ease: EASINGS.velvetSpring,
+            targets: Array.from(current).slice(0, -1), // 排除新增的（它有自己的入场动画）
+          });
+        }
+      });
     }
 
     // 自动消失
@@ -48,7 +73,28 @@
         duration: 0.35,
         ease: 'power2.in',
         onComplete: () => {
+          // G3: 移除后 FLIP 重排剩余 toast
+          let flipState: Flip.FlipState | null = null;
+          if (shouldAnimate() && containerEl) {
+            const remaining = containerEl.querySelectorAll('.toast');
+            if (remaining.length > 1) {
+              flipState = Flip.getState(remaining);
+            }
+          }
+
           toasts = toasts.filter((t) => t.id !== id);
+
+          if (flipState) {
+            tick().then(() => {
+              const current = containerEl?.querySelectorAll('.toast');
+              if (current && current.length > 0) {
+                Flip.from(flipState!, {
+                  duration: 0.3,
+                  ease: EASINGS.velvetSpring,
+                });
+              }
+            });
+          }
         },
       });
     } else {
@@ -56,21 +102,88 @@
     }
   }
 
-  /** Toast 入场动画 */
+  /**
+   * G4: 类型化入场动画
+   * success=弹跳 / error=滑入+震动 / warning=从上方落下 / info=标准弹性滑
+   */
   function animateIn(node: HTMLElement) {
-    if (shouldAnimateFunctional()) {
-      gsap.fromTo(
-        node,
-        { x: 140, scale: 0.6, rotation: 3, opacity: 0 },
-        {
-          x: 0,
-          scale: 1,
-          rotation: 0,
-          opacity: 1,
-          duration: 0.55,
-          ease: EASINGS.velvetSpring,
-        }
-      );
+    if (!shouldAnimateFunctional()) return;
+
+    const type = node.dataset.toastType as ToastItem['type'];
+
+    switch (type) {
+      case 'success':
+        // 弹跳 scale 入场
+        gsap.fromTo(
+          node,
+          { x: 140, scale: 0.4, opacity: 0 },
+          {
+            x: 0,
+            scale: 1,
+            opacity: 1,
+            duration: 0.55,
+            ease: EASINGS.prismBounce,
+          }
+        );
+        break;
+
+      case 'error':
+        // 滑入 + 震动
+        gsap.fromTo(
+          node,
+          { x: 140, scale: 0.6, opacity: 0 },
+          {
+            x: 0,
+            scale: 1,
+            opacity: 1,
+            duration: 0.4,
+            ease: EASINGS.velvetSpring,
+            onComplete: () => {
+              // 短促震动
+              gsap.to(node, {
+                keyframes: [
+                  { x: -4, duration: 0.04 },
+                  { x: 4, duration: 0.04 },
+                  { x: -3, duration: 0.04 },
+                  { x: 2, duration: 0.04 },
+                  { x: 0, duration: 0.04 },
+                ],
+                ease: 'none',
+              });
+            },
+          }
+        );
+        break;
+
+      case 'warning':
+        // 从上方落下
+        gsap.fromTo(
+          node,
+          { y: -60, x: 0, scale: 0.8, opacity: 0 },
+          {
+            y: 0,
+            scale: 1,
+            opacity: 1,
+            duration: 0.5,
+            ease: EASINGS.prismBounce,
+          }
+        );
+        break;
+
+      default:
+        // info: 标准弹性滑入 (G1)
+        gsap.fromTo(
+          node,
+          { x: 140, scale: 0.6, rotation: 3, opacity: 0 },
+          {
+            x: 0,
+            scale: 1,
+            rotation: 0,
+            opacity: 1,
+            duration: 0.55,
+            ease: EASINGS.velvetSpring,
+          }
+        );
     }
   }
 
@@ -83,11 +196,13 @@
   export { addToast as show };
 </script>
 
-<div class="toast-container" style:z-index={Z_INDEX.TOAST}>
+<div class="toast-container" style:z-index={Z_INDEX.TOAST} bind:this={containerEl}>
   {#each toasts as toast (toast.id)}
     <button
       class="toast toast-{toast.type}"
       data-toast-id={toast.id}
+      data-toast-type={toast.type}
+      data-flip-id="toast-{toast.id}"
       use:animateIn
       onclick={() => removeToast(toast.id)}
       aria-label="关闭通知"

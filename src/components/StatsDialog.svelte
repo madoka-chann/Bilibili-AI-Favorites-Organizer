@@ -1,7 +1,8 @@
 <script lang="ts">
   import Modal from './Modal.svelte';
   import { BarChart3, Heart } from 'lucide-svelte';
-  import type { BiliData, FavFolder } from '$lib/types';
+  import type { FavFolder } from '$lib/types';
+  import { numberRoll } from '$animations/text';
 
   export let folders: FavFolder[];
   export let totalVideos: number;
@@ -15,6 +16,18 @@
 
   $: healthColor = healthScore >= 80 ? 'var(--ai-success)' : healthScore >= 60 ? 'var(--ai-warning)' : 'var(--ai-error)';
   $: deadRate = totalVideos > 0 ? ((deadCount / totalVideos) * 100).toFixed(1) : '0';
+
+  /** H2: 数字翻滚 action */
+  function rollNumber(node: HTMLElement, value: number) {
+    const suffix = node.dataset.suffix;
+    const useLocale = node.dataset.locale === 'true';
+    const { destroy } = numberRoll(node, value, {
+      duration: 800,
+      suffix,
+      useLocale,
+    });
+    return { destroy };
+  }
 </script>
 
 <Modal
@@ -36,7 +49,7 @@
   <div class="bfao-modal-body">
     {#if mode === 'health'}
       <div class="health-score" style:color={healthColor}>
-        <div class="score-number">{healthScore}</div>
+        <div class="score-number" use:rollNumber={healthScore}>{healthScore}</div>
         <div class="score-label">健康评分</div>
       </div>
       <div class="health-detail">
@@ -52,15 +65,15 @@
 
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-value">{folders.length}</div>
+        <div class="stat-value" use:rollNumber={folders.length}>{folders.length}</div>
         <div class="stat-label">收藏夹</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">{totalVideos.toLocaleString()}</div>
+        <div class="stat-value" data-locale="true" use:rollNumber={totalVideos}>{totalVideos.toLocaleString()}</div>
         <div class="stat-label">视频总数</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value" class:danger={deadCount > 0}>{deadCount}</div>
+        <div class="stat-value" class:danger={deadCount > 0} use:rollNumber={deadCount}>{deadCount}</div>
         <div class="stat-label">失效视频</div>
       </div>
       <div class="stat-card">
