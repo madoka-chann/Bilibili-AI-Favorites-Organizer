@@ -15,6 +15,40 @@ import {
   type AIPrompt,
 } from './ai-providers';
 
+// ================= AI 结果校验 =================
+
+/** 运行时校验 AI 返回的 JSON 符合 AIClassificationResult 结构 */
+function validateAIResult(parsed: unknown): AIClassificationResult {
+  if (typeof parsed !== 'object' || parsed === null) {
+    throw new Error('AI 返回的 JSON 不是对象');
+  }
+  const obj = parsed as Record<string, unknown>;
+
+  // categories 字段可选（AI 可能只返回 thoughts），但如果存在必须是对象
+  if (obj.categories !== undefined) {
+    if (typeof obj.categories !== 'object' || obj.categories === null || Array.isArray(obj.categories)) {
+      throw new Error('AI 返回的 categories 字段格式错误（应为对象）');
+    }
+    // 验证每个分类下是数组，数组元素有 id 和 type
+    for (const [catName, entries] of Object.entries(obj.categories as Record<string, unknown>)) {
+      if (!Array.isArray(entries)) {
+        throw new Error(`分类「${catName}」的值不是数组`);
+      }
+      for (const entry of entries) {
+        if (typeof entry !== 'object' || entry === null) {
+          throw new Error(`分类「${catName}」中包含非对象条目`);
+        }
+        const e = entry as Record<string, unknown>;
+        if (typeof e.id !== 'number' || typeof e.type !== 'number') {
+          throw new Error(`分类「${catName}」中条目缺少有效的 id/type 字段`);
+        }
+      }
+    }
+  }
+
+  return parsed as AIClassificationResult;
+}
+
 // ================= 单次 AI 调用 =================
 
 export function callAISingle(
@@ -67,7 +101,9 @@ export function callAISingle(
 
         try {
           const content = parser(response.responseText);
-          resolve(extractJsonObject(content) as AIClassificationResult);
+          const parsed = extractJsonObject(content);
+          const result = validateAIResult(parsed);
+          resolve(result);
         } catch (e: unknown) {
           const snippet = (response.responseText || '').substring(0, 120);
           reject(new Error(`解析 AI 回复失败: ${getErrorMessage(e)}\n响应片段: ${snippet}`));

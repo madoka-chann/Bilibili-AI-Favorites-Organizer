@@ -1,6 +1,53 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-01, 第十四次)
+## 最近一次会话 (2026-04-01, 第十五次)
+
+### 本次完成内容
+
+**运行时安全加固 — 5 处边界条件修复 + 深度 Code Review**
+
+#### 发现并修复的问题
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `ai-client.ts` | `extractJsonObject()` 返回 `unknown` 直接 `as AIClassificationResult` — AI 返回畸形 JSON (缺少 categories、id/type 类型错误) 时无法拦截，导致下游静默异常 | HIGH | 新增 `validateAIResult()` 运行时类型守卫：验证 categories 是对象、每个分类值是数组、每个条目有 number 类型的 id/type |
+| `undo.ts` | `restored === 0` 时仍日志 "撤销完成" 并 `clearUndoRecord()` 删除记录 — 所有移动均失败时用户丢失撤销机会 | HIGH | 当 `restored === 0` 且非用户取消时：日志报错 "所有移动操作均未成功"，保留撤销记录不删除 |
+| `process.ts` | AI 批次失败只逐条日志，无汇总 — 用户无法快速了解整体成功率 | MEDIUM | 新增 `aiFailed` 计数器；所有批次完成后输出汇总 (全部失败=error，部分失败=warning) |
+| `Panel.svelte` | `onDestroy` 未调用 `rejectAllModals()` — 面板销毁时若有待处理的 modal bridge Promise，该 Promise 永远不会 resolve/reject，造成内存泄漏 | MEDIUM | 在 `onDestroy` 回调中追加 `rejectAllModals()` 调用 |
+| `settings.ts` | `loadFromStorage()` 中 `provider` 字段从 GM_getValue 加载后无校验 — 存储损坏或旧版本数据可能导致 `AI_PROVIDERS[provider]` 返回 undefined | MEDIUM | 新增 `isValidProvider()` 守卫：校验 provider 是否在 AI_PROVIDERS 注册表中，无效时回退为 `DEFAULT_SETTINGS.provider` |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `magnetic.ts` | 10 个按钮 = 10 个 document mousemove 监听器 | destroy() 中已正确 removeEventListener，无泄漏 |
+| `text.ts` | `destroyed` flag 与 RAF 回调时序 | JS 单线程模型下 destroy() 只在 RAF 回调间隙执行，flag 足以保证安全 |
+| `progress.ts` | `victoryCelebration` ticker 重复添加风险 | 单次触发场景 (100% 完成时)，且 ticker 自清理 |
+| `modal-bridge.ts` | 请求覆盖时旧 Promise reject — closure 残留 | store.set(null) 后 resolve/reject 无引用，GC 可正常回收 |
+| `bilibili-http.ts` | `backoffMs` 无最大值上限 | `maxRetries` 参数限制迭代次数，backoff 增长受限 |
+
+### 关键设计决策
+
+1. **validateAIResult 放在 ai-client.ts 而非 json-extract.ts**: json-extract.ts 是通用 JSON 提取工具，不应耦合业务类型。类型校验属于 AI 调用层的职责。
+2. **撤销记录保留策略**: 全部失败时保留记录让用户可以重试（可能是临时网络问题），而不是静默丢弃唯一的恢复机会。
+3. **Settings provider 校验位置**: 放在 `loadFromStorage()` 中（数据入口），而非使用处。确保所有消费方拿到的 provider 必定有效。
+4. **Panel onDestroy 时机**: rejectAllModals 放在组件 onDestroy 而非 closePanel 回调，确保无论何种方式销毁面板都能清理。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%**
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 运行时类型安全 + 边界条件修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 errors。代码质量经 15 次迭代持续强化。**
+
+---
+
+## 上一次会话 (2026-04-01, 第十四次)
 
 ### 本次完成内容
 

@@ -141,7 +141,7 @@
     }, { signal: abortCtrl.signal });
   });
 
-  onDestroy(() => { ctx?.revert(); abortCtrl?.abort(); });
+  onDestroy(() => { ctx?.revert(); abortCtrl?.abort(); rejectAllModals(); });
 
   function doClose() {
     if (!panelEl) { onclose?.(); return; }

@@ -1,10 +1,16 @@
 import { writable, get } from 'svelte/store';
-import type { Settings } from '$types/index';
+import type { Settings, AIProviderId } from '$types/index';
 import { DEFAULT_SETTINGS } from '$types/index';
 import { gmGetValue, gmSetValue } from '$utils/gm';
+import { AI_PROVIDERS } from '$utils/constants';
 
 /** 所有持久化键 — 从 DEFAULT_SETTINGS 自动推导，避免手动维护 */
 const SETTINGS_KEYS = Object.keys(DEFAULT_SETTINGS) as (keyof Settings)[];
+
+/** 验证 provider ID 是否在注册表中 */
+function isValidProvider(id: unknown): id is AIProviderId {
+  return typeof id === 'string' && id in AI_PROVIDERS;
+}
 
 /** 从 GM_getValue 加载所有设置 (数据驱动，无需逐字段手写) */
 function loadFromStorage(): Settings {
@@ -12,6 +18,10 @@ function loadFromStorage(): Settings {
     (key) => [key, gmGetValue('bfao_' + key, DEFAULT_SETTINGS[key])] as const,
   );
   const result = Object.fromEntries(entries) as unknown as Settings;
+  // 校验 provider 有效性，无效时回退为默认值
+  if (!isValidProvider(result.provider)) {
+    result.provider = DEFAULT_SETTINGS.provider;
+  }
   // apiKey 按服务商隔离存储，优先读取当前服务商的 Key
   const providerKey = gmGetValue('bfao_apiKey_' + result.provider, '');
   if (providerKey) result.apiKey = providerKey;

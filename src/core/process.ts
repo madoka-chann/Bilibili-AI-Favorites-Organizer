@@ -117,6 +117,7 @@ async function classifyWithAI(
 
   const totalAiCalls = chunks.length;
   let aiCompleted = 0;
+  let aiFailed = 0;
 
   logs.add(`分为 ${totalAiCalls} 批次，并发 ${concurrency}`, 'info');
 
@@ -159,6 +160,7 @@ async function classifyWithAI(
         logs.add(`AI 批次 ${idx} 完成`, 'success');
       } catch (err: unknown) {
         aiCompleted++;
+        aiFailed++;
         updateProgress('ai', aiCompleted, totalAiCalls);
         logs.add(`AI 批次 ${idx} 失败: ${getErrorMessage(err)}`, 'error');
       }
@@ -172,6 +174,11 @@ async function classifyWithAI(
   } catch (err: unknown) {
     logs.add(`AI 分类出现意外错误: ${getErrorMessage(err)}`, 'error');
   }
+
+  if (aiFailed > 0) {
+    logs.add(`AI 分类汇总: ${totalAiCalls - aiFailed}/${totalAiCalls} 批次成功，${aiFailed} 批次失败`, aiFailed === totalAiCalls ? 'error' : 'warning');
+  }
+
   return allCategories;
 }
 

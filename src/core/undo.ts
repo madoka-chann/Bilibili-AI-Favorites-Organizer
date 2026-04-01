@@ -112,8 +112,12 @@ export async function undoOperation(
         await humanDelay(writeDelay);
       }
 
-      logs.add(`撤销完成！共恢复 ${restored} 个视频。请刷新页面。`, 'success');
-      clearUndoRecord(selectedIndex);
+      if (restored === 0 && !get(cancelRequested)) {
+        logs.add('撤销失败：所有移动操作均未成功，撤销记录已保留', 'error');
+      } else {
+        logs.add(`撤销完成！共恢复 ${restored} 个视频。请刷新页面。`, 'success');
+        clearUndoRecord(selectedIndex);
+      }
       invalidateFolderCache();
     } catch (err: unknown) {
       logs.add(`撤销失败: ${getErrorMessage(err)}`, 'error');
