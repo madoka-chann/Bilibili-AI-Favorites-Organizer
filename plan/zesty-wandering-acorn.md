@@ -61,92 +61,121 @@ externalGlobals: {
 src/
 ├── main.ts                          # 入口：挂载 Svelte app 到 body
 ├── App.svelte                       # 根组件：浮动按钮 + 面板
-├── lib/
-│   ├── stores/
-│   │   ├── settings.ts              # 设置 store (writable, 持久化到 GM_setValue)
-│   │   ├── state.ts                 # 运行时状态 (isRunning, progress, phase)
-│   │   ├── cache.ts                 # 视频缓存 store
-│   │   └── theme.ts                 # 主题/暗色模式 store
-│   ├── api/
-│   │   ├── bilibili.ts              # B站 API (收藏夹/视频/移动)
-│   │   ├── ai-client.ts             # AI 统一调用层 (重试/限流)
-│   │   ├── ai-providers.ts          # 多 Provider 适配器 (Gemini/OpenAI/Claude/...)
-│   │   └── types.ts                 # API 类型定义
-│   ├── core/
-│   │   ├── process.ts               # 整理主流程 (拆分为子函数)
-│   │   ├── dead-videos.ts           # 失效视频检测
-│   │   ├── duplicates.ts            # 跨收藏夹去重
-│   │   ├── backup.ts                # 备份/恢复
-│   │   ├── undo.ts                  # 撤销历史
-│   │   └── report.ts               # 报告生成
-│   ├── utils/
-│   │   ├── dom.ts                   # escapeHtml, sanitize
-│   │   ├── timing.ts               # debounce, sleep, humanDelay
-│   │   ├── rate-limiter.ts          # 自适应限速
-│   │   ├── format.ts               # 时间/数字格式化
-│   │   └── constants.ts            # 魔法数字提取为常量
-│   └── types/
-│       ├── settings.d.ts            # Settings 接口
-│       ├── video.d.ts               # VideoResource, Folder 等
-│       └── ai.d.ts                  # AIProvider, AIResponse 等
-├── components/
-│   ├── FloatButton.svelte           # 浮动按钮 (可拖拽, 呼吸动画)
-│   ├── Panel.svelte                 # 主面板容器 (毛玻璃, 弹入动画)
-│   ├── Header.svelte                # 面板头部 (渐变, 操作按钮)
-│   ├── SettingsPanel.svelte         # 设置区域 (可折叠分组)
-│   ├── SettingsGroup.svelte         # 单个设置分组
-│   ├── ProviderConfig.svelte        # AI Provider 配置 (模型选择)
-│   ├── QuickSettings.svelte         # 快捷设置 (批次/速度预设)
-│   ├── PromptEditor.svelte          # 自定义提示词编辑器
-│   ├── LogArea.svelte               # AI 状态日志 (彩色, 时间戳)
-│   ├── ProgressBar.svelte           # 进度条 (阶段, ETA, 微光)
-│   ├── ActionButtons.svelte         # 主操作按钮组
-│   ├── Preview.svelte               # 分类预览 (虚拟滚动)
-│   ├── CategoryRow.svelte           # 单个分类行 (展开/折叠)
-│   ├── VideoItem.svelte             # 视频项 (缩略图, checkbox)
+├── vite-env.d.ts                    # Vite 环境类型声明
+├── stores/                          # → $stores/
+│   ├── settings.ts                  # 设置 store (writable, 持久化到 GM_setValue)
+│   ├── state.ts                     # 运行时状态 (isRunning, progress, logs, tokens)
+│   ├── theme.ts                     # 主题/暗色模式 store + prefersReducedMotion
+│   └── modal-bridge.ts              # Promise-based modal 通信 (folder select, preview confirm)
+├── api/                             # → $api/
+│   ├── bilibili.ts                  # B站 API 统一入口 (re-export)
+│   ├── bilibili-http.ts             # B站 HTTP 请求层 (GM_xmlhttpRequest 封装)
+│   ├── bilibili-auth.ts             # B站认证 (CSRF token, 用户信息)
+│   ├── bilibili-folders.ts          # B站收藏夹操作 (列表/创建/移动)
+│   ├── bilibili-videos.ts           # B站视频操作 (获取/删除/批量)
+│   ├── bilibili-scanner.ts          # B站收藏夹分页扫描
+│   ├── ai-client.ts                 # AI 统一调用层 (重试/限流/Token追踪)
+│   ├── ai-providers.ts              # 多 Provider 适配器 (Gemini/OpenAI/Claude/...)
+│   └── ai-prompt.ts                 # AI 提示词构建
+├── core/                            # → $core/
+│   ├── process.ts                   # 整理主流程 (拆分为子函数)
+│   ├── dead-videos.ts               # 失效视频检测
+│   ├── duplicates.ts                # 跨收藏夹去重
+│   ├── backup.ts                    # 备份/恢复
+│   ├── undo.ts                      # 撤销历史
+│   ├── history.ts                   # 操作历史记录
+│   ├── panel-actions.ts             # 面板操作包装 (认证校验 + isRunning 管理)
+│   ├── export-logs.ts               # 日志导出
+│   └── background-cache.ts          # 后台自动缓存
+├── utils/                           # → $utils/
+│   ├── constants/                   # 常量 (按领域分文件)
+│   │   ├── index.ts                 # barrel export
+│   │   ├── ai.ts                    # AI providers 注册表、预设、超时
+│   │   ├── bilibili.ts              # B站 API URLs、页面大小、特殊文件夹
+│   │   └── ui.ts                    # z-index 层级、颜色、限制
+│   ├── dom.ts                       # escapeHtml, sanitize
+│   ├── timing.ts                    # debounce, sleep, humanDelay
+│   ├── errors.ts                    # 错误类型 + getErrorMessage
+│   ├── gm.ts                        # GM_* API 类型安全封装
+│   ├── collections.ts               # 数组/Map 工具函数
+│   ├── download.ts                  # 文件下载工具
+│   ├── json-extract.ts              # JSON 提取 (从 AI 响应中)
+│   ├── progress.ts                  # 进度计算工具
+│   └── running-state.ts             # isRunning 生命周期管理
+├── types/                           # → $types/
+│   ├── index.ts                     # barrel export
+│   ├── settings.ts                  # Settings 接口 (23 个字段)
+│   ├── video.ts                     # VideoResource, FavFolder, CategoryResult 等
+│   └── ai.ts                        # AIProvider, AIResponse 等
+├── components/                      # → $components/
+│   ├── FloatButton.svelte           # 浮动按钮 (可拖拽, 磁性吸引, 极光呼吸)
+│   ├── Panel.svelte                 # 主面板容器 (毛玻璃, 绽放/退场, B3交叉淡入)
+│   ├── Header.svelte                # 面板头部 (极光渐变, 涟漪, 按压效果)
+│   ├── SettingsPanel.svelte         # 设置区域 (4个可折叠分组, C5液态开关)
+│   ├── SettingsGroup.svelte         # 单个设置分组 (B4弹簧手风琴)
+│   ├── ProviderConfig.svelte        # AI Provider 配置 (模型选择, C4聚焦发光)
+│   ├── LiquidToggle.svelte          # C5 液态开关 (GSAP thumb拉伸/滑动)
+│   ├── PromptEditor.svelte          # 自定义提示词编辑器 (C4聚焦发光)
+│   ├── LogArea.svelte               # AI 状态日志 (H1文字解码效果)
+│   ├── ProgressBar.svelte           # 进度条 (D1-D6 粒子/阶段/庆祝/微光)
+│   ├── ActionButtons.svelte         # 主操作按钮组 (C1/C2按压, C3光追踪)
+│   ├── PreviewConfirm.svelte        # 分类预览+确认 (E2 FLIP展开, E3倾斜, E4缩放)
 │   ├── FolderSelector.svelte        # 收藏夹选择器 (Modal)
 │   ├── HistoryTimeline.svelte       # 历史时间线 (Modal)
-│   ├── BenchmarkDialog.svelte       # AI 基准测试 (Modal)
-│   ├── Toast.svelte                 # Toast 通知
-│   ├── Confetti.svelte              # 庆祝粒子效果
-│   └── Modal.svelte                 # 通用 Modal 容器
-├── styles/
-│   ├── variables.css                # CSS 变量 (亮/暗主题)
-│   ├── base.css                     # 基础样式, Dark Reader 隔离
-│   ├── animations.css               # 精简后的 @keyframes (~50个)
-│   └── themes.css                   # 10-15 个精选主题色
-└── assets/
-    └── (Lucide icons via CDN)
+│   ├── DeadVideosResult.svelte      # 失效视频结果 (Modal)
+│   ├── DuplicatesResult.svelte      # 重复视频结果 (Modal)
+│   ├── UndoDialog.svelte            # 撤销操作 (Modal)
+│   ├── StatsDialog.svelte           # 统计/健康报告 (Modal, H2数字翻滚)
+│   ├── Toast.svelte                 # Toast 通知 (G1-G5 弹性/FLIP/类型化)
+│   └── Modal.svelte                 # 通用 Modal 容器 (F1绽放, F3物理退出)
+├── animations/                      # → $animations/
+│   ├── gsap-config.ts               # GSAP 插件注册 + 10品牌缓动 + 动画开关检测
+│   ├── micro.ts                     # 微交互: pressEffect, focusGlow, checkBounce, staggerReveal, hoverScale 等
+│   ├── progress.ts                  # 进度条: 轨迹粒子, 阶段切换, 胜利庆祝, 数字弹跳
+│   └── text.ts                      # 文字特效: 解码效果, 数字翻滚
+├── actions/                         # → $actions/
+│   ├── magnetic.ts                  # use:magnetic — 磁性光标吸引
+│   ├── tilt.ts                      # use:tilt — 3D 倾斜悬浮
+│   ├── glow-track.ts                # use:glowTrack — 径向光追踪
+│   └── ripple.ts                    # use:ripple — 点击涟漪
+└── styles/                          # → $styles/
+    ├── variables.css                # CSS 变量 (亮/暗主题, 颜色, 间距)
+    ├── forms.css                    # 表单元素基础样式
+    └── modal.css                    # Modal 通用样式
 ```
+
+**路径别名** (tsconfig.json + vite.config.ts):
+- `$api/`, `$core/`, `$stores/`, `$types/`, `$utils/` — 业务模块
+- `$components/`, `$animations/`, `$actions/`, `$styles/` — UI/动画层
 
 ---
 
 ## Phase 2: GSAP + Svelte 极致动画系统
 
-### 动画架构文件
+### 动画架构文件 (实际)
+
+动画逻辑按"公共复用 vs 组件内联"原则拆分：复用度高的提取为公共模块/action，组件专属动画直接写在 `.svelte` 文件的 `onMount` 中。
 
 ```
 src/animations/
-  gsap-config.ts          # 插件注册, 全局默认值, 减弱动画检测
-  easings.ts              # 10 个 CustomEase (替代现有 70+ CSS cubic-bezier)
-  float-button.ts         # A. 浮动按钮动画工厂
-  panel.ts                # B. 面板过渡时间线
-  micro.ts                # C. 微交互工具函数
-  progress.ts             # D. 进度条动画
-  list.ts                 # E. 列表/卡片动画工厂
-  modal.ts                # F. 模态框进出时间线
-  toast.ts                # G. Toast 动画工厂
-  text.ts                 # H. 文字特效
-  particles.ts            # I. GSAP 粒子辅助 + Canvas ticker 同步
-  theme.ts                # J. 主题切换过渡
-  drag.ts                 # K. Draggable 设置工厂
+  gsap-config.ts          # 插件注册 (Flip/Draggable/CustomEase) + 10品牌缓动 + 全局默认值 + 三级减弱检测
+  micro.ts                # 可复用微交互: pressEffect, focusGlow, checkBounce, staggerReveal, contentStagger, listStaggerReveal, hoverScale
+  progress.ts             # 进度条动画: 轨迹粒子, 阶段切换闪光, 胜利庆祝(纸屑), 数字弹跳
+  text.ts                 # 文字特效: 解码效果(乱码→还原), 数字翻滚(0→目标值)
 src/actions/
-  magnetic.ts             # Svelte action: use:magnetic
-  tilt.ts                 # Svelte action: use:tilt
-  glow-track.ts           # Svelte action: use:glowTrack
-  ripple.ts               # Svelte action: use:ripple
-  parallax.ts             # Svelte action: use:parallax
+  magnetic.ts             # Svelte action: use:magnetic — 磁性光标吸引 (quickTo)
+  tilt.ts                 # Svelte action: use:tilt — 3D 倾斜悬浮 (quickTo)
+  glow-track.ts           # Svelte action: use:glowTrack — 径向光追踪 (CSS变量)
+  ripple.ts               # Svelte action: use:ripple — Material 点击涟漪
 ```
+
+组件内联动画 (不单独提取文件):
+- FloatButton.svelte: A1磁性 + A2极光 + A3粒子爆发 + A6液态形变 + K1拖拽
+- Panel.svelte: B1绽放入场 + B2帷幕退场 + B3交叉淡入
+- Modal.svelte: F1绽放 + F3物理退出
+- Toast.svelte: G1-G5 弹性/FLIP/类型化/退场
+- SettingsGroup.svelte: B4弹簧手风琴
+- PreviewConfirm.svelte: E2 FLIP展开折叠
 
 ### GSAP 全局配置 (gsap-config.ts)
 
@@ -418,6 +447,7 @@ src/actions/
 
 ## 关键文件
 
-- `D:/Dev/Github/Bilibili-AI-Favorites-Organizer/bilibili-favorites-ai-organizer.user.js` (原始 JS, 6,949 行)
-- `D:/Dev/Github/Bilibili-AI-Favorites-Organizer/bilibili-favorites-ai-organizer.css` (原始 CSS, 22,072 行)
-- `D:/Dev/Github/Bilibili-AI-Favorites-Organizer/README.md` (文档)
+- `bilibili-favorites-ai-organizer.user.js` (原始 JS, 6,949 行)
+- `bilibili-favorites-ai-organizer.css` (原始 CSS, 22,072 行)
+- `README.md` (文档)
+- `dist/bilibili-ai-favorites-organizer.user.js` (构建产物, ~409 kB)
