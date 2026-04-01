@@ -1,6 +1,55 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-01, 第八次)
+## 最近一次会话 (2026-04-01, 第九次)
+
+### 本次完成内容
+
+**Phase 2 动画扩展 (A5 星座轨道 + C1 全局磁性按钮) + Code Review 修复**
+
+#### Phase 2 新增动画
+
+| 效果 | 文件 | 详情 |
+|------|------|------|
+| A5 星座轨道 | `FloatButton.svelte` | 5 个轨道球围绕按钮旋转；使用 proxy 对象 + 三角函数定位 (避免 MotionPathPlugin 依赖)；每球独立周期 (10-18s) 营造星座不规则感；闪烁周期 1.5-2.8s, sine.inOut 缓动；轨道半径 42px, 球体 3-5px, 5 种品牌色 |
+| C1 全局磁性按钮 | `ActionButtons.svelte`, `FolderSelector.svelte`, `HistoryTimeline.svelte`, `DeadVideosResult.svelte`, `DuplicatesResult.svelte` | 所有按钮集成 `use:magnetic={{ radius: 40, strength: 0.25 }}`；ActionButtons 10 个按钮 + 4 个 Modal 组件共 6 个按钮 = 16 个新增磁性按钮 |
+
+#### Code Review 修复
+
+| 文件 | 问题 | 修复 |
+|------|------|------|
+| `FloatButton.svelte` | A5 轨道 `onUpdate` 中使用 `gsap.set(orb, {x,y})` — 每帧 300 次调用有不必要的 GSAP 内部开销 | 改为直接 `orb.style.transform = translate(...)` — 零开销的原生 DOM 操作 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `ActionButtons.svelte` | `use:magnetic` 在 `disabled` 按钮上仍生效，可能覆盖 CSS `transform: none` | 影响极小 — disabled 仅在 isRunning 时触发，磁性偏移 ≤10px，不值得增加复杂度 |
+| `magnetic.ts` | 10 个按钮 = 10 个 document mousemove 监听器 | 每个监听器仅做距离计算 (O(1))，性能无忧 |
+
+### 关键设计决策
+
+1. **A5 不使用 MotionPathPlugin**: 该插件未在 vite.config.ts CDN 配置中注册。使用 proxy 对象 + `Math.cos/sin` 三角函数实现等效圆形轨道，零额外依赖。
+
+2. **轨道球作为按钮子元素**: 将 `.orbits` 容器放在 `<button>` 内部 — 确保拖拽时轨道球跟随按钮移动，且 `gsap.context(fn, btnEl)` 作用域覆盖所有子元素。
+
+3. **C1 磁性参数统一**: 所有小按钮使用 `{ radius: 40, strength: 0.25 }` (计划规定值)，FloatButton 保持 `{ radius: 120, strength: 0.3 }` — 大小差异体现层次感。
+
+### 下一步建议
+
+Phase 2 仅剩 **I1-I5 粒子系统** (Canvas 效果, 需性能测试, 复杂度高)。所有其他 Phase 均 100% 完成。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **~93%** (剩余: I1-I5 粒子系统 — Canvas 效果, 可选装饰性)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%**
+- Phase 5 性能优化: **100%**
+
+---
+
+## 上一次会话 (2026-04-01, 第八次)
 
 ### 本次完成内容
 

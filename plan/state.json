@@ -1,7 +1,7 @@
 {
   "project": "Bilibili AI Favorites Organizer - Svelte Refactoring",
   "plan": "zesty-wandering-acorn.md",
-  "lastUpdated": "2026-04-01",
+  "lastUpdated": "2026-04-01-session9",
   "phases": {
     "phase0_buildSystem": {
       "status": "completed",
@@ -30,7 +30,7 @@
     },
     "phase2_animations": {
       "status": "in_progress",
-      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; 高级视觉效果完成; 面板拖拽+主题过渡已实现; A4 FLIP 变形 + B5 深度视差已完成",
+      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; 高级视觉效果完成; 面板拖拽+主题过渡已实现; A4 FLIP 变形 + B5 深度视差已完成; A5 星座轨道 + C1 全局磁性按钮已完成",
       "completed": [
         "gsap-config.ts: 插件注册 + 10 品牌缓动 + 三级减弱策略",
         "src/actions/magnetic.ts: A1 磁性光标吸引 (use:magnetic)",
@@ -56,11 +56,11 @@
         "PromptEditor: C4 focusGlow (textarea)",
         "ProgressBar: D1 平滑进度 + D2 轨迹粒子 + D3 阶段切换 + D4 胜利庆祝 + D5 数字弹跳 + D6 微光效果",
         "LogArea: H1 文字解码效果 (新日志条目乱码→逐位解码)",
-        "StatsDialog: H2 数字翻滚 (统计数字从0滚动到目标值)"
+        "StatsDialog: H2 数字翻滚 (统计数字从0滚动到目标值)",
+        "FloatButton: A5 星座轨道 — 5个轨道球围绕按钮旋转 (proxy+三角函数定位, 独立速度10-18s, 闪烁1.5-2.8s)",
+        "C1 全局磁性按钮: ActionButtons (10按钮), FolderSelector, HistoryTimeline, DeadVideosResult, DuplicatesResult 全部集成 use:magnetic (radius:40, strength:0.25)"
       ],
       "remaining": [
-        "A5 星座轨道",
-        "C1 全局磁性按钮 (更多组件集成)",
         "I1-I5 粒子系统"
       ]
     },
@@ -102,7 +102,7 @@
   },
   "buildStatus": {
     "builds": true,
-    "output": "dist/bilibili-ai-favorites-organizer.user.js (418 kB, GSAP ~94 kB CDN)",
+    "output": "dist/bilibili-ai-favorites-organizer.user.js (422 kB, GSAP ~94 kB CDN)",
     "preExistingIssues": []
   }
 }

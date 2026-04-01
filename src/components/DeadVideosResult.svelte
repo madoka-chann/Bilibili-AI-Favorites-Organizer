@@ -1,6 +1,7 @@
 <script lang="ts">
   import Modal from './Modal.svelte';
   import { Archive, Trash2 } from 'lucide-svelte';
+  import { magnetic } from '$actions/magnetic';
   import type { DeadVideoEntry } from '$core/dead-videos';
 
   export let deadVideos: DeadVideoEntry[];
@@ -41,11 +42,11 @@
     </div>
 
     <div class="bfao-action-bar">
-      <button class="bfao-btn bfao-btn-primary" onclick={() => onarchive?.()} disabled={processing}>
+      <button class="bfao-btn bfao-btn-primary" onclick={() => onarchive?.()} disabled={processing} use:magnetic={{ radius: 40, strength: 0.25 }}>
         <Archive size={14} />
         {processing ? '处理中...' : '移动到「失效视频归档」'}
       </button>
-      <button class="bfao-btn bfao-btn-danger" onclick={() => ondelete?.()} disabled={processing}>
+      <button class="bfao-btn bfao-btn-danger" onclick={() => ondelete?.()} disabled={processing} use:magnetic={{ radius: 40, strength: 0.25 }}>
         <Trash2 size={14} />
         {processing ? '处理中...' : '直接删除'}
       </button>

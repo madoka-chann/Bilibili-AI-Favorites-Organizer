@@ -1,6 +1,7 @@
 <script lang="ts">
   import Modal from './Modal.svelte';
   import { FolderOpen, CheckSquare, Square } from 'lucide-svelte';
+  import { magnetic } from '$actions/magnetic';
   import type { FavFolder } from '$types/index';
 
   export let folders: FavFolder[] = [];
@@ -40,7 +41,7 @@
 
   <div class="selector-content">
     <div class="toolbar">
-      <button class="toggle-all" onclick={toggleAll}>
+      <button class="toggle-all" onclick={toggleAll} use:magnetic={{ radius: 40, strength: 0.25 }}>
         {#if allSelected}
           <CheckSquare size={14} /> 取消全选
         {:else}

@@ -1,6 +1,7 @@
 <script lang="ts">
   import Modal from './Modal.svelte';
   import { Clock, Trash2 } from 'lucide-svelte';
+  import { magnetic } from '$actions/magnetic';
   import type { HistoryEntry } from '$core/history';
 
   export let history: HistoryEntry[];
@@ -36,10 +37,10 @@
   </div>
 
   <svelte:fragment slot="footer">
-    <button class="bfao-btn bfao-btn-muted clear-btn" onclick={() => onclear?.()}>
+    <button class="bfao-btn bfao-btn-muted clear-btn" onclick={() => onclear?.()} use:magnetic={{ radius: 40, strength: 0.25 }}>
       <Trash2 size={14} /> 清空
     </button>
-    <button class="bfao-btn bfao-btn-muted" onclick={() => onclose?.()}>
+    <button class="bfao-btn bfao-btn-muted" onclick={() => onclose?.()} use:magnetic={{ radius: 40, strength: 0.25 }}>
       关闭
     </button>
   </svelte:fragment>

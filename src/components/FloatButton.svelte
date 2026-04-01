@@ -10,6 +10,7 @@
   export let onclick: (() => void) | undefined = undefined;
 
   let btnEl: HTMLButtonElement;
+  let orbitsContainer: HTMLDivElement;
   let ctx: gsap.Context;
   let dragged = false;
   let magneticOpts = { radius: 120, strength: 0.3, enabled: true };
@@ -69,6 +70,50 @@
           .to(btnEl, { borderRadius: '45% 55% 52% 48% / 60% 40% 55% 45%' })
           .to(btnEl, { borderRadius: '55% 45% 48% 52% / 40% 60% 45% 55%' })
           .to(btnEl, { borderRadius: '50% 50% 50% 50% / 50% 50% 50% 50%' });
+      }
+
+      // A5: 星座轨道 — 5 个轨道球围绕按钮旋转 + 闪烁
+      if (shouldAnimate() && orbitsContainer) {
+        const orbCount = 5;
+        const orbRadius = 42;
+        const colors = ['var(--ai-primary)', '#9b59f6', 'var(--ai-gradient-accent)', '#6ec1ff', '#ff6b9d'];
+        const sizes = [5, 4, 3.5, 4.5, 3];
+        const durations = [10, 13, 16, 11, 18];
+        const blinkDurations = [1.5, 2.2, 1.8, 2.8, 2];
+
+        for (let i = 0; i < orbCount; i++) {
+          const orb = document.createElement('div');
+          const sz = sizes[i];
+          orb.style.cssText = `
+            position: absolute;
+            width: ${sz}px;
+            height: ${sz}px;
+            border-radius: 50%;
+            background: ${colors[i]};
+            box-shadow: 0 0 ${sz * 2}px ${colors[i]};
+            pointer-events: none;
+            will-change: transform, opacity;
+          `;
+          orbitsContainer.appendChild(orb);
+
+          const startAngle = (Math.PI * 2 * i) / orbCount;
+          const proxy = { angle: startAngle };
+          gsap.to(proxy, {
+            angle: startAngle + Math.PI * 2,
+            duration: durations[i],
+            repeat: -1,
+            ease: 'none',
+            onUpdate() {
+              const x = Math.cos(proxy.angle) * orbRadius;
+              const y = Math.sin(proxy.angle) * orbRadius;
+              orb.style.transform = `translate(${x}px, ${y}px)`;
+            },
+          });
+
+          gsap.timeline({ repeat: -1, yoyo: true, delay: i * 0.4 })
+            .to(orb, { opacity: 0.2, duration: blinkDurations[i], ease: 'sine.inOut' })
+            .to(orb, { opacity: 1, duration: blinkDurations[i] * 0.6, ease: 'sine.inOut' });
+        }
       }
     }, btnEl);
   });
@@ -136,6 +181,7 @@
     aria-label="打开 AI 收藏夹整理器"
   >
     <Bot size={24} />
+    <div class="orbits" bind:this={orbitsContainer}></div>
   </button>
 {/if}
 
@@ -159,5 +205,15 @@
     box-shadow: 0 0 14px rgba(var(--ai-primary-rgb), 0.18), 0 0 28px rgba(155, 89, 246, 0.08);
     will-change: transform, box-shadow, border-radius;
     user-select: none;
+  }
+
+  .orbits {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    overflow: visible;
   }
 </style>
