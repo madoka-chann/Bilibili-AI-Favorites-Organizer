@@ -107,7 +107,8 @@ async function classifyWithAI(
 ): Promise<CategoryResult> {
   const allCategories: CategoryResult = {};
   const systemPrompt = buildSystemPrompt(existingFolderNames, settings.lastPrompt);
-  const limiter = createConcurrencyLimiter(settings.aiConcurrency);
+  const concurrency = Math.max(1, Math.min(10, settings.aiConcurrency));
+  const limiter = createConcurrencyLimiter(concurrency);
 
   const chunks: VideoResource[][] = [];
   for (let i = 0; i < allVideos.length; i += settings.aiChunkSize) {

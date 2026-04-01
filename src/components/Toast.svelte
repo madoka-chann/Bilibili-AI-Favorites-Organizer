@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, tick } from 'svelte';
+  import { onMount, onDestroy, tick } from 'svelte';
   import { gsap, Flip, EASINGS } from '$animations/gsap-config';
   import { shouldAnimateFunctional, shouldAnimate } from '$animations/gsap-config';
   import { Z_INDEX, MAX_TOAST_COUNT } from '$utils/constants';
@@ -14,6 +14,7 @@
   let toasts: ToastItem[] = [];
   let nextId = 0;
   let containerEl: HTMLDivElement;
+  const toastTimeouts = new Map<number, ReturnType<typeof setTimeout>>();
 
   /** 全局 showToast 函数，挂载到 window 供其他模块调用 */
   function addToast(
@@ -53,11 +54,13 @@
       });
     }
 
-    // 自动消失
-    setTimeout(() => removeToast(id), duration);
+    // 自动消失 (追踪 timeout 以便组件销毁时清理)
+    toastTimeouts.set(id, setTimeout(() => removeToast(id), duration));
   }
 
   function removeToast(id: number) {
+    const tid = toastTimeouts.get(id);
+    if (tid) { clearTimeout(tid); toastTimeouts.delete(id); }
     const el = document.querySelector(`[data-toast-id="${id}"]`) as HTMLElement;
     if (!el) {
       toasts = toasts.filter((t) => t.id !== id);
@@ -190,6 +193,11 @@
   onMount(() => {
     // 暴露全局 API (类型安全)
     (window as Window & { __bfao_toast?: typeof addToast }).__bfao_toast = addToast;
+  });
+
+  onDestroy(() => {
+    toastTimeouts.forEach((tid) => clearTimeout(tid));
+    toastTimeouts.clear();
   });
 
   // 导出供其他 Svelte 组件使用

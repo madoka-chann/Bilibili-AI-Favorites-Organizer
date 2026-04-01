@@ -74,7 +74,9 @@ async function safeScan(): Promise<void> {
   scanInProgress = true;
   try {
     await scanAndCache();
-  } catch { /* ignore */ } finally {
+  } catch (e: unknown) {
+    if (import.meta.env.DEV) console.warn('[bg-cache] scan failed:', e);
+  } finally {
     scanInProgress = false;
   }
 }

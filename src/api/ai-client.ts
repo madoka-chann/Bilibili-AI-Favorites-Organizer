@@ -76,13 +76,14 @@ export function callAISingle(
           const content = parser(response.responseText);
           resolve(extractJsonObject(content) as AIClassificationResult);
         } catch (e: unknown) {
-          reject(new Error(`解析 AI 回复失败: ${getErrorMessage(e)}`));
+          const snippet = (response.responseText || '').substring(0, 120);
+          reject(new Error(`解析 AI 回复失败: ${getErrorMessage(e)}\n响应片段: ${snippet}`));
         }
       },
       onerror(resp) {
         clearTimeout(timeoutId);
         const detail =
-          resp && 'error' in resp ? ` (${(resp as { error: string }).error})` : '';
+          resp && typeof resp === 'object' && 'error' in resp ? ` (${(resp as Record<string, unknown>).error})` : '';
         reject({
           retryable: true,
           message: `网络请求失败${detail}，请检查网络或 API 地址`,
@@ -107,7 +108,7 @@ export async function callAI(
     try {
       return await callAISingle(prompt, settings);
     } catch (err: unknown) {
-      const isRetryable = err && typeof err === 'object' && 'retryable' in err && (err as { retryable?: boolean }).retryable;
+      const isRetryable = err != null && typeof err === 'object' && 'retryable' in err && (err as Record<string, unknown>).retryable === true;
       const errMsg = getErrorMessage(err);
       if (isRetryable && attempt < maxRetries) {
         const waitMs = backoffMs(attempt, 2000, 16000);
@@ -143,7 +144,7 @@ export async function fetchModelList(settings: Settings): Promise<string[]> {
       try {
         json = JSON.parse(resp.responseText);
       } catch {
-        throw new Error('Gemini 模型列表返回了无效 JSON');
+        throw new Error(`Gemini 模型列表返回了无效 JSON: ${resp.responseText.substring(0, 120)}`);
       }
       const models = (json.models ?? [])
         .filter((m) => m.supportedGenerationMethods?.includes('generateContent'))
@@ -179,7 +180,7 @@ export async function fetchModelList(settings: Settings): Promise<string[]> {
   try {
     json = JSON.parse(resp.responseText);
   } catch {
-    throw new Error('模型列表返回了无效 JSON');
+    throw new Error(`模型列表返回了无效 JSON: ${resp.responseText.substring(0, 120)}`);
   }
   let models: string[];
 

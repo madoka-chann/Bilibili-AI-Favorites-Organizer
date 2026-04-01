@@ -1,7 +1,6 @@
 import type {
   Settings, AIFormat, AIRequestConfig,
   GeminiResponse, OpenAIResponse, AnthropicResponse,
-  GeminiUsageMetadata, StandardUsage,
 } from '$types/index';
 import { AI_PROVIDERS } from '$utils/constants';
 import { tokenUsage, logs } from '$stores/state';

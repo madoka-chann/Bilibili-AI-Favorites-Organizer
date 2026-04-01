@@ -54,6 +54,7 @@ export interface LogEntry {
 }
 
 let logIdCounter = 0;
+const MAX_LOG_ENTRIES = 500;
 
 function createLogStore() {
   const store = writable<LogEntry[]>([]);
@@ -64,10 +65,10 @@ function createLogStore() {
     add(message: string, level: LogLevel = 'info') {
       const now = new Date();
       const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
-      store.update((entries) => [
-        ...entries,
-        { id: ++logIdCounter, time, message, level },
-      ]);
+      store.update((entries) => {
+        const updated = [...entries, { id: ++logIdCounter, time, message, level }];
+        return updated.length > MAX_LOG_ENTRIES ? updated.slice(-MAX_LOG_ENTRIES) : updated;
+      });
     },
 
     clear() {

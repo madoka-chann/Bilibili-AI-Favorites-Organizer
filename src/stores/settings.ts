@@ -11,7 +11,7 @@ function loadFromStorage(): Settings {
   const entries = SETTINGS_KEYS.map(
     (key) => [key, gmGetValue('bfao_' + key, DEFAULT_SETTINGS[key])] as const,
   );
-  const result = Object.fromEntries(entries) as Settings;
+  const result = Object.fromEntries(entries) as unknown as Settings;
   // apiKey 按服务商隔离存储，优先读取当前服务商的 Key
   const providerKey = gmGetValue('bfao_apiKey_' + result.provider, '');
   if (providerKey) result.apiKey = providerKey;

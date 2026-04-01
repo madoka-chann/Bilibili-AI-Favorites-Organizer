@@ -4,12 +4,12 @@ import { prefersReducedMotion } from '$stores/theme';
 import { settings } from '$stores/settings';
 
 // ================= 插件获取 (CDN 全局变量) =================
-// GSAP 插件通过 CDN @require 加载，注册为 window 全局变量
+// GSAP 插件通过 CDN @require 加载，注册为 globalThis 全局变量
+// 类型声明在 vite-env.d.ts 中，避免 `as any` 断言
 // 不使用 ESM 子路径导入 (import { Flip } from 'gsap/Flip')
 // 因为 IIFE 外部化会将命名导入编译为 Flip.Flip 而 UMD 全局不支持此模式
-const Flip = (globalThis as any).Flip as typeof import('gsap/Flip').Flip;
-const Draggable = (globalThis as any).Draggable as typeof import('gsap/Draggable').Draggable;
-const CustomEase = (globalThis as any).CustomEase as typeof import('gsap/CustomEase').CustomEase;
+const _Flip = Flip;
+const _Draggable = Draggable;
 
 // ================= 插件注册 =================
 gsap.registerPlugin(Flip, Draggable, CustomEase);
@@ -63,4 +63,4 @@ export function shouldAnimateFunctional(): boolean {
 }
 
 // ================= 导出 =================
-export { gsap, Flip, Draggable };
+export { gsap, _Flip as Flip, _Draggable as Draggable };

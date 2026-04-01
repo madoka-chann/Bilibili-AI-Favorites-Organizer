@@ -5,18 +5,17 @@
 
 import { get } from 'svelte/store';
 import type { Settings, FavFolder } from '$types/index';
-import { isRunning, cancelRequested, logs } from '$stores/state';
+import { isRunning, logs } from '$stores/state';
 import { settings } from '$stores/settings';
-import { getBiliData, getSourceMediaId, getAllFoldersWithIds } from '$api/bilibili';
+import { getBiliData, getAllFoldersWithIds } from '$api/bilibili';
 import { startProcess } from '$core/process';
-import { exportLogs } from '$core/export-logs';
 import { backupFavorites, downloadBackupFile } from '$core/backup';
-import { loadUndoHistory, undoOperation } from '$core/undo';
+import { undoOperation } from '$core/undo';
 import { scanDeadVideos, archiveDeadVideos, deleteDeadVideos } from '$core/dead-videos';
 import type { DeadVideoEntry } from '$core/dead-videos';
 import { scanDuplicates, deduplicateVideos } from '$core/duplicates';
 import type { DuplicateEntry } from '$core/duplicates';
-import { loadHistory, clearHistory } from '$core/history';
+import { clearHistory } from '$core/history';
 import { getErrorMessage } from '$utils/errors';
 import { withRunningState } from '$utils/running-state';
 

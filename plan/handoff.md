@@ -1,6 +1,70 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-01, 第十次)
+## 最近一次会话 (2026-04-01, 第十一次)
+
+### 本次完成内容
+
+**代码质量强化 — TypeScript 严格模式 + 深度 Code Review 修复**
+
+#### TypeScript 严格化
+
+| 改动 | 文件 | 详情 |
+|------|------|------|
+| 启用 `noUnusedLocals` + `noUnusedParameters` | `tsconfig.json` | 从 `false` 改为 `true`，捕获死代码 |
+| 清理未使用导入 | `src/core/panel-actions.ts` | 移除 `cancelRequested`, `getSourceMediaId`, `exportLogs`, `loadUndoHistory`, `loadHistory` 5 个未使用导入 |
+| 清理未使用类型导入 | `src/api/ai-providers.ts` | 移除 `GeminiUsageMetadata`, `StandardUsage` 2 个未使用类型 |
+| 修复类型断言 | `src/stores/settings.ts` | `Object.fromEntries` 结果用 `as unknown as Settings` 替代不安全的直接 `as Settings` |
+
+#### 消除 `as any` 类型断言
+
+| 改动 | 文件 | 详情 |
+|------|------|------|
+| GSAP CDN 全局类型声明 | `src/vite-env.d.ts` | 新增 `declare const Flip/Draggable/CustomEase` 全局类型声明 |
+| 移除 3 处 `as any` | `src/animations/gsap-config.ts` | `(globalThis as any).Flip` → 直接使用全局声明的 `Flip`/`Draggable` |
+| 改进类型断言 | `src/api/ai-client.ts` | `as { retryable?: boolean }` → `as Record<string, unknown>` + 严格 `=== true` 检查；`onerror` 同理 |
+
+#### 深度 Code Review 发现并修复
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `bilibili-videos.ts` | `moveVideos` catch 块静默吞错误，用户无反馈 | HIGH | 添加 `logs.add(\`移动操作异常: ...\`, 'error')` |
+| `bilibili-videos.ts` | `batchDeleteVideos` catch 块日志消息误导 ("限流" 但实际可能是任何错误) | HIGH | 改为 `logs.add(\`删除操作失败: ...\`, 'error')` |
+| `stores/state.ts` | 日志数组无上限，长时间运行可能 OOM | MEDIUM | 添加 `MAX_LOG_ENTRIES=500` 自动裁剪 |
+| `Toast.svelte` | `setTimeout` 未追踪，组件销毁时无法清理 | MEDIUM | 引入 `toastTimeouts` Map + `onDestroy` 清理 |
+| `background-cache.ts` | `safeScan` catch 块完全静默 | MEDIUM | 添加 `import.meta.env.DEV` 条件日志 |
+| `ai-client.ts` | JSON 解析失败时无响应片段，难以调试 | MEDIUM | 所有 JSON 错误消息附加 `responseText.substring(0, 120)` |
+| `process.ts` | `aiConcurrency` 无边界约束，用户可设极大值 | LOW | 添加 `Math.max(1, Math.min(10, ...))` 约束 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `background-cache.ts` | `stopBackgroundCache` 未被调用 | 模块级代码在页面生命周期内运行，userscript 场景下页面卸载自动清理，无需手动调用 |
+| `magnetic.ts` | document mousemove 全局监听 | destroy() 中已正确移除，无泄漏 |
+| `process.ts` | `isRunning` TOCTOU 竞态 | JavaScript 单线程模型下同步检查+赋值不会出现真正的竞态，现有模式安全 |
+| `Modal.svelte` | ESC 键多模态冲突 | 现有行为 (所有模态响应 ESC) 在当前 UI 设计中不会同时出现多个模态，无需 modal stack |
+
+### 关键设计决策
+
+1. **GSAP 全局类型声明**: 选择在 `vite-env.d.ts` 中用 `declare const` 而非 `declare global` — 简洁直接，无需 namespace 嵌套
+2. **`_Flip`/`_Draggable` 本地绑定**: 全局 `declare` 的常量不能直接 `export`，需创建本地绑定再重导出
+3. **日志裁剪策略**: 只在超过上限时 slice，避免每次 add 都创建新数组的性能开销
+4. **并发约束位置**: 在 process.ts 使用处约束而非 settings store 中 — 保持 store 纯粹，约束逻辑靠近使用方
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%**
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次强化: strict TS + 零 `as any` + 错误处理一致性)
+- Phase 5 性能优化: **100%** (本次新增: 日志裁剪 + Toast 清理 + 并发约束)
+
+**所有 Phase 均已 100% 完成。代码质量经 11 次迭代持续强化。**
+
+---
+
+## 上一次会话 (2026-04-01, 第十次)
 
 ### 本次完成内容
 

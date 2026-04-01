@@ -33,7 +33,8 @@ export async function moveVideos(
     if (res.code === 0) return true;
     logs.add(`移动失败 (code ${res.code}): ${res.message ?? '未知错误'}`, 'warning');
     return false;
-  } catch {
+  } catch (e: unknown) {
+    logs.add(`移动操作异常: ${getErrorMessage(e)}`, 'error');
     return false;
   }
 }
@@ -52,8 +53,8 @@ export async function batchDeleteVideos(
       { label: '删除操作', maxRetries: 3, baseWaitMs: 3000 },
     );
     return res.code === 0;
-  } catch {
-    logs.add('删除操作重试 3 次仍被限流', 'warning');
+  } catch (e: unknown) {
+    logs.add(`删除操作失败: ${getErrorMessage(e)}`, 'error');
     return false;
   }
 }
