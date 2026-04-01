@@ -37,6 +37,15 @@ export function throttle<T extends (...args: never[]) => void>(
   };
 }
 
+/** 生成统一的时间戳对 (ISO + 本地化) */
+export function formatNow(): { time: string; timeLocal: string } {
+  const now = new Date();
+  return {
+    time: now.toISOString(),
+    timeLocal: now.toLocaleString('zh-CN'),
+  };
+}
+
 /** 创建并发限制器 */
 export function createConcurrencyLimiter(maxConcurrent: number) {
   let running = 0;

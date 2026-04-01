@@ -14,11 +14,13 @@ import { callAI } from '$lib/api/ai-client';
 import { estimateCost, formatTokenCount } from '$lib/api/ai-providers';
 import { requestFolderSelect, requestPreviewConfirm } from '$lib/stores/modal-bridge';
 import { isDeadVideo } from '$lib/utils/dom';
-import { humanDelay, createConcurrencyLimiter } from '$lib/utils/timing';
+import { humanDelay, createConcurrencyLimiter, formatNow } from '$lib/utils/timing';
 import { gmSetValue, gmGetValue } from '$lib/utils/gm';
 import { saveUndoData, type UndoRecord } from '$lib/core/undo';
 import { saveHistoryEntry } from '$lib/core/history';
 import { getErrorMessage } from '$lib/utils/errors';
+import { groupBy } from '$lib/utils/collections';
+import { UNCATEGORIZED_FOLDER } from '$lib/utils/constants';
 
 // ================= Helpers =================
 
@@ -224,7 +226,7 @@ function postProcessCategories(
   );
   if (missedVideos.length > 0) {
     logs.add(`发现 ${missedVideos.length} 个遗漏视频，归入「未分类」`, 'warning');
-    allCategories['未分类'] = missedVideos.map((v) => ({
+    allCategories[UNCATEGORIZED_FOLDER] = missedVideos.map((v) => ({
       id: v.id,
       type: v.type,
       conf: 0.3,
@@ -236,13 +238,13 @@ function postProcessCategories(
     ([name, vids]) =>
       vids.length === 1 &&
       !existingFoldersMap[name] &&
-      name !== '未分类',
+      name !== UNCATEGORIZED_FOLDER,
   );
   if (tinyCats.length >= 3) {
     logs.add(`合并 ${tinyCats.length} 个碎片分类`, 'info');
-    if (!allCategories['未分类']) allCategories['未分类'] = [];
+    if (!allCategories[UNCATEGORIZED_FOLDER]) allCategories[UNCATEGORIZED_FOLDER] = [];
     for (const [name, vids] of tinyCats) {
-      allCategories['未分类'].push(...vids);
+      allCategories[UNCATEGORIZED_FOLDER].push(...vids);
       delete allCategories[name];
     }
   }
@@ -298,12 +300,7 @@ async function moveVideosToFolders(
       const chunk = vids.slice(i, i + settings.moveChunkSize);
 
       // Group by source
-      const bySource: Record<number, ClassifiedVideoEntry[]> = {};
-      for (const v of chunk) {
-        const src = videoSourceMap.get(v.id) ?? sourceMediaIds[0];
-        if (!bySource[src]) bySource[src] = [];
-        bySource[src].push(v);
-      }
+      const bySource = groupBy(chunk, (v) => videoSourceMap.get(v.id) ?? sourceMediaIds[0]);
 
       for (const [fromStr, subChunk] of Object.entries(bySource)) {
         const from = Number(fromStr);
@@ -367,9 +364,10 @@ function emitFinalReport(
   }
 
   if (undoMoves.length > 0) {
+    const { time, timeLocal } = formatNow();
     saveUndoData({
-      time: new Date().toISOString(),
-      timeLocal: new Date().toLocaleString('zh-CN'),
+      time,
+      timeLocal,
       totalVideos: allVideos.length,
       totalCategories: Object.keys(allCategories).length,
       sourceMediaIds,
@@ -378,7 +376,7 @@ function emitFinalReport(
   }
 
   saveHistoryEntry({
-    time: new Date().toLocaleString('zh-CN'),
+    time: formatNow().timeLocal,
     videoCount: allVideos.length,
     categoryCount: Object.keys(allCategories).length,
     categories: Object.keys(allCategories).join(', '),

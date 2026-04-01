@@ -30,5 +30,12 @@ export const FETCH_TIMEOUT_MS = 30_000; // 30 秒
 export const SAFETY_TIMEOUT_MS = 30 * 60 * 1000; // 30 分钟
 export const DEBOUNCE_DELAY_MS = 400;
 
+// ================= 特殊收藏夹名称 =================
+export const UNCATEGORIZED_FOLDER = '未分类';
+export const DEAD_ARCHIVE_FOLDER = '失效视频归档';
+
+// ================= 视频默认值 =================
+export const DEFAULT_VIDEO_TYPE = 2;
+
 // ================= 操作限制 =================
 export const MAX_UNDO_HISTORY = 5;

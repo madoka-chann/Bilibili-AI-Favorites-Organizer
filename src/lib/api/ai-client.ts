@@ -8,6 +8,7 @@ import { gmFetch } from '$lib/utils/gm';
 import { sleep } from '$lib/utils/timing';
 import { logs } from '$lib/stores/state';
 import { getErrorMessage } from '$lib/utils/errors';
+import { extractJsonObject } from '$lib/utils/json-extract';
 import {
   REQUEST_BUILDERS,
   RESPONSE_PARSERS,
@@ -68,58 +69,8 @@ export function callAISingle(
         }
 
         try {
-          let content = parser(response.responseText);
-          content = content.replace(/```json/g, '').replace(/```/g, '').trim();
-
-          // 用括号匹配提取第一个完整的 JSON 对象
-          const firstBrace = content.indexOf('{');
-          if (firstBrace !== -1) {
-            let depth = 0;
-            let inString = false;
-            let escape = false;
-            let endPos = -1;
-            for (let ci = firstBrace; ci < content.length; ci++) {
-              const ch = content[ci];
-              if (escape) {
-                escape = false;
-                continue;
-              }
-              if (ch === '\\' && inString) {
-                escape = true;
-                continue;
-              }
-              if (ch === '"') {
-                inString = !inString;
-                continue;
-              }
-              if (inString) continue;
-              if (ch === '{') depth++;
-              else if (ch === '}') {
-                depth--;
-                if (depth === 0) {
-                  endPos = ci;
-                  break;
-                }
-              }
-            }
-            if (endPos > firstBrace) {
-              content = content.substring(firstBrace, endPos + 1);
-            } else {
-              const lastBrace = content.lastIndexOf('}');
-              if (lastBrace > firstBrace)
-                content = content.substring(firstBrace, lastBrace + 1);
-            }
-          }
-
-          // 尝试解析 JSON，失败则修复常见问题
-          let parsed;
-          try {
-            parsed = JSON.parse(content);
-          } catch {
-            const fixed = content.replace(/,\s*([\]}])/g, '$1');
-            parsed = JSON.parse(fixed);
-          }
-          resolve(parsed);
+          const content = parser(response.responseText);
+          resolve(extractJsonObject(content) as AIClassificationResult);
         } catch (e) {
           reject(new Error(`解析 AI 回复失败: ${e instanceof Error ? e.message : String(e)}`));
         }

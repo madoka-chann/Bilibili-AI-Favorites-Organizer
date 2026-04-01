@@ -3,6 +3,7 @@ import type { BiliData } from '$lib/types';
 import { cancelRequested, logs } from '$lib/stores/state';
 import { batchDeleteVideos, scanAllFolderVideos } from '$lib/api/bilibili';
 import { humanDelay } from '$lib/utils/timing';
+import { DEFAULT_VIDEO_TYPE } from '$lib/utils/constants';
 
 interface VideoFolderRecord {
   folderTitle: string;
@@ -39,7 +40,7 @@ export async function scanDuplicates(
         folderTitle: folder.title,
         folderId: folder.id,
         videoTitle: v.title,
-        videoType: v.type ?? 2,
+        videoType: v.type ?? DEFAULT_VIDEO_TYPE,
       });
       return undefined;
     },
