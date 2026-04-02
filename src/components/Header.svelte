@@ -5,6 +5,7 @@
   import { pressEffect } from '$animations/micro';
   import { gsap, EASINGS, shouldAnimate } from '$animations/gsap-config';
   import { Z_INDEX } from '$utils/constants';
+  import { onDestroy } from 'svelte';
 
   interface Props {
     settingsOpen?: boolean;
@@ -15,6 +16,12 @@
 
   let themeIconEl = $state<HTMLButtonElement>(undefined!);
   let themeIconTween: gsap.core.Tween | null = null;
+  let transitionTimer: ReturnType<typeof setTimeout> | null = null;
+
+  onDestroy(() => {
+    if (transitionTimer) clearTimeout(transitionTimer);
+    themeIconTween?.kill();
+  });
 
   /** J1 圆形揭示 + J2 图标旋转 + J3 色彩插值 */
   function handleThemeToggle(e: MouseEvent) {
@@ -74,7 +81,8 @@
     const panelEl = appEl.querySelector('.panel') as HTMLElement | null;
     if (panelEl) {
       panelEl.style.transition = 'background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease';
-      setTimeout(() => { panelEl.style.transition = ''; }, 600);
+      if (transitionTimer) clearTimeout(transitionTimer);
+      transitionTimer = setTimeout(() => { panelEl.style.transition = ''; transitionTimer = null; }, 600);
     }
   }
 </script>

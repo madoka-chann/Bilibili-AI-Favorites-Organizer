@@ -52,7 +52,6 @@ function validateAIResult(parsed: unknown): AIClassificationResult {
 // ================= 可重试错误 =================
 
 class RetryableError extends Error {
-  readonly retryable = true;
   constructor(message: string) {
     super(message);
     this.name = 'RetryableError';

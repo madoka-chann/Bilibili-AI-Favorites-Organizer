@@ -51,15 +51,21 @@ export function ripple(node: HTMLElement, opts: RippleOptions = {}) {
     `;
 
     node.appendChild(circle);
+    activeCircles.add(circle);
 
     gsap.to(circle, {
       scale: 1,
       opacity: 0,
       duration: cfg.duration,
       ease: EASINGS.rippleExpand,
-      onComplete: () => circle.remove(),
+      onComplete: () => {
+        circle.remove();
+        activeCircles.delete(circle);
+      },
     });
   }
+
+  const activeCircles = new Set<HTMLSpanElement>();
 
   node.addEventListener('click', onClick);
 
@@ -69,6 +75,12 @@ export function ripple(node: HTMLElement, opts: RippleOptions = {}) {
     },
     destroy() {
       node.removeEventListener('click', onClick);
+      // 清理所有在飞涟漪，防止 DOM 残留
+      for (const circle of activeCircles) {
+        gsap.killTweensOf(circle);
+        circle.remove();
+      }
+      activeCircles.clear();
     },
   };
 }

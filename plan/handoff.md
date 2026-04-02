@@ -1,6 +1,54 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-02, 第二十次)
+## 最近一次会话 (2026-04-02, 第二十一次)
+
+### 本次完成内容
+
+**费用估算修正 + 资源泄漏修复 + 定时器清理 + 死代码清除 — 5 处代码质量改进 + 深度架构级 Code Review**
+
+#### 发现并修复的问题
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `ai-providers.ts` | `estimateCost` 中 `Object.keys().find(k => modelName.startsWith(k))` 按插入顺序匹配 — `gpt-4o-mini` 被 `gpt-4o` 抢先匹配，返回 $2.5/$10 而非 $0.15/$0.6；同理 `gpt-4.1-mini`/`gpt-4.1-nano` 也会错误匹配 | MEDIUM | 对 keys 按长度降序排序后再 `find()`，确保更具体的前缀优先匹配 |
+| `ripple.ts` | `destroy()` 只移除 click 监听器，不清理在飞的 GSAP 涟漪动画 — 组件卸载时残留孤儿 `<span>` 元素和运行中的 GSAP tween | MEDIUM | 新增 `activeCircles: Set<HTMLSpanElement>` 追踪所有在飞涟漪；`onComplete` 中清除；`destroy()` 中 `killTweensOf` + `remove()` 全部清理 |
+| `ai-client.ts` | `RetryableError` 类含 `readonly retryable = true` 属性 — 该属性从未被读取，唯一检测方式是 `instanceof RetryableError` (line 150) | LOW | 移除死属性 `retryable`，保留类本身用于 `instanceof` 检测 |
+| `Header.svelte` | 主题切换后 `setTimeout(() => { panelEl.style.transition = '' }, 600)` 未跟踪 — 组件卸载时定时器仍会触发，操作已销毁的 DOM 元素 | LOW | 用 `transitionTimer` 变量跟踪；快速连续切换时 `clearTimeout` 前一个；`onDestroy` 中清理 + kill `themeIconTween` |
+| `LogArea.svelte` | `decodedIds: Set<number>` 只增不减 — 日志 store 500 条轮转时旧 ID 从 DOM 消失但 Set 中残留，长时间运行后无限增长 | LOW | 在 `$effect` 中检测 Set 大小超过当前日志量 2 倍时，过滤出仅存在于当前日志中的 ID |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `ai-client.ts` | `callAISingle` 基于 `gmXmlHttpRequest` 的 Promise 无总超时兜底 — 若 GM API 不触发任何回调 | `GM_xmlhttpRequest` 的 `timeout` 参数保证 `ontimeout` 回调；Tampermonkey 实现可靠；无需额外兜底 |
+| `ai-providers.ts` | `anthropic-dangerous-direct-browser-access` header 暴露浏览器直连 | 这是 Anthropic API 官方要求的 header，油猴脚本只能从浏览器调用；无替代方案 |
+| `bilibili-http.ts` | `handleRateLimit=true` 时不检查 HTTP status，仅检查 JSON code | B站 API 统一 HTTP 200 + JSON code 错误码模式；非 JSON 响应在 `res.json()` 抛异常被 catch |
+| `magnetic.ts` | 每个 `use:magnetic` 实例注册独立全局 `mousemove` 监听 | 120px 近距离检测需全局追踪；实例数少 (1-3 个按钮)；`destroy()` 正确移除监听 |
+| `cursor-scatter.ts` | `Math.random() > cfg.spawnRate` 看起来逻辑反转 | 实际正确：spawnRate=0.3 时 70% 概率 `> 0.3` 提前 return，30% 概率继续 → 30% 生成率 |
+| `undo.ts` | `clearUndoRecord` 传 `null` 给 `gmSetValue` | `GM_setValue` 接受 `null`/`undefined`，Tampermonkey 将其视为删除值；行为正确 |
+
+### 关键设计决策
+
+1. **MODEL_PRICING 降序排序而非重构**: 保持现有 `Record<string, [number, number]>` 数据结构不变，仅在查找时排序。代价是每次 `estimateCost` 调用一次排序 (~17 个 key)，但该函数仅在整理完成时调用一次，性能无影响。
+2. **ripple.ts 对标 cursor-scatter.ts 模式**: 两者架构一致 — `activeParticles/activeCircles` Set + `onComplete` 清除 + `destroy()` 全量清理。保持 action 层清理模式统一。
+3. **LogArea decodedIds 惰性清理**: 不在每次 log 添加时清理 (避免 O(n) 开销)，而是当 Set 大小 > 日志量 × 2 时触发一次过滤。阈值 2x 兼顾清理频率与性能。
+4. **Header.svelte themeIconTween 清理**: `onDestroy` 中同时清理定时器和 GSAP tween，防止组件卸载后的幽灵动画。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%**
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: MODEL_PRICING 前缀匹配 / ripple 资源泄漏 / RetryableError 死属性 / Header 定时器 / LogArea 内存)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 errors。代码质量经 21 次迭代持续强化。**
+
+---
+
+## 上一次会话 (2026-04-02, 第二十次)
 
 ### 本次完成内容
 

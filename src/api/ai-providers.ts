@@ -261,7 +261,10 @@ export function estimateCost(modelName: string): string | null {
 
   let pricing = MODEL_PRICING[modelName];
   if (!pricing) {
-    const key = Object.keys(MODEL_PRICING).find((k) => modelName.startsWith(k));
+    // 按键长度降序匹配，避免 "gpt-4o" 抢先匹配 "gpt-4o-mini"
+    const key = Object.keys(MODEL_PRICING)
+      .sort((a, b) => b.length - a.length)
+      .find((k) => modelName.startsWith(k));
     if (key) pricing = MODEL_PRICING[key];
   }
   if (!pricing) return null;

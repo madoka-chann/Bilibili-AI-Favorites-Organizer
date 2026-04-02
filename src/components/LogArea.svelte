@@ -8,9 +8,14 @@
   // 跟踪已解码的日志 ID，避免重复动画
   let decodedIds = new Set<number>();
 
-  // 自动滚动到底部
+  // 自动滚动到底部 + 同步清理已不在 DOM 中的 ID
   $effect(() => {
     if ($logs.length && logEl) {
+      // 保持 decodedIds 与当前日志同步，防止长时间运行后无限增长
+      if (decodedIds.size > $logs.length * 2) {
+        const currentIds = new Set($logs.map((l) => l.id));
+        decodedIds = new Set([...decodedIds].filter((id) => currentIds.has(id)));
+      }
       tick().then(() => {
         logEl.scrollTop = logEl.scrollHeight;
       });
