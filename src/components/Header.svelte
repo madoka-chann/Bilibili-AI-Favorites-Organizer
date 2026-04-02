@@ -117,7 +117,9 @@
       use:ripple={{ color: 'rgba(255,255,255,0.25)' }}
       use:pressEffect
     >
-      <Settings size={16} />
+      <span class="settings-icon" class:open={settingsOpen}>
+        <Settings size={16} />
+      </span>
     </button>
 
     <button
@@ -161,12 +163,27 @@
     gap: 7px;
   }
 
+  .header-title > span:first-child {
+    background: linear-gradient(
+      90deg,
+      #fff 0%, #fff 40%,
+      rgba(255, 255, 255, 0.5) 50%,
+      #fff 60%, #fff 100%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: titleShimmer 6s ease-in-out infinite;
+  }
+
   .version {
     font-size: 10px;
     opacity: 0.7;
     background: rgba(255, 255, 255, 0.15);
     padding: 1px 6px;
     border-radius: 8px;
+    animation: versionPop 0.4s cubic-bezier(0.2, 1, 0.4, 1) both;
   }
 
   .header-actions {
@@ -198,10 +215,38 @@
     background: rgba(255, 255, 255, 0.35);
   }
 
+  .settings-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.5s cubic-bezier(0.2, 1, 0.4, 1);
+  }
+
+  .settings-icon.open {
+    transform: rotate(180deg);
+  }
+
   @keyframes aurora-flow {
     0%, 100% { background-position: 0% 50%; }
     25% { background-position: 100% 25%; }
     50% { background-position: 50% 100%; }
     75% { background-position: 0% 75%; }
+  }
+
+  @keyframes titleShimmer {
+    0%, 100% { background-position: 200% 0; }
+    50% { background-position: -200% 0; }
+  }
+
+  @keyframes versionPop {
+    0% { transform: scale(0); opacity: 0; }
+    70% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 0.7; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .header-title > span:first-child { animation: none; -webkit-text-fill-color: #fff; }
+    .version { animation: none; }
+    .settings-icon { transition: none; }
   }
 </style>

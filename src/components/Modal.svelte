@@ -4,6 +4,7 @@
   import { gsap, EASINGS } from '$animations/gsap-config';
   import { shouldAnimateFunctional } from '$animations/gsap-config';
   import { glowTrack } from '$actions/glow-track';
+  import { ripple } from '$actions/ripple';
   import { X } from 'lucide-svelte';
   import { Z_INDEX } from '$utils/constants';
 
@@ -119,13 +120,14 @@
         {#if footer}
           {@render footer()}
         {:else}
-          <button class="modal-btn cancel" onclick={handleClose}>
+          <button class="modal-btn cancel" onclick={handleClose} use:ripple>
             {cancelText}
           </button>
           <button
             class="modal-btn confirm"
             disabled={confirmDisabled}
             onclick={() => onconfirm?.()}
+            use:ripple={{ color: 'rgba(255,255,255,0.3)' }}
           >
             {confirmText}
           </button>

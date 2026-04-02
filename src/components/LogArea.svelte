@@ -115,6 +115,10 @@
     border-left-color: var(--ai-success);
   }
 
+  .log-entry:first-child.log-success {
+    animation: logSlideIn 0.25s ease both, readyPulse 3s ease-in-out 0.5s infinite;
+  }
+
   .log-error {
     color: var(--ai-error-alt);
     border-left-color: var(--ai-error-alt);
@@ -145,5 +149,14 @@
   @keyframes borderGlowWarn {
     0%, 100% { box-shadow: none; }
     50% { box-shadow: inset 3px 0 6px -2px var(--ai-warning); }
+  }
+
+  @keyframes readyPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .log-entry:first-child.log-success { animation: none; }
   }
 </style>

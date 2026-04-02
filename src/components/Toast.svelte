@@ -262,6 +262,13 @@
     overflow: hidden;
     max-width: 340px;
     will-change: transform, opacity;
+    transition: box-shadow 0.2s ease;
+  }
+
+  .toast:hover {
+    box-shadow:
+      0 12px 40px rgba(0, 0, 0, 0.18),
+      0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
   .toast-success {
@@ -287,6 +294,19 @@
   .toast-icon {
     font-size: 14px;
     flex-shrink: 0;
+    display: inline-block;
+  }
+
+  .toast-success .toast-icon {
+    animation: toastIconBounce 0.5s cubic-bezier(0.2, 1, 0.4, 1) 0.3s both;
+  }
+
+  .toast-error .toast-icon {
+    animation: toastIconShake 0.4s ease 0.3s both;
+  }
+
+  .toast-warning .toast-icon {
+    animation: toastIconWobble 0.5s ease 0.3s both;
   }
 
   .toast-msg {
@@ -313,5 +333,34 @@
     100% {
       width: 0%;
     }
+  }
+
+  @keyframes toastIconBounce {
+    0% { transform: scale(0); }
+    60% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes toastIconShake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-3px); }
+    40% { transform: translateX(3px); }
+    60% { transform: translateX(-2px); }
+    80% { transform: translateX(2px); }
+  }
+
+  @keyframes toastIconWobble {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-12deg); }
+    50% { transform: rotate(8deg); }
+    75% { transform: rotate(-4deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .toast { transition: none; }
+    .toast:hover { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06); }
+    .toast-success .toast-icon,
+    .toast-error .toast-icon,
+    .toast-warning .toast-icon { animation: none; }
   }
 </style>

@@ -1,6 +1,65 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-02, 第三十一次)
+## 最近一次会话 (2026-04-02, 第三十二次)
+
+### 本次完成内容
+
+**Touch & Flow — 触感反馈深化: ripple 扩展 + Header 文字流光/齿轮旋转 + Toast 图标动画 + LogArea 就绪脉冲 + Modal 按钮涟漪**
+
+#### 视觉增强 — 5 个组件
+
+| 组件 | 新增动画 | 说明 |
+|------|----------|------|
+| `Header.svelte` | 标题文字流光 (`titleShimmer` 6s 循环) + Settings 齿轮旋转 (`.open` 时 rotate 180°) + 版本号弹入 (`versionPop` scale 0→1.1→1) | 标题从静态白字升级为流光文字；齿轮旋转增强设置面板开关状态暗示；版本号首次渲染弹入 |
+| `ActionButtons.svelte` | 主按钮 + 9 个工具按钮 `use:ripple` | Material 风格点击涟漪扩散至所有可操作按钮，统一触感语言 |
+| `Toast.svelte` | Success 图标弹跳 (`toastIconBounce`) + Error 图标震动 (`toastIconShake`) + Warning 图标摇摆 (`toastIconWobble`) + 悬浮 box-shadow 增强 | 通知图标从静态符号升级为类型化入场动画；悬浮时阴影加深暗示可点击 |
+| `LogArea.svelte` | 首条就绪消息脉冲 (`readyPulse` 3s 循环) | "就绪"消息轻柔脉冲呼吸，暗示系统等待操作 |
+| `Modal.svelte` | 确认/取消按钮 `use:ripple` | Modal 底部按钮获得涟漪反馈，与 Header 按钮触感统一 |
+
+#### ripple action 覆盖扩展
+
+| 之前 | 之后 |
+|------|------|
+| Header (3 个按钮) | Header (3 个) + ActionButtons (10 个) + Modal (2 个) = **15 个按钮** |
+
+#### 代码质量 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `Toast.svelte` | CSS hover `transform` 被 GSAP 入场动画留下的 inline transform 覆盖，导致悬浮 scale 无效 | MEDIUM | 移除 hover `transform`，改用仅 `box-shadow` 增强反馈 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `ActionButtons.svelte` | `ripple` action 设置 `overflow: hidden`，可能裁剪 hover `translateY(-3px)` | 安全：`overflow:hidden` 裁剪子元素，不影响元素自身 transform |
+| `ActionButtons.svelte` | `ripple` 在 disabled 按钮上 | 安全：浏览器原生阻止 disabled button click 事件 |
+| `Header.svelte` | `-webkit-text-fill-color: transparent` 兼容性 | 安全：Firefox 49+ 支持；reduced-motion 下回退 #fff |
+| `LogArea.svelte` | `readyPulse` 在日志裁剪后可能脉冲非"就绪"条目 | 可接受：仅影响 first-child 且为 success 级别 |
+
+### 关键设计决策
+
+1. **ripple 扩展而非新 action**: ripple 已存在但仅 Header 使用，本次将其扩展到 ActionButtons + Modal，复用代码零增量。
+2. **Toast hover 仅 box-shadow**: 因 GSAP inline transform 冲突，放弃 CSS transform hover，改用 box-shadow 作为悬浮反馈——视觉效果等价但无冲突。
+3. **齿轮 180° 而非 360°**: 设置齿轮旋转 180° 表示"打开/关闭"二态切换，比 360° 更有语义；关闭时反向旋转回零位。
+4. **标题流光 6s 循环**: 比 3s 更克制，避免过于夺目；background-size 200% 确保光带完整通过。
+5. **prefers-reduced-motion**: Header 新增的 titleShimmer/versionPop/settings 旋转 + Toast icon 动画 + LogArea readyPulse 全部在 reduce-motion 下禁用。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: ripple 覆盖 3→15 按钮 + 5 组件微动画)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: Toast hover/GSAP 冲突修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 errors。构建体积 515 kB (较 511 kB 增长 +4 kB, 新增 ripple import + CSS keyframes)。**
+
+---
+
+## 上一次会话 (2026-04-02, 第三十一次)
 
 ### 本次完成内容
 
