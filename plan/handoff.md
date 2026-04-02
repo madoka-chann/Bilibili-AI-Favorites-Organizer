@@ -1,6 +1,55 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-02, 第二十二次)
+## 最近一次会话 (2026-04-02, 第二十三次)
+
+### 本次完成内容
+
+**分页安全 + SSRF 防护强化 + 移动失败统计 + 动画清理完善 — 6 处代码质量改进 + 深度架构级 Code Review**
+
+#### 发现并修复的问题
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `bilibili-videos.ts` | `while(true)` 分页循环无最大页数保护 — 若 B 站 API 持续返回 `has_more=true`，视频获取会无限循环 | MEDIUM | 添加 `MAX_PAGES = 500` 安全上限（500 页 × 20 条 = 10,000 视频），`while(true)` → `while(pn <= MAX_PAGES)` |
+| `ai-providers.ts` | SSRF 检测 IPv6 不完整 — `[::ffff:127.0.0.1]` (IPv4-mapped IPv6) 和 `[0:0:0:0:0:0:0:1]` (全展开格式) 可绕过 `isPrivateHost` 检查 | MEDIUM | 新增 bare IPv6 解析：剥离方括号后匹配 `::1`/`::` 全展开格式 + `::ffff:` 映射的私有 IPv4 地址 |
+| `process.ts` | 视频移动失败仅记日志不计数 — 最终报告只显示总处理数，用户无法感知失败量 | MEDIUM | `moveVideosToFolders` 返回 `{ undoMoves, failedCount }`；`emitFinalReport` 新增失败统计输出 |
+| `micro.ts` | `focusGlow` 的 `onBlur` 回调缺少 `shouldAnimate()` 检查 — 动画禁用时仍执行 `gsap.to()` 过渡动画而非瞬时清除 | LOW | `onBlur` 中添加 `shouldAnimate()` 检查：禁用时用 `gsap.set({ boxShadow: 'none' })` 瞬时清除 |
+| `ai-client.ts` | `redactApiKey` 的 8 字符最小长度阈值过高 — 4-8 字符的短 API key（如部分自定义服务）不会被脱敏，可能在错误消息中泄露 | LOW | 阈值从 `apiKey.length <= 8` 降低至 `apiKey.length < 4` |
+| `progress.ts` + `ProgressBar.svelte` | `victoryCelebration` 的 `gsap.ticker` 回调无外部清理机制 — 当 `isRunning=false` 触发 ProgressBar 卸载时，ticker 中的物理模拟仍继续运行 2-3 秒，操作已分离的 DOM 粒子元素 | MEDIUM | `victoryCelebration` 返回清理函数；ProgressBar 在 `onDestroy` 和 `isRunning` 重置时调用，立即移除 ticker + 清理粒子 DOM |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `bilibili-http.ts` L122 | `!handleRateLimit` 时抛 HTTP 错误看似逻辑反转 | 正确：`handleRateLimit=false` 时不做限流处理，直接抛出 HTTP 错误；`=true` 时继续解析 JSON 检查限流码 |
+| `timing.ts` 并发限制器 | 代理报告 `fn()` 异常时下一项不会出队 | `finally` 块保证 `running--` 和 `queue.shift()()` 始终执行，异常正确传播 |
+| `duplicates.ts` L55 | `Number(vidStr)` 可能产生 NaN | `vidStr` 来自 `Object.entries` 的 key，是 `String(v.id)` 的结果，`v.id` 始终为数字；不可能 NaN |
+| `gm.ts` gmCache | Map 无大小限制，长时间运行可能增长 | GM 键数固定（~15-20 个），不会无限增长 |
+| `Panel.svelte` Draggable | Draggable 未在 onDestroy 中显式 kill | Draggable 在 `gsap.context()` 回调内创建，`ctx.revert()` 会自动清理 |
+| `FloatButton.svelte` 轨道球 DOM | orb 元素未在 onDestroy 中移除 | orb 是 `orbitsContainer` 子元素，组件卸载时 Svelte 移除整个 DOM 子树 |
+| `text.ts` RAF 泄漏 | textDecode 的 `destroyed` 标志竞态 | `destroyed=true` 后 step 函数提前 return 不再调度 RAF；`cancelAnimationFrame(rafId)` 覆盖边缘时序 |
+
+### 关键设计决策
+
+1. **分页安全上限 500 页**: B 站单收藏夹最多约 1,000 个视频（~50 页），500 页上限远超实际使用场景，仅防止 API 异常导致的无限循环。
+2. **SSRF IPv6 分层检测**: 先剥离方括号得到 bare address，再分别匹配全零展开格式 (`0000:...:0001`) 和 `::ffff:` IPv4-mapped 地址。不依赖外部 IPv6 解析库，保持零依赖。
+3. **victoryCelebration 返回清理函数**: 与 `cursor-scatter.ts`/`ripple.ts` 的 `destroy()` 模式一致 — 调用方负责生命周期管理。ProgressBar 在两个时机调用：`isRunning` 变 false（正常完成）和 `onDestroy`（异常卸载）。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%**
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 分页安全/SSRF IPv6/移动失败统计/focusGlow 一致性/API key 脱敏/ticker 泄漏修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 errors。代码质量经 23 次迭代持续强化。**
+
+---
+
+## 上一次会话 (2026-04-02, 第二十二次)
 
 ### 本次完成内容
 

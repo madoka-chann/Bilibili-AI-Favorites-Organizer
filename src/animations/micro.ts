@@ -61,6 +61,10 @@ export function focusGlow(
   }
 
   function onBlur() {
+    if (!shouldAnimate()) {
+      gsap.set(node, { boxShadow: 'none' });
+      return;
+    }
     gsap.to(node, {
       boxShadow: '0 0 0 0px transparent, 0 0 0px transparent',
       duration: 0.25,

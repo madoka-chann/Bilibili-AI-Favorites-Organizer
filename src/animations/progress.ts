@@ -112,8 +112,8 @@ export function phaseTransition(
  * I3 增强: 60 粒子 + 帧级物理模拟 (速度 + 重力 + 旋转 + 空气阻力)
  * 替代预计算 tween 路径，获得更自然的重力弧线
  */
-export function victoryCelebration(containerEl: HTMLElement) {
-  if (!shouldAnimate()) return;
+export function victoryCelebration(containerEl: HTMLElement): (() => void) | undefined {
+  if (!shouldAnimate()) return undefined;
 
   // 微震
   gsap.to(containerEl, {
@@ -225,6 +225,12 @@ export function victoryCelebration(containerEl: HTMLElement) {
   }
 
   gsap.ticker.add(tickPhysics);
+
+  return () => {
+    gsap.ticker.remove(tickPhysics);
+    for (const p of particles) p.el.remove();
+    particles.length = 0;
+  };
 }
 
 /**

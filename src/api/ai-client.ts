@@ -62,7 +62,7 @@ class RetryableError extends Error {
 
 /** 从文本片段中脱敏 API 密钥，防止密钥通过错误消息泄露 */
 function redactApiKey(text: string, apiKey: string): string {
-  if (!apiKey || apiKey.length <= 8) return text;
+  if (!apiKey || apiKey.length < 4) return text;
   try {
     return text.replace(
       new RegExp(apiKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),

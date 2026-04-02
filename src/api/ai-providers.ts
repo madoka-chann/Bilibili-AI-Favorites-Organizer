@@ -29,8 +29,12 @@ function isPrivateHost(hostname: string): boolean {
     /^169\.254\./,        // link-local
     /^100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7])\./, // CGN (RFC 6598)
   ];
-  // 特殊 hostnames
-  if (/^(localhost|0\.0\.0\.0|\[::1?\])$/i.test(hostname)) return true;
+  // 特殊 hostnames + IPv6 loopback (含 IPv4-mapped 格式)
+  if (/^(localhost|0\.0\.0\.0)$/i.test(hostname)) return true;
+  // 匹配 [::1], [::], [0:0:0:0:0:0:0:1], [::ffff:127.x.x.x] 等 IPv6 环回/映射地址
+  const bare = hostname.replace(/^\[|\]$/g, '');
+  if (/^(::1?|0{1,4}(:{1,2}0{1,4}){0,6}:?:?0{0,3}1?)$/i.test(bare)) return true;
+  if (/^::ffff:(127\.|10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.)/i.test(bare)) return true;
   return PRIVATE_PATTERNS.some(p => p.test(hostname));
 }
 

@@ -243,10 +243,11 @@ async function moveVideosToFolders(
   settings: Settings,
   biliData: BiliData,
   isCancelled: CancelCheck,
-): Promise<UndoRecord['moves']> {
+): Promise<{ undoMoves: UndoRecord['moves']; failedCount: number }> {
   invalidateFolderCache();
   const entries = Object.entries(allCategories);
   let moveIdx = 0;
+  let failedCount = 0;
   const undoMoves: UndoRecord['moves'] = [];
 
   for (const [categoryName, vids] of entries) {
@@ -299,6 +300,7 @@ async function moveVideosToFolders(
             count: subChunk.length,
           });
         } else {
+          failedCount += subChunk.length;
           logs.add(
             `移动到「${categoryName}」部分失败 (${subChunk.length} 个视频)`,
             'warning',
@@ -310,7 +312,7 @@ async function moveVideosToFolders(
     }
   }
 
-  return undoMoves;
+  return { undoMoves, failedCount };
 }
 
 // ================= Phase 6: Final report =================
@@ -320,6 +322,7 @@ function emitFinalReport(
   allCategories: CategoryResult,
   sourceMediaIds: number[],
   undoMoves: UndoRecord['moves'],
+  failedCount: number,
   settings: Settings,
 ) {
   const elapsed = Date.now() - get(progressStartTime);
@@ -332,6 +335,10 @@ function emitFinalReport(
     `整理完成！共处理 ${allVideos.length} 个视频，${Object.keys(allCategories).length} 个分类，耗时 ${elapsedStr}`,
     'success',
   );
+
+  if (failedCount > 0) {
+    logs.add(`${failedCount} 个视频移动失败，请检查日志`, 'warning');
+  }
 
   const usage = get(tokenUsage);
   if (usage.totalTokens > 0) {
@@ -431,13 +438,13 @@ export async function startProcess(settings: Settings, biliData: BiliData): Prom
     if (isCancelled()) throw new Error('用户取消操作');
 
     // Phase 6: Move videos
-    const undoMoves = await moveVideosToFolders(
+    const { undoMoves, failedCount } = await moveVideosToFolders(
       allCategories, existingFoldersMap, videoSourceMap,
       sourceMediaIds, allVideos, settings, biliData, isCancelled,
     );
 
     // Phase 7: Report
-    emitFinalReport(allVideos, allCategories, sourceMediaIds, undoMoves, settings);
+    emitFinalReport(allVideos, allCategories, sourceMediaIds, undoMoves, failedCount, settings);
 
   } finally {
     isRunning.set(false);

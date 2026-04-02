@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte';
   import { tweened } from 'svelte/motion';
   import { cubicOut } from 'svelte/easing';
   import { progressPercent, progressPhase, isRunning } from '$stores/state';
@@ -49,10 +50,11 @@
 
   // D4: 胜利庆祝
   let celebrated = false;
+  let cleanupCelebration: (() => void) | undefined;
   $effect(() => {
     if (containerEl && $progressPercent >= 100 && !celebrated) {
       celebrated = true;
-      victoryCelebration(containerEl);
+      cleanupCelebration = victoryCelebration(containerEl);
     }
   });
 
@@ -74,7 +76,13 @@
       celebrated = false;
       prevPhase = '';
       prevPercent = 0;
+      cleanupCelebration?.();
+      cleanupCelebration = undefined;
     }
+  });
+
+  onDestroy(() => {
+    cleanupCelebration?.();
   });
 </script>
 
