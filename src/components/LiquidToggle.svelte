@@ -88,13 +88,14 @@
     border: none;
     cursor: pointer;
     background: var(--ai-bg-tertiary);
-    transition: background 0.3s ease;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
     padding: 0;
     flex-shrink: 0;
   }
 
   .liquid-toggle.on {
     background: var(--ai-primary);
+    box-shadow: 0 0 10px rgba(var(--ai-primary-rgb), 0.35);
   }
 
   .thumb {
@@ -107,5 +108,10 @@
     background: #fff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     will-change: transform;
+    transition: box-shadow 0.3s ease;
+  }
+
+  .liquid-toggle.on .thumb {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 6px rgba(255, 255, 255, 0.5);
   }
 </style>

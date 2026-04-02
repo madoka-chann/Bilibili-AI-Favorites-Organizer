@@ -6,7 +6,7 @@
   import { logs } from '$stores/state';
   import { Eye, EyeOff, RefreshCw, ExternalLink, Zap } from 'lucide-svelte';
   import { getErrorMessage } from '$utils/errors';
-  import { focusGlow } from '$animations/micro';
+  import { focusGlow, pressEffect } from '$animations/micro';
   import type { AIProviderId } from '$types/index';
 
   let showApiKey = $state(false);
@@ -99,7 +99,7 @@
 
   <!-- 自定义 URL (仅自定义 provider) -->
   {#if isCustomProvider}
-    <div class="bfao-field">
+    <div class="bfao-field field-slide-in">
       <label class="bfao-label" for="bfao-custom-url">API 地址</label>
       <input
         id="bfao-custom-url"
@@ -132,6 +132,7 @@
         class="bfao-icon-btn"
         onclick={() => (showApiKey = !showApiKey)}
         title={showApiKey ? '隐藏' : '显示'}
+        use:pressEffect
       >
         {#if showApiKey}
           <EyeOff size={14} />
@@ -161,6 +162,7 @@
         onclick={handleFetchModels}
         disabled={modelLoading}
         title="获取模型列表"
+        use:pressEffect
       >
         <RefreshCw size={14} class={modelLoading ? 'spinning' : ''} />
       </button>
@@ -169,6 +171,7 @@
         onclick={handleTestConnectivity}
         disabled={testLoading}
         title="测试连通性"
+        use:pressEffect
       >
         <Zap size={14} class={testLoading ? 'spinning' : ''} />
       </button>
@@ -232,6 +235,7 @@
   .link-btn:hover {
     border-color: var(--ai-primary);
     color: var(--ai-primary);
+    box-shadow: 0 0 8px rgba(var(--ai-primary-rgb), 0.25);
   }
 
   /* :global() needed: .spinning is applied to Lucide SVG child component */
@@ -245,6 +249,15 @@
     }
   }
 
+  .field-slide-in {
+    animation: fieldSlideDown 0.3s cubic-bezier(0.2, 0.98, 0.28, 1) both;
+  }
+
+  @keyframes fieldSlideDown {
+    from { opacity: 0; transform: translateY(-8px); max-height: 0; }
+    to { opacity: 1; transform: translateY(0); max-height: 80px; }
+  }
+
   .model-dropdown {
     max-height: 200px;
     overflow-y: auto;
@@ -253,6 +266,13 @@
     background: var(--ai-bg);
     box-shadow: var(--ai-shadow-md);
     margin-top: 4px;
+    animation: dropdownIn 0.2s cubic-bezier(0.2, 0.98, 0.28, 1) both;
+    transform-origin: top center;
+  }
+
+  @keyframes dropdownIn {
+    from { opacity: 0; transform: scaleY(0.92) scaleX(0.98); }
+    to { opacity: 1; transform: scaleY(1) scaleX(1); }
   }
 
   .model-item {
@@ -265,16 +285,31 @@
     background: transparent;
     color: var(--ai-text);
     cursor: pointer;
-    transition: background 0.15s ease;
+    transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    animation: modelItemSlideIn 0.2s cubic-bezier(0.2, 0.98, 0.28, 1) both;
+  }
+
+  .model-item:nth-child(1) { animation-delay: 0s; }
+  .model-item:nth-child(2) { animation-delay: 0.03s; }
+  .model-item:nth-child(3) { animation-delay: 0.06s; }
+  .model-item:nth-child(4) { animation-delay: 0.09s; }
+  .model-item:nth-child(5) { animation-delay: 0.12s; }
+  .model-item:nth-child(n+6) { animation-delay: 0.15s; }
+
+  @keyframes modelItemSlideIn {
+    from { opacity: 0; transform: translateX(8px); }
+    to { opacity: 1; transform: translateX(0); }
   }
 
   .model-item:hover {
     background: var(--ai-bg-hover);
+    transform: translateX(2px);
   }
 
   .model-item.active {
     background: var(--ai-primary-bg);
     color: var(--ai-primary);
     font-weight: 600;
+    box-shadow: inset 3px 0 0 var(--ai-primary);
   }
 </style>

@@ -3,7 +3,7 @@
   import { settings } from '$stores/settings';
   import { BUILTIN_PRESETS } from '$utils/constants';
   import { debounce } from '$utils/timing';
-  import { focusGlow } from '$animations/micro';
+  import { focusGlow, pressEffect } from '$animations/micro';
   import { gmGetValue, gmSetValue } from '$utils/gm';
   import { Save, Trash2, Star } from 'lucide-svelte';
   import type { PromptPreset } from '$types/ai';
@@ -79,7 +79,7 @@
         </optgroup>
       {/if}
     </select>
-    <button class="prompt-action-btn" title="保存为自定义预设" onclick={saveAsCustom} disabled={!promptValue.trim()}>
+    <button class="prompt-action-btn" title="保存为自定义预设" onclick={saveAsCustom} disabled={!promptValue.trim()} use:pressEffect>
       <Save size={12} />
     </button>
   </div>
@@ -178,6 +178,24 @@
     padding: 3px 6px;
     border-radius: 6px;
     background: var(--ai-bg-secondary);
+    animation: presetSlideIn 0.25s cubic-bezier(0.2, 0.98, 0.28, 1) both;
+    transition: background 0.2s ease, transform 0.15s ease;
+  }
+
+  .custom-preset-row:nth-child(1) { animation-delay: 0s; }
+  .custom-preset-row:nth-child(2) { animation-delay: 0.04s; }
+  .custom-preset-row:nth-child(3) { animation-delay: 0.08s; }
+  .custom-preset-row:nth-child(4) { animation-delay: 0.12s; }
+  .custom-preset-row:nth-child(n+5) { animation-delay: 0.16s; }
+
+  @keyframes presetSlideIn {
+    from { opacity: 0; transform: translateX(-6px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .custom-preset-row:hover {
+    background: var(--ai-bg-hover);
+    transform: translateX(2px);
   }
 
   .preset-select {
@@ -205,6 +223,25 @@
     transition: color 0.2s;
   }
   .preset-icon-btn:hover { color: var(--ai-primary); }
-  .preset-icon-btn.danger:hover { color: var(--ai-error, #ef4444); }
-  .preset-icon-btn :global(.starred) { color: var(--ai-warning-dark); fill: var(--ai-warning-dark); }
+  .preset-icon-btn.danger:hover {
+    color: var(--ai-error, #ef4444);
+    animation: deleteShake 0.3s ease;
+  }
+  .preset-icon-btn :global(.starred) {
+    color: var(--ai-warning-dark);
+    fill: var(--ai-warning-dark);
+    animation: starBounce 0.35s cubic-bezier(0.2, 0.98, 0.28, 1);
+  }
+
+  @keyframes starBounce {
+    0% { transform: scale(0.5); }
+    60% { transform: scale(1.25); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes deleteShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    75% { transform: translateX(2px); }
+  }
 </style>

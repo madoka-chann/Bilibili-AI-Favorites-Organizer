@@ -19,6 +19,8 @@
   let bodyEl = $state<HTMLElement>(undefined!);
   let chevronEl = $state<HTMLElement>(undefined!);
 
+  let iconEl = $state<HTMLElement>(undefined!);
+
   onMount(() => {
     // Set initial state for GSAP control — body element is now bound
     if (!open && bodyEl) {
@@ -35,6 +37,7 @@
   onDestroy(() => {
     if (bodyEl) gsap.killTweensOf(bodyEl);
     if (chevronEl) gsap.killTweensOf(chevronEl);
+    if (iconEl) gsap.killTweensOf(iconEl);
   });
 
   /** Convert hex to rgba string for background tint */
@@ -58,8 +61,23 @@
         gsap.fromTo(bodyEl,
           { height: 0, opacity: 0, paddingTop: 0, paddingBottom: 0 },
           { height: h, opacity: 1, paddingTop: '', paddingBottom: '', duration: 0.35, ease: EASINGS.velvetSpring,
-            onComplete: () => { gsap.set(bodyEl, { height: 'auto', overflow: '', clearProps: 'opacity,paddingTop,paddingBottom' }); } }
+            onComplete: () => {
+              gsap.set(bodyEl, { height: 'auto', overflow: '', clearProps: 'opacity,paddingTop,paddingBottom' });
+              // Content stagger: children fade in after accordion opens
+              const children = bodyEl.children;
+              if (children.length > 0) {
+                gsap.fromTo(children, { opacity: 0, y: 8 }, {
+                  opacity: 1, y: 0, duration: 0.25, stagger: 0.04, ease: EASINGS.velvetSpring,
+                });
+              }
+            } }
         );
+        // Icon pulse on open
+        if (iconEl) {
+          gsap.fromTo(iconEl, { scale: 1 }, {
+            scale: 1.25, duration: 0.15, yoyo: true, repeat: 1, ease: 'power2.out',
+          });
+        }
       } else {
         gsap.to(bodyEl, {
           height: 0, opacity: 0, paddingTop: 0, paddingBottom: 0,
@@ -85,7 +103,7 @@
   }
 </script>
 
-<div class="group">
+<div class="group" class:open>
   <button
     class="group-header"
     onclick={toggle}
@@ -93,7 +111,7 @@
   >
     {#if icon}
       {@const Icon = icon}
-      <span class="group-icon" style:background={hexToRgba(iconColor, 0.1)} style:color={iconColor}>
+      <span class="group-icon" style:background={hexToRgba(iconColor, 0.1)} style:color={iconColor} bind:this={iconEl}>
         <Icon size={14} />
       </span>
     {/if}
@@ -111,6 +129,13 @@
 <style>
   .group {
     margin-bottom: 2px;
+    border-left: 2px solid transparent;
+    transition: border-color 0.3s ease;
+    padding-left: 0;
+  }
+
+  .group.open {
+    border-left-color: var(--ai-primary);
   }
 
   .group-header {
@@ -139,6 +164,11 @@
       rgba(255, 107, 157, 0.05)
     );
     color: var(--ai-primary);
+    transform: scale(1.01);
+  }
+
+  .group-header:hover .group-icon {
+    filter: brightness(1.2);
   }
 
   .group-icon {
@@ -149,6 +179,7 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    transition: filter 0.25s ease;
   }
 
   .group-title {

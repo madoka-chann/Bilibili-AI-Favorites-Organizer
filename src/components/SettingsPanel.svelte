@@ -93,7 +93,7 @@
         </label>
         {#if $settings.limitEnabled}
           <input
-            class="bfao-input bfao-input-small"
+            class="bfao-input bfao-input-small sub-field-slide"
             type="number"
             min="10"
             max="5000"
@@ -171,7 +171,7 @@
       </div>
 
       {#if $settings.bgCacheEnabled}
-        <div class="sub-field">
+        <div class="sub-field sub-field-slide">
           <label class="bfao-label" for="bfao-cache-interval">缓存间隔 (分)</label>
           <select
             id="bfao-cache-interval"
@@ -198,13 +198,13 @@
         onchange={(v) => settings.update({ animEnabled: v })} />
     </div>
     {#if $prefersReducedMotion}
-      <div class="anim-hint">
+      <div class="anim-hint hint-fade-in">
         系统已开启「减少动画」，动画被自动禁用。
         请前往 Windows 设置 → 辅助功能 → 视觉效果 → 打开「动画效果」
       </div>
     {/if}
     {#if $settings.animEnabled && !$prefersReducedMotion}
-      <div class="anim-hint ok">动画已启用，刷新页面后生效</div>
+      <div class="anim-hint ok hint-fade-in">动画已启用，刷新页面后生效</div>
     {/if}
   </SettingsGroup>
 </div>
@@ -242,6 +242,14 @@
     gap: 8px;
     font-size: 12.5px;
     color: var(--ai-text-secondary);
+    transition: background 0.2s ease;
+    border-radius: 6px;
+    padding: 4px 6px;
+    margin: -4px -6px;
+  }
+
+  .toggle-row:hover {
+    background: var(--ai-bg-hover);
   }
 
   .sub-field {
@@ -249,6 +257,24 @@
     align-items: center;
     gap: 8px;
     padding-left: 23px;
+  }
+
+  .sub-field-slide {
+    animation: subFieldSlideIn 0.3s cubic-bezier(0.2, 0.98, 0.28, 1) both;
+  }
+
+  @keyframes subFieldSlideIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hint-fade-in {
+    animation: hintFadeIn 0.35s ease both;
+  }
+
+  @keyframes hintFadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .anim-hint {

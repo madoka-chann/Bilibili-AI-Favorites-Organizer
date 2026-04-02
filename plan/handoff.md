@@ -1,6 +1,59 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-02, 第二十八次)
+## 最近一次会话 (2026-04-02, 第二十九次)
+
+### 本次完成内容
+
+**5 个设置面板组件视觉增强 + CSS 重复规则合并 + LiquidToggle transition 补全 + 深度 Code Review**
+
+#### 视觉增强 — 5 个设置面板组件
+
+| 组件 | 新增动画 | 说明 |
+|------|----------|------|
+| `SettingsGroup.svelte` | GSAP 子元素交错入场 (opacity+y) + 图标展开脉冲 (scale 1→1.25→1) + 展开态左边框指示 + 头部悬浮 scale(1.01) + 图标 brightness(1.2) | 手风琴展开后子元素依次浮现；图标弹跳吸引焦点；紫色左边框标记展开状态 |
+| `ProviderConfig.svelte` | CSS `dropdownIn` 下拉缩放入场 + `modelItemSlideIn` 模型项交错 (0s/0.03s/.../0.15s) + 选中项 inset 左边框 + `fieldSlideDown` 条件字段滑入 + `pressEffect` 3 个图标按钮 + 链接按钮悬浮发光 | 模型下拉从无到有缩放渐显；项目依次从右滑入；选中项紫色左线指示；自定义 URL 字段平滑滑入 |
+| `PromptEditor.svelte` | CSS `presetSlideIn` 预设行交错 (0s/0.04s/.../0.16s) + 行悬浮右移+背景亮 + `pressEffect` 保存按钮 + `starBounce` 星标弹跳 + `deleteShake` 删除抖动 | 预设列表项依次滑入；悬浮行右移 2px；星标选中弹跳放大；删除按钮悬浮摇晃警示 |
+| `SettingsPanel.svelte` | CSS `subFieldSlideIn` 条件子字段滑入 + `hintFadeIn` 提示渐显 + `.toggle-row` 悬浮背景 | limitEnabled/bgCacheEnabled 子字段平滑滑入；动画提示文字从上方渐入；行为开关行悬浮高亮 |
+| `LiquidToggle.svelte` | 开启态 `box-shadow` 主题色外发光 + 滑块 `box-shadow` 白色高光 | 开启时轨道外发柔和紫光；滑块内加白色辉光，增强开关状态感知 |
+
+#### 代码质量修复 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `SettingsPanel.svelte` | `.toggle-row` 有两个重复的 CSS 规则块，属性分散在两处 | MEDIUM | 合并为单个规则块 |
+| `LiquidToggle.svelte` | `.liquid-toggle` 的 `transition` 仅包含 `background`，新增的 `box-shadow` 不会平滑过渡 | LOW | `transition` 补充 `box-shadow 0.3s ease` |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `SettingsGroup.svelte` `iconEl` 在 `{#if icon}` 内部 bind | 条件块内 bind:this 可能为 undefined | 安全：`onDestroy` 和 GSAP 调用点都有 `if (iconEl)` 守卫；Svelte 5 条件块 bind 语义正确 |
+| `ProviderConfig.svelte` `pressEffect` 在 disabled 按钮上 | pointerdown 在 disabled 元素上不触发 | 正确：浏览器原生行为阻止了 disabled 元素的指针事件，pressEffect 不会误触发 |
+| `PromptEditor.svelte` `deleteShake` 每次 hover 触发 | CSS animation 在 `:hover` 伪类上 | 正确：离开 hover 时 animation 属性移除，重新 hover 重新触发，符合预期 |
+| `SettingsGroup.svelte` 初始 `defaultOpen` 不触发内容交错 | stagger 仅在 `toggle()` 的 `onComplete` 中触发 | 正确：页面首次加载不应播放动画，避免视觉噪声 |
+
+### 关键设计决策
+
+1. **GSAP + CSS 混合策略**: SettingsGroup 的内容交错和图标脉冲使用 GSAP（需要动态子元素查询），其余组件使用纯 CSS @keyframes + transition，平衡表达力与性能。
+2. **nth-child 交错上限**: ProviderConfig 模型项和 PromptEditor 预设行都设了 nth-child 上限 (n+6/n+5 统一延迟)，避免过长的交错序列。
+3. **复用 pressEffect action**: ProviderConfig 3 个图标按钮 + PromptEditor 保存按钮直接复用 `$animations/micro.ts` 的 `pressEffect`，零额外代码。
+4. **展开态左边框**: SettingsGroup 使用 `border-left: 2px solid transparent → var(--ai-primary)` 过渡，视觉上标记当前展开的设置分组。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: 5 个设置面板组件视觉增强，全部 21 个组件动画覆盖完毕)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: SettingsPanel 重复 CSS 合并 + LiquidToggle transition 补全)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。全部 21 个组件的动画覆盖已完成。svelte-check 0 errors。代码质量经 29 次迭代持续强化。**
+
+---
+
+## 上一次会话 (2026-04-02, 第二十八次)
 
 ### 本次完成内容
 
