@@ -106,14 +106,19 @@ export async function deleteDeadVideos(
   let deleted = 0;
   for (const [srcId, vids] of bySource) {
     if (isCancelled()) break;
+    let folderDeleted = 0;
     for (let i = 0; i < vids.length; i += DELETE_CHUNK_SIZE) {
       if (isCancelled()) break;
       const chunk = vids.slice(i, i + DELETE_CHUNK_SIZE);
       const resources = chunk.map((v) => `${v.id}:${v.type}`).join(',');
       const success = await batchDeleteVideos(srcId, resources, biliData);
-      if (success) deleted += chunk.length;
+      if (success) {
+        deleted += chunk.length;
+        folderDeleted += chunk.length;
+      }
       await humanDelay(writeDelay);
     }
+    logs.add(`已从「${vids[0]?.folderTitle || srcId}」删除 ${folderDeleted}/${vids.length} 个失效视频`, 'info');
   }
 
   return deleted;

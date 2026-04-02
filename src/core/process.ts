@@ -149,11 +149,13 @@ async function classifyWithAI(
         logs.add(`AI 批次 ${idx}/${totalAiCalls} 处理中...`, 'info');
         const aiResult = await callAI(combinedPrompt, settings);
 
-        if (aiResult?.categories) {
+        if (aiResult?.categories && Object.keys(aiResult.categories).length > 0) {
           for (const [catName, vids] of Object.entries(aiResult.categories)) {
             if (!allCategories[catName]) allCategories[catName] = [];
             allCategories[catName].push(...vids);
           }
+        } else {
+          logs.add(`AI 批次 ${idx} 返回空分类结果 (${chunk.length} 个视频未被分类)`, 'warning');
         }
 
         aiCompleted++;

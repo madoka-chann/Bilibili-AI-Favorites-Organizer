@@ -101,9 +101,8 @@ export function callAISingle(
 
         if (response.status !== 200) {
           const errSnippet = redactApiKey(
-            (response.responseText || '').substring(0, 300),
-            settings.apiKey,
-          );
+            response.responseText || '', settings.apiKey,
+          ).substring(0, 300);
           reject(new Error(`API 报错 ${response.status}：${errSnippet}`));
           return;
         }
@@ -115,9 +114,8 @@ export function callAISingle(
           resolve(result);
         } catch (e: unknown) {
           const snippet = redactApiKey(
-            (response.responseText || '').substring(0, 120),
-            settings.apiKey,
-          );
+            response.responseText || '', settings.apiKey,
+          ).substring(0, 120);
           reject(new Error(`解析 AI 回复失败: ${getErrorMessage(e)}\n响应片段: ${snippet}`));
         }
       },

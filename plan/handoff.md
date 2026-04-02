@@ -1,6 +1,53 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-02, 第二十五次)
+## 最近一次会话 (2026-04-02, 第二十六次)
+
+### 本次完成内容
+
+**deleteDeadVideos 每收藏夹进度日志 + ThemeMode 存储校验 + fetchBiliJson 网络重试日志 + AI 空分类批次预警 + API 密钥脱敏先于截断 — 5 处代码质量改进 + 深度架构级 Code Review**
+
+#### 发现并修复的问题
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `dead-videos.ts` | `deleteDeadVideos` 无每收藏夹删除进度日志 — `archiveDeadVideos` 有 `folderMoved/total` 日志但 `deleteDeadVideos` 完全沉默，用户无法了解各收藏夹处理情况 | MEDIUM | 新增 `folderDeleted` 计数器，循环结束后输出 `已从「{folder}」删除 {folderDeleted}/{total} 个失效视频`，与 archive 模式保持一致 |
+| `theme.ts` | `themeMode` 初始化直接 `as ThemeMode` 类型断言 — 若 GM 存储被手动篡改为 `"foo"` 等无效值，断言不会校验，导致后续 `isDark` derived 计算逻辑异常 | LOW-MEDIUM | 新增 `validThemeMode()` 校验函数，基于 `VALID_THEMES` 白名单，无效值回退 `'auto'`，与 `settings.ts` 的 `isValidProvider` 模式一致 |
+| `bilibili-http.ts` | `fetchBiliJson` 网络异常重试时完全静默 — `postBiliApi` 会日志 `网络异常，Xs后重试`，但 GET 请求的 `fetchBiliJson` 无任何重试提示，用户在收藏夹列表加载慢时无可见反馈 | MEDIUM | 在 `handleRateLimit=true` 模式下添加 `请求异常，Xs后重试` 日志；`lightFetchJson`（handleRateLimit=false）保持静默不受影响 |
+| `process.ts` | `classifyWithAI` 中 AI 批次返回空 `categories`（null 或 `{}`）时无任何提示 — 视频静默进入遗漏检测流程，用户不知道是 AI 未返回结果还是分类器故障 | LOW-MEDIUM | 新增 `Object.keys(categories).length > 0` 检查，空结果时日志警告 `AI 批次 N 返回空分类结果 (M 个视频未被分类)`，帮助用户和开发者诊断 |
+| `ai-client.ts` | `callAISingle` 错误信息中的响应片段先截断再脱敏 — `.substring(0, 300)` 截断后可能将 API key 切成半截，`redactApiKey` 无法匹配完整 key，导致部分密钥泄露到错误日志 | MEDIUM-HIGH | 调换顺序：先 `redactApiKey(fullText, key)` 脱敏完整文本，再 `.substring(0, N)` 截断。对大响应体多一次全文扫描但确保密钥绝不泄露 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `modal-bridge.ts` request() 竞态 | 代理报告 `pending.reject()` 与 `store.set()` 之间存在竞态 | JS 单线程保证两个操作原子执行；reject 的回调在微任务中运行，此时新 request 已设置完毕 |
+| `process.ts` Promise.all | 代理报告 Promise.all 可能批量拒绝 | 每个 promise 内部有 try-catch，永远 resolve (void)，Promise.all 不会拒绝 |
+| `settings.ts` double assertion | `as unknown as Settings` 双重类型断言 | `Object.fromEntries` 返回 `Record<string, unknown>` 的 TypeScript 限制；每个字段已通过 `sanitizeValue` 逐一校验 |
+| `background-cache.ts` 无超时 | safeScan 无全局超时保护 | `fetchJson` 内部有 10s AbortController 超时；整体扫描时间由收藏夹数量决定，受 B站实际限制 |
+| `gm.ts` 缓存先写 | gmCache 先于 GM_setValue 更新 | session 24 已确认：GM_setValue 是 Tampermonkey 同步 API，实际不会抛异常 |
+| `ai-providers.ts` JSON.parse 无 try-catch | 三个 parse 函数 (Gemini/OpenAI/Anthropic) 内 JSON.parse 不捕获异常 | `callAISingle` 的 onload handler 已有外层 try-catch (lines 111-120)，解析异常会被统一捕获并附带脱敏响应片段 |
+
+### 关键设计决策
+
+1. **redact-before-truncate 顺序**: 虽然对大响应体 (极端情况 >1MB) 会多一次全文 regex 扫描，但 API 密钥安全优先于性能。实际场景中 AI 响应通常 <100KB，开销可忽略。
+2. **fetchBiliJson 仅 handleRateLimit 模式记录日志**: `lightFetchJson` 用于备份等后台操作，不应打扰用户；`safeFetchJson` 用于主流程（视频抓取、分页扫描），用户需要知道重试状态。
+3. **AI 空分类预警不阻断流程**: 空分类的视频会被 `postProcessCategories` 的 missedVideos 检测捕获并归入「未分类」，预警仅供诊断。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%**
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: deleteDeadVideos进度日志/ThemeMode校验/fetchBiliJson重试日志/AI空分类预警/API密钥脱敏顺序)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 errors。代码质量经 26 次迭代持续强化。**
+
+---
+
+## 上一次会话 (2026-04-02, 第二十五次)
 
 ### 本次完成内容
 

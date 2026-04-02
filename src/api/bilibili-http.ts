@@ -137,7 +137,14 @@ export async function fetchBiliJson<T = unknown>(
       return json;
     } catch (e: unknown) {
       if (attempt < maxRetries) {
-        await sleep(handleRateLimit ? 2000 * attempt : 1000 * attempt);
+        const waitMs = handleRateLimit ? 2000 * attempt : 1000 * attempt;
+        if (handleRateLimit) {
+          logs.add(
+            `请求异常，${(waitMs / 1000).toFixed(0)}s 后重试 (${attempt}/${maxRetries})...`,
+            'warning',
+          );
+        }
+        await sleep(waitMs);
         continue;
       }
       throw e;

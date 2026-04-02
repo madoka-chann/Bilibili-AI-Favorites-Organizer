@@ -3,6 +3,13 @@ import { gmGetValue, gmSetValue } from '$utils/gm';
 
 export type ThemeMode = 'light' | 'dark' | 'auto';
 
+const VALID_THEMES: readonly ThemeMode[] = ['light', 'dark', 'auto'];
+
+/** 校验存储值是否为合法 ThemeMode，无效时回退为 'auto' */
+function validThemeMode(value: unknown): ThemeMode {
+  return VALID_THEMES.includes(value as ThemeMode) ? (value as ThemeMode) : 'auto';
+}
+
 /** 主题色预设 (从 79 个精简为 12 个) */
 export const ACCENT_PRESETS = [
   { name: 'Indigo', value: '#7364FF' },
@@ -21,7 +28,7 @@ export const ACCENT_PRESETS = [
 
 /** 当前主题模式 */
 export const themeMode = writable<ThemeMode>(
-  gmGetValue('bfao_themeMode', 'auto') as ThemeMode
+  validThemeMode(gmGetValue('bfao_themeMode', 'auto'))
 );
 
 /** 当前主题色 */
