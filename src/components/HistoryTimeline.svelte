@@ -2,6 +2,7 @@
   import Modal from './Modal.svelte';
   import { Clock, Trash2 } from 'lucide-svelte';
   import { magnetic } from '$actions/magnetic';
+  import { pressEffect } from '$animations/micro';
   import type { HistoryEntry } from '$core/history';
 
   interface Props {
@@ -41,10 +42,10 @@
   </div>
 
   {#snippet footer()}
-    <button class="bfao-btn bfao-btn-muted clear-btn" onclick={() => onclear?.()} use:magnetic={{ radius: 40, strength: 0.25 }}>
+    <button class="bfao-btn bfao-btn-muted clear-btn" onclick={() => onclear?.()} use:magnetic={{ radius: 40, strength: 0.25 }} use:pressEffect>
       <Trash2 size={14} /> 清空
     </button>
-    <button class="bfao-btn bfao-btn-muted" onclick={() => onclose?.()} use:magnetic={{ radius: 40, strength: 0.25 }}>
+    <button class="bfao-btn bfao-btn-muted" onclick={() => onclose?.()} use:magnetic={{ radius: 40, strength: 0.25 }} use:pressEffect>
       关闭
     </button>
   {/snippet}
@@ -119,10 +120,42 @@
     line-height: 1.4;
   }
 
-  .clear-btn:hover { color: var(--ai-error); }
+  .clear-btn:hover {
+    color: var(--ai-error);
+    animation: clearShake 0.4s ease;
+  }
+
+  .timeline-item:first-child .timeline-card {
+    border-left: 2px solid var(--ai-primary);
+    background: var(--ai-bg-hover);
+  }
+
+  .timeline-dot {
+    animation: dotPulse 0.6s ease calc(var(--i) * 0.05s + 0.3s);
+  }
 
   @keyframes slideIn {
     from { opacity: 0; transform: translateX(-10px); }
     to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes clearShake {
+    0%, 100% { margin-left: 0; }
+    20% { margin-left: -2px; }
+    40% { margin-left: 2px; }
+    60% { margin-left: -1.5px; }
+    80% { margin-left: 1px; }
+  }
+
+  @keyframes dotPulse {
+    0% { box-shadow: 0 0 0 2px var(--ai-primary-light); }
+    50% { box-shadow: 0 0 0 5px rgba(var(--ai-primary-rgb), 0.3), 0 0 12px rgba(var(--ai-primary-rgb), 0.2); }
+    100% { box-shadow: 0 0 0 2px var(--ai-primary-light); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .clear-btn:hover { animation: none; }
+    .timeline-dot { animation: none; }
+    .timeline-item { animation: none; opacity: 1; }
   }
 </style>

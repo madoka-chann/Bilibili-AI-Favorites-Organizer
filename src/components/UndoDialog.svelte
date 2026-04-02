@@ -1,7 +1,7 @@
 <script lang="ts">
   import Modal from './Modal.svelte';
   import { Undo2 } from 'lucide-svelte';
-  import { contentStagger } from '$animations/micro';
+  import { contentStagger, checkBounce } from '$animations/micro';
   import type { UndoRecord } from '$core/undo';
 
   interface Props {
@@ -33,7 +33,7 @@
       <div class="history-list" use:contentStagger={{ stagger: 0.04, delay: 0.1 }}>
         {#each history as record, i}
           <label class="bfao-selectable-item" class:selected={selectedIndex === i}>
-            <input type="radio" bind:group={selectedIndex} value={i} disabled={processing} />
+            <input type="radio" bind:group={selectedIndex} value={i} disabled={processing} use:checkBounce />
             <div class="item-info">
               <div class="item-time">{record.timeLocal || record.time}</div>
               <div class="item-detail">
@@ -76,7 +76,21 @@
   :global(.bfao-selectable-item) {
     transition: border-color 0.25s ease, background 0.25s ease, transform 0.2s cubic-bezier(0.2, 1.04, 0.42, 1) !important;
   }
+  :global(.bfao-selectable-item:hover:not(.selected)) {
+    background: var(--ai-bg-hover);
+  }
   :global(.bfao-selectable-item.selected) {
     transform: translateX(2px);
+    animation: selectPulse 0.4s ease;
+  }
+
+  @keyframes selectPulse {
+    0% { box-shadow: 0 0 0 0 rgba(var(--ai-primary-rgb), 0.3); }
+    50% { box-shadow: 0 0 0 4px rgba(var(--ai-primary-rgb), 0.15); }
+    100% { box-shadow: 0 0 0 0 rgba(var(--ai-primary-rgb), 0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.bfao-selectable-item.selected) { animation: none; }
   }
 </style>

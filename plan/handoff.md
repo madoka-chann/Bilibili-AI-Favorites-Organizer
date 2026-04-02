@@ -1,6 +1,61 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-02, 第三十二次)
+## 最近一次会话 (2026-04-02, 第三十三次)
+
+### 本次完成内容
+
+**Detail Polish — 细节打磨: 对话框组件群交互完整性补强**
+
+#### 视觉增强 — 6 个文件
+
+| 组件/文件 | 新增动画 | 说明 |
+|-----------|----------|------|
+| `modal.css` | 空状态浮动 (`emptyFloat` 3s 循环) + 摘要数字弹跳 (`countPop` scale 0→1.15→1) | 所有对话框的空状态文字统一轻柔浮动；摘要中 `<strong>` 数字弹跳入场 |
+| `UndoDialog.svelte` | Radio 选中弹跳 (`use:checkBounce`) + 选中项脉冲 (`selectPulse` box-shadow 一次) + 列表项悬浮背景 | radio 弹跳与 FolderSelector checkbox 统一；选中项边框脉冲一次视觉确认；悬浮时背景微亮便于定位 |
+| `HistoryTimeline.svelte` | 清空/关闭按钮 `use:pressEffect` + 清空悬浮抖动 (`clearShake`) + 最新条目高亮 (border-left + bg) + 时间轴圆点入场脉冲 (`dotPulse`) | 按钮从仅 magnetic 升级为 magnetic+pressEffect；清空按钮悬浮摇晃警示；最新一条左侧高亮；圆点入场后脉冲一次 |
+| `DuplicatesResult.svelte` | dup-item 悬浮高亮 (background + padding-left 右移) | 重复视频条目悬浮时背景微亮并轻微右移 |
+| `DeadVideosResult.svelte` | video-item 悬浮高亮 + folder-header 悬浮颜色加深 | 失效视频条目悬浮时背景微亮并右移；文件夹标题悬浮时颜色从 muted 加深 |
+| `HelpDialog.svelte` | FAQ 展开项左边框指示 (border-left primary) + help-footer 延迟渐入 (`footerFadeIn` 0.6s delay) | 展开项左侧出现主题色指示线；快捷键提示在 FAQ 交错完成后渐入 |
+
+#### 代码质量 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `HistoryTimeline.svelte` | `dotPulse` 动画 `both` fill-mode 阻塞 hover `transition: box-shadow` 生效 | MEDIUM | 移除 `both`，animation 结束后释放属性控制权给 CSS transition |
+| `HistoryTimeline.svelte` | `clearShake` CSS `transform: translateX` 与 `pressEffect` GSAP inline `transform: scale` 冲突，首次点击后 inline style 永久覆盖 CSS 动画 | MEDIUM | 改用 `margin-left` 实现抖动，避免 transform 属性冲突 |
+| `HelpDialog.svelte` | `.faq-item.open` 添加 `border-left: 2px` 但基础样式无 border-left 预留空间，导致展开时 2px 布局偏移 | LOW | 基础样式添加 `border-left: 2px solid transparent` 预留空间 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `UndoDialog.svelte` | `:global(.bfao-selectable-item.selected)` 的 selectPulse 也会影响 FolderSelector | 可接受：统一选中反馈是正向效果，两个对话框不会同时打开 |
+| `modal.css` | `countPop` animation `both` fill-mode 使 `<strong>` 在 0.3s delay 期间不可见 | 正确：配合 contentStagger 的入场延迟，数字在父容器可见后才弹入 |
+| `DeadVideosResult.svelte` | video-item hover padding-left 变化可能引起微小重排 | 可接受：仅影响单行文本，性能开销可忽略 |
+
+### 关键设计决策
+
+1. **modal.css 统一动画而非各组件重复**: 将 emptyFloat 和 countPop 放在共享 modal.css 中，所有使用 `.bfao-modal-empty` 和 `.bfao-modal-summary strong` 的对话框自动获得动画，零代码重复。
+2. **clearShake 用 margin-left 而非 translateX**: 因为 GSAP pressEffect 会设置 inline transform，CSS animation 的 transform 会被覆盖。margin-left 和 transform 是不同属性，互不干扰。
+3. **dotPulse 不用 fill-mode both**: animation-fill-mode forwards 会让动画属性"锁定"，阻止后续的 CSS transition 生效。去掉 both 后动画播放完毕释放控制权，hover 的 box-shadow transition 正常工作。
+4. **faq-item 预留 border-left 空间**: 用 transparent border 预占 2px，展开时仅变色不改宽度，消除布局抖动。
+5. **prefers-reduced-motion**: modal.css 新增的 emptyFloat/countPop + HistoryTimeline 的 clearShake/dotPulse/slideIn + HelpDialog 的 footerFadeIn/iconPulse 全部在 reduce-motion 下禁用。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: 6 文件对话框交互细节打磨)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 3 个动画/布局 bug 修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 errors。构建体积 518 kB (较 515 kB 增长 +3 kB, 新增 CSS keyframes + action 导入)。**
+
+---
+
+## 上一次会话 (2026-04-02, 第三十二次)
 
 ### 本次完成内容
 

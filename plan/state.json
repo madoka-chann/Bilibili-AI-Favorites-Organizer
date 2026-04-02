@@ -1,7 +1,7 @@
 {
   "project": "Bilibili AI Favorites Organizer - Svelte Refactoring",
-  "plan": "visual-plan-session32.md",
-  "lastUpdated": "2026-04-02-session32",
+  "plan": "visual-plan-session33.md",
+  "lastUpdated": "2026-04-02-session33",
   "phases": {
     "phase0_buildSystem": {
       "status": "completed",
@@ -23,7 +23,7 @@
     },
     "phase2_animations": {
       "status": "completed",
-      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; I1-I5 粒子系统全部完成; Session 27: 6 个 Modal 子组件动画增强; Session 28: 4 个面板主界面组件视觉增强; Session 29: 5 个设置面板组件动画增强; Session 30: PreviewConfirm 深度视觉增强; Session 31: 未启用资产激活 (tilt/glowTrack) + Modal 统一增强 + FloatButton 回场弹入 + Panel 光追踪; Session 32: ripple 扩展至 ActionButtons/Modal + Header 文字流光/齿轮旋转/版本号弹入 + Toast 图标类型化动画 + LogArea 就绪脉冲"
+      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; I1-I5 粒子系统全部完成; Session 27: 6 个 Modal 子组件动画增强; Session 28: 4 个面板主界面组件视觉增强; Session 29: 5 个设置面板组件动画增强; Session 30: PreviewConfirm 深度视觉增强; Session 31: 未启用资产激活 (tilt/glowTrack) + Modal 统一增强 + FloatButton 回场弹入 + Panel 光追踪; Session 32: ripple 扩展至 ActionButtons/Modal + Header 文字流光/齿轮旋转/版本号弹入 + Toast 图标类型化动画 + LogArea 就绪脉冲; Session 33: UndoDialog radio 弹跳/选中脉冲/悬浮 + HistoryTimeline pressEffect/清空抖动/最新条目高亮/圆点脉冲 + DuplicatesResult/DeadVideosResult 列表项悬浮 + HelpDialog 展开指示线/footer 渐入 + modal.css 空状态浮动/摘要数字弹跳"
     },
     "phase3_cssCleanup": {
       "status": "completed",
@@ -31,7 +31,7 @@
     },
     "phase4_codeQuality": {
       "status": "completed",
-      "summary": "TypeScript strict 全开; 模块化重构完成; 多轮 Code Review; as any 类型断言清零; 错误处理一致性强化; 第32轮 Code Review: Toast hover transform/GSAP冲突已修复"
+      "summary": "TypeScript strict 全开; 模块化重构完成; 多轮 Code Review; as any 类型断言清零; 错误处理一致性强化; 第33轮 Code Review: dotPulse fill-mode 阻塞 hover transition 已修复; clearShake transform/GSAP pressEffect 冲突改用 margin-left; HelpDialog faq-item border-left 布局偏移已修复"
     },
     "phase5_performance": {
       "status": "completed",
@@ -53,7 +53,7 @@
   },
   "buildStatus": {
     "builds": true,
-    "output": "dist/bilibili-ai-favorites-organizer.user.js (515 kB, GSAP ~95 kB CDN)",
+    "output": "dist/bilibili-ai-favorites-organizer.user.js (518 kB, GSAP ~95 kB CDN)",
     "svelteCheck": "0 errors, 4 warnings (intentional initial captures, pre-existing)",
     "preExistingIssues": []
   }

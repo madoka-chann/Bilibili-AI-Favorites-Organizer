@@ -73,11 +73,21 @@
     font-weight: bold;
     color: var(--ai-text-secondary);
     padding: 4px 0;
+    transition: color 0.2s ease;
+  }
+  .folder-header:hover {
+    color: var(--ai-text);
   }
   .video-item {
     font-size: 11px;
-    padding: 2px 0 2px 12px;
+    padding: 2px 4px 2px 12px;
     border-bottom: 1px solid var(--ai-border-lighter);
     color: var(--ai-text-muted);
+    border-radius: 4px;
+    transition: background 0.2s ease, padding-left 0.2s ease;
+  }
+  .video-item:hover {
+    background: var(--ai-bg-hover);
+    padding-left: 16px;
   }
 </style>

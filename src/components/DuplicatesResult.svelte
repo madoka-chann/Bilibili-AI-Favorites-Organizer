@@ -55,8 +55,14 @@
 
   .dup-item {
     font-size: 11px;
-    padding: 5px 0;
+    padding: 5px 4px;
     border-bottom: 1px solid var(--ai-border-lighter);
+    border-radius: 4px;
+    transition: background 0.2s ease, padding-left 0.2s ease;
+  }
+  .dup-item:hover {
+    background: var(--ai-bg-hover);
+    padding-left: 8px;
   }
   .dup-title { color: var(--ai-text); }
   .dup-folders {

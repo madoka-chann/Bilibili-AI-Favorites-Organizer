@@ -122,6 +122,7 @@
     justify-content: space-between;
     padding: 12px 20px;
     border: none;
+    border-left: 2px solid transparent;
     border-bottom: 1px solid var(--ai-border-light);
     background: none;
     cursor: pointer;
@@ -178,10 +179,26 @@
     50% { box-shadow: 0 0 0 5px rgba(239, 68, 68, 0); }
   }
 
+  .faq-item.open {
+    border-left: 2px solid var(--ai-primary);
+    background: var(--ai-bg-secondary);
+  }
+
   .help-footer {
     padding: 12px 20px;
     font-size: 11px;
     color: var(--ai-text-muted);
     text-align: center;
+    animation: footerFadeIn 0.4s ease 0.6s both;
+  }
+
+  @keyframes footerFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .help-footer { animation: none; opacity: 1; }
+    .faq-icon.pulse { animation: none; }
   }
 </style>
