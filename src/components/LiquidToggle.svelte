@@ -19,6 +19,13 @@
     if (checked && thumbEl) {
       gsap.set(thumbEl, { x: 18 });
     }
+    // Mount entrance: scale in from small
+    if (trackEl && shouldAnimate()) {
+      gsap.fromTo(trackEl,
+        { scale: 0.6, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.35, ease: EASINGS.velvetSpring, clearProps: 'opacity,transform' }
+      );
+    }
     mounted = true;
   });
 

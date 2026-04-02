@@ -32,8 +32,21 @@
 
   let backdropEl = $state<HTMLDivElement>(undefined!);
   let modalEl = $state<HTMLDivElement>(undefined!);
+  let bodyEl = $state<HTMLDivElement>(undefined!);
   let ctx: gsap.Context;
   let abortCtrl: AbortController;
+
+  // Scroll fade edge state
+  let scrolledTop = $state(false);
+  let scrolledBottom = $state(false);
+
+  function updateScrollFade() {
+    if (!bodyEl) return;
+    const { scrollTop, scrollHeight, clientHeight } = bodyEl;
+    const isScrollable = scrollHeight > clientHeight + 2;
+    scrolledTop = isScrollable && scrollTop > 4;
+    scrolledBottom = isScrollable && scrollTop < scrollHeight - clientHeight - 4;
+  }
 
   onMount(() => {
     ctx = gsap.context(() => {
@@ -57,6 +70,9 @@
         );
       }
     });
+
+    // Initial scroll fade check after mount
+    requestAnimationFrame(() => updateScrollFade());
 
     // ESC 关闭
     abortCtrl = new AbortController();
@@ -111,7 +127,14 @@
 
     {#if toolbar}{@render toolbar()}{/if}
 
-    <div class="modal-body" use:glowTrack>
+    <div
+      class="modal-body"
+      class:fade-top={scrolledTop}
+      class:fade-bottom={scrolledBottom}
+      bind:this={bodyEl}
+      onscroll={updateScrollFade}
+      use:glowTrack
+    >
       {#if children}{@render children()}{/if}
     </div>
 
@@ -222,6 +245,34 @@
       );
   }
 
+  /* Scroll fade edges — gradient masks at top/bottom */
+  .modal-body::before,
+  .modal-body::after {
+    content: '';
+    position: sticky;
+    display: block;
+    height: 18px;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .modal-body::before {
+    top: 0;
+    background: linear-gradient(to bottom, var(--ai-bg), transparent);
+    margin-bottom: -18px;
+  }
+
+  .modal-body::after {
+    bottom: 0;
+    background: linear-gradient(to top, var(--ai-bg), transparent);
+    margin-top: -18px;
+  }
+
+  .modal-body.fade-top::before { opacity: 1; }
+  .modal-body.fade-bottom::after { opacity: 1; }
+
   .modal-footer {
     padding: 14px 20px;
     border-top: 1px solid var(--ai-border-light);
@@ -282,5 +333,7 @@
   @media (prefers-reduced-motion: reduce) {
     .modal-header { animation: none; }
     .close-btn:hover { transform: none; }
+    .modal-body::before,
+    .modal-body::after { transition: none; }
   }
 </style>

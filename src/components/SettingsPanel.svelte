@@ -242,14 +242,23 @@
     gap: 8px;
     font-size: 12.5px;
     color: var(--ai-text-secondary);
-    transition: background 0.2s ease;
+    transition: background 0.2s ease, transform 0.25s cubic-bezier(0.2, 0.98, 0.28, 1);
     border-radius: 6px;
     padding: 4px 6px;
     margin: -4px -6px;
   }
 
+  .toggle-row > span:first-child {
+    transition: color 0.2s ease;
+  }
+
   .toggle-row:hover {
     background: var(--ai-bg-hover);
+    transform: translateX(3px);
+  }
+
+  .toggle-row:hover > span:first-child {
+    color: var(--ai-text);
   }
 
   .sub-field {
@@ -289,5 +298,11 @@
   .anim-hint.ok {
     color: var(--ai-text-muted);
     background: var(--ai-bg-secondary);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .toggle-row:hover { transform: none; }
+    .sub-field-slide { animation: none; }
+    .hint-fade-in { animation: none; }
   }
 </style>

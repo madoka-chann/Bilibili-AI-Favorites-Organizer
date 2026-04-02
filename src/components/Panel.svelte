@@ -48,10 +48,23 @@
   let panelEl = $state<HTMLDivElement>(undefined!);
   let headerEl = $state<HTMLElement>(undefined!);
   let settingsEl = $state<HTMLElement>(undefined!);
+  let contentEl = $state<HTMLDivElement>(undefined!);
   let ctx: gsap.Context;
   let settingsOpen = $state(false);
   let settingsVisible = $state(false);
   let abortCtrl: AbortController;
+
+  // Scroll indicator state
+  let scrollProgress = $state(0);
+  let showScrollIndicator = $state(false);
+
+  function updateScrollIndicator() {
+    if (!contentEl) return;
+    const { scrollTop, scrollHeight, clientHeight } = contentEl;
+    const maxScroll = scrollHeight - clientHeight;
+    showScrollIndicator = maxScroll > 10;
+    scrollProgress = maxScroll > 0 ? scrollTop / maxScroll : 0;
+  }
 
   // Modal 状态
   let showDeadResult = $state(false);
@@ -304,7 +317,8 @@
     <Header onclose={doClose} bind:settingsOpen />
   </div>
 
-  <div class="panel-content" use:parallax={{ speed: 0.3, maxOffset: 40 }} use:cursorScatter use:glowTrack>
+  <div class="panel-content" bind:this={contentEl} onscroll={updateScrollIndicator} use:parallax={{ speed: 0.3, maxOffset: 40 }} use:cursorScatter use:glowTrack>
+    <div class="scroll-indicator" class:visible={showScrollIndicator} style:width="{scrollProgress * 100}%" aria-hidden="true"></div>
     {#if settingsVisible}
       <div class="settings-wrapper" bind:this={settingsEl}>
         <SettingsPanel />
@@ -455,6 +469,25 @@
     cursor: default;
   }
 
+  /* Scroll progress indicator */
+  .scroll-indicator {
+    position: sticky;
+    top: 0;
+    height: 2px;
+    min-height: 2px;
+    background: linear-gradient(90deg, var(--ai-primary), var(--ai-gradient-accent));
+    border-radius: 0 1px 1px 0;
+    z-index: 3;
+    opacity: 0;
+    transition: opacity 0.3s ease, width 0.1s linear;
+    pointer-events: none;
+    margin-bottom: -2px;
+  }
+
+  .scroll-indicator.visible {
+    opacity: 1;
+  }
+
   .settings-wrapper {
     will-change: transform, opacity;
   }
@@ -496,6 +529,9 @@
   @media (prefers-reduced-motion: reduce) {
     .nebula-particle {
       animation: none;
+    }
+    .scroll-indicator {
+      transition: none;
     }
   }
 </style>

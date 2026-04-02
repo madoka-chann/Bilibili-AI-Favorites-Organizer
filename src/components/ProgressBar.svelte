@@ -132,6 +132,19 @@
   .progress-container {
     margin-top: 10px;
     padding: 8px 0;
+    animation: progressEnter 0.4s cubic-bezier(0.2, 0.98, 0.28, 1) both;
+    transform-origin: top center;
+  }
+
+  @keyframes progressEnter {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scaleY(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scaleY(1);
+    }
   }
 
   .progress-header {
@@ -215,5 +228,12 @@
   @keyframes completeGlow {
     0%, 100% { box-shadow: 0 0 4px rgba(var(--ai-primary-rgb), 0.1); }
     50% { box-shadow: 0 0 12px rgba(16, 185, 129, 0.35); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .progress-container { animation: none; }
+    .progress-bar { animation: none; }
+    .progress-bar::after { animation: none; }
+    .progress-bar.complete { animation: none; }
   }
 </style>

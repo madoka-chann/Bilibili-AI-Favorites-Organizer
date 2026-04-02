@@ -114,12 +114,32 @@
     gap: 6px;
     max-height: 340px;
     overflow-y: auto;
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0px,
+      black 12px,
+      black calc(100% - 12px),
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0px,
+      black 12px,
+      black calc(100% - 12px),
+      transparent 100%
+    );
+    padding-top: 4px;
+    padding-bottom: 4px;
   }
 
   .folder-info { flex: 1; }
 
   :global(.bfao-selectable-item) {
     transition: transform 0.2s cubic-bezier(0.2, 1.04, 0.42, 1), box-shadow 0.2s ease !important;
+  }
+  :global(.bfao-selectable-item:hover:not(.selected)) {
+    box-shadow: inset 0 0 0 1px rgba(var(--ai-primary-rgb), 0.15),
+                0 0 8px rgba(var(--ai-primary-rgb), 0.08);
   }
   :global(.bfao-selectable-item.selected) {
     transform: translateX(2px);

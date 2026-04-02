@@ -1,6 +1,63 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-02, 第三十三次)
+## 最近一次会话 (2026-04-02, 第三十四次)
+
+### 本次完成内容
+
+**Flow & Continuity — 流畅连续感: 滚动边界感知 + 状态切换平滑过渡**
+
+#### 视觉增强 — 6 个文件
+
+| 组件/文件 | 新增动画 | 说明 |
+|-----------|----------|------|
+| `Modal.svelte` | 滚动内容边缘渐隐 (sticky `::before`/`::after` + JS scroll 检测) | 长内容 Modal 滚动时顶部/底部出现 18px 渐隐带，暗示内容延伸方向；通过 `scrolledTop`/`scrolledBottom` state 动态控制显隐 |
+| `ProgressBar.svelte` | 容器入场动画 (`progressEnter` opacity+translateY+scaleY) + reduced-motion 全套 | `$isRunning` 变为 true 时进度条从底部浮入，避免瞬间出现；同时为已有 shimmer/auroraFlow/completeGlow 补充 reduced-motion 禁用 |
+| `SettingsPanel.svelte` | toggle-row 悬浮右移 (`translateX(3px)`) + 标签悬浮变色 (text-secondary→text) + reduced-motion | 悬浮时行向右轻移+文字加深，与 PromptEditor preset-row 悬浮统一；span 添加 color transition 确保平滑 |
+| `FolderSelector.svelte` | folder-list 滚动边缘渐隐 (CSS `mask-image` gradient) + selectable-item 悬浮内发光 | 长列表上下边缘渐隐暗示内容延伸；悬浮时项目边框轻柔内发光，比单纯 border-color 变化更有深度 |
+| `LiquidToggle.svelte` | 挂载缩放入场 (`gsap.fromTo` scale 0.6→1 + opacity) | 开关首次渲染时从小弹入，与 SettingsGroup 子元素交错配合产生级联效果 |
+| `Panel.svelte` | 滚动进度指示条 (sticky 2px gradient bar + JS scroll 事件) | panel-content 滚动时顶部出现 2px 宽的主题色进度条，宽度随滚动位置变化；未滚动时隐藏 |
+
+#### 代码质量 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `Modal.svelte` | `scrolledBottom` 初始值 `true` 导致非滚动 Modal 短暂闪现底部渐隐遮罩 | MEDIUM | 初始值改为 `false`，由 `requestAnimationFrame` 回调设置正确值 |
+| `LiquidToggle.svelte` | `gsap.from` 读取当前元素状态作为 "to" 值，若父元素因 stagger 尚在 opacity:0，捕获的 "to" 值错误 | MEDIUM | 改用 `gsap.fromTo` 明确指定 from/to 值 + `clearProps` 清理 |
+| `SettingsPanel.svelte` | toggle-row 标签悬浮变色无 `transition`，导致颜色跳变 | LOW | span 添加 `transition: color 0.2s ease` |
+| `Modal.svelte` | 滚动渐隐伪元素在 `prefers-reduced-motion` 下仍有 0.3s transition | LOW | reduced-motion 媒体查询中添加 `transition: none` |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `FolderSelector.svelte` | `mask-image` 渐隐在短列表（<7项）时也应用 | 可接受：渐隐仅 12px + 有 padding 补偿，短列表内容不会被裁剪 |
+| `Panel.svelte` | scroll-indicator `transition: width 0.1s linear` 可能在快速滚动时略有延迟 | 可接受：0.1s 足够平滑，过短会导致 jitter |
+| `ProgressBar.svelte` | `progressEnter` 使用 `both` fill-mode | 正确：入场动画仅播放一次，`both` 确保动画开始前元素不闪现 |
+
+### 关键设计决策
+
+1. **Modal scroll fade 用 sticky 伪元素而非 mask-image**: mask-image 会影响所有内容（包括已有 glowTrack 背景），而 sticky 伪元素层叠在内容之上，不影响交互。
+2. **scrolledBottom 初始值 false**: 避免非滚动 Modal 的底部渐隐闪烁，由 RAF 回调延迟检测正确状态。
+3. **LiquidToggle 用 fromTo 而非 from**: `gsap.from` 自动读取当前元素状态作为 "to" 值，在 SettingsGroup stagger 场景下可能捕获到错误的 opacity/scale；`fromTo` 明确指定两端值更安全。
+4. **FolderSelector 用 mask-image 而非伪元素**: FolderSelector 的 folder-list 是 Modal 内部的子容器，无法用 sticky 伪元素（嵌套 sticky 在 overflow 容器中行为不可预测），mask-image 更简洁可靠。
+5. **Panel scroll indicator 用 sticky div**: 与 Modal scroll fade 使用相同的 sticky 定位策略，确保指示条始终固定在滚动区域顶部。
+6. **ProgressBar 入场用 CSS 而非 GSAP**: 进度条出现由 Svelte `{#if}` 控制，GSAP 需要 onMount 时机且无法控制退场；CSS animation 自然配合 DOM 插入，且通过 `both` fill-mode 避免初始闪烁。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: 6 文件流畅连续感增强)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 4 个动画/交互 bug 修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 errors。构建体积 522 kB (较 518 kB 增长 +4 kB, 新增 CSS keyframes/伪元素 + scroll 检测逻辑)。**
+
+---
+
+## 上一次会话 (2026-04-02, 第三十三次)
 
 ### 本次完成内容
 
