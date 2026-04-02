@@ -49,6 +49,16 @@ function validateAIResult(parsed: unknown): AIClassificationResult {
   return parsed as AIClassificationResult;
 }
 
+// ================= 可重试错误 =================
+
+class RetryableError extends Error {
+  readonly retryable = true;
+  constructor(message: string) {
+    super(message);
+    this.name = 'RetryableError';
+  }
+}
+
 // ================= API 密钥脱敏 =================
 
 /** 从文本片段中脱敏 API 密钥，防止密钥通过错误消息泄露 */
@@ -86,11 +96,7 @@ export function callAISingle(
       onload(response) {
         // 可重试的状态码
         if ([429, 503, 529].includes(response.status)) {
-          reject({
-            retryable: true,
-            message: `API 限流/过载 (${response.status})`,
-            status: response.status,
-          });
+          reject(new RetryableError(`API 限流/过载 (${response.status})`));
           return;
         }
 
@@ -118,14 +124,13 @@ export function callAISingle(
       },
       onerror(resp) {
         const detail =
-          resp && typeof resp === 'object' && 'error' in resp ? ` (${(resp as Record<string, unknown>).error})` : '';
-        reject({
-          retryable: true,
-          message: `网络请求失败${detail}，请检查网络或 API 地址`,
-        });
+          resp && typeof resp === 'object' && 'error' in resp
+            ? ` (${String((resp as Record<string, unknown>).error)})`
+            : '';
+        reject(new RetryableError(`网络请求失败${detail}，请检查网络或 API 地址`));
       },
       ontimeout() {
-        reject({ retryable: true, message: 'AI 请求超时' });
+        reject(new RetryableError('AI 请求超时'));
       },
     });
   });
@@ -142,7 +147,7 @@ export async function callAI(
     try {
       return await callAISingle(prompt, settings);
     } catch (err: unknown) {
-      const isRetryable = err != null && typeof err === 'object' && 'retryable' in err && (err as Record<string, unknown>).retryable === true;
+      const isRetryable = err instanceof RetryableError;
       const errMsg = getErrorMessage(err);
       if (isRetryable && attempt < maxRetries) {
         const waitMs = backoffMs(attempt, 2000, 16000);

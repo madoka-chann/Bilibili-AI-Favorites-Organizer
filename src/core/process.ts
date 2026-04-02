@@ -283,8 +283,7 @@ async function moveVideosToFolders(
       // Group by source
       const bySource = groupBy(chunk, (v) => videoSourceMap.get(v.id) ?? sourceMediaIds[0]);
 
-      for (const [fromStr, subChunk] of Object.entries(bySource)) {
-        const from = Number(fromStr);
+      for (const [from, subChunk] of bySource) {
         const resourcesStr = subChunk
           .map((v) => `${v.id}:${v.type}`)
           .join(',');

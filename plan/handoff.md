@@ -1,6 +1,55 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-01, 第十九次)
+## 最近一次会话 (2026-04-02, 第二十次)
+
+### 本次完成内容
+
+**错误类型规范化 + 数据校验强化 + 类型安全修正 — 6 处代码质量改进 + 深度架构级 Code Review**
+
+#### 发现并修复的问题
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `ai-client.ts` | `callAISingle` 中 `onerror`/`ontimeout`/限流 reject 使用 plain object `{ retryable: true, message }` — 无 stack trace，`instanceof Error` 检查失败，与项目错误处理约定不一致 | MEDIUM | 新增 `RetryableError extends Error` 类；所有 retryable reject 使用 `new RetryableError()`；`callAI` 中重试检测改为 `instanceof RetryableError` |
+| `undo.ts` | `isValidUndoRecord` 仅校验 `moves` 为非空数组 — 不验证条目结构，损坏的 GM 存储数据可导致运行时 TypeError (缺少 `fromMediaId`/`toMediaId`/`resources`) | MEDIUM | 新增 `isValidMove` 校验函数，验证每条 move 的 `fromMediaId: number` / `toMediaId: number` / `resources: string (非空)` |
+| `settings.ts` | `loadFromStorage` 直接将 `gmGetValue` 返回值 cast 为 `Settings` — 损坏的 GM 存储可注入 NaN/负值/类型不匹配，导致死循环(aiChunkSize=0)或 UI 异常 | MEDIUM | 新增 `NUMERIC_BOUNDS` 范围表 + `sanitizeValue` 校验函数；所有数值字段 clamp 到合法范围，类型不匹配回退默认值 |
+| `collections.ts` | `groupBy` 返回 `Record<number, T[]>` — JS 对象键隐式转字符串，调用方 `Object.entries()` 得到 `[string, T[]]`，需 `Number()` 转回，类型系统与运行时不一致 | MEDIUM | 改为返回 `Map<number, T[]>`，调用方 (`process.ts`/`dead-videos.ts`) 直接 `for...of` 迭代，消除隐式类型转换 |
+| `bilibili-scanner.ts` | 分页循环中 `res.data` 可能为 null/undefined 时仍访问 `has_more` — 虽有 `?.` 保护但逻辑顺序不清晰，`medias.length === 0` 检查混入 `has_more` 条件 | LOW | 前置 `!res.data` 退出；将 `medias.length === 0` 检查提前到遍历前；`has_more` 直接用 `res.data.has_more` (已由前置 guard 保证非 null) |
+| `download.ts` | `URL.revokeObjectURL` 延迟仅 100ms — 慢速系统上浏览器可能尚未启动下载；`parentNode.removeChild` 是过时 DOM API | LOW | 延迟增至 1000ms；改用 `a.remove()` |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `bilibili-http.ts` | `handleRateLimit=true` 时跳过 HTTP status 检查 | B站 API 统一返回 HTTP 200 + JSON `code` 字段标识错误；非 JSON 响应 (CDN 错误页) 会在 `res.json()` 阶段抛异常被 catch 捕获 |
+| `bilibili-folders.ts` | 创建收藏夹后仅在 `_folderListCache` 存在时追加 | 缓存未初始化时追加无意义；下次 `getAllFoldersWithIds` 会完整加载；process.ts 移动前已调用 `invalidateFolderCache()` |
+| `ai-providers.ts` | SSRF 错误消息包含 "内网地址" 字样 | 面向用户的中文提示，非面向攻击者的 API 响应；告知用户地址被拒原因有助排查配置问题 |
+| `timing.ts` | `createConcurrencyLimiter` 无超时/取消机制 | 所有消费方 (`callAI` 批处理) 内部有独立超时和取消检查；limiter 仅控制并发度，不承担超时职责 |
+| `modal-bridge.ts` | 新请求覆盖旧 pending promise 时 reject 旧 promise | 调用方 (`process.ts`) 在 `try/finally` 中统一处理 rejection；UI 串行触发，并发覆盖场景极低 |
+| `background-cache.ts` | 生产环境扫描失败静默吞错 | 后台缓存是非关键路径优化；失败不影响核心功能；避免用户看到无意义的后台错误 Toast |
+
+### 关键设计决策
+
+1. **RetryableError 类 vs plain object**: Error 子类保留 stack trace，`instanceof` 检查替代 duck typing (`'retryable' in err`)，更安全且与 TypeScript 类型系统对齐。
+2. **groupBy 返回 Map**: JS 对象键始终为 string，导致 `Record<number, T[]>` 的类型签名是谎言。`Map<number, T[]>` 保留真实的 number 键，消除调用方 `Number()` 转换。
+3. **Settings sanitizeValue 在 load 时而非 consume 时**: 统一在加载入口校验一次，比在每个消费点分别 `Math.max(1, ...)` 更全面、更不容易遗漏。与 session 19 的 `process.ts` 消费点防护互补——两道防线。
+4. **Scanner data null guard 前置**: `!res.data` 比 `!res.data?.has_more` 更清晰地表达"服务器未返回数据"语义；`medias.length === 0` 在遍历前检查避免空循环。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%**
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: RetryableError 类替代 plain object / UndoRecord 深度校验 / Settings 范围校验 / groupBy Map 化 / Scanner guard 强化)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 errors。代码质量经 20 次迭代持续强化。**
+
+---
+
+## 上一次会话 (2026-04-01, 第十九次)
 
 ### 本次完成内容
 

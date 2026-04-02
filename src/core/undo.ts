@@ -24,11 +24,27 @@ export interface UndoRecord {
 
 const UNDO_KEY = 'bfao_undoHistory';
 
+/** 校验单条 move 条目结构 */
+function isValidMove(val: unknown): boolean {
+  if (typeof val !== 'object' || val === null) return false;
+  const m = val as Record<string, unknown>;
+  return (
+    typeof m.fromMediaId === 'number' &&
+    typeof m.toMediaId === 'number' &&
+    typeof m.resources === 'string' &&
+    m.resources.length > 0
+  );
+}
+
 /** 校验对象是否符合 UndoRecord 基本结构 */
 function isValidUndoRecord(val: unknown): val is UndoRecord {
   if (typeof val !== 'object' || val === null) return false;
   const obj = val as Record<string, unknown>;
-  return Array.isArray(obj.moves) && obj.moves.length > 0;
+  return (
+    Array.isArray(obj.moves) &&
+    obj.moves.length > 0 &&
+    obj.moves.every(isValidMove)
+  );
 }
 
 /** 读取撤销历史栈 */

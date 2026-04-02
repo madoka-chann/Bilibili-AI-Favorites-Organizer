@@ -12,10 +12,37 @@ function isValidProvider(id: unknown): id is AIProviderId {
   return typeof id === 'string' && id in AI_PROVIDERS;
 }
 
+/** 数值型设置字段的合法范围 (min, max) */
+const NUMERIC_BOUNDS: Partial<Record<keyof Settings, [number, number]>> = {
+  aiChunkSize: [1, 200],
+  aiConcurrency: [1, 10],
+  limitCount: [1, 10000],
+  fetchDelay: [0, 30000],
+  writeDelay: [0, 30000],
+  moveChunkSize: [1, 100],
+  batchRestInterval: [1, 10000],
+  batchRestMinutes: [0.1, 60],
+  cacheScanInterval: [1, 120],
+};
+
+/** 校验并修正单个设置值 — 类型不匹配或越界时回退为默认值 */
+function sanitizeValue<K extends keyof Settings>(key: K, value: unknown): Settings[K] {
+  const def = DEFAULT_SETTINGS[key];
+  // 类型不匹配时回退
+  if (typeof value !== typeof def) return def;
+  // 数值型字段范围校验
+  const bounds = NUMERIC_BOUNDS[key];
+  if (bounds && typeof value === 'number') {
+    if (!Number.isFinite(value)) return def;
+    return Math.max(bounds[0], Math.min(bounds[1], value)) as Settings[K];
+  }
+  return value as Settings[K];
+}
+
 /** 从 GM_getValue 加载所有设置 (数据驱动，无需逐字段手写) */
 function loadFromStorage(): Settings {
   const entries = SETTINGS_KEYS.map(
-    (key) => [key, gmGetValue('bfao_' + key, DEFAULT_SETTINGS[key])] as const,
+    (key) => [key, sanitizeValue(key, gmGetValue('bfao_' + key, DEFAULT_SETTINGS[key]))] as const,
   );
   const result = Object.fromEntries(entries) as unknown as Settings;
   // 校验 provider 有效性，无效时回退为默认值

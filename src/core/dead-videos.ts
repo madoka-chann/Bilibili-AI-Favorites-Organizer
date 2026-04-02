@@ -70,9 +70,8 @@ export async function archiveDeadVideos(
   const bySource = groupBy(deadVideos, (v) => v.folderId);
 
   let moved = 0;
-  for (const [srcIdStr, vids] of Object.entries(bySource)) {
+  for (const [srcId, vids] of bySource) {
     if (isCancelled()) break;
-    const srcId = Number(srcIdStr);
     for (let i = 0; i < vids.length; i += moveChunkSize) {
       if (isCancelled()) break;
       const chunk = vids.slice(i, i + moveChunkSize);
@@ -81,7 +80,7 @@ export async function archiveDeadVideos(
       if (success) moved += chunk.length;
       await humanDelay(writeDelay);
     }
-    logs.add(`已从「${vids[0]?.folderTitle || srcIdStr}」移动 ${vids.length} 个失效视频`, 'info');
+    logs.add(`已从「${vids[0]?.folderTitle || srcId}」移动 ${vids.length} 个失效视频`, 'info');
   }
 
   return moved;
@@ -99,10 +98,10 @@ export async function deleteDeadVideos(
   const bySource = groupBy(deadVideos, (v) => v.folderId);
 
   let deleted = 0;
-  for (const [srcIdStr, vids] of Object.entries(bySource)) {
+  for (const [srcId, vids] of bySource) {
     if (isCancelled()) break;
     const resources = vids.map((v) => `${v.id}:${v.type}`).join(',');
-    const success = await batchDeleteVideos(Number(srcIdStr), resources, biliData);
+    const success = await batchDeleteVideos(srcId, resources, biliData);
     if (success) deleted += vids.length;
     await humanDelay(writeDelay);
   }

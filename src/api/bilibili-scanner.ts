@@ -55,14 +55,15 @@ export async function scanAllFolderVideos<T>(
         const res = await fetchFn<BiliFavResourceData>(
           BILIBILI_URLS.resourceList(folder.id, pn),
         );
-        if (res.code !== 0) break;
-        const medias = res.data?.medias ?? [];
+        if (res.code !== 0 || !res.data) break;
+        const medias = res.data.medias ?? [];
+        if (medias.length === 0) break;
         for (const v of medias) {
           totalScanned++;
           const item = onVideo(v as VideoResource, folder);
           if (item !== undefined) results.push(item);
         }
-        if (!res.data?.has_more || medias.length === 0) break;
+        if (!res.data.has_more) break;
         pn++;
         await humanDelay(fetchDelay);
       } catch (e: unknown) {
