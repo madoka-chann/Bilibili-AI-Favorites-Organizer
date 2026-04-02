@@ -6,6 +6,7 @@
   import { parallax } from '$actions/parallax';
   import { panelCanvas } from '$actions/panel-canvas';
   import { cursorScatter } from '$actions/cursor-scatter';
+  import { glowTrack } from '$actions/glow-track';
   import Header from './Header.svelte';
   import SettingsPanel from './SettingsPanel.svelte';
   import PromptEditor from './PromptEditor.svelte';
@@ -303,7 +304,7 @@
     <Header onclose={doClose} bind:settingsOpen />
   </div>
 
-  <div class="panel-content" use:parallax={{ speed: 0.3, maxOffset: 40 }} use:cursorScatter>
+  <div class="panel-content" use:parallax={{ speed: 0.3, maxOffset: 40 }} use:cursorScatter use:glowTrack>
     {#if settingsVisible}
       <div class="settings-wrapper" bind:this={settingsEl}>
         <SettingsPanel />
@@ -442,6 +443,12 @@
     overflow-x: hidden;
     border-bottom-left-radius: 26px;
     border-bottom-right-radius: 26px;
+    background:
+      radial-gradient(
+        circle at var(--glow-x, -100px) var(--glow-y, -100px),
+        rgba(var(--ai-primary-rgb, 115, 100, 255), 0.04) 0%,
+        transparent 50%
+      );
   }
 
   .panel :global(.gsap-draggable) {

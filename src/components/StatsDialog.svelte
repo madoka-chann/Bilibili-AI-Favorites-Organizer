@@ -3,8 +3,9 @@
   import { BarChart3, Heart } from 'lucide-svelte';
   import type { FavFolder } from '$types/index';
   import { numberRoll } from '$animations/text';
-  import { contentStagger, hoverScale } from '$animations/micro';
+  import { contentStagger } from '$animations/micro';
   import { gsap, EASINGS, shouldAnimate } from '$animations/gsap-config';
+  import { tilt } from '$actions/tilt';
 
   interface Props {
     folders: FavFolder[];
@@ -97,19 +98,19 @@
     {/if}
 
     <div class="stats-grid">
-      <div class="stat-card" use:hoverScale={{ scale: 1.05 }}>
+      <div class="stat-card" use:tilt={{ maxDeg: 4, scale: 1.03 }}>
         <div class="stat-value" use:rollNumber={folders.length}>{folders.length}</div>
         <div class="stat-label">收藏夹</div>
       </div>
-      <div class="stat-card" use:hoverScale={{ scale: 1.05 }}>
+      <div class="stat-card" use:tilt={{ maxDeg: 4, scale: 1.03 }}>
         <div class="stat-value" data-locale="true" use:rollNumber={totalVideos}>{totalVideos.toLocaleString()}</div>
         <div class="stat-label">视频总数</div>
       </div>
-      <div class="stat-card" use:hoverScale={{ scale: 1.05 }}>
+      <div class="stat-card" use:tilt={{ maxDeg: 4, scale: 1.03 }}>
         <div class="stat-value" class:danger={deadCount > 0} use:rollNumber={deadCount}>{deadCount}</div>
         <div class="stat-label">失效视频</div>
       </div>
-      <div class="stat-card" use:hoverScale={{ scale: 1.05 }}>
+      <div class="stat-card" use:tilt={{ maxDeg: 4, scale: 1.03 }}>
         <div class="stat-value">{deadRate}%</div>
         <div class="stat-label">失效率</div>
       </div>

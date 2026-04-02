@@ -20,6 +20,18 @@
   let dragged = false;
   let magneticOpts = $state({ radius: 120, strength: 0.3, enabled: true });
 
+  /** Track previous visible state for re-entrance animation */
+  let wasHidden = !visible;
+  $effect(() => {
+    if (visible && wasHidden && btnEl && shouldAnimate()) {
+      gsap.fromTo(btnEl,
+        { scale: 0, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.5, ease: EASINGS.prismBounce, clearProps: 'opacity' }
+      );
+    }
+    wasHidden = !visible;
+  });
+
   onMount(() => {
     ctx = gsap.context(() => {
       const savedPos = gmGetValue('bfao_floatBtnPos', { bottom: 30, left: 30 });
@@ -212,7 +224,10 @@
   }
 
   .float-btn.hidden {
-    display: none;
+    visibility: hidden;
+    opacity: 0;
+    transform: scale(0);
+    pointer-events: none;
   }
 
   .orbits {

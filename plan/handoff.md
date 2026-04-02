@@ -1,6 +1,60 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-02, 第三十次)
+## 最近一次会话 (2026-04-02, 第三十一次)
+
+### 本次完成内容
+
+**未启用资产激活 (tilt/glowTrack) + Modal 统一增强 + FloatButton 回场弹入 + Panel 光追踪 + 深度 Code Review**
+
+#### 视觉增强 — 4 个组件
+
+| 组件 | 新增动画 | 说明 |
+|------|----------|------|
+| `Modal.svelte` | Header 极光流动 (`aurora-flow` 18s) + 关闭按钮悬浮旋转 (rotate 90° + scale 1.1) + 内容区光追踪 (`use:glowTrack` + radial-gradient) | Modal header 已有 `background-size` 但缺少动画驱动，现与 Panel Header 统一；关闭按钮 X 图标悬浮旋转增强交互暗示；光追踪让鼠标移动时有柔和环境光跟随 |
+| `StatsDialog.svelte` | 统计卡片 3D 倾斜 (`use:tilt` 替换 `use:hoverScale`) | maxDeg: 4, scale: 1.03 的 3D 倾斜+微放大比单纯缩放更有深度感 |
+| `FloatButton.svelte` | 回场弹入动画 ($effect 监听 visible + GSAP scale 0→1 prismBounce 0.5s) + CSS hidden 从 display:none 改为 visibility/opacity/scale | 面板关闭后按钮从无到有弹入而非瞬间显示 |
+| `Panel.svelte` | 内容区光追踪 (`use:glowTrack` + radial-gradient on `.panel-content`) | 鼠标移动时面板内容区有柔和环境光点跟随，增强空间深度感 |
+
+#### 激活的已有但未使用资产
+
+| 资产 | 文件 | 使用位置 | 说明 |
+|------|------|----------|------|
+| `tilt` action | `src/actions/tilt.ts` | StatsDialog stat-card | 3D 倾斜悬浮效果，GSAP quickTo 驱动 |
+| `glowTrack` action | `src/actions/glow-track.ts` | Modal modal-body, Panel panel-content | 径向光追踪，CSS 变量 `--glow-x`/`--glow-y` 驱动 |
+
+#### 代码质量 (Code Review)
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `FloatButton.svelte` | `.hidden` CSS `transform: scale(0)` 可能被 GSAP inline transform 覆盖 | 安全：`visibility: hidden` 仍然隐藏元素；transform 是额外保障 |
+| `FloatButton.svelte` | $effect 和 DOM 更新之间可能有 1 帧闪烁 | 不可感知：$effect 在 DOM 更新后同步运行；GSAP fromTo 在首帧前设置初始状态 |
+| `Modal.svelte` | `background-size` 从 800% 改为 400% | 正确：与 Panel Header 一致；800% 使流动幅度过小 |
+| `StatsDialog.svelte` | tilt 的 GSAP quickTo rotationX/Y 与 stat-card 无 transform 冲突 | 安全：stat-card 无其他 transform 来源 |
+| `Panel.svelte` | glowTrack 在可滚动容器上工作 | 安全：gradient 在元素视觉坐标系中，不受 scroll 影响 |
+
+### 关键设计决策
+
+1. **tilt 替换 hoverScale**: tilt 已包含 scale 参数 (1.03)，比 hoverScale (1.05) 更微妙但加上 3D 旋转后视觉冲击力更强。hoverScale 在 PreviewConfirm 仍有使用，无废弃风险。
+2. **visibility:hidden 替代 display:none**: 使 GSAP 能操作元素的 transform/opacity，支持弹入动画。
+3. **Modal header background-size 修正 800% → 400%**: 与 Header.svelte 保持一致的流动速度。
+4. **glowTrack 默认坐标 -100px**: 当鼠标未进入或离开时，gradient 中心在可视区域外，不产生视觉干扰。
+5. **prefers-reduced-motion**: Modal 新增的 aurora-flow 和 close-btn rotation 在 reduce-motion 下禁用。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: 2 个未启用 action 激活 + 4 组件增强)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次 Code Review 无需修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。全部已建 Svelte action 均已激活使用。svelte-check 0 errors。构建体积 511 kB 无增长。**
+
+---
+
+## 上一次会话 (2026-04-02, 第三十次)
 
 ### 本次完成内容
 

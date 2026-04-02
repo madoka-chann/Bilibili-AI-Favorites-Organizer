@@ -3,6 +3,7 @@
   import type { Snippet } from 'svelte';
   import { gsap, EASINGS } from '$animations/gsap-config';
   import { shouldAnimateFunctional } from '$animations/gsap-config';
+  import { glowTrack } from '$actions/glow-track';
   import { X } from 'lucide-svelte';
   import { Z_INDEX } from '$utils/constants';
 
@@ -109,7 +110,7 @@
 
     {#if toolbar}{@render toolbar()}{/if}
 
-    <div class="modal-body">
+    <div class="modal-body" use:glowTrack>
       {#if children}{@render children()}{/if}
     </div>
 
@@ -165,7 +166,8 @@
     align-items: center;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     background: linear-gradient(135deg, var(--ai-primary), var(--ai-gradient-accent), var(--ai-primary));
-    background-size: 800% 800%;
+    background-size: 400% 400%;
+    animation: modal-aurora-flow 18s ease-in-out infinite;
     color: #fff;
     position: relative;
     overflow: hidden;
@@ -195,11 +197,12 @@
     justify-content: center;
     position: relative;
     z-index: 1;
-    transition: background 0.2s ease;
+    transition: background 0.2s ease, transform 0.25s cubic-bezier(0.2, 1, 0.4, 1);
   }
 
   .close-btn:hover {
     background: rgba(255, 255, 255, 0.35);
+    transform: rotate(90deg) scale(1.1);
   }
 
   .modal-body {
@@ -208,6 +211,13 @@
     overflow-x: hidden;
     padding: 0;
     min-height: 0;
+    position: relative;
+    background:
+      radial-gradient(
+        circle at var(--glow-x, -100px) var(--glow-y, -100px),
+        rgba(var(--ai-primary-rgb, 115, 100, 255), 0.05) 0%,
+        transparent 55%
+      );
   }
 
   .modal-footer {
@@ -258,5 +268,17 @@
 
   .modal-btn.cancel:hover {
     background: var(--ai-bg-tertiary);
+  }
+
+  @keyframes modal-aurora-flow {
+    0%, 100% { background-position: 0% 50%; }
+    25% { background-position: 100% 25%; }
+    50% { background-position: 50% 100%; }
+    75% { background-position: 0% 75%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .modal-header { animation: none; }
+    .close-btn:hover { transform: none; }
   }
 </style>

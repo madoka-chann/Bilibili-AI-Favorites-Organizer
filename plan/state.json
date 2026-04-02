@@ -1,7 +1,7 @@
 {
   "project": "Bilibili AI Favorites Organizer - Svelte Refactoring",
-  "plan": "visual-plan-session30.md",
-  "lastUpdated": "2026-04-02-session30",
+  "plan": "visual-plan-session31.md",
+  "lastUpdated": "2026-04-02-session31",
   "phases": {
     "phase0_buildSystem": {
       "status": "completed",
@@ -23,7 +23,7 @@
     },
     "phase2_animations": {
       "status": "completed",
-      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; I1-I5 粒子系统全部完成; Session 27: 6 个 Modal 子组件动画增强; Session 28: 4 个面板主界面组件视觉增强; Session 29: 5 个设置面板组件动画增强; Session 30: PreviewConfirm 深度视觉增强 (13 项动效: 筛选按钮弹性过渡/分类卡片悬浮抬升/展开箭头旋转/徽标弹跳入场/合并源脉冲边框/移除按钮摇晃/确认按钮光晕/空状态浮动/搜索框焦点光晕/图标按钮悬浮/缩略图悬浮放大/低置信度脉冲/pressEffect 按钮反馈) + 全局滚动条主题化 + 键盘焦点环动画"
+      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; I1-I5 粒子系统全部完成; Session 27: 6 个 Modal 子组件动画增强; Session 28: 4 个面板主界面组件视觉增强; Session 29: 5 个设置面板组件动画增强; Session 30: PreviewConfirm 深度视觉增强; Session 31: 未启用资产激活 (tilt/glowTrack) + Modal 统一增强 (header 极光流动/关闭按钮旋转/内容区光追踪) + StatsDialog 3D 倾斜 + FloatButton 回场弹入 + Panel 光追踪"
     },
     "phase3_cssCleanup": {
       "status": "completed",
@@ -31,7 +31,7 @@
     },
     "phase4_codeQuality": {
       "status": "completed",
-      "summary": "TypeScript strict 全开; 模块化重构完成; 多轮 Code Review; as any 类型断言清零; 错误处理一致性强化; 第30轮 (search-input transition 位置修正 + merge-source box-shadow 冲突修复 + focus-visible 作用域收窄至 button)"
+      "summary": "TypeScript strict 全开; 模块化重构完成; 多轮 Code Review; as any 类型断言清零; 错误处理一致性强化; 第31轮 Code Review 无新问题"
     },
     "phase5_performance": {
       "status": "completed",
@@ -53,8 +53,8 @@
   },
   "buildStatus": {
     "builds": true,
-    "output": "dist/bilibili-ai-favorites-organizer.user.js (510 kB, GSAP ~95 kB CDN)",
-    "svelteCheck": "0 errors, 3 warnings (intentional initial captures, pre-existing)",
+    "output": "dist/bilibili-ai-favorites-organizer.user.js (511 kB, GSAP ~95 kB CDN)",
+    "svelteCheck": "0 errors, 4 warnings (intentional initial captures, pre-existing)",
     "preExistingIssues": []
   }
 }
