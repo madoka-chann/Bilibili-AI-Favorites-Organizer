@@ -19,10 +19,12 @@
   import StatsDialog from './StatsDialog.svelte';
   import FolderSelector from './FolderSelector.svelte';
   import PreviewConfirm from './PreviewConfirm.svelte';
+  import HelpDialog from './HelpDialog.svelte';
   import { isRunning, cancelRequested, logs } from '$stores/state';
   import {
     folderSelect, previewConfirm, rejectAllModals,
   } from '$stores/modal-bridge';
+  import { requestPreviewConfirm } from '$stores/modal-bridge';
   import { loadUndoHistory } from '$core/undo';
   import { loadHistory } from '$core/history';
   import { exportLogs } from '$core/export-logs';
@@ -69,6 +71,40 @@
   let statsTotalVideos = $state(0);
   let statsDeadCount = $state(0);
 
+  let showHelp = $state(false);
+
+  /** 调试: 用假数据打开预览界面 */
+  async function debugPreview() {
+    const fakeCategories = ['游戏实况', '音乐MV', '编程教程', '科技数码', '美食制作', '动画MAD', '影视解说', '搞笑日常'].reduce((acc, name, i) => {
+      const count = [50, 50, 50, 30, 30, 30, 15, 15][i];
+      acc[name] = Array.from({ length: count }, (_, j) => ({
+        id: i * 100 + j + 1,
+        type: 2,
+        conf: 0.5 + Math.random() * 0.5,
+      }));
+      return acc;
+    }, {} as Record<string, Array<{ id: number; type: number; conf: number }>>);
+
+    const fakeVideos = Object.entries(fakeCategories).flatMap(([cat, vids]) =>
+      vids.map(v => ({
+        id: v.id, type: v.type, title: `【${cat}】模拟视频标题第${v.id}集 - 这是一个用于测试预览界面的模拟视频`,
+        bvid: `BV1test${v.id}`, intro: '', duration: Math.floor(60 + Math.random() * 600),
+        pubtime: Date.now() / 1000, fav_time: Date.now() / 1000,
+        cnt_info: { play: Math.floor(Math.random() * 100000), collect: 0, danmaku: 0 },
+        upper: { mid: 1000 + v.id % 10, name: ['何同学', '3Blue1Brown', 'LKs', '罗翔说刑法', '老番茄'][v.id % 5], face: '' },
+        cover: '', link: '',
+      }))
+    );
+
+    const existingNames = ['游戏实况', '音乐MV', '编程教程', '科技数码', '美食制作'];
+    try {
+      await requestPreviewConfirm(fakeCategories, fakeVideos, existingNames);
+      logs.add('[调试] 预览确认完成', 'success');
+    } catch {
+      logs.add('[调试] 预览已取消', 'info');
+    }
+  }
+
   /** K3: 恢复保存的面板位置，钳制到视口范围内 */
   function restoreSavedPosition() {
     const savedPos = gmGetValue('bfao_panelPos', null as { top: number; left: number } | null);
@@ -100,10 +136,10 @@
           },
         });
       } else if (shouldAnimateFunctional()) {
-        // B1: 丝绒绽放 (fallback when no Flip state)
+        // B1: 面板入场 — 简洁 slide+fade
         gsap.fromTo(panelEl,
-          { y: 48, scale: 0.86, rotation: -0.35, opacity: 0, filter: 'blur(14px) brightness(1.06) saturate(0.72)' },
-          { y: 0, scale: 1, rotation: 0, opacity: 1, filter: 'blur(0px) brightness(1) saturate(1)', duration: 0.5, ease: EASINGS.velvetSpring }
+          { y: 30, scale: 0.95, opacity: 0 },
+          { y: 0, scale: 1, opacity: 1, duration: 0.35, ease: EASINGS.velvetSpring, clearProps: 'transform,filter' }
         );
       }
 
@@ -288,7 +324,8 @@
         onstats={() => onStatsClick('stats')}
         onhealth={() => onStatsClick('health')}
         onexportlogs={exportLogs}
-        onhelp={() => logs.add('帮助: github.com/madoka-chann/Bilibili-AI-Favorites-Organizer', 'info')}
+        onhelp={() => { showHelp = true; }}
+        ondebugpreview={debugPreview}
         onhistory={() => { showHistory = true; }}
       />
     </div>
@@ -353,9 +390,14 @@
   <PreviewConfirm
     categories={$previewConfirm.input.categories}
     videos={$previewConfirm.input.videos}
+    existingFolderNames={$previewConfirm.input.existingFolderNames}
     onconfirm={(data) => previewConfirm.resolve(data)}
     onclose={() => previewConfirm.reject()}
   />
+{/if}
+
+{#if showHelp}
+  <HelpDialog onclose={() => { showHelp = false; }} />
 {/if}
 
 <style>

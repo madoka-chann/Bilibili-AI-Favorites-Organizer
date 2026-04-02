@@ -6,6 +6,7 @@
   import ProviderConfig from './ProviderConfig.svelte';
   import LiquidToggle from './LiquidToggle.svelte';
   import { focusGlow } from '$animations/micro';
+  import { prefersReducedMotion } from '$stores/theme';
   import { Cpu, SlidersHorizontal, ToggleRight, Sparkles } from 'lucide-svelte';
 </script>
 
@@ -146,12 +147,6 @@
   <SettingsGroup title="行为设置" icon={ToggleRight} iconColor="#10b981">
     <div class="toggle-list">
       <div class="toggle-row">
-        <span>跳过失效视频</span>
-        <LiquidToggle label="跳过失效视频" checked={$settings.skipDeadVideos}
-          onchange={(v) => settings.update({ skipDeadVideos: v })} />
-      </div>
-
-      <div class="toggle-row">
         <span>自适应限速</span>
         <LiquidToggle label="自适应限速" checked={$settings.adaptiveRate}
           onchange={(v) => settings.update({ adaptiveRate: v })} />
@@ -161,12 +156,6 @@
         <span>完成后通知</span>
         <LiquidToggle label="完成后通知" checked={$settings.notifyOnComplete}
           onchange={(v) => settings.update({ notifyOnComplete: v })} />
-      </div>
-
-      <div class="toggle-row">
-        <span>多收藏夹模式</span>
-        <LiquidToggle label="多收藏夹模式" checked={$settings.multiFolderEnabled}
-          onchange={(v) => settings.update({ multiFolderEnabled: v })} />
       </div>
 
       <div class="toggle-row">
@@ -208,6 +197,15 @@
       <LiquidToggle label="启用极致动画效果" checked={$settings.animEnabled}
         onchange={(v) => settings.update({ animEnabled: v })} />
     </div>
+    {#if $prefersReducedMotion}
+      <div class="anim-hint">
+        系统已开启「减少动画」，动画被自动禁用。
+        请前往 Windows 设置 → 辅助功能 → 视觉效果 → 打开「动画效果」
+      </div>
+    {/if}
+    {#if $settings.animEnabled && !$prefersReducedMotion}
+      <div class="anim-hint ok">动画已启用，刷新页面后生效</div>
+    {/if}
   </SettingsGroup>
 </div>
 
@@ -251,5 +249,19 @@
     align-items: center;
     gap: 8px;
     padding-left: 23px;
+  }
+
+  .anim-hint {
+    font-size: 10px;
+    line-height: 1.4;
+    color: var(--ai-warning-dark);
+    background: var(--ai-warning-bg);
+    padding: 6px 10px;
+    border-radius: 6px;
+    margin-top: 4px;
+  }
+  .anim-hint.ok {
+    color: var(--ai-text-muted);
+    background: var(--ai-bg-secondary);
   }
 </style>

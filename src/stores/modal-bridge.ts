@@ -51,6 +51,7 @@ export const folderSelect = createModalBridge<FavFolder[], number[]>();
 interface PreviewInput {
   categories: CategoryResult;
   videos: VideoResource[];
+  existingFolderNames: string[];
 }
 
 export const previewConfirm = createModalBridge<PreviewInput, CategoryResult>();
@@ -59,8 +60,9 @@ export const previewConfirm = createModalBridge<PreviewInput, CategoryResult>();
 export function requestPreviewConfirm(
   categories: CategoryResult,
   videos: VideoResource[],
+  existingFolderNames: string[] = [],
 ): Promise<CategoryResult> {
-  return previewConfirm.request({ categories, videos });
+  return previewConfirm.request({ categories, videos, existingFolderNames });
 }
 
 // ================= Reject All =================

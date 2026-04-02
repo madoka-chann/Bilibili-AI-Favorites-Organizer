@@ -37,46 +37,21 @@
   onMount(() => {
     ctx = gsap.context(() => {
       if (shouldAnimateFunctional()) {
-        // F1: 模态框绽放入场
+        // F1: 模态框入场 — 简洁 fade+slide，内容同步显示无二次弹跳
         gsap.fromTo(
           backdropEl,
           { opacity: 0 },
-          { opacity: 1, duration: 0.3 }
+          { opacity: 1, duration: 0.25 }
         );
         gsap.fromTo(
           modalEl,
+          { scale: 0.92, y: 24, opacity: 0 },
           {
-            scale: 0.78,
-            y: 40,
-            rotation: -0.5,
-            opacity: 0,
-            filter: 'blur(16px)',
-          },
-          {
-            scale: 1,
-            y: 0,
-            rotation: 0,
-            opacity: 1,
-            filter: 'blur(0px)',
-            duration: 0.55,
+            scale: 1, y: 0, opacity: 1,
+            duration: 0.35,
             ease: EASINGS.velvetSpring,
             delay: 0.05,
-            onComplete: () => {
-              // F4: 内容交错入场
-              if (shouldAnimate() && bodyEl?.children.length) {
-                gsap.fromTo(
-                  bodyEl.children,
-                  { opacity: 0, y: 15 },
-                  {
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.3,
-                    stagger: 0.05,
-                    ease: EASINGS.velvetSpring,
-                  }
-                );
-              }
-            },
+            clearProps: 'transform,filter',
           }
         );
       }
@@ -97,11 +72,10 @@
   function handleClose() {
     if (shouldAnimateFunctional() && modalEl && backdropEl) {
       gsap.to(modalEl, {
-        scale: 0.88,
-        y: 24,
+        scale: 0.95,
+        y: 16,
         opacity: 0,
-        filter: 'blur(6px)',
-        duration: 0.3,
+        duration: 0.2,
         ease: 'power2.in',
       });
       gsap.to(backdropEl, {
@@ -183,7 +157,6 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    will-change: transform, opacity;
   }
 
   .modal-header {

@@ -58,7 +58,7 @@ export const DEFAULT_SETTINGS: Settings = {
   adaptiveRate: true,
   notifyOnComplete: true,
   multiFolderEnabled: false,
-  animEnabled: false,
+  animEnabled: true,
   incrementalMode: false,
   batchRestInterval: 100,
   batchRestMinutes: 1,

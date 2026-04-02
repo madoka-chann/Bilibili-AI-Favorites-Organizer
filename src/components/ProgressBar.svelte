@@ -2,7 +2,7 @@
   import { onDestroy } from 'svelte';
   import { tweened } from 'svelte/motion';
   import { cubicOut } from 'svelte/easing';
-  import { progressPercent, progressPhase, isRunning } from '$stores/state';
+  import { progressPercent, progressPhase, isRunning, tokenUsage } from '$stores/state';
   import {
     spawnTrailParticles,
     phaseTransition,
@@ -102,6 +102,11 @@
         bind:this={barEl}
       ></div>
     </div>
+    {#if $tokenUsage.totalTokens > 0}
+      <div class="token-stats">
+        Token: {$tokenUsage.totalTokens.toLocaleString()} ({$tokenUsage.callCount} 次调用)
+      </div>
+    {/if}
   </div>
 {/if}
 
@@ -167,6 +172,13 @@
 
   .progress-bar.complete {
     background: linear-gradient(90deg, var(--ai-success), var(--ai-success-light), var(--ai-success-lighter));
+  }
+
+  .token-stats {
+    font-size: 10px;
+    color: var(--ai-text-muted);
+    margin-top: 4px;
+    text-align: right;
   }
 
   @keyframes shimmer {

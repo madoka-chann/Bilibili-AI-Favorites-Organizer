@@ -19,7 +19,7 @@ import { saveUndoData, type UndoRecord } from '$core/undo';
 import { saveHistoryEntry } from '$core/history';
 import { getErrorMessage } from '$utils/errors';
 import { groupBy } from '$utils/collections';
-import { UNCATEGORIZED_FOLDER, DEFAULT_VIDEO_TYPE } from '$utils/constants';
+import { UNCATEGORIZED_FOLDER, DEAD_ARCHIVE_FOLDER, DEFAULT_VIDEO_TYPE } from '$utils/constants';
 import { updateProgress, resetProgress } from '$utils/progress';
 
 // ================= Helpers =================
@@ -32,16 +32,12 @@ async function resolveSourceFolders(
   settings: Settings,
   biliData: BiliData,
 ): Promise<number[]> {
-  if (settings.multiFolderEnabled) {
-    const allFolders = await getAllFoldersWithIds(biliData);
-    logs.add('请在弹出的面板中选择要整理的收藏夹...', 'info');
-    const ids = await folderSelect.request(allFolders);
-    if (ids.length === 0) throw new Error('未选择任何收藏夹');
-    return ids;
-  }
-  const id = getSourceMediaId();
-  if (!id) throw new Error('无法获取当前收藏夹 ID，请在收藏夹页面操作');
-  return [Number(id)];
+  // 跨收藏夹为默认行为：始终弹出选择器
+  const allFolders = await getAllFoldersWithIds(biliData);
+  logs.add('请在弹出的面板中选择要整理的收藏夹...', 'info');
+  const ids = await folderSelect.request(allFolders);
+  if (ids.length === 0) throw new Error('未选择任何收藏夹');
+  return ids;
 }
 
 // ================= Phase 2: Fetch videos from source folders =================
@@ -58,26 +54,23 @@ async function fetchSourceVideos(
 ): Promise<FetchResult> {
   const allVideos: VideoResource[] = [];
   const videoSourceMap: Map<number, number> = new Map();
+  const maxVideos = settings.limitEnabled ? settings.limitCount : undefined;
 
   for (const mediaId of sourceMediaIds) {
     if (isCancelled()) break;
+    if (maxVideos && allVideos.length >= maxVideos) break;
 
+    const remaining = maxVideos ? maxVideos - allVideos.length : undefined;
     logs.add(`正在抓取收藏夹 ${mediaId}...`, 'info');
     const videos = await fetchAllVideos(
       mediaId,
       settings.fetchDelay,
       isCancelled,
       (page, total) => updateProgress('fetch', page, total),
+      remaining,
     );
 
     let validVideos = videos;
-
-    if (settings.skipDeadVideos) {
-      const before = validVideos.length;
-      validVideos = validVideos.filter((v) => !isDeadVideo(v));
-      const skipped = before - validVideos.length;
-      if (skipped > 0) logs.add(`跳过 ${skipped} 个失效视频`, 'info');
-    }
 
     if (settings.incrementalMode) {
       const lastRunTime = gmGetValue('bfao_lastRunTime', 0);
@@ -406,12 +399,33 @@ export async function startProcess(settings: Settings, biliData: BiliData): Prom
 
     if (isCancelled()) { logs.add('用户取消了操作', 'warning'); return; }
     if (allVideos.length === 0) { logs.add('没有需要整理的视频', 'info'); return; }
-    logs.add(`共 ${allVideos.length} 个视频待分类`, 'success');
 
-    // Phase 4: AI classification
+    // Safety: enforce limit (primary limit is in fetchSourceVideos)
+    const videosToProcess = (settings.limitEnabled && allVideos.length > settings.limitCount)
+      ? allVideos.slice(0, settings.limitCount)
+      : allVideos;
+
+    // Phase 3.6: Separate dead videos (auto-archive, skip AI)
+    const deadVideos = videosToProcess.filter(v => isDeadVideo(v));
+    const liveVideos = videosToProcess.filter(v => !isDeadVideo(v));
+    if (deadVideos.length > 0) {
+      logs.add(`检测到 ${deadVideos.length} 个失效视频，将自动归档`, 'info');
+    }
+
+    logs.add(`共 ${liveVideos.length} 个视频待分类`, 'success');
+
+    // Phase 4: AI classification (only live videos)
     let allCategories = await classifyWithAI(
-      allVideos, existingFolderNames, settings, isCancelled,
+      liveVideos, existingFolderNames, settings, isCancelled,
     );
+
+    // Merge dead videos into archive category
+    if (deadVideos.length > 0) {
+      allCategories[DEAD_ARCHIVE_FOLDER] = [
+        ...(allCategories[DEAD_ARCHIVE_FOLDER] ?? []),
+        ...deadVideos.map(v => ({ id: v.id, type: v.type })),
+      ];
+    }
 
     if (isCancelled()) { logs.add('用户取消了操作', 'warning'); return; }
     if (Object.keys(allCategories).length === 0) {
@@ -420,10 +434,10 @@ export async function startProcess(settings: Settings, biliData: BiliData): Prom
     }
 
     // Phase 4.5: Post-process
-    allCategories = postProcessCategories(allCategories, allVideos, existingFoldersMap);
+    allCategories = postProcessCategories(allCategories, liveVideos, existingFoldersMap);
 
     logs.add(
-      `AI 分类完成: ${Object.keys(allCategories).length} 个分类，${allVideos.length} 个视频`,
+      `AI 分类完成: ${Object.keys(allCategories).length} 个分类，${videosToProcess.length} 个视频`,
       'success',
     );
 
@@ -435,7 +449,7 @@ export async function startProcess(settings: Settings, biliData: BiliData): Prom
       'info',
     );
     logs.add('请在弹出的面板中确认分类结果...', 'info');
-    allCategories = await requestPreviewConfirm(allCategories, allVideos);
+    allCategories = await requestPreviewConfirm(allCategories, videosToProcess, existingFolderNames);
 
     if (isCancelled()) throw new Error('用户取消操作');
 

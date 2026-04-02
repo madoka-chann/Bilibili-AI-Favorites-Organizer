@@ -66,6 +66,7 @@ export async function fetchAllVideos(
   fetchDelay: number,
   cancelCheck: () => boolean,
   onProgress?: (page: number, totalPages: number) => void,
+  maxVideos?: number,
 ): Promise<VideoResource[]> {
   const allVideos: VideoResource[] = [];
   let pn = 1;
@@ -74,6 +75,7 @@ export async function fetchAllVideos(
 
   while (pn <= MAX_PAGES) {
     if (cancelCheck()) break;
+    if (maxVideos && allVideos.length >= maxVideos) break;
 
     if (pn <= 3 || pn % 10 === 0) {
       logs.add(
@@ -112,5 +114,5 @@ export async function fetchAllVideos(
     await humanDelay(fetchDelay);
   }
 
-  return allVideos;
+  return maxVideos ? allVideos.slice(0, maxVideos) : allVideos;
 }

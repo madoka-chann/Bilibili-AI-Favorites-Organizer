@@ -4,7 +4,7 @@
   import { AI_PROVIDERS } from '$utils/constants';
   import { fetchModelList } from '$api/ai-client';
   import { logs } from '$stores/state';
-  import { Eye, EyeOff, RefreshCw, ExternalLink } from 'lucide-svelte';
+  import { Eye, EyeOff, RefreshCw, ExternalLink, Zap } from 'lucide-svelte';
   import { getErrorMessage } from '$utils/errors';
   import { focusGlow } from '$animations/micro';
   import type { AIProviderId } from '$types/index';
@@ -46,6 +46,25 @@
   function selectModel(model: string) {
     settings.update({ modelName: model });
     showModelDropdown = false;
+  }
+
+  let testLoading = $state(false);
+  async function handleTestConnectivity() {
+    testLoading = true;
+    try {
+      const s = $settings;
+      if (!s.apiKey) {
+        logs.add('请先填写 API Key', 'warning');
+        return;
+      }
+      // Use fetchModelList as a lightweight connectivity test
+      await fetchModelList(s);
+      logs.add('连通性测试成功 ✓', 'success');
+    } catch (e: unknown) {
+      logs.add(`连通性测试失败: ${getErrorMessage(e)}`, 'error');
+    } finally {
+      testLoading = false;
+    }
   }
 </script>
 
@@ -144,6 +163,14 @@
         title="获取模型列表"
       >
         <RefreshCw size={14} class={modelLoading ? 'spinning' : ''} />
+      </button>
+      <button
+        class="bfao-icon-btn"
+        onclick={handleTestConnectivity}
+        disabled={testLoading}
+        title="测试连通性"
+      >
+        <Zap size={14} class={testLoading ? 'spinning' : ''} />
       </button>
     </div>
 

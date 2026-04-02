@@ -8,11 +8,24 @@ import { settings } from '$stores/settings';
 // 类型声明在 vite-env.d.ts 中，避免 `as any` 断言
 // 不使用 ESM 子路径导入 (import { Flip } from 'gsap/Flip')
 // 因为 IIFE 外部化会将命名导入编译为 Flip.Flip 而 UMD 全局不支持此模式
-const _Flip = Flip;
-const _Draggable = Draggable;
+
+// CDN 加载防御: 检测全局变量是否存在
+let gsapAvailable = true;
+if (typeof globalThis.gsap === 'undefined') {
+  console.warn('[BFAO] GSAP CDN 未加载，动画功能将被禁用');
+  gsapAvailable = false;
+}
+if (typeof Flip === 'undefined' || typeof Draggable === 'undefined' || typeof CustomEase === 'undefined') {
+  console.warn('[BFAO] GSAP 插件 (Flip/Draggable/CustomEase) CDN 未加载');
+}
+
+const _Flip = typeof Flip !== 'undefined' ? Flip : ({} as typeof Flip);
+const _Draggable = typeof Draggable !== 'undefined' ? Draggable : ({} as typeof Draggable);
 
 // ================= 插件注册 =================
-gsap.registerPlugin(Flip, Draggable, CustomEase);
+if (gsapAvailable && typeof Flip !== 'undefined') {
+  gsap.registerPlugin(Flip, Draggable, CustomEase);
+}
 
 // ================= 全局默认值 =================
 gsap.defaults({
@@ -47,8 +60,10 @@ export const EASINGS = {
 
 // ================= 动画开关检测 =================
 
-/** 检测是否应该播放动画 (三级策略) */
+/** 检测是否应该播放动画 (四级策略) */
 export function shouldAnimate(): boolean {
+  // Tier 0: GSAP CDN 未加载
+  if (!gsapAvailable) return false;
   // Tier 1: OS 偏好减弱动画 → 全禁
   if (get(prefersReducedMotion)) return false;
   // Tier 2: 用户关闭动画
@@ -57,8 +72,9 @@ export function shouldAnimate(): boolean {
   return true;
 }
 
-/** 检测是否应该播放功能性动画 (始终启用，除非 OS 减弱) */
+/** 检测是否应该播放功能性动画 (始终启用，除非 OS 减弱或 GSAP 不可用) */
 export function shouldAnimateFunctional(): boolean {
+  if (!gsapAvailable) return false;
   return !get(prefersReducedMotion);
 }
 

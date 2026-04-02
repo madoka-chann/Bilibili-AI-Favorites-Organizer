@@ -21,12 +21,13 @@
     onhealth?: () => void;
     onexportlogs?: () => void;
     onhelp?: () => void;
+    ondebugpreview?: () => void;
     onhistory?: () => void;
   }
 
   let {
     onstart, onstop, oncleandead, onfinddups, onundo,
-    onbackup, onstats, onhealth, onexportlogs, onhelp, onhistory,
+    onbackup, onstats, onhealth, onexportlogs, onhelp, ondebugpreview, onhistory,
   }: Props = $props();
 
   function handleStartStop() {
@@ -76,7 +77,7 @@
     <button class="btn-tool" onclick={() => onexportlogs?.()} use:glowTrack use:pressEffect use:magnetic={magneticSmall}>
       <FileText size={14} /><span>日志</span>
     </button>
-    <button class="btn-tool" onclick={() => onhelp?.()} use:glowTrack use:pressEffect use:magnetic={magneticSmall}>
+    <button class="btn-tool" onclick={(e) => { if (e.ctrlKey || e.metaKey) ondebugpreview?.(); else onhelp?.(); }} title="Ctrl+点击: 调试预览" use:glowTrack use:pressEffect use:magnetic={magneticSmall}>
       <HelpCircle size={14} /><span>帮助</span>
     </button>
     <button class="btn-tool" onclick={() => onhistory?.()} use:glowTrack use:pressEffect use:magnetic={magneticSmall}>

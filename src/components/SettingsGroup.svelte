@@ -24,6 +24,8 @@
     if (!open && bodyEl) {
       bodyEl.style.height = '0px';
       bodyEl.style.overflow = 'hidden';
+      bodyEl.style.paddingTop = '0';
+      bodyEl.style.paddingBottom = '0';
     }
     if (open && chevronEl) {
       gsap.set(chevronEl, { rotation: 90 });
@@ -51,16 +53,17 @@
     if (shouldAnimate()) {
       // B4: GSAP spring accordion
       if (open) {
-        gsap.set(bodyEl, { height: 'auto', overflow: 'hidden' });
+        gsap.set(bodyEl, { height: 'auto', overflow: 'hidden', paddingTop: '', paddingBottom: '' });
         const h = bodyEl.offsetHeight;
         gsap.fromTo(bodyEl,
-          { height: 0, opacity: 0 },
-          { height: h, opacity: 1, duration: 0.35, ease: EASINGS.velvetSpring,
-            onComplete: () => { gsap.set(bodyEl, { height: 'auto', overflow: '', clearProps: 'opacity' }); } }
+          { height: 0, opacity: 0, paddingTop: 0, paddingBottom: 0 },
+          { height: h, opacity: 1, paddingTop: '', paddingBottom: '', duration: 0.35, ease: EASINGS.velvetSpring,
+            onComplete: () => { gsap.set(bodyEl, { height: 'auto', overflow: '', clearProps: 'opacity,paddingTop,paddingBottom' }); } }
         );
       } else {
         gsap.to(bodyEl, {
-          height: 0, opacity: 0, duration: 0.28, ease: EASINGS.silkOut,
+          height: 0, opacity: 0, paddingTop: 0, paddingBottom: 0,
+          duration: 0.28, ease: EASINGS.silkOut,
           overflow: 'hidden',
         });
       }
@@ -76,6 +79,8 @@
       // No animation — instant toggle
       bodyEl.style.height = open ? 'auto' : '0px';
       bodyEl.style.overflow = open ? '' : 'hidden';
+      bodyEl.style.paddingTop = open ? '' : '0';
+      bodyEl.style.paddingBottom = open ? '' : '0';
     }
   }
 </script>
