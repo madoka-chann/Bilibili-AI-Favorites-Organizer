@@ -1,6 +1,61 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-02, 第三十四次)
+## 最近一次会话 (2026-04-02, 第三十五次)
+
+### 本次完成内容
+
+**Depth of Interaction — 交互深度感: 表单控件聚焦反馈 + 按钮状态过渡 + 数据展示悬浮层次**
+
+#### 视觉增强 — 6 个文件
+
+| 组件/文件 | 新增动画 | 说明 |
+|-----------|----------|------|
+| `forms.css` | label 聚焦高亮 (`:focus-within` color 变主题色) + 输入行下划线扩展 (`::after` scaleX 0→1) + icon-btn 悬浮旋转 (8deg) | 聚焦时 label 高亮+底部渐变线从中心展开，icon 按钮悬浮微旋增加可操作暗示 |
+| `SettingsGroup.svelte` | 展开分隔线渐现 (`separatorReveal` 动画，header::after 渐变线) + icon 激活发光 (scale 1.15 + box-shadow) | 展开时 header 底部出现渐变分隔线加强层次，图标容器放大+发光暗示"激活" |
+| `StatsDialog.svelte` | stat-card 悬浮边框发光 (border-color + box-shadow) + stat-value 悬浮亮度增强 + folder-row 悬浮高亮右移 | 数据卡片悬浮时边框发光+数字变亮，与 tilt 3D 效果叠加；收藏夹行悬浮右移+背景微亮 |
+| `ActionButtons.svelte` | btn-primary 图标切换弹跳 (`iconSwitch` scale 0→1.15→1) + btn-tool 悬浮图标放大 (scale 1.2) + kbd 标签悬浮渐显 (opacity 0.4→0.8) | 开始/停止切换时图标弹入；工具按钮悬浮时图标放大文字不变；快捷键提示悬浮时变清晰 |
+| `LogArea.svelte` | 日志条目悬浮左边框加粗 (3→4px + padding 补偿) + 时间戳悬浮 letter-spacing 微增+背景加深 | 悬浮时级别色带加宽强化视觉区分；时间戳区域轻微扩展变深 |
+| `ProviderConfig.svelte` | icon-btn SVG 点击缩放 (scale 0.8→1) + spinning 图标发光 (drop-shadow) + model-dropdown 滚动渐隐 (mask-image) | 眼睛/刷新按钮点击时有缩放反馈；加载旋转时发光；模型列表边缘渐隐 |
+
+#### 代码质量 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `forms.css` | `.bfao-icon-btn:disabled:hover` 仍会应用 `rotate(8deg)`，disabled 按钮不应有交互反馈 | MEDIUM | 添加 `.bfao-icon-btn:disabled` 和 `.bfao-icon-btn:disabled:hover` 规则重置 transform/border-color/color |
+| `LogArea.svelte` | `.log-entry:hover` border-left-width 3→4px 导致 1px 布局偏移 | LOW | 添加 `padding-left: 7px` 补偿 (基础 padding 为 8px)，reduced-motion 下保持原值 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `ActionButtons.svelte` | `iconSwitch` 动画 `both` fill-mode 使 SVG 初始 scale(0)，首次渲染时有弹入 | 可接受：按钮在 Panel 内，Panel 入场已有 FLIP 动画，图标弹入在 Panel 展开后自然融入 |
+| `ProviderConfig.svelte` | `mask-image` 渐隐在短列表（<5项）时也应用 | 可接受：渐隐仅 8% 高度 + 有 padding 补偿，短列表内容不会被裁剪 |
+| `forms.css` | `::after` 下划线在无 `.bfao-input-row` 包裹的独立 input 上不显示 | 正确：独立 input（如并发数）没有 `.bfao-input-row` 包裹，不需要额外下划线，已有 focusGlow 效果 |
+
+### 关键设计决策
+
+1. **forms.css label 聚焦用 `:focus-within` 而非 JS**: CSS 原生伪类足够高效，不需要额外 JS 监听 focus 事件，且自动处理所有子元素焦点。
+2. **下划线扩展用 `::after` + `scaleX` 而非 `width` 过渡**: `scaleX` 从中心向两端展开，比 `width` 从左到右更对称优雅；且 transform 不触发重排。
+3. **SettingsGroup separator 用 CSS 动画而非 GSAP**: 分隔线仅在 `.open` class 添加时触发，CSS `animation: both` 自然播放一次，无需 GSAP 生命周期管理。
+4. **ActionButtons iconSwitch 在 SVG 层而非父元素**: 直接在 `:global(svg)` 上应用动画，因为 `{#if}` 条件渲染会销毁旧 SVG 并创建新 SVG，新 SVG 自动触发 `animation`。
+5. **LogArea 边框加粗 + padding 补偿**: 使用 padding-left 从 8px 减为 7px 来抵消 border-left-width 从 3px 增为 4px 的 1px 增长，保持内容不偏移。
+6. **ProviderConfig model-dropdown 用 mask-image**: 与 FolderSelector (Session 34) 使用相同的 CSS mask-image 渐隐策略，保持一致性。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: 6 文件交互深度感增强)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 2 个 CSS/布局 bug 修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 errors。构建体积 526 kB (较 522 kB 增长 +4 kB, 新增 CSS keyframes/伪元素/transitions)。**
+
+---
+
+## 上一次会话 (2026-04-02, 第三十四次)
 
 ### 本次完成内容
 

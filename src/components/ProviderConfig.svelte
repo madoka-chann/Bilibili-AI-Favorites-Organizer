@@ -238,9 +238,19 @@
     box-shadow: 0 0 8px rgba(var(--ai-primary-rgb), 0.25);
   }
 
+  /* Eye icon toggle transition */
+  .bfao-icon-btn :global(svg) {
+    transition: transform 0.2s cubic-bezier(0.2, 0.98, 0.28, 1);
+  }
+
+  .bfao-icon-btn:active :global(svg) {
+    transform: scale(0.8);
+  }
+
   /* :global() needed: .spinning is applied to Lucide SVG child component */
   .bfao-icon-btn :global(.spinning) {
     animation: spin 0.8s linear infinite;
+    filter: drop-shadow(0 0 4px rgba(var(--ai-primary-rgb), 0.5));
   }
 
   @keyframes spin {
@@ -268,6 +278,21 @@
     margin-top: 4px;
     animation: dropdownIn 0.2s cubic-bezier(0.2, 0.98, 0.28, 1) both;
     transform-origin: top center;
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 8%,
+      black 92%,
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 8%,
+      black 92%,
+      transparent 100%
+    );
+    padding: 4px 0;
   }
 
   @keyframes dropdownIn {
@@ -311,5 +336,10 @@
     color: var(--ai-primary);
     font-weight: 600;
     box-shadow: inset 3px 0 0 var(--ai-primary);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bfao-icon-btn :global(svg) { transition: none; }
+    .bfao-icon-btn :global(.spinning) { filter: none; }
   }
 </style>

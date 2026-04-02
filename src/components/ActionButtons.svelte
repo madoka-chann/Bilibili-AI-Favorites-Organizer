@@ -132,14 +132,30 @@
     animation: runningPulse 2s ease-in-out infinite;
   }
 
+  /* Icon switch bounce on state change */
+  .btn-primary :global(svg) {
+    animation: iconSwitch 0.35s cubic-bezier(0.22, 1.42, 0.29, 1) both;
+  }
+
+  @keyframes iconSwitch {
+    0% { transform: scale(0); opacity: 0; }
+    70% { transform: scale(1.15); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
   .kbd {
     font-size: 10px;
-    opacity: 0.6;
+    opacity: 0.4;
     background: rgba(255, 255, 255, 0.15);
     padding: 1px 5px;
     border-radius: 4px;
     margin-left: 4px;
     font-family: monospace;
+    transition: opacity 0.25s ease;
+  }
+
+  .btn-primary:hover .kbd {
+    opacity: 0.8;
   }
 
   .tool-row {
@@ -171,10 +187,18 @@
     transition: all 0.35s cubic-bezier(0.22, 1.42, 0.29, 1);
   }
 
+  .btn-tool :global(svg) {
+    transition: transform 0.25s cubic-bezier(0.22, 1.42, 0.29, 1);
+  }
+
   .btn-tool:hover {
     transform: translateY(-3px) scale(1.045);
     box-shadow: 0 10px 28px rgba(var(--ai-primary-rgb), 0.12);
     border-color: var(--ai-primary-light);
+  }
+
+  .btn-tool:hover :global(svg) {
+    transform: scale(1.2);
   }
 
   .btn-tool:active {
@@ -199,5 +223,12 @@
   @keyframes toolRowSlideIn {
     from { opacity: 0; transform: translateY(6px); }
     to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn-primary :global(svg) { animation: none; }
+    .kbd { transition: none; }
+    .btn-tool :global(svg) { transition: none; }
+    .btn-tool:hover :global(svg) { transform: none; }
   }
 </style>

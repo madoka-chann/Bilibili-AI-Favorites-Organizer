@@ -181,11 +181,20 @@
     border-radius: 12px;
     text-align: center;
     border: 1px solid var(--ai-border-lighter);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .stat-card:hover {
+    border-color: var(--ai-primary-light);
+    box-shadow: 0 0 12px rgba(var(--ai-primary-rgb), 0.15);
   }
   .stat-value {
     font-size: 22px;
     font-weight: 800;
     color: var(--ai-primary);
+    transition: filter 0.25s ease;
+  }
+  .stat-card:hover .stat-value {
+    filter: brightness(1.2);
   }
   .stat-value.danger { color: var(--ai-error); }
   .stat-label {
@@ -208,9 +217,15 @@
   .folder-row {
     display: flex;
     justify-content: space-between;
-    padding: 4px 0;
+    padding: 4px 4px;
     border-bottom: 1px solid var(--ai-border-lighter);
     font-size: 11px;
+    border-radius: 4px;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .folder-row:hover {
+    background: var(--ai-bg-hover);
+    transform: translateX(2px);
   }
   .folder-name {
     color: var(--ai-text);
@@ -223,5 +238,12 @@
   .folder-count {
     color: var(--ai-text-muted);
     white-space: nowrap;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stat-card { transition: none; }
+    .stat-value { transition: none; }
+    .folder-row { transition: none; }
+    .folder-row:hover { transform: none; }
   }
 </style>

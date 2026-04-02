@@ -10,6 +10,11 @@
   font-size: 12px;
   color: var(--ai-text-secondary);
   font-weight: 500;
+  transition: color 0.25s ease;
+}
+
+.bfao-field:focus-within .bfao-label {
+  color: var(--ai-primary);
 }
 
 .bfao-input,
@@ -40,6 +45,25 @@
   display: flex;
   gap: 6px;
   align-items: center;
+  position: relative;
+}
+
+.bfao-input-row::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  width: 80%;
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent, var(--ai-primary), transparent);
+  transform: scaleX(0);
+  transition: transform 0.3s cubic-bezier(0.2, 0.98, 0.28, 1);
+  pointer-events: none;
+  border-radius: 1px;
+}
+
+.bfao-input-row:focus-within::after {
+  transform: scaleX(1);
 }
 
 .bfao-input-flex {
@@ -67,11 +91,19 @@
 .bfao-icon-btn:hover {
   border-color: var(--ai-primary);
   color: var(--ai-primary);
+  transform: rotate(8deg);
 }
 
 .bfao-icon-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+  transform: none;
+}
+
+.bfao-icon-btn:disabled:hover {
+  transform: none;
+  border-color: var(--ai-border);
+  color: var(--ai-text-secondary);
 }
 
 .bfao-checkbox-label {
@@ -89,4 +121,11 @@
   width: 15px;
   height: 15px;
   cursor: pointer;
+}
+
+/* ==================== Reduced Motion ==================== */
+@media (prefers-reduced-motion: reduce) {
+  .bfao-label { transition: none; }
+  .bfao-input-row::after { transition: none; }
+  .bfao-icon-btn:hover { transform: none; }
 }

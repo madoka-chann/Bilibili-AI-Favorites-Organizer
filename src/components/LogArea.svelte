@@ -90,6 +90,8 @@
 
   .log-entry:hover {
     background: var(--ai-bg-tertiary);
+    border-left-width: 4px;
+    padding-left: 7px; /* compensate 1px border-left growth to prevent layout shift */
   }
 
   .log-time {
@@ -100,6 +102,12 @@
     padding: 1px 5px;
     border-radius: 8px;
     line-height: 16px;
+    transition: letter-spacing 0.2s ease, background 0.2s ease;
+  }
+
+  .log-entry:hover .log-time {
+    letter-spacing: 0.04em;
+    background: var(--ai-border-light);
   }
 
   .log-msg {
@@ -158,5 +166,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     .log-entry:first-child.log-success { animation: none; }
+    .log-time { transition: none; }
+    .log-entry:hover { border-left-width: 3px; padding-left: 8px; }
   }
 </style>
