@@ -127,3 +127,37 @@
   --ai-shadow-lg: 0 24px 68px rgba(0, 0, 0, 0.35), 0 10px 28px rgba(0, 0, 0, 0.2);
   --ai-shadow-modal: 0 44px 110px rgba(0, 0, 0, 0.5), 0 18px 44px rgba(0, 0, 0, 0.3);
 }
+
+/* ==================== Themed Scrollbar ==================== */
+.bfao-app *::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.bfao-app *::-webkit-scrollbar-track {
+  background: transparent;
+}
+.bfao-app *::-webkit-scrollbar-thumb {
+  background: var(--ai-border);
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+.bfao-app *::-webkit-scrollbar-thumb:hover {
+  background: var(--ai-text-muted);
+}
+/* Firefox */
+.bfao-app * {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ai-border) transparent;
+}
+
+/* ==================== Keyboard Focus Ring ==================== */
+.bfao-app button:focus-visible,
+.bfao-app [role="button"]:focus-visible {
+  outline: 2px solid var(--ai-primary);
+  outline-offset: 2px;
+  transition: outline-offset 0.15s ease;
+}
+.bfao-app button:focus:not(:focus-visible),
+.bfao-app [role="button"]:focus:not(:focus-visible) {
+  outline: none;
+}

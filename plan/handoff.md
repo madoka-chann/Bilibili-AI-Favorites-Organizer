@@ -1,6 +1,74 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-02, 第二十九次)
+## 最近一次会话 (2026-04-02, 第三十次)
+
+### 本次完成内容
+
+**PreviewConfirm 对话框深度视觉增强 (13 项动效) + 全局滚动条主题化 + 键盘焦点环动画 + 深度 Code Review**
+
+#### 视觉增强 — PreviewConfirm 对话框
+
+| 效果 | 实现 | 说明 |
+|------|------|------|
+| 筛选按钮弹性过渡 | CSS `transition: all 0.25s cubic-bezier(0.2,1,0.4,1)` + active `scale(1.05)` + hover `translateY(-1px)` | 筛选按钮切换时平滑弹性过渡+阴影，而非瞬间变色 |
+| 分类卡片悬浮抬升 | CSS `transition: transform 0.25s, box-shadow 0.25s` + hover `translateY(-1px)` + shadow | 悬浮时卡片轻微抬起+投影加深，增强层次感 |
+| 展开箭头旋转 | 替换 ChevronDown/ChevronRight 图标切换为单 ChevronRight + CSS `rotate(90deg)` 过渡 | 展开/收起时箭头平滑旋转90°，同时变为主题色 |
+| 徽标入场弹跳 | CSS `@keyframes badgePop` (scale 0→1.15→1) | 徽标"已有"/"新建"渲染时弹跳入场 |
+| 合并源脉冲边框 | CSS `@keyframes mergeSourcePulse` (border-color + box-shadow 2s 循环) | 合并模式选中源分类时边框+阴影同步脉冲 |
+| 移除按钮悬浮抖动 | CSS `@keyframes removeShake` 5 帧抖动 | 移除按钮悬浮时轻微摇晃警示 |
+| 确认按钮光晕增强 | CSS hover `box-shadow` 增加 3px success 色外圈 | 确认按钮悬浮时外发更强烈的成功色光晕 |
+| 空状态浮动 | CSS `@keyframes emptyFloat` 3s 上下浮动 | 无匹配时空状态文字轻柔浮动 |
+| 搜索框焦点光晕 | CSS `box-shadow` 过渡从 0 扩展到 3px | 搜索框聚焦时光晕平滑扩展 |
+| 图标按钮悬浮 | CSS hover `translateY(-2px)` + `box-shadow` | 底部工具图标按钮悬浮时微抬+外发光 |
+| 缩略图悬浮放大 | CSS `.video-thumb-wrap:hover .video-thumb` `scale(1.05)` | 视频缩略图悬浮时微放大增强预览感 |
+| 低置信度脉冲 | CSS `@keyframes confLowPulse` opacity 脉冲 | 低置信度标签轻微脉冲吸引注意 |
+| pressEffect 按钮反馈 | `use:pressEffect` on 确认按钮 + 4 个底部图标按钮 | 按下弹回的物理反馈 |
+
+#### 全局增强
+
+| 文件 | 效果 | 说明 |
+|------|------|------|
+| `variables.css` | 全局滚动条主题化 (5px 窄条 + 主题色 + 圆角 + Firefox 兼容) | 所有滚动容器从系统默认升级为精致主题化滚动条 |
+| `variables.css` | 键盘焦点环动画 (button/[role=button] `:focus-visible` 主题色 outline + offset 过渡) | 键盘导航时按钮获得主题色焦点环反馈 |
+
+#### 代码质量修复 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `PreviewConfirm.svelte` | `.search-input` transition 仅定义在 `:focus` 伪类上，失焦时无平滑过渡 | LOW | 将 `box-shadow` transition 移至 `.search-input` 基础选择器 |
+| `PreviewConfirm.svelte` | `.merge-source` 的 `mergeSourcePulse` animation `box-shadow` 与 `:hover` 的 `box-shadow` 可能冲突 | LOW | 在 `.merge-source` 上添加 `box-shadow: none` 让动画完全管理 |
+| `variables.css` | `:focus-visible` 全局 `*` 选择器会覆盖 input 元素已有的 `box-shadow` 焦点样式 | MEDIUM | 收窄作用域至 `button` 和 `[role="button"]` |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `PreviewConfirm.svelte` `pressEffect` 在 disabled confirm 按钮上 | pointerdown 在 disabled 元素上不触发 | 安全：浏览器原生行为阻止了 disabled 元素的指针事件 (Session 29 已验证相同模式) |
+| `PreviewConfirm.svelte` `badgePop` 在筛选切换时重播 | `{#each}` 重渲染触发 animation 重播 | 正确：筛选后结果项弹入是期望的视觉效果 |
+| `variables.css` 全局 `scrollbar-width: thin` 应用于所有元素 | 非滚动元素上设置无效 | 安全：CSS 属性对无 overflow 的元素无副作用 |
+
+### 关键设计决策
+
+1. **单图标旋转替代图标切换**: 展开/收起使用 CSS `rotate(90deg)` 过渡替代 `ChevronDown`/`ChevronRight` 图标切换，减少 DOM 操作，动画更连贯。移除了 `ChevronDown` import。
+2. **focus-visible 仅作用于按钮**: 避免与 input 元素的 `box-shadow` 焦点样式冲突，input 已有完善的焦点反馈。
+3. **滚动条仅 WebKit + Firefox**: 使用 `::-webkit-scrollbar` (Chrome/Edge/Safari) + `scrollbar-width: thin` (Firefox) 双方案，覆盖主流浏览器。
+4. **merge-source box-shadow 显式设为 none**: 防止 hover 的 `box-shadow` 与 keyframes 动画的 `box-shadow` 属性竞争。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: PreviewConfirm 13 项动效 + 全局滚动条/焦点环)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 3 项 CSS 修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。全部 21 个组件 + 全局样式的动画覆盖已完成。svelte-check 0 errors。代码质量经 30 次迭代持续强化。**
+
+---
+
+## 上一次会话 (2026-04-02, 第二十九次)
 
 ### 本次完成内容
 

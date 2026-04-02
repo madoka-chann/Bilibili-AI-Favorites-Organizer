@@ -2,13 +2,13 @@
   import { tick } from 'svelte';
   import Modal from './Modal.svelte';
   import {
-    Eye, ChevronDown, ChevronRight, Search,
+    Eye, ChevronRight, Search,
     CheckSquare, Square, Clipboard, Download, FileText, X,
     GitMerge, LogOut,
   } from 'lucide-svelte';
   import { tilt } from '$actions/tilt';
   import { Flip, EASINGS, shouldAnimate } from '$animations/gsap-config';
-  import { listStaggerReveal, hoverScale } from '$animations/micro';
+  import { listStaggerReveal, hoverScale, pressEffect } from '$animations/micro';
   import { formatDuration } from '$utils/dom';
   import { triggerDownload } from '$utils/download';
   import type { CategoryResult, VideoResource } from '$types/index';
@@ -323,12 +323,8 @@
               checked={isSelected}
               onchange={() => toggleCategory(name)}
             />
-            <button class="expand-btn" onclick={() => toggleExpand(name)}>
-              {#if isExpanded}
-                <ChevronDown size={14} />
-              {:else}
-                <ChevronRight size={14} />
-              {/if}
+            <button class="expand-btn" class:expanded={isExpanded} onclick={() => toggleExpand(name)}>
+              <ChevronRight size={14} />
             </button>
             <!-- svelte-ignore a11y_click_events_have_key_events -->
             <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -446,20 +442,21 @@
         class="modal-btn confirm"
         disabled={selectedCategories.size === 0}
         onclick={handleConfirm}
+        use:pressEffect
       >
         执行已勾选 ({selectedCategories.size} 个)
       </button>
       <div class="footer-icons">
-        <button class="icon-btn" title="复制到剪贴板" onclick={copyToClipboard}>
+        <button class="icon-btn" title="复制到剪贴板" onclick={copyToClipboard} use:pressEffect>
           <Clipboard size={14} />
         </button>
-        <button class="icon-btn" title="下载 JSON" onclick={downloadJSON}>
+        <button class="icon-btn" title="下载 JSON" onclick={downloadJSON} use:pressEffect>
           <Download size={14} />
         </button>
-        <button class="icon-btn" title="导出 Markdown" onclick={exportMarkdown}>
+        <button class="icon-btn" title="导出 Markdown" onclick={exportMarkdown} use:pressEffect>
           <FileText size={14} />
         </button>
-        <button class="icon-btn" title="取消" onclick={() => onclose?.()}>
+        <button class="icon-btn" title="取消" onclick={() => onclose?.()} use:pressEffect>
           <X size={14} />
         </button>
       </div>
@@ -505,7 +502,7 @@
     font-size: 12px;
     outline: none;
     box-sizing: border-box;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.3s cubic-bezier(0.2, 1, 0.4, 1);
   }
   .search-input:focus {
     border-color: var(--ai-primary);
@@ -531,13 +528,18 @@
     display: flex;
     align-items: center;
     gap: 3px;
-    transition: all 0.2s ease;
+    transition: all 0.25s cubic-bezier(0.2, 1, 0.4, 1);
   }
-  .filter-btn:hover { border-color: var(--ai-primary-light); }
+  .filter-btn:hover {
+    border-color: var(--ai-primary-light);
+    transform: translateY(-1px);
+  }
   .filter-btn.active {
     background: linear-gradient(135deg, var(--ai-primary), var(--ai-gradient-accent));
     color: #fff;
     border-color: transparent;
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px var(--ai-primary-shadow);
   }
 
   .filter-count {
@@ -561,10 +563,17 @@
     border-radius: 10px;
     overflow: hidden;
     background: var(--ai-bg);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+  .category-group:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   }
   .category-group.merge-source {
     border-color: var(--ai-primary);
     background: var(--ai-bg-tertiary);
+    animation: mergeSourcePulse 2s ease-in-out infinite;
+    box-shadow: none; /* managed by animation */
   }
 
   .category-header {
@@ -595,6 +604,11 @@
     cursor: pointer;
     padding: 2px;
     flex-shrink: 0;
+    transition: transform 0.25s ease, color 0.2s;
+  }
+  .expand-btn.expanded {
+    transform: rotate(90deg);
+    color: var(--ai-primary);
   }
 
   .category-name {
@@ -615,6 +629,7 @@
     border-radius: 6px;
     font-weight: 600;
     flex-shrink: 0;
+    animation: badgePop 0.35s cubic-bezier(0.2, 1.2, 0.4, 1) both;
   }
   .badge-existing {
     background: var(--ai-success-bg);
@@ -661,6 +676,7 @@
     border-color: var(--ai-error, #ef4444);
     color: var(--ai-error, #ef4444);
     background: var(--ai-error-bg, rgba(239, 68, 68, 0.1));
+    animation: removeShake 0.4s ease-in-out;
   }
 
   /* --- Video list --- */
@@ -712,6 +728,10 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+  .video-thumb-wrap:hover .video-thumb {
+    transform: scale(1.05);
   }
 
   .video-thumb-placeholder {
@@ -769,6 +789,7 @@
   .conf.low {
     color: var(--ai-warning-dark);
     background: var(--ai-warning-bg);
+    animation: confLowPulse 2s ease-in-out infinite;
   }
 
   /* --- Footer --- */
@@ -797,7 +818,7 @@
   }
   .footer-custom .modal-btn.confirm:hover {
     transform: translateY(-2px) scale(1.015);
-    box-shadow: 0 10px 28px var(--ai-success-bg);
+    box-shadow: 0 10px 28px var(--ai-success-bg), 0 0 0 3px rgba(16, 185, 129, 0.15);
   }
   .footer-custom .modal-btn.confirm:disabled {
     opacity: 0.4;
@@ -828,5 +849,41 @@
   .icon-btn:hover {
     background: var(--ai-bg-tertiary);
     color: var(--ai-text);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  /* --- Keyframe Animations --- */
+  @keyframes badgePop {
+    0% { transform: scale(0); opacity: 0; }
+    70% { transform: scale(1.15); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes mergeSourcePulse {
+    0%, 100% { border-color: var(--ai-primary); box-shadow: 0 0 0 0 var(--ai-primary-shadow); }
+    50% { border-color: var(--ai-gradient-accent); box-shadow: 0 0 0 4px var(--ai-primary-shadow); }
+  }
+
+  @keyframes removeShake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-2px); }
+    40% { transform: translateX(2px); }
+    60% { transform: translateX(-1.5px); }
+    80% { transform: translateX(1px); }
+  }
+
+  @keyframes confLowPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.65; }
+  }
+
+  @keyframes emptyFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+
+  .bfao-modal-empty {
+    animation: emptyFloat 3s ease-in-out infinite;
   }
 </style>
