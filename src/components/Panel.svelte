@@ -141,7 +141,12 @@
     }, { signal: abortCtrl.signal });
   });
 
-  onDestroy(() => { ctx?.revert(); abortCtrl?.abort(); rejectAllModals(); });
+  onDestroy(() => {
+    ctx?.revert();
+    abortCtrl?.abort();
+    if (settingsEl) gsap.killTweensOf(settingsEl);
+    rejectAllModals();
+  });
 
   function doClose() {
     if (!panelEl) { onclose?.(); return; }

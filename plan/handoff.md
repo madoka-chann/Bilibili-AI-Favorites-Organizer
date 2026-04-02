@@ -1,6 +1,53 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-02, 第二十一次)
+## 最近一次会话 (2026-04-02, 第二十二次)
+
+### 本次完成内容
+
+**GSAP 孤儿 tween 修复 + 组件清理补全 + DOM 查询作用域收窄 — 5 处代码质量改进 + 深度架构级 Code Review**
+
+#### 发现并修复的问题
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `tilt.ts` | `destroy()` 仅用 `gsap.set()` 重置 transform，但未 kill 运行中的 GSAP tween — `onMouseLeave` 的 `elastic.out` 动画可在组件卸载后继续操作已分离的 DOM 元素 | MEDIUM | 在 `gsap.set()` 前添加 `gsap.killTweensOf(node)`，确保所有在飞 tween 立即终止 |
+| `magnetic.ts` | 同上：`destroy()` 未 kill 运行中的 tween — `onMouseLeave` 的 `elastic.out(1, 0.4)` 回弹动画在组件卸载后成为孤儿 tween | MEDIUM | 在 `gsap.set()` 前添加 `gsap.killTweensOf(node)`，与 tilt.ts 保持一致的清理模式 |
+| `SettingsGroup.svelte` | 无 `onDestroy` 钩子 — `toggle()` 中 GSAP 手风琴动画 (bodyEl 高度动画 + chevronEl 旋转动画) 在组件卸载时不会被清理，若卸载发生在动画执行中，tween 操作已销毁的 DOM | MEDIUM | 新增 `onDestroy` 钩子，分别 `gsap.killTweensOf(bodyEl)` 和 `gsap.killTweensOf(chevronEl)` |
+| `Panel.svelte` | `animateSettingsToggle()` 创建的 GSAP tween 不在 `gsap.context` 内 — `ctx.revert()` 只清理 `onMount` 内创建的 tween，settings 切换动画是在 `$effect` 回调中创建的，不受 context 管理 | MEDIUM | `onDestroy` 中追加 `gsap.killTweensOf(settingsEl)`，覆盖 context 外的 settings toggle tween |
+| `PreviewConfirm.svelte` | FLIP 展开后的 stagger reveal 使用 `document.querySelector()` 全局查询 — 若页面中存在其他同名 `data-category` 元素 (理论上不会，但违反组件封装原则)，可能匹配到组件外的 DOM | LOW | 改为 `categoryListEl.querySelector()`，将查询作用域限制在组件自身的 category-list 容器内 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `process.ts` | 并发 AI 调用中 `allCategories[catName].push()` 看似存在竞态条件 | JS 单线程模型保证 promise 回调间不会真正并发执行 push()；await 点在 `callAI` 内部，回调体原子执行 |
+| `FloatButton.svelte` | 轨道球 GSAP 动画看似未纳入 context 管理 | 实际上 lines 106-120 全部在 `gsap.context(() => {...}, btnEl)` 回调内，`ctx.revert()` 会正确清理 |
+| `LogArea.svelte` | `decodedIds` Set 无 `onDestroy` 清理 | 组件级局部变量，卸载时自动 GC；已有 2x 阈值的惰性清理机制 |
+| `Toast.svelte` | `toasts`/`toastTimeouts` 在脚本顶层声明，非 `$state` | Toast 使用 legacy `export` 模式实现单例；`onDestroy` 正确清理所有 timeout |
+| `panel-canvas.ts` | 早返回路径 `shouldAnimate()=false` 的 destroy 为空函数 | 正确：observers/ticker 未创建，无需清理 |
+| `cursor-scatter.ts` | 粒子用 `document.body.appendChild` 而非组件内 DOM | 使用 `position: fixed` 避免被 `overflow: auto` 裁剪；destroy 正确清理所有在飞粒子 |
+
+### 关键设计决策
+
+1. **`killTweensOf` + `gsap.set` 双保险**: 先 kill 运行中的 tween (防止 onComplete 回调执行)，再 set 重置 transform (确保 DOM 状态干净)。这是 GSAP 官方推荐的 action destroy 模式。
+2. **context 外 tween 的补充清理**: Panel.svelte 的 `animateSettingsToggle` 在 `$effect` 回调中创建 tween，这些不在 `gsap.context` 作用域内。在 `onDestroy` 中显式 kill 是最小侵入方案，无需重构为将所有动画纳入 context。
+3. **组件内 DOM 查询优于全局查询**: `categoryListEl.querySelector()` 比 `document.querySelector()` 更安全，即使当前场景下不会出现冲突。这遵循 Svelte 组件封装的最佳实践。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%**
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: tilt/magnetic GSAP 清理 / SettingsGroup onDestroy / Panel settings tween 清理 / PreviewConfirm 查询作用域)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 errors。代码质量经 22 次迭代持续强化。**
+
+---
+
+## 上一次会话 (2026-04-02, 第二十一次)
 
 ### 本次完成内容
 

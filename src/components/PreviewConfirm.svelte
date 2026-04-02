@@ -75,16 +75,16 @@
         ease: EASINGS.velvetSpring,
         nested: true,
         onComplete: () => {
-          if (!wasExpanded) {
-            const listEl = document.querySelector(`[data-category="${CSS.escape(name)}"] .video-list`);
+          if (!wasExpanded && categoryListEl) {
+            const listEl = categoryListEl.querySelector(`[data-category="${CSS.escape(name)}"] .video-list`);
             if (listEl) {
               listStaggerReveal(listEl.querySelectorAll('.video-item'));
             }
           }
         },
       });
-    } else if (!wasExpanded) {
-      const listEl = document.querySelector(`[data-category="${CSS.escape(name)}"] .video-list`);
+    } else if (!wasExpanded && categoryListEl) {
+      const listEl = categoryListEl.querySelector(`[data-category="${CSS.escape(name)}"] .video-list`);
       if (listEl) {
         listStaggerReveal(listEl.querySelectorAll('.video-item'));
       }

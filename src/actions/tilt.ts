@@ -77,6 +77,7 @@ export function tilt(node: HTMLElement, opts: TiltOptions = {}) {
       node.removeEventListener('mousemove', onMouseMove);
       node.removeEventListener('mouseenter', onMouseEnter);
       node.removeEventListener('mouseleave', onMouseLeave);
+      gsap.killTweensOf(node);
       gsap.set(node, { rotationX: 0, rotationY: 0, scale: 1 });
     },
   };

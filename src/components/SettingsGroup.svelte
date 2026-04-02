@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import type { Snippet, ComponentType } from 'svelte';
   import { ChevronRight } from 'lucide-svelte';
   import { gsap, EASINGS, shouldAnimate } from '$animations/gsap-config';
@@ -28,6 +28,11 @@
     if (open && chevronEl) {
       gsap.set(chevronEl, { rotation: 90 });
     }
+  });
+
+  onDestroy(() => {
+    if (bodyEl) gsap.killTweensOf(bodyEl);
+    if (chevronEl) gsap.killTweensOf(chevronEl);
   });
 
   /** Convert hex to rgba string for background tint */

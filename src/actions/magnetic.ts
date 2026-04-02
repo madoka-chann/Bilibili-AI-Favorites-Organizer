@@ -72,6 +72,7 @@ export function magnetic(node: HTMLElement, opts: MagneticOptions = {}) {
     destroy() {
       document.removeEventListener('mousemove', onMouseMove);
       node.removeEventListener('mouseleave', onMouseLeave);
+      gsap.killTweensOf(node);
       gsap.set(node, { x: 0, y: 0 });
     },
   };
