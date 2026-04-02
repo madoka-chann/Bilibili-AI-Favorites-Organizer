@@ -1,7 +1,7 @@
 {
   "project": "Bilibili AI Favorites Organizer - Svelte Refactoring",
-  "plan": "visual-plan-session27.md",
-  "lastUpdated": "2026-04-02-session27",
+  "plan": "visual-plan-session28.md",
+  "lastUpdated": "2026-04-02-session28",
   "phases": {
     "phase0_buildSystem": {
       "status": "completed",
@@ -23,7 +23,7 @@
     },
     "phase2_animations": {
       "status": "completed",
-      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; I1-I5 粒子系统全部完成; Session 27: 6 个 Modal 子组件动画增强 (StatsDialog 环形进度+悬浮/HelpDialog GSAP 手风琴/DeadVideosResult+DuplicatesResult 交错入场/FolderSelector 选中弹跳/UndoDialog 交错入场)"
+      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; I1-I5 粒子系统全部完成; Session 27: 6 个 Modal 子组件动画增强; Session 28: 4 个面板主界面组件视觉增强 (LogArea 滑入+边框发光/ActionButtons 运行脉冲+工具行交错+禁用灰化/HistoryTimeline 圆点光晕+卡片抬升+渐变时间轴/ProgressBar 极光流动+Token翻滚+完成呼吸)"
     },
     "phase3_cssCleanup": {
       "status": "completed",
@@ -31,7 +31,7 @@
     },
     "phase4_codeQuality": {
       "status": "completed",
-      "summary": "TypeScript strict 全开; 模块化重构完成; 多轮 Code Review; as any 类型断言清零; 错误处理一致性强化; 第27轮 (Modal.svelte 移除未使用 shouldAnimate+bodyEl/process.ts 移除未使用 getSourceMediaId 导入+resolveSourceFolders 冗余参数)"
+      "summary": "TypeScript strict 全开; 模块化重构完成; 多轮 Code Review; as any 类型断言清零; 错误处理一致性强化; 第28轮 (ProgressBar onDestroy 补充 cleanupTokenRoll 防止 RAF 泄漏)"
     },
     "phase5_performance": {
       "status": "completed",
@@ -53,7 +53,7 @@
   },
   "buildStatus": {
     "builds": true,
-    "output": "dist/bilibili-ai-favorites-organizer.user.js (500 kB, GSAP ~95 kB CDN)",
+    "output": "dist/bilibili-ai-favorites-organizer.user.js (503 kB, GSAP ~95 kB CDN)",
     "svelteCheck": "0 errors, 3 warnings (intentional initial captures, pre-existing)",
     "preExistingIssues": []
   }

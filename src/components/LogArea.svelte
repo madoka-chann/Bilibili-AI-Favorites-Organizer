@@ -84,6 +84,12 @@
     background: var(--ai-bg-secondary);
     border-left: 3px solid transparent;
     line-height: 1.5;
+    animation: logSlideIn 0.25s ease both;
+    transition: background 0.2s ease;
+  }
+
+  .log-entry:hover {
+    background: var(--ai-bg-tertiary);
   }
 
   .log-time {
@@ -112,15 +118,32 @@
   .log-error {
     color: var(--ai-error-alt);
     border-left-color: var(--ai-error-alt);
+    animation: logSlideIn 0.25s ease both, borderGlow 0.6s ease 0.25s 2;
   }
 
   .log-warning {
     color: var(--ai-warning);
     border-left-color: var(--ai-warning);
+    animation: logSlideIn 0.25s ease both, borderGlowWarn 0.8s ease 0.25s 1;
   }
 
   .log-info {
     color: var(--ai-info);
     border-left-color: var(--ai-info);
+  }
+
+  @keyframes logSlideIn {
+    from { opacity: 0; transform: translateX(-8px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes borderGlow {
+    0%, 100% { box-shadow: none; }
+    50% { box-shadow: inset 3px 0 8px -2px var(--ai-error-alt); }
+  }
+
+  @keyframes borderGlowWarn {
+    0%, 100% { box-shadow: none; }
+    50% { box-shadow: inset 3px 0 6px -2px var(--ai-warning); }
   }
 </style>

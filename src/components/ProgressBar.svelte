@@ -9,6 +9,7 @@
     victoryCelebration,
     numberBounce,
   } from '$animations/progress';
+  import { numberRoll } from '$animations/text';
 
   // D1: 平滑进度条 — Svelte tweened
   const smoothProgress = tweened(0, { duration: 400, easing: cubicOut });
@@ -26,6 +27,7 @@
   let labelEl = $state<HTMLSpanElement>(undefined!);
   let percentEl = $state<HTMLSpanElement>(undefined!);
   let containerEl = $state<HTMLDivElement>(undefined!);
+  let tokenEl = $state<HTMLSpanElement>(undefined!);
 
   // D2: 进度轨迹粒子 — 节流触发
   let lastParticlePercent = 0;
@@ -69,6 +71,18 @@
     }
   });
 
+  // Token 数字翻滚
+  let prevTokens = 0;
+  let cleanupTokenRoll: (() => void) | undefined;
+  $effect(() => {
+    const tokens = $tokenUsage.totalTokens;
+    if (tokenEl && tokens > 0 && tokens !== prevTokens) {
+      cleanupTokenRoll?.();
+      cleanupTokenRoll = numberRoll(tokenEl, tokens, { useLocale: true }).destroy;
+      prevTokens = tokens;
+    }
+  });
+
   // 重置状态
   $effect(() => {
     if (!$isRunning) {
@@ -76,13 +90,17 @@
       celebrated = false;
       prevPhase = '';
       prevPercent = 0;
+      prevTokens = 0;
       cleanupCelebration?.();
       cleanupCelebration = undefined;
+      cleanupTokenRoll?.();
+      cleanupTokenRoll = undefined;
     }
   });
 
   onDestroy(() => {
     cleanupCelebration?.();
+    cleanupTokenRoll?.();
   });
 </script>
 
@@ -104,7 +122,7 @@
     </div>
     {#if $tokenUsage.totalTokens > 0}
       <div class="token-stats">
-        Token: {$tokenUsage.totalTokens.toLocaleString()} ({$tokenUsage.callCount} 次调用)
+        Token: <span bind:this={tokenEl}>{$tokenUsage.totalTokens.toLocaleString()}</span> ({$tokenUsage.callCount} 次调用)
       </div>
     {/if}
   </div>
@@ -147,12 +165,13 @@
 
   .progress-bar {
     height: 100%;
-    background: linear-gradient(90deg, var(--ai-primary), var(--ai-gradient-accent), #d946ef);
+    background: linear-gradient(90deg, var(--ai-primary), var(--ai-gradient-accent), #d946ef, var(--ai-primary));
     background-size: 300% 100%;
     border-radius: 3px;
     transition: width 0.4s cubic-bezier(0.19, 1, 0.22, 1);
     position: relative;
     will-change: width;
+    animation: auroraFlow 3s ease-in-out infinite;
   }
 
   /* D6: 微光效果 (保留的3个 @keyframes 之一) */
@@ -172,6 +191,7 @@
 
   .progress-bar.complete {
     background: linear-gradient(90deg, var(--ai-success), var(--ai-success-light), var(--ai-success-lighter));
+    animation: completeGlow 2s ease-in-out infinite;
   }
 
   .token-stats {
@@ -182,11 +202,18 @@
   }
 
   @keyframes shimmer {
-    0% {
-      background-position: 200% 0;
-    }
-    100% {
-      background-position: -200% 0;
-    }
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  @keyframes auroraFlow {
+    0% { background-position: 0% 0; }
+    50% { background-position: 100% 0; }
+    100% { background-position: 0% 0; }
+  }
+
+  @keyframes completeGlow {
+    0%, 100% { box-shadow: 0 0 4px rgba(var(--ai-primary-rgb), 0.1); }
+    50% { box-shadow: 0 0 12px rgba(16, 185, 129, 0.35); }
   }
 </style>

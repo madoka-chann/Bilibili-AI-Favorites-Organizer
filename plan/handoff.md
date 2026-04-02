@@ -1,6 +1,57 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-02, 第二十七次)
+## 最近一次会话 (2026-04-02, 第二十八次)
+
+### 本次完成内容
+
+**4 个面板主界面组件视觉增强 + ProgressBar onDestroy 内存泄漏修复 + 深度 Code Review**
+
+#### 视觉增强 — 4 个面板核心组件
+
+| 组件 | 新增动画 | 说明 |
+|------|----------|------|
+| `LogArea.svelte` | CSS `logSlideIn` 条目滑入 + `borderGlow` error 边框脉冲 + `borderGlowWarn` warning 边框发光 + hover 背景高亮 | 新日志从左滑入 (translateX -8px)；error 条目左边框脉冲 2 次吸引注意力；warning 较柔和 1 次 |
+| `ActionButtons.svelte` | CSS `runningPulse` 运行态呼吸脉冲 + `toolRowSlideIn` 工具行交错入场 (0s/0.06s/0.12s) + 禁用态 `grayscale(0.5)` 平滑过渡 | 停止按钮持续红色呼吸 box-shadow；3 行工具按钮依次滑入；禁用按钮灰化+透明度过渡 |
+| `HistoryTimeline.svelte` | 时间轴线渐变 (primary→border→transparent) + 圆点 hover scale(1.4) + 光晕扩展 + 卡片 hover translateY(-2px) + 投影 | 时间轴线顶部鲜明底部消散；悬浮圆点放大+外发光；卡片悬浮抬升+阴影加深 |
+| `ProgressBar.svelte` | CSS `auroraFlow` 极光渐变流动 (3s) + `numberRoll` Token 数字翻滚 + CSS `completeGlow` 完成态呼吸发光 | 进度条渐变色持续流动；Token 统计从 0 翻滚到当前值；100% 后轻柔呼吸发光 |
+
+#### 代码质量修复 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `ProgressBar.svelte` | `onDestroy` 仅清理 `cleanupCelebration` 未清理 `cleanupTokenRoll` — 组件卸载时 `numberRoll` 的 RAF 会泄漏 | MEDIUM | 在 `onDestroy` 中补充 `cleanupTokenRoll?.()` |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `LogArea.svelte` hover 背景 `bg-tertiary` 与容器同色 | 悬浮时条目背景与容器融合 | 安全：条目有 border-left + padding + border-radius，视觉仍可区分；融合效果提供柔和的悬浮反馈 |
+| `ActionButtons.svelte` `runningPulse` 与 `:hover` box-shadow 冲突 | CSS animation 会覆盖 hover 的 box-shadow | 正确：运行态下脉冲是期望的主视觉，hover 被覆盖是合理的 |
+| `HistoryTimeline.svelte` dot scale(1.4) 与 card translateY(-2px) 独立 | 圆点 absolute 定位，卡片移动不影响圆点 | 正确：两者的 transition 独立运作，视觉效果协调 |
+| `ProgressBar.svelte` auroraFlow + shimmer 双动画并行 | progress-bar 本体 + ::after 各一个 animation | 安全：background-position 是 GPU 加速属性，两个动画在不同元素上互不干扰 |
+
+### 关键设计决策
+
+1. **纯 CSS 动画优先**: 本次 4 个组件的视觉增强全部使用 CSS @keyframes + transition 实现（除 Token 翻滚），不额外调用 GSAP，减少 JS 运行时开销。
+2. **LogArea 双重动画叠加**: 条目同时有 `logSlideIn`（CSS）和 `textDecode`（JS RAF），两者作用于不同属性（transform+opacity vs textContent），互不冲突。
+3. **ActionButtons 工具行延迟策略**: 使用 nth-child(2/3/4) 选择器（跳过 btn-primary 的第 1 子元素），间隔 60ms 实现 3 行交错。
+4. **ProgressBar Token 翻滚复用**: 直接复用 `$animations/text.ts` 的 `numberRoll()`，不新建函数。每次 token 值变化时先销毁旧动画再启动新动画。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: 4 个面板主界面组件视觉增强)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: ProgressBar onDestroy cleanupTokenRoll 泄漏修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 errors。代码质量经 28 次迭代持续强化。**
+
+---
+
+## 上一次会话 (2026-04-02, 第二十七次)
 
 ### 本次完成内容
 

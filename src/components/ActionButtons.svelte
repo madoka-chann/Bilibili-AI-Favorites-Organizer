@@ -128,6 +128,7 @@
 
   .btn-primary.running {
     background: linear-gradient(135deg, var(--ai-error), var(--ai-error-hover), var(--ai-error));
+    animation: runningPulse 2s ease-in-out infinite;
   }
 
   .kbd {
@@ -143,7 +144,12 @@
   .tool-row {
     display: flex;
     gap: 6px;
+    animation: toolRowSlideIn 0.3s ease both;
   }
+
+  .tool-row:nth-child(2) { animation-delay: 0s; }
+  .tool-row:nth-child(3) { animation-delay: 0.06s; }
+  .tool-row:nth-child(4) { animation-delay: 0.12s; }
 
   .btn-tool {
     flex: 1;
@@ -180,5 +186,17 @@
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
+    filter: grayscale(0.5);
+    transition: opacity 0.3s ease, filter 0.3s ease;
+  }
+
+  @keyframes runningPulse {
+    0%, 100% { box-shadow: 0 4px 16px rgba(var(--ai-primary-rgb), 0.15); }
+    50% { box-shadow: 0 8px 32px rgba(239, 68, 68, 0.35), 0 0 12px rgba(239, 68, 68, 0.2); }
+  }
+
+  @keyframes toolRowSlideIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 </style>
