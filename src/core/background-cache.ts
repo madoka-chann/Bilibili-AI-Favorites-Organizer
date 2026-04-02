@@ -91,9 +91,13 @@ export function setupBackgroundCache(): void {
 
   // Periodic rescan
   intervalId = setInterval(safeScan, SCAN_INTERVAL);
+
+  // 页面��载时清理定时器，防止 SPA 导航后残留
+  window.addEventListener('beforeunload', stopBackgroundCache);
 }
 
 export function stopBackgroundCache(): void {
+  window.removeEventListener('beforeunload', stopBackgroundCache);
   if (initialTimeoutId !== null) {
     clearTimeout(initialTimeoutId);
     initialTimeoutId = null;

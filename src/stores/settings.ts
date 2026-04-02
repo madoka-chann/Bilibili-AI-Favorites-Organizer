@@ -50,8 +50,8 @@ function loadFromStorage(): Settings {
     result.provider = DEFAULT_SETTINGS.provider;
   }
   // apiKey 按服务商隔离存储，优先读取当前服务商的 Key
-  const providerKey = gmGetValue('bfao_apiKey_' + result.provider, '');
-  if (providerKey) result.apiKey = providerKey;
+  const providerKey = gmGetValue<string>('bfao_apiKey_' + result.provider, '');
+  result.apiKey = providerKey;
   return result;
 }
 

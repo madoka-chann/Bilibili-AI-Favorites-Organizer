@@ -1,6 +1,56 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-02, 第二十三次)
+## 最近一次会话 (2026-04-02, 第二十四次)
+
+### 本次完成内容
+
+**LiquidToggle GSAP 清理 + 失效视频批量删除分片 + 去重异常容错 + 后台缓存生命周期 + API key 隔离修复 — 6 处代码质量改进 + 深度架构级 Code Review**
+
+#### 发现并修复的问题
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `LiquidToggle.svelte` | 无 `onDestroy` — `activeTl` timeline 和 thumbEl/trackEl 上的 GSAP tween 在组件卸载时不会被清理，若卸载发生在 toggle 动画执行中，tween 操作已销毁的 DOM | MEDIUM | 新增 `onDestroy` 钩子：`activeTl?.kill()` + `gsap.killTweensOf(thumbEl)` + `gsap.killTweensOf(trackEl)` |
+| `dead-videos.ts` | `deleteDeadVideos` 将单个收藏夹内所有失效视频拼成一个 resource 字符串一次性发送 — 若收藏夹有数百失效视频，resource 参数可能超出 B站 API 长度限制 | MEDIUM | 新增 `DELETE_CHUNK_SIZE = 50` 分片删除循环，每片最多 50 个视频，与 `archiveDeadVideos` 的分片模式保持一致 |
+| `duplicates.ts` | `deduplicateVideos` 中 `batchDeleteVideos()` 无 try-catch — 单个视频删除的 API 异常会导致整个去重流程中断 | MEDIUM | 包裹 try-catch，失败时 `logs.add` 警告具体视频/收藏夹 ID 并继续执行，不中断整体去重 |
+| `background-cache.ts` | `setupBackgroundCache()` 创建的 setInterval/setTimeout 无页面卸载清理 — SPA 导航离开当前页后定时器残留 | MEDIUM | `setupBackgroundCache` 中注册 `window.addEventListener('beforeunload', stopBackgroundCache)`；`stopBackgroundCache` 中移除该监听器 |
+| `settings.ts` | API key 跨服务商泄漏 — 通用 `bfao_apiKey` 存储上次保存的任意服务商 key，切换服务商时若新服务商无专属 key，会回退使用旧服务商的 key | MEDIUM | 始终使用 `bfao_apiKey_<provider>` 专属存储覆盖 `result.apiKey`，不再回退泛用 key |
+| `timing.ts` | 并发限制器 `queue.shift()!` 使用非空断言 — 虽然逻辑上安全，但违反防御性编程原则 | LOW | 改为 `const next = queue.shift(); if (next) next();` |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `bilibili-folders.ts` 缓存竞态 | 代理报告并发调用可能导致重复 fetch | JS 单线程模型保证同步检查和 await 点之间不会并发执行；cache 检查→设置是原子的 |
+| `ai-providers.ts` API key 在 URL | Gemini API 要求 `?key=` 参数 | 这是 Google Gemini API 的官方调用方式，非设计缺陷；Tampermonkey 上下文中 URL 不暴露给浏览器历史 |
+| `bilibili-http.ts` handleRateLimit 逻辑 | `handleRateLimit=true` 时不检查 HTTP status | 正确：`handleRateLimit=true` 走限流 JSON 解析路径，HTTP 4xx/5xx 会在 JSON.parse 失败时抛出 |
+| `ai-client.ts` gmXmlHttpRequest 未响应 | Promise 可能永不 settle | `ontimeout` 回调覆盖超时场景；GM_xmlhttpRequest 在 Tampermonkey 环境下保证回调执行 |
+| `Modal.svelte` AbortController 清理 | 快速挂载/卸载可能泄漏 | AbortController 在 onMount 创建、onDestroy abort，Svelte 保证配对执行 |
+| `FloatButton.svelte` 无限 timeline | 代理报告 repeat:-1 timeline 未在 onDestroy kill | 这些 timeline 在 `gsap.context()` 回调内创建，`ctx.revert()` 会自动 kill 所有 context 内 tween/timeline |
+| `process.ts` allCategories 竞态 | 并发 AI 回调 push 同一数组 | JS 单线程：await 点在 callAI 内部，Object.entries 迭代 + push 是同步原子操作 |
+| `undo.ts` 部分撤销清除记录 | restored > 0 但部分失败时仍清除记录 | 合理设计：已移回的视频不应再次移回；用户可查看日志了解失败明细 |
+
+### 关键设计决策
+
+1. **deleteDeadVideos 分片大小 50**: 与 `archiveDeadVideos` 使用的 `moveChunkSize`（默认 20-50）保持一致数量级。B站 API 对 resource 参数有隐式长度限制，50 个 `id:type` 对应约 500-600 字符，远低于 URL 长度限制。
+2. **API key 隔离不回退**: 新逻辑下，切换到尚未配置 key 的服务商会得到空 apiKey，用户需在设置中填写。这比静默使用错误服务商的 key 更安全（错误 key → API 403 → 用户困惑）。
+3. **beforeunload vs pagehide**: 选择 `beforeunload` 而非 `pagehide`，因为 B站是传统多页导航（非 bfcache 场景），`beforeunload` 在所有浏览器中触发时机更可靠。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%**
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: LiquidToggle GSAP清理/deleteDeadVideos分片/去重容错/后台缓存生命周期/API key隔离/并发限制器防御性改进)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 errors。代码质量经 24 次迭代持续强化。**
+
+---
+
+## 上一次会话 (2026-04-02, 第二十三次)
 
 ### 本次完成内容
 

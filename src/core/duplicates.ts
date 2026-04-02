@@ -3,6 +3,7 @@ import type { BiliData } from '$types/index';
 import { cancelRequested, logs } from '$stores/state';
 import { batchDeleteVideos, scanAllFolderVideos } from '$api/bilibili';
 import { humanDelay } from '$utils/timing';
+import { getErrorMessage } from '$utils/errors';
 import { DEFAULT_VIDEO_TYPE } from '$utils/constants';
 
 interface VideoFolderRecord {
@@ -76,11 +77,15 @@ export async function deduplicateVideos(
   for (let i = 0; i < duplicates.length; i++) {
     if (isCancelled()) break;
     const d = duplicates[i];
-    // 保留第一个收藏夹，从其余收藏夹删除
+    // 保留第一个收藏夹，��其余收藏夹删除
     for (let fi = 1; fi < d.folderIds.length; fi++) {
       const resource = `${d.id}:${d.type}`;
-      const success = await batchDeleteVideos(d.folderIds[fi], resource, biliData);
-      if (success) removed++;
+      try {
+        const success = await batchDeleteVideos(d.folderIds[fi], resource, biliData);
+        if (success) removed++;
+      } catch (err: unknown) {
+        logs.add(`删除副本失败 (视频 ${d.id}, 收藏夹 ${d.folderIds[fi]}): ${getErrorMessage(err)}`, 'warning');
+      }
       await humanDelay(writeDelay);
     }
     if ((i + 1) % 10 === 0 || i === duplicates.length - 1) {

@@ -65,9 +65,8 @@ export function createConcurrencyLimiter(maxConcurrent: number) {
       return await fn();
     } finally {
       running--;
-      if (queue.length > 0) {
-        queue.shift()!();
-      }
+      const next = queue.shift();
+      if (next) next();
     }
   }
 

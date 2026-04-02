@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { gsap, EASINGS, shouldAnimate } from '$animations/gsap-config';
 
   interface Props {
@@ -20,6 +20,12 @@
       gsap.set(thumbEl, { x: 18 });
     }
     mounted = true;
+  });
+
+  onDestroy(() => {
+    activeTl?.kill();
+    if (thumbEl) gsap.killTweensOf(thumbEl);
+    if (trackEl) gsap.killTweensOf(trackEl);
   });
 
   function toggle() {

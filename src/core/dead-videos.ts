@@ -97,13 +97,19 @@ export async function deleteDeadVideos(
   // 按来源收藏夹分组
   const bySource = groupBy(deadVideos, (v) => v.folderId);
 
+  const DELETE_CHUNK_SIZE = 50;
+
   let deleted = 0;
   for (const [srcId, vids] of bySource) {
     if (isCancelled()) break;
-    const resources = vids.map((v) => `${v.id}:${v.type}`).join(',');
-    const success = await batchDeleteVideos(srcId, resources, biliData);
-    if (success) deleted += vids.length;
-    await humanDelay(writeDelay);
+    for (let i = 0; i < vids.length; i += DELETE_CHUNK_SIZE) {
+      if (isCancelled()) break;
+      const chunk = vids.slice(i, i + DELETE_CHUNK_SIZE);
+      const resources = chunk.map((v) => `${v.id}:${v.type}`).join(',');
+      const success = await batchDeleteVideos(srcId, resources, biliData);
+      if (success) deleted += chunk.length;
+      await humanDelay(writeDelay);
+    }
   }
 
   return deleted;
