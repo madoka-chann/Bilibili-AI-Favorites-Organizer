@@ -1,6 +1,8 @@
 <script lang="ts">
   import Modal from './Modal.svelte';
   import { HelpCircle, ChevronRight } from 'lucide-svelte';
+  import { contentStagger } from '$animations/micro';
+  import { gsap, EASINGS, shouldAnimate } from '$animations/gsap-config';
 
   interface Props {
     onclose?: () => void;
@@ -10,8 +12,50 @@
 
   let expandedIdx = $state<number | null>(null);
 
+  /** 答案节点引用，用于 GSAP 高度动画 */
+  let answerEls: Record<number, HTMLDivElement | null> = {};
+
   function toggle(idx: number) {
-    expandedIdx = expandedIdx === idx ? null : idx;
+    const prevIdx = expandedIdx;
+
+    if (prevIdx === idx) {
+      collapseAnswer(idx);
+      expandedIdx = null;
+    } else {
+      if (prevIdx !== null) collapseAnswer(prevIdx);
+      expandedIdx = idx;
+      expandAnswer(idx);
+    }
+  }
+
+  function expandAnswer(idx: number) {
+    const node = answerEls[idx];
+    if (!node) return;
+    if (!shouldAnimate()) {
+      node.style.height = 'auto';
+      node.style.opacity = '1';
+      return;
+    }
+    node.style.overflow = 'hidden';
+    gsap.fromTo(node,
+      { height: 0, opacity: 0 },
+      { height: 'auto', opacity: 1, duration: 0.3, ease: EASINGS.velvetSpring,
+        onComplete: () => { node.style.overflow = ''; } }
+    );
+  }
+
+  function collapseAnswer(idx: number) {
+    const node = answerEls[idx];
+    if (!node) return;
+    if (!shouldAnimate()) {
+      node.style.height = '0';
+      node.style.opacity = '0';
+      return;
+    }
+    node.style.overflow = 'hidden';
+    gsap.to(node, {
+      height: 0, opacity: 0, duration: 0.22, ease: EASINGS.silkOut,
+    });
   }
 
   const FAQ: Array<{ q: string; a: string }> = [
@@ -44,18 +88,18 @@
 <Modal title="帮助与常见问题" showFooter={false} width="min(600px, 92vw)" onclose={() => onclose?.()}>
   {#snippet icon()}<HelpCircle size={18} />{/snippet}
 
-  <div class="help-body">
+  <div class="help-body" use:contentStagger={{ stagger: 0.02, delay: 0.1 }}>
     {#each FAQ as item, idx (idx)}
       <button class="faq-item" class:open={expandedIdx === idx} onclick={() => toggle(idx)}>
         <span class="faq-q">
-          <span class="faq-icon">?</span>
+          <span class="faq-icon" class:pulse={expandedIdx === idx}>?</span>
           {item.q}
         </span>
         <ChevronRight size={14} class="faq-chevron" />
       </button>
-      {#if expandedIdx === idx}
-        <div class="faq-a">{item.a}</div>
-      {/if}
+      <div class="faq-a" bind:this={answerEls[idx]} style:height="0" style:opacity="0" style:overflow="hidden">
+        {item.a}
+      </div>
     {/each}
 
     <div class="help-footer">
@@ -123,6 +167,15 @@
     color: var(--ai-text-secondary);
     border-bottom: 1px solid var(--ai-border-light);
     background: var(--ai-bg-secondary);
+  }
+
+  .faq-icon.pulse {
+    animation: iconPulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes iconPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.3); }
+    50% { box-shadow: 0 0 0 5px rgba(239, 68, 68, 0); }
   }
 
   .help-footer {

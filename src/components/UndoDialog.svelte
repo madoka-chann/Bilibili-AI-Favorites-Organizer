@@ -1,6 +1,7 @@
 <script lang="ts">
   import Modal from './Modal.svelte';
   import { Undo2 } from 'lucide-svelte';
+  import { contentStagger } from '$animations/micro';
   import type { UndoRecord } from '$core/undo';
 
   interface Props {
@@ -29,7 +30,7 @@
       <div class="bfao-modal-empty">没有可撤销的操作记录</div>
     {:else}
       <div class="hint">选择要撤销的操作，撤销将把所有视频移回原收藏夹：</div>
-      <div class="history-list">
+      <div class="history-list" use:contentStagger={{ stagger: 0.04, delay: 0.1 }}>
         {#each history as record, i}
           <label class="bfao-selectable-item" class:selected={selectedIndex === i}>
             <input type="radio" bind:group={selectedIndex} value={i} disabled={processing} />
@@ -70,5 +71,12 @@
     font-size: 11px;
     color: var(--ai-text-muted);
     margin-top: 2px;
+  }
+
+  :global(.bfao-selectable-item) {
+    transition: border-color 0.25s ease, background 0.25s ease, transform 0.2s cubic-bezier(0.2, 1.04, 0.42, 1) !important;
+  }
+  :global(.bfao-selectable-item.selected) {
+    transform: translateX(2px);
   }
 </style>

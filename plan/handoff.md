@@ -1,6 +1,61 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-02, 第二十六次)
+## 最近一次会话 (2026-04-02, 第二十七次)
+
+### 本次完成内容
+
+**6 个 Modal 子组件动画增强 + 预存代码质量修复 (Modal/process.ts 未使用导入清理) + 深度 Code Review**
+
+#### 视觉增强 — 6 个 Modal 子组件
+
+| 组件 | 新增动画 | 说明 |
+|------|----------|------|
+| `StatsDialog.svelte` | SVG 环形健康分数动画 + `contentStagger` 交错入场 + `hoverScale` 统计卡片悬浮 + 收藏夹列表交错 | 健康模式下分数以 GSAP 驱动的 `stroke-dashoffset` 环形进度条呈现，1.2s velvetSpring 缓动 |
+| `HelpDialog.svelte` | GSAP 手风琴高度动画 + `contentStagger` FAQ 列表交错 + 问号图标脉冲 | 重构为始终渲染答案 DOM（`height:0`），GSAP 控制展开/收起，解决原 `{#if}` 无法实现收起动画的问题 |
+| `DeadVideosResult.svelte` | `contentStagger` 内容交错入场 + 文件夹分组交错 + `pressEffect` 操作按钮 | 摘要→列表→操作栏依次浮现 |
+| `DuplicatesResult.svelte` | `contentStagger` 内容交错 + 列表交错 + `pressEffect` 按钮 | 与 DeadVideosResult 一致的动画模式 |
+| `FolderSelector.svelte` | `contentStagger` 文件夹列表交错 + `checkBounce` 复选框弹跳 + 选中态 inset shadow + translateX 过渡 | 选中项左移 2px + 紫色左边框阴影 |
+| `UndoDialog.svelte` | `contentStagger` 历史列表交错 + 选中态 border/background/transform 过渡 | 选中项平滑高亮过渡 |
+
+#### 代码质量修复 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `Modal.svelte` | `shouldAnimate` 导入但未使用 (仅用 `shouldAnimateFunctional`) | LOW | 移除未使用导入 |
+| `Modal.svelte` | `bodyEl` 声明为 `$state` 并 `bind:this` 但从未在 JS 中读取 | LOW | 移除 `bodyEl` 声明和 `bind:this` |
+| `process.ts` | `getSourceMediaId` 导入但未使用 | LOW | 移除未使用导入 |
+| `process.ts` | `resolveSourceFolders` 接收 `settings` 参数但函数体未使用 | LOW | 移除冗余参数，更新调用点 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `FolderSelector.svelte` `:global(.bfao-selectable-item)` | 与 UndoDialog 同名 `:global` 选择器可能冲突 | 安全：两者都是 Modal 子组件，同一时间只有一个打开；且选择器作用一致 (transform + transition) |
+| `HelpDialog.svelte` `answerEls` 非响应式 | `let answerEls: Record<>` 而非 `$state` | 正确：仅用于 GSAP 命令式操作的 DOM 引用，不需要触发 Svelte 重渲染 |
+| `StatsDialog.svelte` `healthRing` 在 SVG circle 上 | `use:` 指令用于 SVG 元素 | GSAP 完全支持 SVG 属性动画；`strokeDashoffset` 是标准 SVG 属性 |
+| `DuplicatesResult.svelte` 50 项 × 0.03s stagger | 最大 1.5s 总动画时间 | 可接受：50 项是展示上限，实际数据通常更少；体验流畅 |
+
+### 关键设计决策
+
+1. **HelpDialog 重构为始终渲染答案**: 原 `{#if expandedIdx === idx}` 方案无法实现收起动画——Svelte 在状态变更后立即移除 DOM 元素，GSAP 来不及执行收起 tween。改为始终渲染所有答案 `<div>` 并设 `height:0; opacity:0; overflow:hidden`，由 GSAP 命令式控制展开/收起。23 个隐藏 `<div>` 的额外 DOM 开销可忽略。
+2. **复用现有动画库**: 全部使用 `$animations/micro.ts` 已有函数 (`contentStagger`, `pressEffect`, `hoverScale`, `checkBounce`) + GSAP 核心，不新建动画文件。
+3. **SVG 环形进度而非纯数字**: StatsDialog 健康模式的分数展示从纯文本升级为 SVG 环形进度条，视觉焦点更明确。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: 6 个 Modal 子组件动画增强)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: Modal/process.ts 未使用导入清理)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 errors。代码质量经 27 次迭代持续强化。**
+
+---
+
+## 上一次会话 (2026-04-02, 第二十六次)
 
 ### 本次完成内容
 

@@ -2,7 +2,7 @@
   import { onMount, onDestroy } from 'svelte';
   import type { Snippet } from 'svelte';
   import { gsap, EASINGS } from '$animations/gsap-config';
-  import { shouldAnimateFunctional, shouldAnimate } from '$animations/gsap-config';
+  import { shouldAnimateFunctional } from '$animations/gsap-config';
   import { X } from 'lucide-svelte';
   import { Z_INDEX } from '$utils/constants';
 
@@ -30,7 +30,6 @@
 
   let backdropEl = $state<HTMLDivElement>(undefined!);
   let modalEl = $state<HTMLDivElement>(undefined!);
-  let bodyEl = $state<HTMLDivElement>(undefined!);
   let ctx: gsap.Context;
   let abortCtrl: AbortController;
 
@@ -110,7 +109,7 @@
 
     {#if toolbar}{@render toolbar()}{/if}
 
-    <div class="modal-body" bind:this={bodyEl}>
+    <div class="modal-body">
       {#if children}{@render children()}{/if}
     </div>
 

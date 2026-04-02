@@ -2,6 +2,7 @@
   import Modal from './Modal.svelte';
   import { Archive, Trash2 } from 'lucide-svelte';
   import { magnetic } from '$actions/magnetic';
+  import { contentStagger, pressEffect } from '$animations/micro';
   import type { DeadVideoEntry } from '$core/dead-videos';
 
   interface Props {
@@ -25,13 +26,13 @@
 <Modal title="失效视频扫描结果" showFooter={false} onclose={() => onclose?.()}>
   {#snippet icon()}<Archive size={18} />{/snippet}
 
-  <div class="bfao-modal-body">
+  <div class="bfao-modal-body" use:contentStagger={{ delay: 0.1, stagger: 0.06 }}>
     <div class="bfao-modal-summary">
       发现 <strong>{deadVideos.length}</strong> 个失效视频，分布在
       <strong>{Object.keys(byFolder).length}</strong> 个收藏夹中
     </div>
 
-    <div class="folder-list">
+    <div class="folder-list" use:contentStagger={{ stagger: 0.04, delay: 0.2 }}>
       {#each Object.entries(byFolder) as [folderName, vids]}
         <div class="folder-group">
           <div class="folder-header">📁 {folderName} ({vids.length}个)</div>
@@ -46,11 +47,11 @@
     </div>
 
     <div class="bfao-action-bar">
-      <button class="bfao-btn bfao-btn-primary" onclick={() => onarchive?.()} disabled={processing} use:magnetic={{ radius: 40, strength: 0.25 }}>
+      <button class="bfao-btn bfao-btn-primary" onclick={() => onarchive?.()} disabled={processing} use:magnetic={{ radius: 40, strength: 0.25 }} use:pressEffect>
         <Archive size={14} />
         {processing ? '处理中...' : '移动到「失效视频归档」'}
       </button>
-      <button class="bfao-btn bfao-btn-danger" onclick={() => ondelete?.()} disabled={processing} use:magnetic={{ radius: 40, strength: 0.25 }}>
+      <button class="bfao-btn bfao-btn-danger" onclick={() => ondelete?.()} disabled={processing} use:magnetic={{ radius: 40, strength: 0.25 }} use:pressEffect>
         <Trash2 size={14} />
         {processing ? '处理中...' : '直接删除'}
       </button>

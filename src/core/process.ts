@@ -5,7 +5,7 @@ import {
   progressStartTime, resetTokenUsage, tokenUsage,
 } from '$stores/state';
 import {
-  getSourceMediaId, getAllFoldersWithIds, getMyFolders,
+  getAllFoldersWithIds, getMyFolders,
   createFolder, moveVideos, fetchAllVideos, invalidateFolderCache,
 } from '$api/bilibili';
 import { callAI } from '$api/ai-client';
@@ -29,7 +29,6 @@ type CancelCheck = () => boolean;
 // ================= Phase 1: Resolve source folders =================
 
 async function resolveSourceFolders(
-  settings: Settings,
   biliData: BiliData,
 ): Promise<number[]> {
   // 跨收藏夹为默认行为：始终弹出选择器
@@ -384,7 +383,7 @@ export async function startProcess(settings: Settings, biliData: BiliData): Prom
 
   try {
     // Phase 1: Resolve source folders
-    const sourceMediaIds = await resolveSourceFolders(settings, biliData);
+    const sourceMediaIds = await resolveSourceFolders(biliData);
     logs.add(`开始整理 ${sourceMediaIds.length} 个收藏夹`, 'info');
 
     // Phase 2: Get existing folders

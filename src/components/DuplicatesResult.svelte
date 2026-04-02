@@ -2,6 +2,7 @@
   import Modal from './Modal.svelte';
   import { Copy } from 'lucide-svelte';
   import { magnetic } from '$actions/magnetic';
+  import { contentStagger, pressEffect } from '$animations/micro';
   import type { DuplicateEntry } from '$core/duplicates';
 
   interface Props {
@@ -19,12 +20,12 @@
 <Modal title="重复视频扫描结果" showFooter={false} onclose={() => onclose?.()}>
   {#snippet icon()}<Copy size={18} />{/snippet}
 
-  <div class="bfao-modal-body">
+  <div class="bfao-modal-body" use:contentStagger={{ delay: 0.1, stagger: 0.06 }}>
     <div class="bfao-modal-summary">
       发现 <strong>{duplicates.length}</strong> 个重复视频
     </div>
 
-    <div class="dup-list">
+    <div class="dup-list" use:contentStagger={{ stagger: 0.03, delay: 0.2 }}>
       {#each duplicates.slice(0, showCount) as d}
         <div class="dup-item">
           <div class="dup-title">• {d.title}</div>
@@ -37,7 +38,7 @@
     </div>
 
     <div class="bfao-action-bar">
-      <button class="bfao-btn bfao-btn-primary" onclick={() => ondedup?.()} disabled={processing} use:magnetic={{ radius: 40, strength: 0.25 }}>
+      <button class="bfao-btn bfao-btn-primary" onclick={() => ondedup?.()} disabled={processing} use:magnetic={{ radius: 40, strength: 0.25 }} use:pressEffect>
         {processing ? '正在去重...' : '一键去重'}
       </button>
       <span class="bfao-modal-hint">保留首次出现的收藏夹，从其他收藏夹删除副本</span>

@@ -3,6 +3,8 @@
   import { BarChart3, Heart } from 'lucide-svelte';
   import type { FavFolder } from '$types/index';
   import { numberRoll } from '$animations/text';
+  import { contentStagger, hoverScale } from '$animations/micro';
+  import { gsap, EASINGS, shouldAnimate } from '$animations/gsap-config';
 
   interface Props {
     folders: FavFolder[];
@@ -32,6 +34,25 @@
     });
     return { destroy };
   }
+
+  /** 健康分数环形进度动画 */
+  function healthRing(node: SVGCircleElement, score: number) {
+    const circumference = 2 * Math.PI * 54;
+    const target = circumference * (1 - score / 100);
+    node.style.strokeDasharray = `${circumference}`;
+    node.style.strokeDashoffset = `${circumference}`;
+    if (shouldAnimate()) {
+      gsap.to(node, {
+        strokeDashoffset: target,
+        duration: 1.2,
+        delay: 0.3,
+        ease: EASINGS.velvetSpring,
+      });
+    } else {
+      node.style.strokeDashoffset = `${target}`;
+    }
+    return { destroy() {} };
+  }
 </script>
 
 <Modal
@@ -50,11 +71,19 @@
     {/if}
   {/snippet}
 
-  <div class="bfao-modal-body">
+  <div class="bfao-modal-body" use:contentStagger={{ delay: 0.1, stagger: 0.06 }}>
     {#if mode === 'health'}
       <div class="health-score" style:color={healthColor}>
-        <div class="score-number" use:rollNumber={healthScore}>{healthScore}</div>
-        <div class="score-label">健康评分</div>
+        <svg class="health-ring" viewBox="0 0 120 120" width="120" height="120">
+          <circle cx="60" cy="60" r="54" fill="none" stroke="var(--ai-border-lighter)" stroke-width="7" />
+          <circle cx="60" cy="60" r="54" fill="none" stroke={healthColor} stroke-width="7"
+            stroke-linecap="round" transform="rotate(-90 60 60)"
+            use:healthRing={healthScore} />
+        </svg>
+        <div class="score-overlay">
+          <div class="score-number" use:rollNumber={healthScore}>{healthScore}</div>
+          <div class="score-label">健康评分</div>
+        </div>
       </div>
       <div class="health-detail">
         {#if healthScore >= 80}
@@ -68,26 +97,26 @@
     {/if}
 
     <div class="stats-grid">
-      <div class="stat-card">
+      <div class="stat-card" use:hoverScale={{ scale: 1.05 }}>
         <div class="stat-value" use:rollNumber={folders.length}>{folders.length}</div>
         <div class="stat-label">收藏夹</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card" use:hoverScale={{ scale: 1.05 }}>
         <div class="stat-value" data-locale="true" use:rollNumber={totalVideos}>{totalVideos.toLocaleString()}</div>
         <div class="stat-label">视频总数</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card" use:hoverScale={{ scale: 1.05 }}>
         <div class="stat-value" class:danger={deadCount > 0} use:rollNumber={deadCount}>{deadCount}</div>
         <div class="stat-label">失效视频</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card" use:hoverScale={{ scale: 1.05 }}>
         <div class="stat-value">{deadRate}%</div>
         <div class="stat-label">失效率</div>
       </div>
     </div>
 
     {#if folders.length > 0}
-      <div class="folder-breakdown">
+      <div class="folder-breakdown" use:contentStagger={{ delay: 0.25, stagger: 0.03 }}>
         <div class="section-title">收藏夹分布</div>
         {#each folders.slice(0, 15) as f}
           <div class="folder-row">
@@ -105,11 +134,24 @@
 
 <style>
   .health-score {
-    text-align: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 16px 0 8px;
   }
+  .health-ring { display: block; margin: 0 auto; }
+  .score-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 16px;
+  }
   .score-number {
-    font-size: 48px;
+    font-size: 36px;
     font-weight: 800;
     line-height: 1;
   }
