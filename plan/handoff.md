@@ -1,6 +1,55 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-02, 第二十四次)
+## 最近一次会话 (2026-04-02, 第二十五次)
+
+### 本次完成内容
+
+**scanAllFolderVideos 分页安全上限 + archiveDeadVideos 日志精确化 + 备份文件名防碰撞 + panel-actions 类型导入规范化 + scanner 末尾延迟优化 — 5 处代码质量改进 + 深度架构级 Code Review**
+
+#### 发现并修复的问题
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `bilibili-scanner.ts` | `scanAllFolderVideos` 的 `while(true)` 分页循环无最大页数保护 — 若 B站 API 持续返回 `has_more=true`，扫描会无限循环。`fetchAllVideos` 已有 `MAX_PAGES = 500` 保护，但 scanner 缺失 | MEDIUM | `while(true)` → `while(pn <= MAX_PAGES)`，`MAX_PAGES = 500`，与 `fetchAllVideos` 一致 |
+| `dead-videos.ts` | `archiveDeadVideos` 每个源收藏夹的日志报告 `vids.length`（总量）而非实际移动成功数 — 部分 chunk 失败时日志误导用户以为全部成功 | MEDIUM | 新增 `folderMoved` 计数器追踪每个源收藏夹的实际成功数，日志改为 `${folderMoved}/${vids.length}` 格式 |
+| `backup.ts` | 备份文件名仅含日期 (`2026-04-02`) — 同一天多次备份产生相同文件名，浏览器静默覆盖 | LOW | 文件名加入时间戳 `YYYY-MM-DDTHH-MM`，与 `export-logs.ts` 保持一致格式 |
+| `panel-actions.ts` | `withAuthAndRunning` 的 `action` 参数使用内联 `import('$types/index').BiliData` 动态类型导入 — 文件顶部已有 `$types/index` 的 import 语句但未包含 `BiliData` | LOW | 将 `BiliData` 加入顶层 `import type` 声明，消除内联动态导入 |
+| `bilibili-scanner.ts` | 最后一个收藏夹扫描后仍执行无意义的 `humanDelay` — 扫描结束前的冗余等待 | LOW | 仅在非末尾收藏夹后添加延迟：`if (fi < allFolders.length - 1) await humanDelay(fetchDelay)` |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `cursor-scatter.ts` / `tilt.ts` / `ripple.ts` update() | `Object.assign(cfg, DEFAULTS, newOpts)` 被代理标记为 bug | 正确：Svelte action `update()` 接收完整新参数，先重置为默认值再覆盖用户值是标准模式 |
+| `magnetic.ts` document 级监听器 | 代理报告 document.addEventListener 累积泄漏 | 正确：`destroy()` 中 `document.removeEventListener` 正确移除；document 级监听是必须的——磁性效果需要检测元素外 radius 范围内的鼠标移动 |
+| `theme.ts` toggleTheme() 跳过 auto | 代理报告 toggle 只在 light/dark 间切换 | 设计意图：toggle 按钮是简单的亮/暗切换；auto 模式通过设置 UI 选择，不属于 toggle 循环 |
+| `undo.ts` 部分撤销清除记录 | 代理报告 restored > 0 但部分失败时仍清除记录 | 合理设计 (session 23 已确认)：已移回的视频不应再次移回；用户可查看日志了解失败明细 |
+| `gm.ts` 缓存先写后 GM_setValue | 代理报告若 GM_setValue 抛异常缓存已被污染 | 极低风险：GM_setValue 是 Tampermonkey 同步 API，实际不会抛异常；增加 try-catch 包装会引入不必要复杂度 |
+| `panel-actions.ts` statsDeadCount 始终为 0 | 代理报告 health 模式未计算失效视频数 | 设计意图：失效视频扫描需遍历所有视频内容（API 调用密集），stats/health 面板仅展示收藏夹元数据；用户通过专门的"扫描失效视频"功能获取精确计数 |
+| `background-cache.ts` 重复 beforeunload | 代理报告多次 setupBackgroundCache 累积监听器 | 正确：`if (intervalId !== null) return` 守卫确保 setup 只执行一次；stop 后重新 setup 正确添加一个新监听器 |
+| `process.ts` aiChunkSize 无上限 | 代理报告 chunkSize 无上界保护 | `settings.ts` 的 `NUMERIC_BOUNDS` 已限制 `aiChunkSize: [1, 200]`，数据加载时已校验 |
+
+### 关键设计决策
+
+1. **scanAllFolderVideos MAX_PAGES = 500**: 与 `fetchAllVideos` 使用相同的安全上限。B站单收藏夹实际最多约 50 页，500 页上限仅防止 API 异常导致的无限循环。
+2. **archiveDeadVideos 日志 `moved/total` 格式**: 明确展示成功数/总数，用户一眼可知是否存在部分失败。不增加额外的错误日志——`moveVideos` 内部已有失败日志。
+3. **备份文件名 ISO 时间戳**: 使用 `toISOString().slice(0, 16)` 精确到分钟，与 `export-logs.ts` 保持一致的命名约定。冒号替换为短横线确保文件名合法。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%**
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: scanAllFolderVideos分页安全/archiveDeadVideos日志精确化/备份文件名防碰撞/panel-actions类型导入/scanner延迟优化)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 errors。代码质量经 25 次迭代持续强化。**
+
+---
+
+## 上一次会话 (2026-04-02, 第二十四次)
 
 ### 本次完成内容
 

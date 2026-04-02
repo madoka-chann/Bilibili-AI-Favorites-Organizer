@@ -42,6 +42,7 @@ export async function scanAllFolderVideos<T>(
 
   const results: T[] = [];
   let totalScanned = 0;
+  const MAX_PAGES = 500; // 安全上限：与 fetchAllVideos 一致
 
   for (let fi = 0; fi < allFolders.length; fi++) {
     if (cancelCheck()) break;
@@ -49,7 +50,7 @@ export async function scanAllFolderVideos<T>(
     logs.add(`${logPrefix} [${fi + 1}/${allFolders.length}] ${folder.title}...`, 'info');
 
     let pn = 1;
-    while (true) {
+    while (pn <= MAX_PAGES) {
       if (cancelCheck()) break;
       try {
         const res = await fetchFn<BiliFavResourceData>(
@@ -74,7 +75,7 @@ export async function scanAllFolderVideos<T>(
         break;
       }
     }
-    await humanDelay(fetchDelay);
+    if (fi < allFolders.length - 1) await humanDelay(fetchDelay);
   }
 
   return { results, totalScanned };

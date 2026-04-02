@@ -72,15 +72,19 @@ export async function archiveDeadVideos(
   let moved = 0;
   for (const [srcId, vids] of bySource) {
     if (isCancelled()) break;
+    let folderMoved = 0;
     for (let i = 0; i < vids.length; i += moveChunkSize) {
       if (isCancelled()) break;
       const chunk = vids.slice(i, i + moveChunkSize);
       const resourcesStr = chunk.map((v) => `${v.id}:${v.type}`).join(',');
       const success = await moveVideos(srcId, targetFolderId, resourcesStr, biliData);
-      if (success) moved += chunk.length;
+      if (success) {
+        moved += chunk.length;
+        folderMoved += chunk.length;
+      }
       await humanDelay(writeDelay);
     }
-    logs.add(`已从「${vids[0]?.folderTitle || srcId}」移动 ${vids.length} 个失效视频`, 'info');
+    logs.add(`已从「${vids[0]?.folderTitle || srcId}」移动 ${folderMoved}/${vids.length} 个失效视频`, 'info');
   }
 
   return moved;

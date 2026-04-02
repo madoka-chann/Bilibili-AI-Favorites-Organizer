@@ -103,5 +103,6 @@ export async function backupFavorites(
 export function downloadBackupFile(backup: BackupData): void {
   const json = JSON.stringify(backup, null, 2);
   const blob = new Blob([json], { type: 'application/json' });
-  triggerDownload(blob, `bilibili-favorites-backup-${new Date().toISOString().slice(0, 10)}.json`);
+  const ts = new Date().toISOString().slice(0, 16).replace(/:/g, '-');
+  triggerDownload(blob, `bilibili-favorites-backup-${ts}.json`);
 }

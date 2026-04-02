@@ -4,7 +4,7 @@
  */
 
 import { get } from 'svelte/store';
-import type { Settings, FavFolder } from '$types/index';
+import type { Settings, FavFolder, BiliData } from '$types/index';
 import { logs } from '$stores/state';
 import { settings } from '$stores/settings';
 import { getBiliData, getAllFoldersWithIds } from '$api/bilibili';
@@ -36,7 +36,7 @@ export function ensureBiliData() {
  */
 async function withAuthAndRunning<T>(
   fallback: T,
-  action: (biliData: import('$types/index').BiliData, s: Settings) => Promise<T>,
+  action: (biliData: BiliData, s: Settings) => Promise<T>,
   opts?: { trackCancel?: boolean },
 ): Promise<T> {
   const biliData = ensureBiliData();
