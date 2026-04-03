@@ -65,22 +65,22 @@ export async function fetchAllVideos(
   mediaId: number,
   fetchDelay: number,
   cancelCheck: () => boolean,
-  onProgress?: (page: number, totalPages: number) => void,
+  onProgress?: (fetched: number, total: number) => void,
   maxVideos?: number,
 ): Promise<VideoResource[]> {
   const allVideos: VideoResource[] = [];
   let pn = 1;
   let totalPages = 0;
+  let displayPages = 0;
+  let totalCount = 0;
   while (pn <= MAX_BILIBILI_PAGES) {
     if (cancelCheck()) break;
     if (maxVideos && allVideos.length >= maxVideos) break;
 
-    if (pn <= 3 || pn % 10 === 0) {
-      logs.add(
-        `正在读取第 ${pn}${totalPages > 0 ? ` / ${totalPages}` : ''} 页...`,
-        'info',
-      );
-    }
+    logs.add(
+      `正在读取第 ${pn}${displayPages > 0 ? ` / ${displayPages}` : ''} 页...`,
+      'info',
+    );
 
     const listUrl = BILIBILI_URLS.resourceList(mediaId, pn);
     let listRes: BiliApiResponse<BiliFavResourceData>;
@@ -97,15 +97,22 @@ export async function fetchAllVideos(
     }
 
     if (pn === 1 && listRes.data?.info) {
-      const totalCount = listRes.data.info.media_count || 0;
+      totalCount = listRes.data.info.media_count || 0;
       totalPages = Math.ceil(totalCount / BILIBILI_PAGE_SIZE);
-      logs.add(`收藏夹共 ${totalCount} 个视频，约 ${totalPages} 页`, 'info');
+      const effectiveCount = maxVideos ? Math.min(maxVideos, totalCount) : totalCount;
+      displayPages = Math.ceil(effectiveCount / BILIBILI_PAGE_SIZE);
+      logs.add(`收藏夹共 ${totalCount} 个视频${maxVideos ? `，限制 ${maxVideos} 个` : ''}，约 ${displayPages} 页`, 'info');
     }
 
     const videos: VideoResource[] = listRes.data?.medias ?? [];
     allVideos.push(...videos);
 
-    if (onProgress) onProgress(pn, totalPages || pn);
+    if (onProgress) {
+      const effectiveTotal = maxVideos
+        ? Math.min(maxVideos, totalCount || allVideos.length)
+        : (totalCount || allVideos.length);
+      onProgress(Math.min(allVideos.length, effectiveTotal), effectiveTotal);
+    }
 
     if (!listRes.data?.has_more || videos.length === 0) break;
     pn++;

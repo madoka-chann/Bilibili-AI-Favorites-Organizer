@@ -188,7 +188,7 @@
     color: var(--ai-text);
     border-radius: 28px;
     box-shadow: var(--ai-shadow-modal);
-    max-height: 70vh;
+    max-height: 85vh;
     display: flex;
     flex-direction: column;
     overflow: hidden;

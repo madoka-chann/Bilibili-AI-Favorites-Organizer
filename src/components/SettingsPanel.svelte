@@ -21,18 +21,24 @@
     <div class="field-grid">
       <div class="bfao-field">
         <label class="bfao-label" for="bfao-chunk-size">AI 批次大小</label>
-        <select
+        <input
           id="bfao-chunk-size"
-          class="bfao-select"
+          class="bfao-input"
+          type="number"
+          min="1"
+          max="9999"
+          list="bfao-chunk-presets"
           value={$settings.aiChunkSize}
-          onchange={(e) =>
-            settings.update({ aiChunkSize: Number((e.target as HTMLSelectElement).value) })}
-        >
+          onchange={(e) => {
+            const v = Math.max(1, Number((e.target as HTMLInputElement).value) || 50);
+            settings.update({ aiChunkSize: v });
+          }}
+        />
+        <datalist id="bfao-chunk-presets">
           {#each AI_CHUNK_PRESETS as preset}
             <option value={preset.value}>{preset.label}</option>
           {/each}
-          <option value="custom">自定义</option>
-        </select>
+        </datalist>
       </div>
 
       <div class="bfao-field">

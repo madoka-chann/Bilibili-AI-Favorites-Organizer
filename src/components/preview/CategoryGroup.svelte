@@ -112,7 +112,7 @@
 
 <style>
   .category-group {
-    border: 1.5px solid var(--ai-border);
+    border: 1.5px solid rgba(var(--ai-primary-rgb), 0.25);
     border-radius: 10px;
     overflow: hidden;
     background: var(--ai-bg);
@@ -120,7 +120,8 @@
   }
   .category-group:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    border-color: rgba(var(--ai-primary-rgb), 0.45);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
   }
   .category-group.merge-source {
     border-color: var(--ai-primary);
@@ -133,12 +134,12 @@
     width: 100%;
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 12px;
+    gap: 8px;
+    padding: 10px 14px;
+    min-height: 44px;
     background: none;
     border: none;
     text-align: left;
-    flex-wrap: wrap;
     box-sizing: border-box;
   }
   .category-header:hover { background: var(--ai-bg-tertiary); }
@@ -239,8 +240,6 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
-    max-height: 320px;
-    overflow-y: auto;
   }
 
   .video-list.virtual-scroll {

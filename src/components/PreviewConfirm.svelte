@@ -258,7 +258,7 @@
 <Modal
   title="分类预览"
   showFooter={true}
-  width="min(720px, 92vw)"
+  width="min(780px, 92vw)"
   onclose={() => onclose?.()}
 >
   {#snippet icon()}<Eye size={18} />{/snippet}
@@ -374,8 +374,7 @@
   .category-list {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    max-height: 50vh;
+    gap: 10px;
     overflow-y: auto;
   }
 

@@ -121,8 +121,12 @@ export const SPEED_PRESETS: SpeedPreset[] = [
 
 // ================= AI 分块预设 =================
 export const AI_CHUNK_PRESETS: ChunkPreset[] = [
-  { label: '●  100个', value: 100, desc: '按需选择' },
-  { label: '◐  50个', value: 50, desc: '按需选择' },
+  { label: '50个', value: 50, desc: '少量精细分类' },
+  { label: '100个', value: 100, desc: '常规批次' },
+  { label: '200个', value: 200, desc: '大批量处理' },
+  { label: '300个', value: 300, desc: '大批量处理' },
+  { label: '400个', value: 400, desc: '大批量处理' },
+  { label: '500个', value: 500, desc: '超大批量处理' },
 ];
 
 // ================= 内置 Prompt 预设 =================

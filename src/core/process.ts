@@ -55,9 +55,7 @@ async function fetchSourceVideos(
   const videoSourceMap: Map<number, number> = new Map();
   const maxVideos = settings.limitEnabled ? settings.limitCount : undefined;
 
-  // For progress: estimate total videos from limit or folder count
-  const estimatedTotal = maxVideos ?? sourceMediaIds.length * 100; // rough estimate
-  let fetchedSoFar = 0;
+  let previouslyFetched = 0;
 
   for (const mediaId of sourceMediaIds) {
     if (isCancelled()) break;
@@ -69,10 +67,12 @@ async function fetchSourceVideos(
       mediaId,
       settings.fetchDelay,
       isCancelled,
-      () => {
-        // Update progress based on cumulative fetched videos
-        fetchedSoFar = allVideos.length;
-        updateProgress('fetch', fetchedSoFar, maxVideos ?? estimatedTotal);
+      (fetchedInFolder, totalInFolder) => {
+        updateProgress(
+          'fetch',
+          previouslyFetched + fetchedInFolder,
+          previouslyFetched + totalInFolder,
+        );
       },
       remaining,
     );
@@ -92,8 +92,7 @@ async function fetchSourceVideos(
       videoSourceMap.set(v.id, mediaId);
     }
     allVideos.push(...validVideos);
-    // Update fetch progress with actual count
-    updateProgress('fetch', allVideos.length, maxVideos ?? allVideos.length);
+    previouslyFetched = allVideos.length;
   }
   // Mark fetch phase complete
   updateProgress('fetch', allVideos.length, allVideos.length);

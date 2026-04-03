@@ -9,7 +9,7 @@ export {
 
 export {
   Z_INDEX, CONFETTI_COLORS, AURORA_COLORS,
-  MAX_TOAST_COUNT, MAX_CANVAS_FX,
+  MAX_TOAST_COUNT, MAX_CANVAS_FX, POS_STORAGE_KEY,
 } from './ui';
 
 export {

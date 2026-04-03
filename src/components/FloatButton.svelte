@@ -5,7 +5,7 @@
   import { shouldAnimate } from '$animations/gsap-config';
   import { magnetic } from '$actions/magnetic';
   import { gmGetValue, gmSetValue } from '$utils/gm';
-  import { Z_INDEX } from '$utils/constants';
+  import { Z_INDEX, POS_STORAGE_KEY } from '$utils/constants';
 
   interface Props {
     visible?: boolean;
@@ -28,14 +28,18 @@
     }
   }
 
+  let draggableInstance: Draggable[] | undefined;
+
   let wasHidden = !visible;
   $effect(() => {
     if (visible && wasHidden && btnEl) {
       // 面板关闭后，从共享位置恢复（Panel 可能已拖到新位置）
-      const saved = gmGetValue('bfao_pos_v5', null) as { tx: number; ty: number } | null;
+      const saved = gmGetValue(POS_STORAGE_KEY, null) as { tx: number; ty: number } | null;
       if (saved) {
         gsap.set(btnEl, { x: saved.tx, y: saved.ty });
       }
+      // 同步 Draggable 内部记录的位置
+      draggableInstance?.[0]?.update();
       if (shouldAnimate()) {
         gsap.from(btnEl, { scale: 0, opacity: 0, duration: 0.5, ease: EASINGS.prismBounce });
       }
@@ -46,26 +50,27 @@
   onMount(() => {
     if (!btnEl) return;
 
-    // Restore saved drag offset (transform-based, CSS bottom/left stays as default)
-    const saved = gmGetValue('bfao_pos_v5', null) as { tx: number; ty: number } | null;
+    // 恢复保存的 transform 偏移
+    const saved = gmGetValue(POS_STORAGE_KEY, null) as { tx: number; ty: number } | null;
     if (saved) {
       gsap.set(btnEl, { x: saved.tx, y: saved.ty });
     }
 
+    // 创建 Draggable（在 gsap.set 之后，正确识别初始位置）
+    draggableInstance = Draggable.create(btnEl, {
+      bounds: document.body,
+      edgeResistance: 0.75,
+      inertia: false,
+      minimumMovement: 8,
+      onDragEnd() {
+        gmSetValue(POS_STORAGE_KEY, {
+          tx: gsap.getProperty(btnEl, 'x') as number,
+          ty: gsap.getProperty(btnEl, 'y') as number,
+        });
+      },
+    });
+
     ctx = gsap.context(() => {
-      Draggable.create(btnEl, {
-        // Default type = "x,y" (transform-based), preserves CSS bottom/left
-        bounds: document.body,
-        edgeResistance: 0.75,
-        inertia: false,
-        minimumMovement: 8,
-        onDragEnd() {
-          // Save the transform offset, not absolute position
-          const tx = gsap.getProperty(btnEl, 'x') as number;
-          const ty = gsap.getProperty(btnEl, 'y') as number;
-          gmSetValue('bfao_pos_v5', { tx, ty });
-        },
-      });
 
       if (shouldAnimate()) {
         const rgb = getComputedStyle(btnEl).getPropertyValue('--ai-primary-rgb').trim() || '115, 100, 255';
@@ -103,7 +108,10 @@
     }, btnEl);
   });
 
-  onDestroy(() => { ctx?.revert(); });
+  onDestroy(() => {
+    draggableInstance?.[0]?.kill();
+    ctx?.revert();
+  });
 
   function spawnParticles(origin: HTMLElement) {
     const rect = origin.getBoundingClientRect();

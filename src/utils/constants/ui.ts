@@ -22,3 +22,7 @@ export const AURORA_COLORS = [
 // ================= Toast/Canvas 限制 =================
 export const MAX_TOAST_COUNT = 5;
 export const MAX_CANVAS_FX = 1;
+
+// ================= 位置持久化 =================
+/** FloatButton 和 Panel 共享的拖拽位置 GM key */
+export const POS_STORAGE_KEY = 'bfao_pos_v5';

@@ -83,23 +83,51 @@
     }
   }
 
-  /** 共享位置 key — FloatButton 和 Panel 使用同一个 */
-  const POS_KEY = 'bfao_pos_v5';
+  import { POS_STORAGE_KEY } from '$utils/constants';
 
   /** 保存当前 transform 偏移到共享位置 */
   function savePosition() {
     if (!panelEl) return;
-    const tx = gsap.getProperty(panelEl, 'x') as number;
-    const ty = gsap.getProperty(panelEl, 'y') as number;
-    gmSetValue(POS_KEY, { tx, ty });
+    gmSetValue(POS_STORAGE_KEY, {
+      tx: gsap.getProperty(panelEl, 'x') as number,
+      ty: gsap.getProperty(panelEl, 'y') as number,
+    });
   }
 
   onMount(() => {
-    // 恢复保存的 transform 偏移（与 FloatButton 共享，保持 bottom/left CSS 不变）
-    const saved = gmGetValue(POS_KEY, null) as { tx: number; ty: number } | null;
+    // 1. 恢复保存的 transform 偏移（与 FloatButton 共享，CSS bottom/left 不变 → 向上扩展）
+    const saved = gmGetValue(POS_STORAGE_KEY, null) as { tx: number; ty: number } | null;
     if (saved) {
       gsap.set(panelEl, { x: saved.tx, y: saved.ty });
     }
+
+    // 2. 创建 Draggable（在动画之前，这样 Draggable 能正确识别初始 x/y）
+    let draggableInstance: Draggable[] | undefined;
+    if (headerEl) {
+      draggableInstance = Draggable.create(panelEl, {
+        trigger: headerEl,
+        bounds: document.body,
+        edgeResistance: 0.65,
+        inertia: false,
+        minimumMovement: 8,
+        cursor: 'grab',
+        activeCursor: 'grabbing',
+        onDragStart() {
+          if (shouldAnimate()) {
+            gsap.to(panelEl, { scale: 0.98, boxShadow: '0 32px 80px rgba(0,0,0,0.18)', duration: 0.2 });
+          }
+        },
+        onDragEnd() {
+          if (shouldAnimate()) {
+            gsap.to(panelEl, { scale: 1, boxShadow: '', duration: 0.35, ease: EASINGS.prismBounce });
+          }
+          savePosition();
+        },
+      });
+    }
+
+    // 3. 入场动画（Draggable 已就绪，动画结束后 update 让 Draggable 同步最终位置）
+    const onEntryDone = () => draggableInstance?.[0]?.update();
 
     ctx = gsap.context(() => {
       if (flipState && shouldAnimateFunctional()) {
@@ -111,38 +139,13 @@
         gsap.from(panelEl, {
           x: `+=${dx}`, y: `+=${dy}`, scale: 0.15, opacity: 0, filter: 'blur(10px)',
           duration: 0.45, ease: EASINGS.velvetSpring,
-          onComplete() { panelEl.style.removeProperty('filter'); },
+          onComplete: onEntryDone,
         });
       } else if (shouldAnimateFunctional()) {
         gsap.from(panelEl, {
           scale: 0.86, opacity: 0, filter: 'blur(14px)',
           duration: 0.5, ease: EASINGS.velvetSpring,
-          onComplete() { panelEl.style.removeProperty('filter'); },
-        });
-      }
-
-      // K2: 面板拖拽 (header 作为拖拽触发区域，transform-based)
-      if (headerEl) {
-        Draggable.create(panelEl, {
-          // 默认 type "x,y"：transform-based，保持 CSS bottom/left 不变 → 内容向上扩展
-          trigger: headerEl,
-          bounds: document.body,
-          edgeResistance: 0.65,
-          inertia: false,
-          minimumMovement: 8,
-          cursor: 'grab',
-          activeCursor: 'grabbing',
-          onDragStart() {
-            if (shouldAnimate()) {
-              gsap.to(panelEl, { scale: 0.98, boxShadow: '0 32px 80px rgba(0,0,0,0.18)', duration: 0.2 });
-            }
-          },
-          onDragEnd() {
-            if (shouldAnimate()) {
-              gsap.to(panelEl, { scale: 1, boxShadow: '', duration: 0.35, ease: EASINGS.prismBounce });
-            }
-            savePosition();
-          },
+          onComplete: onEntryDone,
         });
       }
     }, panelEl);
@@ -154,6 +157,7 @@
   });
 
   onDestroy(() => {
+    Draggable.get(panelEl)?.kill();
     ctx?.revert();
     abortCtrl?.abort();
     if (settingsEl) gsap.killTweensOf(settingsEl);
