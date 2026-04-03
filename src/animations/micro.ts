@@ -92,9 +92,17 @@ export function checkBounce(node: HTMLElement) {
     if (!shouldAnimate()) return;
     gsap.fromTo(
       node,
-      { scale: 0.7 },
-      { scale: 1, duration: 0.4, ease: EASINGS.prismBounce }
+      { scale: 0.5 },
+      { scale: 1, duration: 0.5, ease: EASINGS.prismBounce }
     );
+    // Brief background flash on parent
+    const parent = node.parentElement;
+    if (parent) {
+      gsap.fromTo(parent,
+        { boxShadow: '0 0 0 2px var(--ai-primary)' },
+        { boxShadow: '0 0 0 0px transparent', duration: 0.6, ease: EASINGS.silkOut }
+      );
+    }
   }
 
   node.addEventListener('change', onChange);

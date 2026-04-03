@@ -13,30 +13,15 @@
   import LogArea from './LogArea.svelte';
   import ProgressBar from './ProgressBar.svelte';
   import ActionButtons from './ActionButtons.svelte';
-  import DeadVideosResult from './DeadVideosResult.svelte';
-  import DuplicatesResult from './DuplicatesResult.svelte';
-  import UndoDialog from './UndoDialog.svelte';
-  import HistoryTimeline from './HistoryTimeline.svelte';
-  import StatsDialog from './StatsDialog.svelte';
-  import FolderSelector from './FolderSelector.svelte';
-  import PreviewConfirm from './PreviewConfirm.svelte';
-  import HelpDialog from './HelpDialog.svelte';
+  import PanelModals from './PanelModals.svelte';
   import { isRunning, cancelRequested, logs } from '$stores/state';
-  import {
-    folderSelect, previewConfirm, rejectAllModals,
-  } from '$stores/modal-bridge';
-  import { requestPreviewConfirm } from '$stores/modal-bridge';
-  import { loadUndoHistory } from '$core/undo';
-  import { loadHistory } from '$core/history';
+  import { rejectAllModals, requestPreviewConfirm } from '$stores/modal-bridge';
+  import { handleStart, handleBackup } from '$core/panel-actions';
   import { exportLogs } from '$core/export-logs';
   import {
-    handleStart, handleCleanDead, handleArchiveDead, handleDeleteDead,
-    handleFindDups, handleDedup, handleUndoConfirm, handleBackup,
-    handleStats, handleHistoryClear,
-  } from '$core/panel-actions';
-  import type { DeadVideoEntry } from '$core/dead-videos';
-  import type { DuplicateEntry } from '$core/duplicates';
-  import type { FavFolder } from '$types/index';
+    onCleanDead, onFindDups, openUndo, onStatsClick,
+    openHelp, openHistory,
+  } from '$stores/panel-modals.svelte';
 
   interface Props {
     onclose?: () => void;
@@ -65,27 +50,6 @@
     showScrollIndicator = maxScroll > 10;
     scrollProgress = maxScroll > 0 ? scrollTop / maxScroll : 0;
   }
-
-  // Modal 状态
-  let showDeadResult = $state(false);
-  let deadVideos = $state<DeadVideoEntry[]>([]);
-  let deadProcessing = $state(false);
-
-  let showDupResult = $state(false);
-  let duplicates = $state<DuplicateEntry[]>([]);
-  let dupProcessing = $state(false);
-
-  let showUndo = $state(false);
-
-  let showHistory = $state(false);
-
-  let showStats = $state(false);
-  let statsMode = $state<'stats' | 'health'>('stats');
-  let statsFolders = $state<FavFolder[]>([]);
-  let statsTotalVideos = $state(0);
-  let statsDeadCount = $state(0);
-
-  let showHelp = $state(false);
 
   /** 调试: 用假数据打开预览界面 */
   async function debugPreview() {
@@ -119,52 +83,53 @@
     }
   }
 
-  /** K3: 恢复保存的面板位置，钳制到视口范围内 */
-  function restoreSavedPosition() {
-    const savedPos = gmGetValue('bfao_panelPos', null as { top: number; left: number } | null);
-    if (savedPos && panelEl) {
-      const rect = panelEl.getBoundingClientRect();
-      panelEl.style.top = Math.max(0, Math.min(savedPos.top, window.innerHeight - rect.height)) + 'px';
-      panelEl.style.left = Math.max(0, Math.min(savedPos.left, window.innerWidth - rect.width)) + 'px';
-      panelEl.style.bottom = 'auto';
-    }
+  /** 共享位置 key — FloatButton 和 Panel 使用同一个 */
+  const POS_KEY = 'bfao_pos_v5';
+
+  /** 保存当前 transform 偏移到共享位置 */
+  function savePosition() {
+    if (!panelEl) return;
+    const tx = gsap.getProperty(panelEl, 'x') as number;
+    const ty = gsap.getProperty(panelEl, 'y') as number;
+    gmSetValue(POS_KEY, { tx, ty });
   }
 
   onMount(() => {
-    restoreSavedPosition();
+    // 恢复保存的 transform 偏移（与 FloatButton 共享，保持 bottom/left CSS 不变）
+    const saved = gmGetValue(POS_KEY, null) as { tx: number; ty: number } | null;
+    if (saved) {
+      gsap.set(panelEl, { x: saved.tx, y: saved.ty });
+    }
 
     ctx = gsap.context(() => {
-      if (flipState && shouldAnimate() && Flip) {
-        // A4: FLIP 变形 — 从 FloatButton 位置形变为面板
-        gsap.set(panelEl, { opacity: 1 });
-        Flip.from(flipState, {
-          targets: panelEl,
-          duration: 0.55,
-          ease: EASINGS.velvetSpring,
-          scale: true,
-          absolute: true,
-          prune: true,
-          onComplete: () => {
-            gsap.set(panelEl, { clearProps: 'all' });
-            restoreSavedPosition();
-          },
+      if (flipState && shouldAnimateFunctional()) {
+        const btnPos = flipState as unknown as { btnX: number; btnY: number };
+        const panelRect = panelEl.getBoundingClientRect();
+        const dx = btnPos.btnX - panelRect.left;
+        const dy = btnPos.btnY - panelRect.top;
+
+        gsap.from(panelEl, {
+          x: `+=${dx}`, y: `+=${dy}`, scale: 0.15, opacity: 0, filter: 'blur(10px)',
+          duration: 0.45, ease: EASINGS.velvetSpring,
+          onComplete() { panelEl.style.removeProperty('filter'); },
         });
       } else if (shouldAnimateFunctional()) {
-        // B1: 面板入场 — 简洁 slide+fade
-        gsap.fromTo(panelEl,
-          { y: 30, scale: 0.95, opacity: 0 },
-          { y: 0, scale: 1, opacity: 1, duration: 0.35, ease: EASINGS.velvetSpring, clearProps: 'transform,filter' }
-        );
+        gsap.from(panelEl, {
+          scale: 0.86, opacity: 0, filter: 'blur(14px)',
+          duration: 0.5, ease: EASINGS.velvetSpring,
+          onComplete() { panelEl.style.removeProperty('filter'); },
+        });
       }
 
-      // K2: 面板拖拽 (header 作为拖拽触发区域)
+      // K2: 面板拖拽 (header 作为拖拽触发区域，transform-based)
       if (headerEl) {
         Draggable.create(panelEl, {
-          type: 'left,top',
+          // 默认 type "x,y"：transform-based，保持 CSS bottom/left 不变 → 内容向上扩展
           trigger: headerEl,
           bounds: document.body,
           edgeResistance: 0.65,
           inertia: false,
+          minimumMovement: 8,
           cursor: 'grab',
           activeCursor: 'grabbing',
           onDragStart() {
@@ -176,10 +141,7 @@
             if (shouldAnimate()) {
               gsap.to(panelEl, { scale: 1, boxShadow: '', duration: 0.35, ease: EASINGS.prismBounce });
             }
-            // K3: 持久化面板位置
-            const rect = panelEl.getBoundingClientRect();
-            panelEl.style.bottom = 'auto';
-            gmSetValue('bfao_panelPos', { top: rect.top, left: rect.left });
+            savePosition();
           },
         });
       }
@@ -199,9 +161,10 @@
   });
 
   function doClose() {
+    savePosition();
     if (!panelEl) { onclose?.(); return; }
     if (shouldAnimateFunctional()) {
-      gsap.to(panelEl, { y: 32, scale: 0.9, rotation: 0.5, opacity: 0, filter: 'blur(6px)', duration: 0.35, ease: EASINGS.silkOut, onComplete: () => onclose?.() });
+      gsap.to(panelEl, { scale: 0.9, opacity: 0, filter: 'blur(6px)', duration: 0.35, ease: EASINGS.silkOut, onComplete: () => onclose?.() });
     } else {
       onclose?.();
     }
@@ -246,63 +209,7 @@
 
   function onStart() { handleStart({ openSettings: () => { settingsOpen = true; } }); }
 
-  async function onCleanDead() {
-    const result = await handleCleanDead({ deadVideos, showDeadResult, deadProcessing });
-    deadVideos = result.deadVideos;
-    showDeadResult = result.showDeadResult;
-  }
-
-  async function onArchiveDead() {
-    deadProcessing = true;
-    const ok = await handleArchiveDead(deadVideos);
-    deadProcessing = false;
-    if (ok) showDeadResult = false;
-  }
-
-  async function onDeleteDead() {
-    deadProcessing = true;
-    const ok = await handleDeleteDead(deadVideos);
-    deadProcessing = false;
-    if (ok) showDeadResult = false;
-  }
-
-  async function onFindDups() {
-    const result = await handleFindDups({ duplicates, showDupResult, dupProcessing });
-    duplicates = result.duplicates;
-    showDupResult = result.showDupResult;
-  }
-
-  async function onDedup() {
-    dupProcessing = true;
-    const ok = await handleDedup(duplicates);
-    dupProcessing = false;
-    if (ok) showDupResult = false;
-  }
-
-  function handleUndo() {
-    showUndo = true;
-  }
-
-  async function onUndoConfirm(index: number) {
-    showUndo = false;
-    await handleUndoConfirm(index);
-  }
-
-  async function onStatsClick(mode: 'stats' | 'health') {
-    const result = await handleStats(mode);
-    if (result) {
-      showStats = result.showStats;
-      statsMode = result.statsMode;
-      statsFolders = result.statsFolders;
-      statsTotalVideos = result.statsTotalVideos;
-      statsDeadCount = result.statsDeadCount;
-    }
-  }
-
-  function onHistoryClear() {
-    handleHistoryClear();
-    showHistory = false;
-  }
+  function handleBackupClick() { handleBackup(); }
 </script>
 
 <div class="panel" bind:this={panelEl} use:panelCanvas={{ mode: 'aurora' }}>
@@ -317,7 +224,7 @@
     <Header onclose={doClose} bind:settingsOpen />
   </div>
 
-  <div class="panel-content" bind:this={contentEl} onscroll={updateScrollIndicator} use:parallax={{ speed: 0.3, maxOffset: 40 }} use:cursorScatter use:glowTrack>
+  <div class="panel-content" bind:this={contentEl} onscroll={updateScrollIndicator} use:parallax={{ speed: 0.6, maxOffset: 80 }} use:cursorScatter use:glowTrack>
     <div class="scroll-indicator" class:visible={showScrollIndicator} style:width="{scrollProgress * 100}%" aria-hidden="true"></div>
     {#if settingsVisible}
       <div class="settings-wrapper" bind:this={settingsEl}>
@@ -334,86 +241,20 @@
         onstop={() => { cancelRequested.set(true); rejectAllModals(); logs.add('正在停止...', 'warning'); }}
         oncleandead={onCleanDead}
         onfinddups={onFindDups}
-        onundo={handleUndo}
-        onbackup={handleBackup}
+        onundo={openUndo}
+        onbackup={handleBackupClick}
         onstats={() => onStatsClick('stats')}
         onhealth={() => onStatsClick('health')}
         onexportlogs={exportLogs}
-        onhelp={() => { showHelp = true; }}
+        onhelp={openHelp}
         ondebugpreview={debugPreview}
-        onhistory={() => { showHistory = true; }}
+        onhistory={openHistory}
       />
     </div>
   </div>
 </div>
 
-<!-- Modals -->
-{#if showDeadResult}
-  <DeadVideosResult
-    {deadVideos}
-    processing={deadProcessing}
-    onarchive={onArchiveDead}
-    ondelete={onDeleteDead}
-    onclose={() => { showDeadResult = false; }}
-  />
-{/if}
-
-{#if showDupResult}
-  <DuplicatesResult
-    {duplicates}
-    processing={dupProcessing}
-    ondedup={onDedup}
-    onclose={() => { showDupResult = false; }}
-  />
-{/if}
-
-{#if showUndo}
-  <UndoDialog
-    history={loadUndoHistory()}
-    onundo={onUndoConfirm}
-    onclose={() => { showUndo = false; }}
-  />
-{/if}
-
-{#if showHistory}
-  <HistoryTimeline
-    history={loadHistory()}
-    onclear={onHistoryClear}
-    onclose={() => { showHistory = false; }}
-  />
-{/if}
-
-{#if showStats}
-  <StatsDialog
-    folders={statsFolders}
-    totalVideos={statsTotalVideos}
-    deadCount={statsDeadCount}
-    mode={statsMode}
-    onclose={() => { showStats = false; }}
-  />
-{/if}
-
-{#if $folderSelect}
-  <FolderSelector
-    folders={$folderSelect.input}
-    onconfirm={(ids) => folderSelect.resolve(ids)}
-    onclose={() => folderSelect.reject()}
-  />
-{/if}
-
-{#if $previewConfirm}
-  <PreviewConfirm
-    categories={$previewConfirm.input.categories}
-    videos={$previewConfirm.input.videos}
-    existingFolderNames={$previewConfirm.input.existingFolderNames}
-    onconfirm={(data) => previewConfirm.resolve(data)}
-    onclose={() => previewConfirm.reject()}
-  />
-{/if}
-
-{#if showHelp}
-  <HelpDialog onclose={() => { showHelp = false; }} />
-{/if}
+<PanelModals />
 
 <style>
   .panel {
@@ -491,6 +332,7 @@
   .settings-wrapper {
     will-change: transform, opacity;
   }
+
 
   .main-area {
     padding: 0 15px 15px;

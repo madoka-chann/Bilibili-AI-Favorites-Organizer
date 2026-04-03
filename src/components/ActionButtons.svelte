@@ -9,7 +9,8 @@
   import { ripple } from '$actions/ripple';
   import { pressEffect } from '$animations/micro';
 
-  const magneticSmall = { radius: 40, strength: 0.25 };
+  const magneticSmall = { radius: 60, strength: 0.3 };
+  const magneticPrimary = { radius: 80, strength: 0.15 };
 
   interface Props {
     onstart?: () => void;
@@ -42,7 +43,7 @@
 </script>
 
 <div class="actions">
-  <button class="btn-primary" class:running={$isRunning} onclick={handleStartStop} use:glowTrack use:pressEffect use:magnetic={magneticSmall} use:ripple={{ color: 'rgba(255,255,255,0.3)' }}>
+  <button class="btn-primary" class:running={$isRunning} onclick={handleStartStop} use:glowTrack use:pressEffect use:magnetic={magneticPrimary} use:ripple={{ color: 'rgba(255,255,255,0.3)' }}>
     {#if $isRunning}
       <Square size={16} /><span>停止整理</span><kbd class="kbd">Esc</kbd>
     {:else}
@@ -93,6 +94,7 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+    overflow: hidden;
   }
 
   .btn-primary {
@@ -114,6 +116,7 @@
     gap: 6px;
     position: relative;
     overflow: hidden;
+    box-sizing: border-box;
     transition: all 0.3s cubic-bezier(0.2, 1.04, 0.42, 1);
   }
 
@@ -192,8 +195,8 @@
   }
 
   .btn-tool:hover {
-    transform: translateY(-3px) scale(1.045);
-    box-shadow: 0 10px 28px rgba(var(--ai-primary-rgb), 0.12);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(var(--ai-primary-rgb), 0.12);
     border-color: var(--ai-primary-light);
   }
 

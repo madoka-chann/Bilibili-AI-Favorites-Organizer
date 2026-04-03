@@ -41,7 +41,7 @@ export function panelCanvas(node: HTMLElement, opts: PanelCanvasOptions = {}) {
     border-radius: inherit;
     pointer-events: none;
     z-index: 0;
-    opacity: 0.6;
+    opacity: 0.85;
   `;
   node.insertBefore(canvas, node.firstChild);
 
@@ -53,7 +53,7 @@ export function panelCanvas(node: HTMLElement, opts: PanelCanvasOptions = {}) {
   let time = 0;
 
   function getScale() {
-    return cfg.mode === 'aurora' ? 0.5 : 0.4;
+    return cfg.mode === 'aurora' ? 0.65 : 0.55;
   }
 
   // I5 Lumen Drift 线程数据
@@ -118,7 +118,7 @@ export function panelCanvas(node: HTMLElement, opts: PanelCanvasOptions = {}) {
 
       const gradient = ctx2d.createLinearGradient(0, yBase - amplitude, 0, yBase + amplitude);
       gradient.addColorStop(0, hexToRgba(color, 0));
-      gradient.addColorStop(0.4, hexToRgba(color, 0.08 - layer * 0.015));
+      gradient.addColorStop(0.4, hexToRgba(color, 0.15 - layer * 0.02));
       gradient.addColorStop(1, hexToRgba(color, 0));
       ctx2d.fillStyle = gradient;
       ctx2d.fill();
@@ -180,7 +180,7 @@ export function panelCanvas(node: HTMLElement, opts: PanelCanvasOptions = {}) {
         const dist = Math.sqrt(dx * dx + dy * dy);
 
         if (dist < connectionDist) {
-          const alpha = (1 - dist / connectionDist) * 0.15;
+          const alpha = (1 - dist / connectionDist) * 0.28;
           ctx2d.beginPath();
           ctx2d.moveTo(a.x, a.y);
           ctx2d.lineTo(b.x, b.y);

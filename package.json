@@ -8,16 +8,27 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "svelte-check --tsconfig ./tsconfig.json",
-    "lint": "eslint src/"
+    "lint": "eslint src/",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "format": "prettier --write \"src/**/*.{ts,svelte,css}\""
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@tsconfig/svelte": "^5.0.4",
+    "eslint": "^10.1.0",
+    "eslint-plugin-svelte": "^3.17.0",
+    "globals": "^17.4.0",
+    "prettier": "^3.8.1",
+    "prettier-plugin-svelte": "^3.5.1",
     "svelte": "^5.33.0",
     "svelte-check": "^4.2.1",
     "typescript": "^5.8.3",
+    "typescript-eslint": "^8.58.0",
     "vite": "^6.3.5",
-    "vite-plugin-monkey": "^7.1.9"
+    "vite-plugin-monkey": "^7.1.9",
+    "vitest": "^4.1.2"
   },
   "dependencies": {
     "gsap": "^3.13.0",

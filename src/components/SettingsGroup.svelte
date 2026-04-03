@@ -14,16 +14,18 @@
 
   let { title, icon = null, iconColor = '#7C5CFC', defaultOpen = false, children }: Props = $props();
 
-  let _initOpen = defaultOpen; // eslint-disable-line -- intentional initial capture
-  let open = $state(_initOpen);
+  let open = $state(defaultOpen);
   let bodyEl = $state<HTMLElement>(undefined!);
   let chevronEl = $state<HTMLElement>(undefined!);
 
   let iconEl = $state<HTMLElement>(undefined!);
 
   onMount(() => {
-    // Set initial state for GSAP control — body element is now bound
-    if (!open && bodyEl) {
+    // Set initial state via inline styles — GSAP takes control from here
+    if (open && bodyEl) {
+      bodyEl.style.height = 'auto';
+      bodyEl.style.overflow = 'visible';
+    } else if (bodyEl) {
       bodyEl.style.height = '0px';
       bodyEl.style.overflow = 'hidden';
       bodyEl.style.paddingTop = '0';
@@ -56,22 +58,29 @@
     if (shouldAnimate()) {
       // B4: GSAP spring accordion
       if (open) {
-        gsap.set(bodyEl, { height: 'auto', overflow: 'hidden', paddingTop: '', paddingBottom: '' });
-        const h = bodyEl.offsetHeight;
-        gsap.fromTo(bodyEl,
-          { height: 0, opacity: 0, paddingTop: 0, paddingBottom: 0 },
-          { height: h, opacity: 1, paddingTop: '', paddingBottom: '', duration: 0.35, ease: EASINGS.velvetSpring,
+        // Animate from current (0) to auto height using GSAP
+        gsap.set(bodyEl, { height: 'auto', overflow: 'hidden', opacity: 1, paddingTop: '', paddingBottom: '' });
+        const h = bodyEl.scrollHeight || bodyEl.offsetHeight;
+        gsap.set(bodyEl, { height: 0, opacity: 0 });
+
+        // If measurement failed, just snap open
+        if (h <= 0) {
+          bodyEl.style.height = 'auto';
+          bodyEl.style.overflow = '';
+          bodyEl.style.opacity = '1';
+          bodyEl.style.paddingTop = '';
+          bodyEl.style.paddingBottom = '';
+        } else {
+          gsap.to(bodyEl, {
+            height: h, opacity: 1, paddingTop: '', paddingBottom: '', duration: 0.35, ease: 'power2.out',
             onComplete: () => {
-              gsap.set(bodyEl, { height: 'auto', overflow: '', clearProps: 'opacity,paddingTop,paddingBottom' });
-              // Content stagger: children fade in after accordion opens
-              const children = bodyEl.children;
-              if (children.length > 0) {
-                gsap.fromTo(children, { opacity: 0, y: 8 }, {
-                  opacity: 1, y: 0, duration: 0.25, stagger: 0.04, ease: EASINGS.velvetSpring,
-                });
-              }
-            } }
-        );
+              bodyEl.style.height = 'auto';
+              bodyEl.style.overflow = '';
+              bodyEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+          });
+        }
+
         // Icon pulse on open
         if (iconEl) {
           gsap.fromTo(iconEl, { scale: 1 }, {
@@ -121,7 +130,7 @@
     </span>
   </button>
 
-  <div class="group-body" bind:this={bodyEl} class:initially-open={defaultOpen}>
+  <div class="group-body" bind:this={bodyEl}>
     {#if children}{@render children()}{/if}
   </div>
 </div>
@@ -129,13 +138,7 @@
 <style>
   .group {
     margin-bottom: 2px;
-    border-left: 2px solid transparent;
-    transition: border-color 0.3s ease;
-    padding-left: 0;
-  }
-
-  .group.open {
-    border-left-color: var(--ai-primary);
+    overflow: hidden;
   }
 
   .group-header {
@@ -143,7 +146,6 @@
     align-items: center;
     gap: 8px;
     padding: 9px 10px;
-    margin: 3px -10px;
     cursor: pointer;
     font-size: 12px;
     font-weight: 600;
@@ -153,19 +155,14 @@
     transition: all 0.3s cubic-bezier(0.2, 0.98, 0.28, 1);
     background: transparent;
     border: none;
-    width: calc(100% + 20px);
+    width: 100%;
     text-align: left;
     position: relative;
   }
 
   .group-header:hover {
-    background: linear-gradient(
-      135deg,
-      var(--ai-primary-bg),
-      rgba(255, 107, 157, 0.05)
-    );
+    background: var(--ai-primary-bg);
     color: var(--ai-primary);
-    transform: scale(1.01);
   }
 
   .group-header:hover .group-icon {
@@ -175,18 +172,12 @@
   .group.open .group-header::after {
     content: '';
     position: absolute;
-    bottom: 0;
-    left: 10px;
-    right: 10px;
+    bottom: -1px;
+    left: 20px;
+    right: 20px;
     height: 1px;
     background: linear-gradient(90deg, transparent, var(--ai-primary-light), transparent);
-    opacity: 0.5;
-    animation: separatorReveal 0.35s ease both;
-  }
-
-  @keyframes separatorReveal {
-    from { opacity: 0; transform: scaleX(0); }
-    to { opacity: 0.5; transform: scaleX(1); }
+    opacity: 0.4;
   }
 
   .group-icon {
@@ -201,8 +192,7 @@
   }
 
   .group.open .group-icon {
-    transform: scale(1.15);
-    box-shadow: 0 0 10px rgba(var(--ai-primary-rgb), 0.3);
+    box-shadow: 0 0 8px rgba(var(--ai-primary-rgb), 0.3);
   }
 
   .group-title {
@@ -214,15 +204,9 @@
   }
 
   .group-body {
-    padding-left: 2px;
-    padding-bottom: 8px;
+    padding: 0 2px 8px;
     height: 0;
     overflow: hidden;
-  }
-
-  .group-body.initially-open {
-    height: auto;
-    overflow: visible;
   }
 
   @media (prefers-reduced-motion: reduce) {

@@ -12,7 +12,7 @@
 
 <div class="settings-panel">
   <!-- Group 1: AI 配置 -->
-  <SettingsGroup title="AI 服务配置" icon={Cpu} iconColor="#7C5CFC" defaultOpen={true}>
+  <SettingsGroup title="AI 服务配置" icon={Cpu} iconColor="#7C5CFC">
     <ProviderConfig />
   </SettingsGroup>
 
@@ -200,11 +200,7 @@
     {#if $prefersReducedMotion}
       <div class="anim-hint hint-fade-in">
         系统已开启「减少动画」，动画被自动禁用。
-        请前往 Windows 设置 → 辅助功能 → 视觉效果 → 打开「动画效果」
       </div>
-    {/if}
-    {#if $settings.animEnabled && !$prefersReducedMotion}
-      <div class="anim-hint ok hint-fade-in">动画已启用，刷新页面后生效</div>
     {/if}
   </SettingsGroup>
 </div>
@@ -295,9 +291,15 @@
     border-radius: 6px;
     margin-top: 4px;
   }
-  .anim-hint.ok {
+  .anim-hint.anim-success {
+    color: var(--ai-success-dark);
+    background: var(--ai-success-bg);
+    border-left: 3px solid var(--ai-success);
+  }
+  .anim-hint.anim-disabled {
     color: var(--ai-text-muted);
-    background: var(--ai-bg-secondary);
+    background: var(--ai-bg-tertiary);
+    border-left: 3px solid var(--ai-border);
   }
 
   @media (prefers-reduced-motion: reduce) {

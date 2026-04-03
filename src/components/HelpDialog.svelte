@@ -1,7 +1,7 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import Modal from './Modal.svelte';
   import { HelpCircle, ChevronRight } from 'lucide-svelte';
-  import { contentStagger } from '$animations/micro';
   import { gsap, EASINGS, shouldAnimate } from '$animations/gsap-config';
 
   interface Props {
@@ -11,9 +11,22 @@
   let { onclose }: Props = $props();
 
   let expandedIdx = $state<number | null>(null);
+  let helpBodyEl = $state<HTMLElement>(undefined!);
 
   /** 答案节点引用，用于 GSAP 高度动画 */
   let answerEls: Record<number, HTMLDivElement | null> = {};
+
+  /** Stagger only .faq-item buttons (not .faq-a answer divs) */
+  onMount(() => {
+    if (!shouldAnimate() || !helpBodyEl) return;
+    const items = helpBodyEl.querySelectorAll('.faq-item');
+    if (items.length > 0) {
+      gsap.fromTo(items,
+        { opacity: 0, y: 15 },
+        { opacity: 1, y: 0, duration: 0.3, stagger: 0.02, delay: 0.1, ease: EASINGS.velvetSpring }
+      );
+    }
+  });
 
   function toggle(idx: number) {
     const prevIdx = expandedIdx;
@@ -88,7 +101,7 @@
 <Modal title="帮助与常见问题" showFooter={false} width="min(600px, 92vw)" onclose={() => onclose?.()}>
   {#snippet icon()}<HelpCircle size={18} />{/snippet}
 
-  <div class="help-body" use:contentStagger={{ stagger: 0.02, delay: 0.1 }}>
+  <div class="help-body" bind:this={helpBodyEl}>
     {#each FAQ as item, idx (idx)}
       <button class="faq-item" class:open={expandedIdx === idx} onclick={() => toggle(idx)}>
         <span class="faq-q">
@@ -120,9 +133,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 20px;
+    padding: 8px 20px;
     border: none;
-    border-left: 2px solid transparent;
     border-bottom: 1px solid var(--ai-border-light);
     background: none;
     cursor: pointer;
@@ -162,12 +174,12 @@
   .faq-item.open :global(.faq-chevron) { transform: rotate(90deg); }
 
   .faq-a {
-    padding: 8px 20px 14px 50px;
+    padding: 6px 20px 10px 50px;
     font-size: 12px;
     line-height: 1.6;
     color: var(--ai-text-secondary);
-    border-bottom: 1px solid var(--ai-border-light);
     background: var(--ai-bg-secondary);
+    box-sizing: border-box;
   }
 
   .faq-icon.pulse {
@@ -180,7 +192,6 @@
   }
 
   .faq-item.open {
-    border-left: 2px solid var(--ai-primary);
     background: var(--ai-bg-secondary);
   }
 

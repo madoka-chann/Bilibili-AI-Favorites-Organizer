@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { logs } from '$stores/state';
-  import { onMount, tick } from 'svelte';
-  import { textDecode } from '$animations/text';
+  import { logs, isRunning } from '$stores/state';
+  import { onMount, onDestroy, tick } from 'svelte';
+  import { textDecode, textDecodeLoop } from '$animations/text';
 
   let logEl = $state<HTMLDivElement>(undefined!);
 
@@ -35,12 +35,29 @@
     return { destroy };
   }
 
+  let catTextEl = $state<HTMLSpanElement>(undefined!);
+  let catCleanup: { destroy: () => void } | null = null;
+
   onMount(() => {
-    // 添加欢迎消息
     if ($logs.length === 0) {
       logs.add('AI 收藏夹整理器 v2.0 就绪', 'success');
     }
+    // Start cat text loop
+    if (catTextEl) {
+      catCleanup = textDecodeLoop(catTextEl, {
+        charDelay: 18,
+        pauseMs: 3000,
+        messages: [
+          '喵~ 准备好了吗？',
+          '点击「开始整理」吧~',
+          '收藏夹需要整理喵！',
+          '我来帮你分类~',
+        ],
+      });
+    }
   });
+
+  onDestroy(() => { catCleanup?.destroy(); });
 </script>
 
 <div class="log-area" bind:this={logEl}>
@@ -54,6 +71,11 @@
       <span class="log-msg">{entry.message}</span>
     </div>
   {/each}
+
+  <div class="log-cat" class:away={$isRunning}>
+    <span class="cat-emoji">🐱</span>
+    <span class="cat-text" bind:this={catTextEl}>喵~ 准备好了吗？</span>
+  </div>
 </div>
 
 <style>
@@ -73,6 +95,7 @@
     display: flex;
     flex-direction: column;
     gap: 2px;
+    position: relative;
   }
 
   .log-entry {
@@ -142,6 +165,40 @@
   .log-info {
     color: var(--ai-info);
     border-left-color: var(--ai-info);
+  }
+
+  .log-cat {
+    position: absolute;
+    bottom: 4px;
+    left: 8px;
+    right: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: linear-gradient(to top, var(--ai-bg-tertiary) 70%, transparent);
+    font-size: 11px;
+    color: var(--ai-primary);
+    border-radius: 0 0 8px 8px;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none;
+  }
+  .log-cat.away {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.5);
+    pointer-events: none;
+  }
+  .cat-emoji {
+    font-size: 18px;
+    animation: catIdle 1s ease-in-out infinite alternate;
+  }
+  .cat-text {
+    font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+    letter-spacing: 0.03em;
+  }
+  @keyframes catIdle {
+    from { transform: translateY(0); }
+    to { transform: translateY(-3px); }
   }
 
   @keyframes logSlideIn {

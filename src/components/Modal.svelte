@@ -1,10 +1,11 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import type { Snippet } from 'svelte';
-  import { gsap, EASINGS } from '$animations/gsap-config';
+  import { gsap, EASINGS, shouldAnimate } from '$animations/gsap-config';
   import { shouldAnimateFunctional } from '$animations/gsap-config';
   import { glowTrack } from '$actions/glow-track';
   import { ripple } from '$actions/ripple';
+  import { magnetic } from '$actions/magnetic';
   import { X } from 'lucide-svelte';
   import { Z_INDEX } from '$utils/constants';
 
@@ -36,9 +37,11 @@
   let ctx: gsap.Context;
   let abortCtrl: AbortController;
 
-  // Scroll fade edge state
+  // Scroll fade edge state + progress
   let scrolledTop = $state(false);
   let scrolledBottom = $state(false);
+  let scrollProgress = $state(0);
+  let showScrollBar = $state(false);
 
   function updateScrollFade() {
     if (!bodyEl) return;
@@ -46,25 +49,28 @@
     const isScrollable = scrollHeight > clientHeight + 2;
     scrolledTop = isScrollable && scrollTop > 4;
     scrolledBottom = isScrollable && scrollTop < scrollHeight - clientHeight - 4;
+    const maxScroll = scrollHeight - clientHeight;
+    showScrollBar = maxScroll > 10;
+    scrollProgress = maxScroll > 0 ? scrollTop / maxScroll : 0;
   }
 
   onMount(() => {
     ctx = gsap.context(() => {
       if (shouldAnimateFunctional()) {
-        // F1: 模态框入场 — 简洁 fade+slide，内容同步显示无二次弹跳
+        // F1: 绽放入场 — fast scale+blur
         gsap.fromTo(
           backdropEl,
           { opacity: 0 },
-          { opacity: 1, duration: 0.25 }
+          { opacity: 1, duration: 0.2 }
         );
+
         gsap.fromTo(
           modalEl,
-          { scale: 0.92, y: 24, opacity: 0 },
+          { scale: 0.88, y: 24, opacity: 0, filter: 'blur(8px)' },
           {
-            scale: 1, y: 0, opacity: 1,
+            scale: 1, y: 0, opacity: 1, filter: 'blur(0px)',
             duration: 0.35,
             ease: EASINGS.velvetSpring,
-            delay: 0.05,
             clearProps: 'transform,filter',
           }
         );
@@ -88,17 +94,19 @@
 
   function handleClose() {
     if (shouldAnimateFunctional() && modalEl && backdropEl) {
+      // F3: 物理退出
       gsap.to(modalEl, {
-        scale: 0.95,
+        scale: 0.92,
         y: 16,
         opacity: 0,
+        filter: 'blur(4px)',
         duration: 0.2,
         ease: 'power2.in',
       });
       gsap.to(backdropEl, {
         opacity: 0,
-        duration: 0.25,
-        delay: 0.05,
+        duration: 0.2,
+        delay: 0.03,
         onComplete: () => onclose?.(),
       });
     } else {
@@ -135,6 +143,7 @@
       onscroll={updateScrollFade}
       use:glowTrack
     >
+      <div class="modal-scroll-indicator" class:visible={showScrollBar} style:width="{scrollProgress * 100}%"></div>
       {#if children}{@render children()}{/if}
     </div>
 
@@ -143,7 +152,7 @@
         {#if footer}
           {@render footer()}
         {:else}
-          <button class="modal-btn cancel" onclick={handleClose} use:ripple>
+          <button class="modal-btn cancel" onclick={handleClose} use:ripple use:magnetic={{ radius: 60, strength: 0.4 }}>
             {cancelText}
           </button>
           <button
@@ -151,6 +160,7 @@
             disabled={confirmDisabled}
             onclick={() => onconfirm?.()}
             use:ripple={{ color: 'rgba(255,255,255,0.3)' }}
+            use:magnetic={{ radius: 60, strength: 0.4 }}
           >
             {confirmText}
           </button>
@@ -321,6 +331,21 @@
 
   .modal-btn.cancel:hover {
     background: var(--ai-bg-tertiary);
+  }
+
+  .modal-scroll-indicator {
+    position: sticky;
+    top: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--ai-primary), var(--ai-gradient-accent));
+    opacity: 0;
+    transition: opacity 0.3s ease, width 0.15s linear;
+    z-index: 3;
+    border-radius: 1px;
+    flex-shrink: 0;
+  }
+  .modal-scroll-indicator.visible {
+    opacity: 1;
   }
 
   @keyframes modal-aurora-flow {

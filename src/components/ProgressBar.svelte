@@ -2,7 +2,8 @@
   import { onDestroy } from 'svelte';
   import { tweened } from 'svelte/motion';
   import { cubicOut } from 'svelte/easing';
-  import { progressPercent, progressPhase, isRunning, tokenUsage } from '$stores/state';
+  import { progressPhase, progressCurrent, progressTotal, isRunning, tokenUsage } from '$stores/state';
+  import { getContinuousPercent } from '$utils/progress';
   import {
     spawnTrailParticles,
     phaseTransition,
@@ -11,10 +12,15 @@
   } from '$animations/progress';
   import { numberRoll } from '$animations/text';
 
-  // D1: 平滑进度条 — Svelte tweened
-  const smoothProgress = tweened(0, { duration: 400, easing: cubicOut });
+  // Continuous progress across all phases
+  let continuousPercent = $derived(
+    getContinuousPercent($progressPhase, $progressCurrent, $progressTotal)
+  );
 
-  $effect(() => { smoothProgress.set($progressPercent); });
+  // D1: 平滑进度条 — Svelte tweened
+  const smoothProgress = tweened(0, { duration: 800, easing: cubicOut });
+
+  $effect(() => { smoothProgress.set(continuousPercent); });
 
   const PHASE_LABELS: Record<string, string> = {
     fetch: '抓取视频',
@@ -32,9 +38,9 @@
   // D2: 进度轨迹粒子 — 节流触发
   let lastParticlePercent = 0;
   $effect(() => {
-    if (trackEl && $progressPercent > lastParticlePercent + 4) {
+    if (trackEl && continuousPercent > lastParticlePercent + 4) {
       spawnTrailParticles(trackEl, $smoothProgress);
-      lastParticlePercent = $progressPercent;
+      lastParticlePercent = continuousPercent;
     }
   });
 
@@ -54,7 +60,7 @@
   let celebrated = false;
   let cleanupCelebration: (() => void) | undefined;
   $effect(() => {
-    if (containerEl && $progressPercent >= 100 && !celebrated) {
+    if (containerEl && continuousPercent >= 100 && !celebrated) {
       celebrated = true;
       cleanupCelebration = victoryCelebration(containerEl);
     }
@@ -63,11 +69,11 @@
   // D5: 数字翻滚弹跳
   let prevPercent = 0;
   $effect(() => {
-    if (percentEl && $progressPercent !== prevPercent) {
-      if ($progressPercent > prevPercent) {
+    if (percentEl && continuousPercent !== prevPercent) {
+      if (continuousPercent > prevPercent) {
         numberBounce(percentEl);
       }
-      prevPercent = $progressPercent;
+      prevPercent = continuousPercent;
     }
   });
 
@@ -110,15 +116,16 @@
       <span class="phase-label" bind:this={labelEl}>
         {PHASE_LABELS[$progressPhase] ?? '准备中'}
       </span>
-      <span class="progress-text" bind:this={percentEl}>{$progressPercent}%</span>
+      <span class="progress-text" bind:this={percentEl}>{continuousPercent}%</span>
     </div>
     <div class="progress-track" bind:this={trackEl}>
       <div
         class="progress-bar"
-        class:complete={$progressPercent >= 100}
+        class:complete={continuousPercent >= 100}
         style:width="{$smoothProgress}%"
         bind:this={barEl}
       ></div>
+      <span class="progress-cat" style:left="{$smoothProgress}%">🐱</span>
     </div>
     {#if $tokenUsage.totalTokens > 0}
       <div class="token-stats">
@@ -212,6 +219,22 @@
     color: var(--ai-text-muted);
     margin-top: 4px;
     text-align: right;
+  }
+
+  .progress-cat {
+    position: absolute;
+    top: -18px;
+    font-size: 16px;
+    line-height: 1;
+    transform: translateX(-50%);
+    animation: catBounce 0.5s ease-in-out infinite alternate;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
+    pointer-events: none;
+    transition: left 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  @keyframes catBounce {
+    from { transform: translateX(-50%) translateY(0); }
+    to { transform: translateX(-50%) translateY(-6px); }
   }
 
   @keyframes shimmer {

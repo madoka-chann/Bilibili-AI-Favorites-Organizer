@@ -182,12 +182,13 @@
         // info: 标准弹性滑入 (G1)
         gsap.fromTo(
           node,
-          { x: 140, scale: 0.6, rotation: 3, opacity: 0 },
+          { x: 140, scale: 0.6, rotation: 3, opacity: 0, filter: 'blur(12px)' },
           {
             x: 0,
             scale: 1,
             rotation: 0,
             opacity: 1,
+            filter: 'blur(0px)',
             duration: 0.55,
             ease: EASINGS.velvetSpring,
           }

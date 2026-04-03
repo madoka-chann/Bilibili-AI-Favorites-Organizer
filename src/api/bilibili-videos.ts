@@ -3,7 +3,7 @@
  */
 
 import type { BiliData, VideoResource, BiliApiResponse, BiliFavResourceData } from '$types/index';
-import { BILIBILI_PAGE_SIZE, BILIBILI_URLS } from '$utils/constants';
+import { BILIBILI_PAGE_SIZE, BILIBILI_URLS, MAX_BILIBILI_PAGES } from '$utils/constants';
 import { humanDelay } from '$utils/timing';
 import { logs } from '$stores/state';
 import { getErrorMessage } from '$utils/errors';
@@ -71,9 +71,7 @@ export async function fetchAllVideos(
   const allVideos: VideoResource[] = [];
   let pn = 1;
   let totalPages = 0;
-  const MAX_PAGES = 500; // 安全上限：500页 × 20条/页 = 10,000 视频
-
-  while (pn <= MAX_PAGES) {
+  while (pn <= MAX_BILIBILI_PAGES) {
     if (cancelCheck()) break;
     if (maxVideos && allVideos.length >= maxVideos) break;
 

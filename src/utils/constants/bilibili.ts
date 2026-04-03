@@ -39,3 +39,6 @@ export const DEFAULT_VIDEO_TYPE = 2;
 
 // ================= 操作限制 =================
 export const MAX_UNDO_HISTORY = 5;
+
+/** 分页安全上限：500页 × 20条/页 = 10,000 视频 */
+export const MAX_BILIBILI_PAGES = 500;

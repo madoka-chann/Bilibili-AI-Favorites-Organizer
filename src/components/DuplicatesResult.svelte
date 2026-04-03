@@ -38,7 +38,7 @@
     </div>
 
     <div class="bfao-action-bar">
-      <button class="bfao-btn bfao-btn-primary" onclick={() => ondedup?.()} disabled={processing} use:magnetic={{ radius: 40, strength: 0.25 }} use:pressEffect>
+      <button class="bfao-btn bfao-btn-primary" onclick={() => ondedup?.()} disabled={processing} use:magnetic={{ radius: 80, strength: 0.45 }} use:pressEffect>
         {processing ? '正在去重...' : '一键去重'}
       </button>
       <span class="bfao-modal-hint">保留首次出现的收藏夹，从其他收藏夹删除副本</span>

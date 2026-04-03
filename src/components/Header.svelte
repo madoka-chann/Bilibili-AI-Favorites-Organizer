@@ -2,7 +2,10 @@
   import { X, Settings, Moon, Sun } from 'lucide-svelte';
   import { isDark, toggleTheme } from '$stores/theme';
   import { ripple } from '$actions/ripple';
+  import { magnetic } from '$actions/magnetic';
   import { pressEffect } from '$animations/micro';
+
+  const headerMagnetic = { radius: 60, strength: 0.4 };
   import { gsap, EASINGS, shouldAnimate } from '$animations/gsap-config';
   import { Z_INDEX } from '$utils/constants';
   import { onDestroy } from 'svelte';
@@ -50,30 +53,21 @@
 
     if (!appEl || !oldBg) return;
 
-    // J1: 圆形揭示过渡
-    const cx = e.clientX;
-    const cy = e.clientY;
-    const maxRadius = Math.ceil(Math.hypot(
-      Math.max(cx, window.innerWidth - cx),
-      Math.max(cy, window.innerHeight - cy)
-    ));
-
-    // 遮罩: 旧主题背景色的全屏层，通过 clip-path 收缩来揭示新主题
+    // J1: 柔和渐隐过渡 — 旧主题背景色覆盖层淡出
     const overlay = document.createElement('div');
     overlay.style.cssText = `
       position: fixed;
       inset: 0;
       z-index: ${Z_INDEX.PARTICLE};
       background: ${oldBg};
-      clip-path: circle(${maxRadius}px at ${cx}px ${cy}px);
       pointer-events: none;
     `;
     document.body.appendChild(overlay);
 
     gsap.to(overlay, {
-      clipPath: `circle(0px at ${cx}px ${cy}px)`,
-      duration: 0.6,
-      ease: 'power2.inOut',
+      opacity: 0,
+      duration: 0.4,
+      ease: 'power2.out',
       onComplete: () => overlay.remove(),
     });
 
@@ -100,7 +94,7 @@
       onclick={handleThemeToggle}
       title={$isDark ? '切换到亮色模式' : '切换到暗色模式'}
       use:ripple={{ color: 'rgba(255,255,255,0.25)' }}
-      use:pressEffect
+      use:pressEffect use:magnetic={headerMagnetic}
     >
       {#if $isDark}
         <Sun size={16} />
@@ -115,7 +109,7 @@
       title="设置"
       onclick={() => (settingsOpen = !settingsOpen)}
       use:ripple={{ color: 'rgba(255,255,255,0.25)' }}
-      use:pressEffect
+      use:pressEffect use:magnetic={headerMagnetic}
     >
       <span class="settings-icon" class:open={settingsOpen}>
         <Settings size={16} />
@@ -127,7 +121,7 @@
       onclick={() => onclose?.()}
       title="关闭"
       use:ripple={{ color: 'rgba(255,255,255,0.25)' }}
-      use:pressEffect
+      use:pressEffect use:magnetic={headerMagnetic}
     >
       <X size={16} />
     </button>

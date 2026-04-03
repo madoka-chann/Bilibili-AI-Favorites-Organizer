@@ -73,6 +73,7 @@ export function saveUndoData(record: UndoRecord): void {
     const history = loadUndoHistory();
     history.unshift(record);
     gmSetValue(UNDO_KEY, JSON.stringify(history.slice(0, MAX_UNDO_HISTORY)));
+    // COMPAT: remove after 2026-Q3 — legacy single-record format for old versions
     gmSetValue('bfao_undoData', JSON.stringify(record));
   } catch (e: unknown) {
     logs.add(`保存撤销数据失败: ${getErrorMessage(e)}`, 'warning');
@@ -87,6 +88,7 @@ export function clearUndoRecord(index: number): void {
       history.splice(index, 1);
     }
     gmSetValue(UNDO_KEY, JSON.stringify(history));
+    // COMPAT: remove after 2026-Q3 — legacy single-record format for old versions
     gmSetValue('bfao_undoData', history.length > 0 ? JSON.stringify(history[0]) : null);
   } catch (e: unknown) {
     logs.add(`清除撤销数据失败: ${getErrorMessage(e)}`, 'warning');

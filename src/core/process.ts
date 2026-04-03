@@ -55,6 +55,10 @@ async function fetchSourceVideos(
   const videoSourceMap: Map<number, number> = new Map();
   const maxVideos = settings.limitEnabled ? settings.limitCount : undefined;
 
+  // For progress: estimate total videos from limit or folder count
+  const estimatedTotal = maxVideos ?? sourceMediaIds.length * 100; // rough estimate
+  let fetchedSoFar = 0;
+
   for (const mediaId of sourceMediaIds) {
     if (isCancelled()) break;
     if (maxVideos && allVideos.length >= maxVideos) break;
@@ -65,7 +69,11 @@ async function fetchSourceVideos(
       mediaId,
       settings.fetchDelay,
       isCancelled,
-      (page, total) => updateProgress('fetch', page, total),
+      () => {
+        // Update progress based on cumulative fetched videos
+        fetchedSoFar = allVideos.length;
+        updateProgress('fetch', fetchedSoFar, maxVideos ?? estimatedTotal);
+      },
       remaining,
     );
 
@@ -84,7 +92,11 @@ async function fetchSourceVideos(
       videoSourceMap.set(v.id, mediaId);
     }
     allVideos.push(...validVideos);
+    // Update fetch progress with actual count
+    updateProgress('fetch', allVideos.length, maxVideos ?? allVideos.length);
   }
+  // Mark fetch phase complete
+  updateProgress('fetch', allVideos.length, allVideos.length);
 
   return { allVideos, videoSourceMap };
 }
@@ -112,6 +124,8 @@ async function classifyWithAI(
   let aiCompleted = 0;
   let aiFailed = 0;
 
+  // Initialize AI phase progress immediately
+  updateProgress('ai', 0, totalAiCalls);
   logs.add(`分为 ${totalAiCalls} 批次，并发 ${concurrency}`, 'info');
 
   const aiPromises: Promise<void>[] = [];
@@ -240,9 +254,13 @@ async function moveVideosToFolders(
 ): Promise<{ undoMoves: UndoRecord['moves']; failedCount: number }> {
   invalidateFolderCache();
   const entries = Object.entries(allCategories);
+  const totalMoveVideos = Object.values(allCategories).reduce((s, v) => s + v.length, 0);
   let moveIdx = 0;
   let failedCount = 0;
   const undoMoves: UndoRecord['moves'] = [];
+
+  // Initialize move phase progress
+  updateProgress('move', 0, totalMoveVideos);
 
   for (const [categoryName, vids] of entries) {
     if (isCancelled()) break;

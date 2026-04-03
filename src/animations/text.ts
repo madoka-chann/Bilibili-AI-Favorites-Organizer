@@ -5,7 +5,7 @@
 import { shouldAnimate } from './gsap-config';
 
 // 用于文字解码效果的字符集
-const DECODE_CHARS = '!@#$%^&*()_+-=[]{}|;:,.<>?0123456789ABCDEFabcdef';
+const DECODE_CHARS = '█▓▒░!@#$%^&*()_+-=[]{}|;:,.<>?0123456789ABCDEFabcdefΣΩπλΔ';
 
 /**
  * H1: 文字解码效果
@@ -21,7 +21,7 @@ export function textDecode(
   const finalText = el.textContent ?? '';
   if (!finalText) return { destroy() {} };
 
-  const charDelay = opts.charDelay ?? 25;
+  const charDelay = opts.charDelay ?? 15;
   const totalChars = finalText.length;
   let resolved = 0;
   let rafId: number | null = null;
@@ -72,6 +72,60 @@ function scramble(text: string, resolved: number): string {
     }
   }
   return result;
+}
+
+/**
+ * H1b: 文字解码循环效果
+ * 解码完成后等待后再重新开始，无限循环
+ */
+export function textDecodeLoop(
+  el: HTMLElement,
+  opts: { charDelay?: number; pauseMs?: number; messages?: string[] } = {}
+): { destroy: () => void } {
+  if (!shouldAnimate()) return { destroy() {} };
+
+  const messages = opts.messages ?? [el.textContent ?? ''];
+  const charDelay = opts.charDelay ?? 20;
+  const pauseMs = opts.pauseMs ?? 2500;
+  let destroyed = false;
+  let rafId: number | null = null;
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+  let msgIdx = 0;
+
+  function runOnce() {
+    if (destroyed) return;
+    const text = messages[msgIdx % messages.length];
+    msgIdx++;
+    let resolved = 0;
+    let lastTime = performance.now();
+    el.textContent = scramble(text, 0);
+
+    function step(now: number) {
+      if (destroyed) return;
+      if (now - lastTime >= charDelay) {
+        resolved++;
+        lastTime = now;
+        if (resolved >= text.length) {
+          el.textContent = text;
+          timeoutId = setTimeout(runOnce, pauseMs);
+          return;
+        }
+        el.textContent = scramble(text, resolved);
+      }
+      rafId = requestAnimationFrame(step);
+    }
+    rafId = requestAnimationFrame(step);
+  }
+
+  runOnce();
+
+  return {
+    destroy() {
+      destroyed = true;
+      if (rafId != null) cancelAnimationFrame(rafId);
+      if (timeoutId != null) clearTimeout(timeoutId);
+    },
+  };
 }
 
 /**

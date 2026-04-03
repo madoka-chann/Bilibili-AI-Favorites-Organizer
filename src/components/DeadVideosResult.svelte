@@ -47,11 +47,11 @@
     </div>
 
     <div class="bfao-action-bar">
-      <button class="bfao-btn bfao-btn-primary" onclick={() => onarchive?.()} disabled={processing} use:magnetic={{ radius: 40, strength: 0.25 }} use:pressEffect>
+      <button class="bfao-btn bfao-btn-primary" onclick={() => onarchive?.()} disabled={processing} use:magnetic={{ radius: 80, strength: 0.45 }} use:pressEffect>
         <Archive size={14} />
         {processing ? '处理中...' : '移动到「失效视频归档」'}
       </button>
-      <button class="bfao-btn bfao-btn-danger" onclick={() => ondelete?.()} disabled={processing} use:magnetic={{ radius: 40, strength: 0.25 }} use:pressEffect>
+      <button class="bfao-btn bfao-btn-danger" onclick={() => ondelete?.()} disabled={processing} use:magnetic={{ radius: 80, strength: 0.45 }} use:pressEffect>
         <Trash2 size={14} />
         {processing ? '处理中...' : '直接删除'}
       </button>

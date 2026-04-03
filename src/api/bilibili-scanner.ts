@@ -7,7 +7,7 @@ import type { BiliData, FavFolder, VideoResource, BiliFavResourceData } from '$t
 import { humanDelay } from '$utils/timing';
 import { logs } from '$stores/state';
 import { getErrorMessage } from '$utils/errors';
-import { BILIBILI_URLS } from '$utils/constants';
+import { BILIBILI_URLS, MAX_BILIBILI_PAGES } from '$utils/constants';
 import { safeFetchJson } from './bilibili-http';
 import { getAllFoldersWithIds } from './bilibili-folders';
 
@@ -42,7 +42,6 @@ export async function scanAllFolderVideos<T>(
 
   const results: T[] = [];
   let totalScanned = 0;
-  const MAX_PAGES = 500; // 安全上限：与 fetchAllVideos 一致
 
   for (let fi = 0; fi < allFolders.length; fi++) {
     if (cancelCheck()) break;
@@ -50,7 +49,7 @@ export async function scanAllFolderVideos<T>(
     logs.add(`${logPrefix} [${fi + 1}/${allFolders.length}] ${folder.title}...`, 'info');
 
     let pn = 1;
-    while (pn <= MAX_PAGES) {
+    while (pn <= MAX_BILIBILI_PAGES) {
       if (cancelCheck()) break;
       try {
         const res = await fetchFn<BiliFavResourceData>(

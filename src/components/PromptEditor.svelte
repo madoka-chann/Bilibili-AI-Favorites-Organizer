@@ -5,7 +5,7 @@
   import { debounce } from '$utils/timing';
   import { focusGlow, pressEffect } from '$animations/micro';
   import { gmGetValue, gmSetValue } from '$utils/gm';
-  import { Save, Trash2, Star } from 'lucide-svelte';
+  import { Save, Trash2, Star, Settings2 } from 'lucide-svelte';
   import type { PromptPreset } from '$types/ai';
 
   let promptValue = $state($settings.lastPrompt);
@@ -16,6 +16,14 @@
   );
   let defaultPresetId = $state<string>(
     gmGetValue('bfao_defaultPromptPreset', '')
+  );
+  let hiddenBuiltins = $state<string[]>(
+    gmGetValue<string[]>('bfao_hiddenPresets', [])
+  );
+  let showManager = $state(false);
+
+  let visibleBuiltins = $derived(
+    BUILTIN_PRESETS.filter(p => !hiddenBuiltins.includes(p.label))
   );
 
   // 1 秒防抖保存
@@ -37,10 +45,32 @@
 
   function saveAsCustom() {
     if (!promptValue.trim()) return;
+    const defaultName = promptValue.trim().slice(0, 20) + (promptValue.trim().length > 20 ? '...' : '');
+    const name = window.prompt('预设名称:', defaultName);
+    if (!name) return;
     const id = 'custom_' + Date.now();
-    const label = promptValue.trim().slice(0, 20) + (promptValue.trim().length > 20 ? '...' : '');
-    const preset: PromptPreset = { label, value: promptValue, isCustom: true, id };
+    const preset: PromptPreset = { label: name, value: promptValue, isCustom: true, id };
     customPresets = [...customPresets, preset];
+    gmSetValue('bfao_customPromptPresets', customPresets);
+  }
+
+  function hideBuiltin(label: string) {
+    hiddenBuiltins = [...hiddenBuiltins, label];
+    gmSetValue('bfao_hiddenPresets', hiddenBuiltins);
+  }
+
+  function restoreBuiltin(label: string) {
+    hiddenBuiltins = hiddenBuiltins.filter(l => l !== label);
+    gmSetValue('bfao_hiddenPresets', hiddenBuiltins);
+  }
+
+  function renameCustom(id: string) {
+    const preset = customPresets.find(p => p.id === id);
+    if (!preset) return;
+    const name = window.prompt('重命名预设:', preset.label);
+    if (!name) return;
+    preset.label = name;
+    customPresets = [...customPresets];
     gmSetValue('bfao_customPromptPresets', customPresets);
   }
 
@@ -66,11 +96,6 @@
 <div class="prompt-editor">
   <div class="prompt-header">
     <select class="bfao-select" onchange={handlePresetChange} value={promptValue}>
-      <optgroup label="内置预设">
-        {#each BUILTIN_PRESETS as preset}
-          <option value={preset.value}>{preset.label}</option>
-        {/each}
-      </optgroup>
       {#if customPresets.length > 0}
         <optgroup label="自定义预设">
           {#each customPresets as preset}
@@ -78,9 +103,17 @@
           {/each}
         </optgroup>
       {/if}
+      <optgroup label="内置预设">
+        {#each visibleBuiltins as preset}
+          <option value={preset.value}>{preset.label}</option>
+        {/each}
+      </optgroup>
     </select>
     <button class="prompt-action-btn" title="保存为自定义预设" onclick={saveAsCustom} disabled={!promptValue.trim()} use:pressEffect>
       <Save size={12} />
+    </button>
+    <button class="prompt-action-btn" title="管理预设" onclick={() => showManager = !showManager} use:pressEffect>
+      <Settings2 size={12} />
     </button>
   </div>
 
@@ -92,19 +125,40 @@
     use:focusGlow
   ></textarea>
 
-  {#if customPresets.length > 0}
-    <div class="custom-presets">
-      {#each customPresets as preset (preset.id)}
+  {#if showManager}
+    <div class="preset-manager">
+      <div class="manager-title">预设管理</div>
+      {#if customPresets.length > 0}
+        <div class="manager-section">自定义</div>
+        {#each customPresets as preset (preset.id)}
+          <div class="custom-preset-row">
+            <button class="preset-select" onclick={() => { promptValue = preset.value; settings.update({ lastPrompt: preset.value }); }}>
+              {preset.label}
+            </button>
+            <button class="preset-icon-btn" title="重命名" onclick={() => renameCustom(preset.id ?? '')}>✎</button>
+            <button class="preset-icon-btn" title={defaultPresetId === preset.id ? '取消默认' : '设为默认'} onclick={() => setAsDefault(preset.id ?? '')}>
+              <Star size={11} class={defaultPresetId === preset.id ? 'starred' : ''} />
+            </button>
+            <button class="preset-icon-btn danger" title="删除" onclick={() => deleteCustom(preset.id ?? '')}>
+              <Trash2 size={11} />
+            </button>
+          </div>
+        {/each}
+      {/if}
+      <div class="manager-section">内置</div>
+      {#each BUILTIN_PRESETS as preset}
         <div class="custom-preset-row">
-          <button class="preset-select" onclick={() => { promptValue = preset.value; settings.update({ lastPrompt: preset.value }); }}>
+          <button class="preset-select" class:hidden-preset={hiddenBuiltins.includes(preset.label)}
+            onclick={() => { promptValue = preset.value; settings.update({ lastPrompt: preset.value }); }}>
             {preset.label}
           </button>
-          <button class="preset-icon-btn" title={defaultPresetId === preset.id ? '取消默认' : '设为默认'} onclick={() => setAsDefault(preset.id ?? '')}>
-            <Star size={11} class={defaultPresetId === preset.id ? 'starred' : ''} />
-          </button>
-          <button class="preset-icon-btn danger" title="删除" onclick={() => deleteCustom(preset.id ?? '')}>
-            <Trash2 size={11} />
-          </button>
+          {#if hiddenBuiltins.includes(preset.label)}
+            <button class="preset-icon-btn" title="恢复显示" onclick={() => restoreBuiltin(preset.label)}>↩</button>
+          {:else}
+            <button class="preset-icon-btn danger" title="隐藏" onclick={() => hideBuiltin(preset.label)}>
+              <Trash2 size={11} />
+            </button>
+          {/if}
         </div>
       {/each}
     </div>
@@ -243,5 +297,31 @@
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-2px); }
     75% { transform: translateX(2px); }
+  }
+
+  .preset-manager {
+    margin-top: 8px;
+    padding: 8px;
+    border: 1px solid var(--ai-border-light);
+    border-radius: 8px;
+    background: var(--ai-bg-secondary);
+  }
+  .manager-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ai-text);
+    margin-bottom: 6px;
+  }
+  .manager-section {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ai-text-muted);
+    margin: 6px 0 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .hidden-preset {
+    opacity: 0.4;
+    text-decoration: line-through;
   }
 </style>

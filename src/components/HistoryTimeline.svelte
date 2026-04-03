@@ -42,10 +42,10 @@
   </div>
 
   {#snippet footer()}
-    <button class="bfao-btn bfao-btn-muted clear-btn" onclick={() => onclear?.()} use:magnetic={{ radius: 40, strength: 0.25 }} use:pressEffect>
+    <button class="bfao-btn bfao-btn-muted clear-btn" onclick={() => onclear?.()} use:magnetic={{ radius: 80, strength: 0.45 }} use:pressEffect>
       <Trash2 size={14} /> 清空
     </button>
-    <button class="bfao-btn bfao-btn-muted" onclick={() => onclose?.()} use:magnetic={{ radius: 40, strength: 0.25 }} use:pressEffect>
+    <button class="bfao-btn bfao-btn-muted" onclick={() => onclose?.()} use:magnetic={{ radius: 80, strength: 0.45 }} use:pressEffect>
       关闭
     </button>
   {/snippet}

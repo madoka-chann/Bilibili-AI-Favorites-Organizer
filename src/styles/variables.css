@@ -128,26 +128,14 @@
   --ai-shadow-modal: 0 44px 110px rgba(0, 0, 0, 0.5), 0 18px 44px rgba(0, 0, 0, 0.3);
 }
 
-/* ==================== Themed Scrollbar ==================== */
+/* ==================== Hidden Scrollbar — scroll still works, bar hidden ==================== */
 .bfao-app *::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
-}
-.bfao-app *::-webkit-scrollbar-track {
-  background: transparent;
-}
-.bfao-app *::-webkit-scrollbar-thumb {
-  background: var(--ai-border);
-  border-radius: 4px;
-  transition: background 0.2s;
-}
-.bfao-app *::-webkit-scrollbar-thumb:hover {
-  background: var(--ai-text-muted);
+  width: 0;
+  height: 0;
 }
 /* Firefox */
 .bfao-app * {
-  scrollbar-width: thin;
-  scrollbar-color: var(--ai-border) transparent;
+  scrollbar-width: none;
 }
 
 /* ==================== Keyboard Focus Ring ==================== */

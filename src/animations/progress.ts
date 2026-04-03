@@ -18,19 +18,21 @@ export function spawnTrailParticles(
 
   const rect = trackEl.getBoundingClientRect();
   const leadX = (progressPercent / 100) * rect.width;
-  const count = 3;
+  const count = 5;
 
   for (let i = 0; i < count; i++) {
     const dot = document.createElement('span');
+    const color = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
     dot.className = 'progress-particle';
     dot.style.cssText = `
       position: absolute;
       left: ${leadX}px;
       top: 50%;
-      width: 4px;
-      height: 4px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
-      background: ${CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)]};
+      background: ${color};
+      box-shadow: 0 0 6px ${color};
       pointer-events: none;
       will-change: transform, opacity;
     `;
@@ -38,13 +40,13 @@ export function spawnTrailParticles(
 
     gsap.fromTo(
       dot,
-      { x: 0, y: 0, scale: 1, opacity: 0.9 },
+      { x: 0, y: 0, scale: 1.2, opacity: 1 },
       {
-        x: (Math.random() - 0.5) * 20,
-        y: -(10 + Math.random() * 18),
+        x: (Math.random() - 0.5) * 30,
+        y: -(14 + Math.random() * 22),
         scale: 0,
         opacity: 0,
-        duration: 0.5 + Math.random() * 0.3,
+        duration: 0.6 + Math.random() * 0.4,
         ease: EASINGS.confettiArc,
         onComplete: () => dot.remove(),
       }

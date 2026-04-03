@@ -84,14 +84,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.2, 0.98, 0.28, 1);
   flex-shrink: 0;
 }
 
 .bfao-icon-btn:hover {
   border-color: var(--ai-primary);
   color: var(--ai-primary);
-  transform: rotate(8deg);
+  background: var(--ai-primary-bg);
+  box-shadow: 0 2px 8px var(--ai-primary-shadow);
 }
 
 .bfao-icon-btn:disabled {

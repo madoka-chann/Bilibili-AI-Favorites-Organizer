@@ -119,15 +119,12 @@
     {#if folders.length > 0}
       <div class="folder-breakdown" use:contentStagger={{ delay: 0.25, stagger: 0.03 }}>
         <div class="section-title">收藏夹分布</div>
-        {#each folders.slice(0, 15) as f}
+        {#each folders as f}
           <div class="folder-row">
             <span class="folder-name">{f.title}</span>
             <span class="folder-count">{f.media_count} 个视频</span>
           </div>
         {/each}
-        {#if folders.length > 15}
-          <div class="bfao-modal-more">...及其他 {folders.length - 15} 个收藏夹</div>
-        {/if}
       </div>
     {/if}
   </div>
