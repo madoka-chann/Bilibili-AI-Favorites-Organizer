@@ -7,7 +7,6 @@
 
 <img width="3782" height="1755" alt="image" src="https://github.com/user-attachments/assets/205cd6c1-48b2-4fb3-b34c-daba9ac1a5c1" />
 
-
 ### 小demo
 
 https://github.com/user-attachments/assets/667ee058-fe73-4ca6-a6f1-511bae2ba299
@@ -24,13 +23,11 @@ https://github.com/user-attachments/assets/f23b1fa1-7da2-4f5e-b2c1-ab46e784517c
 
 ### 安装&更新
 
-
-v1.0版本下方安装，新版有问题就不放了。
-
- **[Github源](https://github.com/madoka-chann/backup-bili-ai/raw/refs/heads/main/bilibili-favorites-ai-organizer.user.js)**
+2.0
+ **[Github源](https://github.com/madoka-chann/Bilibili-AI-Favorites-Organizer/raw/refs/heads/main/dist/bilibili-ai-favorites-organizer.user.js)**
 
  
- **[Github国内加速源](https://ghfast.top/https://github.com/madoka-chann/backup-bili-ai/raw/refs/heads/main/bilibili-favorites-ai-organizer.user.js)**
+ **[Github国内加速源](https://ghfast.top/https://github.com/madoka-chann/Bilibili-AI-Favorites-Organizer/raw/refs/heads/main/dist/bilibili-ai-favorites-organizer.user.js)**
 
 ## 功能特性
 
@@ -90,9 +87,11 @@ v1.0版本下方安装，新版有问题就不放了。
 
 点击下方链接安装脚本（或在油猴扩展中手动导入 `bilibili-favorites-ai-organizer.user.js`）：
 
- **[Github源](https://raw.githubusercontent.com/madoka-chann/Bilibili-AI-Favorites-Organizer/refs/heads/main/bilibili-favorites-ai-organizer.user.js)**
 
- **[Github国内加速源](https://ghfast.top/https://raw.githubusercontent.com/madoka-chann/Bilibili-AI-Favorites-Organizer/main/bilibili-favorites-ai-organizer.user.js)**
+ **[Github源](https://github.com/madoka-chann/Bilibili-AI-Favorites-Organizer/raw/refs/heads/main/dist/bilibili-ai-favorites-organizer.user.js)**
+
+ 
+ **[Github国内加速源](https://ghfast.top/https://github.com/madoka-chann/Bilibili-AI-Favorites-Organizer/raw/refs/heads/main/dist/bilibili-ai-favorites-organizer.user.js)**
 
 ### 3. 配置 AI 服务
 
