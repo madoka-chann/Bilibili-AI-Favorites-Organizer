@@ -137,14 +137,91 @@ https://github.com/user-attachments/assets/f23b1fa1-7da2-4f5e-b2c1-ab46e784517c
 ## 项目结构
 
 ```
-├── bilibili-favorites-ai-organizer.user.js   # 主脚本（核心逻辑 + UI）
-├── bilibili-favorites-ai-organizer.css        # 样式文件（主题 + 动画）
-└── README.md
+src/
+├── main.ts                          # 入口：挂载 Svelte app 到 body
+├── App.svelte                       # 根组件：浮动按钮 + 面板
+├── vite-env.d.ts                    # Vite 环境类型声明
+├── stores/                          # → $stores/
+│   ├── settings.ts                  # 设置 store (writable, 持久化到 GM_setValue)
+│   ├── state.ts                     # 运行时状态 (isRunning, progress, logs, tokens)
+│   ├── theme.ts                     # 主题/暗色模式 store + prefersReducedMotion
+│   └── modal-bridge.ts              # Promise-based modal 通信 (folder select, preview confirm)
+├── api/                             # → $api/
+│   ├── bilibili.ts                  # B站 API 统一入口 (re-export)
+│   ├── bilibili-http.ts             # B站 HTTP 请求层 (GM_xmlhttpRequest 封装)
+│   ├── bilibili-auth.ts             # B站认证 (CSRF token, 用户信息)
+│   ├── bilibili-folders.ts          # B站收藏夹操作 (列表/创建/移动)
+│   ├── bilibili-videos.ts           # B站视频操作 (获取/删除/批量)
+│   ├── bilibili-scanner.ts          # B站收藏夹分页扫描
+│   ├── ai-client.ts                 # AI 统一调用层 (重试/限流/Token追踪)
+│   ├── ai-providers.ts              # 多 Provider 适配器 (Gemini/OpenAI/Claude/...)
+│   └── ai-prompt.ts                 # AI 提示词构建
+├── core/                            # → $core/
+│   ├── process.ts                   # 整理主流程 (拆分为子函数)
+│   ├── dead-videos.ts               # 失效视频检测
+│   ├── duplicates.ts                # 跨收藏夹去重
+│   ├── backup.ts                    # 备份/恢复
+│   ├── undo.ts                      # 撤销历史
+│   ├── history.ts                   # 操作历史记录
+│   ├── panel-actions.ts             # 面板操作包装 (认证校验 + isRunning 管理)
+│   ├── export-logs.ts               # 日志导出
+│   └── background-cache.ts          # 后台自动缓存
+├── utils/                           # → $utils/
+│   ├── constants/                   # 常量 (按领域分文件)
+│   │   ├── index.ts                 # barrel export
+│   │   ├── ai.ts                    # AI providers 注册表、预设、超时
+│   │   ├── bilibili.ts              # B站 API URLs、页面大小、特殊文件夹
+│   │   └── ui.ts                    # z-index 层级、颜色、限制
+│   ├── dom.ts                       # escapeHtml, sanitize
+│   ├── timing.ts                    # debounce, sleep, humanDelay
+│   ├── errors.ts                    # 错误类型 + getErrorMessage
+│   ├── gm.ts                        # GM_* API 类型安全封装
+│   ├── collections.ts               # 数组/Map 工具函数
+│   ├── download.ts                  # 文件下载工具
+│   ├── json-extract.ts              # JSON 提取 (从 AI 响应中)
+│   ├── progress.ts                  # 进度计算工具
+│   └── running-state.ts             # isRunning 生命周期管理
+├── types/                           # → $types/
+│   ├── index.ts                     # barrel export
+│   ├── settings.ts                  # Settings 接口 (23 个字段)
+│   ├── video.ts                     # VideoResource, FavFolder, CategoryResult 等
+│   └── ai.ts                        # AIProvider, AIResponse 等
+├── components/                      # → $components/
+│   ├── FloatButton.svelte           # 浮动按钮 (可拖拽, 磁性吸引, 极光呼吸)
+│   ├── Panel.svelte                 # 主面板容器 (毛玻璃, 绽放/退场, B3交叉淡入)
+│   ├── Header.svelte                # 面板头部 (极光渐变, 涟漪, 按压效果)
+│   ├── SettingsPanel.svelte         # 设置区域 (4个可折叠分组, C5液态开关)
+│   ├── SettingsGroup.svelte         # 单个设置分组 (B4弹簧手风琴)
+│   ├── ProviderConfig.svelte        # AI Provider 配置 (模型选择, C4聚焦发光)
+│   ├── LiquidToggle.svelte          # C5 液态开关 (GSAP thumb拉伸/滑动)
+│   ├── PromptEditor.svelte          # 自定义提示词编辑器 (C4聚焦发光)
+│   ├── LogArea.svelte               # AI 状态日志 (H1文字解码效果)
+│   ├── ProgressBar.svelte           # 进度条 (D1-D6 粒子/阶段/庆祝/微光)
+│   ├── ActionButtons.svelte         # 主操作按钮组 (C1/C2按压, C3光追踪)
+│   ├── PreviewConfirm.svelte        # 分类预览+确认 (E2 FLIP展开, E3倾斜, E4缩放)
+│   ├── FolderSelector.svelte        # 收藏夹选择器 (Modal)
+│   ├── HistoryTimeline.svelte       # 历史时间线 (Modal)
+│   ├── DeadVideosResult.svelte      # 失效视频结果 (Modal)
+│   ├── DuplicatesResult.svelte      # 重复视频结果 (Modal)
+│   ├── UndoDialog.svelte            # 撤销操作 (Modal)
+│   ├── StatsDialog.svelte           # 统计/健康报告 (Modal, H2数字翻滚)
+│   ├── Toast.svelte                 # Toast 通知 (G1-G5 弹性/FLIP/类型化)
+│   └── Modal.svelte                 # 通用 Modal 容器 (F1绽放, F3物理退出)
+├── animations/                      # → $animations/
+│   ├── gsap-config.ts               # GSAP 插件注册 + 10品牌缓动 + 动画开关检测
+│   ├── micro.ts                     # 微交互: pressEffect, focusGlow, checkBounce, staggerReveal, hoverScale 等
+│   ├── progress.ts                  # 进度条: 轨迹粒子, 阶段切换, 胜利庆祝, 数字弹跳
+│   └── text.ts                      # 文字特效: 解码效果, 数字翻滚
+├── actions/                         # → $actions/
+│   ├── magnetic.ts                  # use:magnetic — 磁性光标吸引
+│   ├── tilt.ts                      # use:tilt — 3D 倾斜悬浮
+│   ├── glow-track.ts                # use:glowTrack — 径向光追踪
+│   └── ripple.ts                    # use:ripple — 点击涟漪
+└── styles/                          # → $styles/
+    ├── variables.css                # CSS 变量 (亮/暗主题, 颜色, 间距)
+    ├── forms.css                    # 表单元素基础样式
+    └── modal.css                    # Modal 通用样式
 ```
-- **语言**：原生 JavaScript (ES6+)
-- **样式**：CSS3（CSS 变量、渐变、动画、暗色主题）
-- **图标**：Lucide Icons
-- **存储**：Tampermonkey GM_getValue / GM_setValue
 
 ## 注意事项
 
