@@ -263,13 +263,45 @@
     overflow: hidden;
     max-width: 340px;
     will-change: transform, opacity;
-    transition: box-shadow 0.2s ease;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
   }
 
   .toast:hover {
     box-shadow:
       0 12px 40px rgba(0, 0, 0, 0.18),
       0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: scale(1.02);
+  }
+
+  /* Hover pauses the timer — user can read the toast without it vanishing */
+  .toast:hover .toast-timer {
+    animation-play-state: paused;
+  }
+
+  /* Pause indicator on hover — positioned inside the toast (overflow: hidden safe) */
+  .toast::before {
+    content: '⏸';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.35);
+    color: #fff;
+    font-size: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .toast:hover::before {
+    opacity: 1;
+    transform: scale(1);
   }
 
   .toast-success {
@@ -322,9 +354,10 @@
     bottom: 0;
     left: 0;
     height: 2px;
-    background: rgba(255, 255, 255, 0.5);
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
     animation: toast-timer linear forwards;
     border-radius: 0 0 14px 14px;
+    transition: opacity 0.2s ease;
   }
 
   @keyframes toast-timer {
@@ -359,7 +392,8 @@
 
   @media (prefers-reduced-motion: reduce) {
     .toast { transition: none; }
-    .toast:hover { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06); }
+    .toast:hover { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06); transform: none; }
+    .toast::before { display: none; }
     .toast-success .toast-icon,
     .toast-error .toast-icon,
     .toast-warning .toast-icon { animation: none; }

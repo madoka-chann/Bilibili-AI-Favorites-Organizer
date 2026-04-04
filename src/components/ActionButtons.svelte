@@ -109,6 +109,7 @@
       radial-gradient(circle at var(--glow-x, -100px) var(--glow-y, -100px), rgba(255,255,255,0.2), transparent 60%),
       linear-gradient(135deg, var(--ai-primary), var(--ai-gradient-accent), var(--ai-primary));
     background-size: auto, 500% 500%;
+    animation: gradientFlow 8s ease-in-out infinite;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -134,6 +135,17 @@
     background: linear-gradient(135deg, var(--ai-error), var(--ai-error-hover), var(--ai-error));
     animation: runningPulse 2s ease-in-out infinite;
     border: 1.5px solid rgba(var(--ai-error-rgb), 0.4);
+  }
+
+  /* Running state: Esc shortcut becomes more prominent to guide user */
+  .btn-primary.running .kbd {
+    opacity: 0.8;
+    animation: kbdPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes kbdPulse {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; background: rgba(255, 255, 255, 0.3); }
   }
 
   .btn-primary.running :global(svg) {
@@ -230,6 +242,12 @@
     transition: opacity 0.3s ease, filter 0.3s ease;
   }
 
+  /* When a row has disabled buttons, dim the entire row for visual coherence */
+  .tool-row:has(.btn-tool:disabled) {
+    opacity: 0.75;
+    transition: opacity 0.3s ease;
+  }
+
   @keyframes runningPulse {
     0%, 100% {
       box-shadow: 0 4px 16px rgba(var(--ai-primary-rgb), 0.15);
@@ -241,15 +259,23 @@
     }
   }
 
+  @keyframes gradientFlow {
+    0% { background-position: 0% 0%, 0% 50%; }
+    50% { background-position: 0% 0%, 100% 50%; }
+    100% { background-position: 0% 0%, 0% 50%; }
+  }
+
   @keyframes toolRowSlideIn {
     from { opacity: 0; transform: translateY(6px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .btn-primary { animation: none; }
     .btn-primary :global(svg) { animation: none; }
     .btn-primary.running :global(svg) { animation: none; }
     .btn-primary:not(.running) :global(svg) { animation: none; }
+    .btn-primary.running .kbd { animation: none; }
     .kbd { transition: none; }
     .btn-tool :global(svg) { transition: none; }
     .btn-tool:hover :global(svg) { transform: none; }

@@ -194,6 +194,12 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: titleShimmer 6s ease-in-out infinite;
+    letter-spacing: 0;
+    transition: letter-spacing 0.4s cubic-bezier(0.2, 0.98, 0.28, 1);
+  }
+
+  .header-title > span:first-child:hover {
+    letter-spacing: 0.06em;
   }
 
   .version {
@@ -232,6 +238,32 @@
 
   .header-btn.active {
     background: rgba(255, 255, 255, 0.35);
+    position: relative;
+  }
+
+  /* Active state dot indicator beneath the button */
+  .header-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 50%;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+    transform: translateX(-50%);
+    animation: dotPop 0.3s cubic-bezier(0.2, 0.98, 0.28, 1) both;
+  }
+
+  @keyframes dotPop {
+    from { transform: translateX(-50%) scale(0); }
+    to { transform: translateX(-50%) scale(1); }
+  }
+
+  /* Close button hover — X turns reddish to signal destructive action */
+  .header-btn:last-child:hover {
+    background: rgba(239, 68, 68, 0.3);
   }
 
   .settings-icon {
@@ -264,8 +296,10 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .header-title > span:first-child { animation: none; -webkit-text-fill-color: #fff; }
+    .header-title > span:first-child { animation: none; -webkit-text-fill-color: #fff; transition: none; }
+    .header-title > span:first-child:hover { letter-spacing: 0; }
     .version { animation: none; }
     .settings-icon { transition: none; }
+    .header-btn.active::after { animation: none; }
   }
 </style>

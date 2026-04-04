@@ -10,11 +10,12 @@
   font-size: 12px;
   color: var(--ai-text-secondary);
   font-weight: 500;
-  transition: color 0.25s ease;
+  transition: color 0.25s ease, font-weight 0.25s ease;
 }
 
 .bfao-field:focus-within .bfao-label {
   color: var(--ai-primary);
+  font-weight: 600;
 }
 
 .bfao-input,
@@ -28,6 +29,13 @@
   background: var(--ai-input-bg);
   color: var(--ai-text);
   transition: all 0.3s cubic-bezier(0.2, 0.98, 0.28, 1);
+}
+
+/* Hover micro-lift for tactile feedback */
+.bfao-input:hover:not(:focus),
+.bfao-select:hover:not(:focus) {
+  border-color: var(--ai-primary-light);
+  transform: translateY(-0.5px);
 }
 
 .bfao-input:focus,
@@ -95,6 +103,10 @@
   box-shadow: 0 2px 8px var(--ai-primary-shadow);
 }
 
+.bfao-icon-btn:hover:not(:disabled) svg {
+  transform: rotate(8deg);
+}
+
 .bfao-icon-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
@@ -135,8 +147,11 @@
 /* ==================== Reduced Motion ==================== */
 @media (prefers-reduced-motion: reduce) {
   .bfao-label { transition: none; }
+  .bfao-input:hover:not(:focus),
+  .bfao-select:hover:not(:focus) { transform: none; }
   .bfao-input-row::after { transition: none; }
   .bfao-icon-btn:hover { transform: none; }
+  .bfao-icon-btn:hover:not(:disabled) svg { transform: none; }
   .bfao-icon-btn:disabled { transition: none; filter: none; }
   .bfao-checkbox-label input[type='checkbox'] { transition: none; }
 }

@@ -164,6 +164,56 @@
     touch-action: none;
   }
 
+  /* Idle tooltip — fades in after 3s to guide new users */
+  .float-btn::after {
+    content: '点击打开';
+    position: absolute;
+    bottom: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 3px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    animation: tooltipFadeIn 0.4s ease 3s both;
+    backdrop-filter: blur(4px);
+  }
+
+  /* Hide tooltip once user interacts */
+  .float-btn:hover::after,
+  .float-btn:active::after {
+    opacity: 0;
+    animation: none;
+  }
+
+  /* Bot icon hover rotation */
+  .float-btn :global(svg) {
+    transition: transform 0.3s cubic-bezier(0.2, 0.98, 0.28, 1);
+  }
+  .float-btn:hover :global(svg) {
+    transform: rotate(12deg) scale(1.1);
+  }
+
+  /* Hover glow intensify */
+  .float-btn:hover {
+    background-position: 100% 100%;
+  }
+
+  @keyframes tooltipFadeIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(4px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .float-btn::after { animation: none; display: none; }
+    .float-btn :global(svg) { transition: none; }
+    .float-btn:hover :global(svg) { transform: none; }
+  }
+
   .float-btn.hidden {
     visibility: hidden;
     opacity: 0;

@@ -141,7 +141,8 @@
 
   .log-entry:hover .log-time {
     letter-spacing: 0.04em;
-    background: var(--ai-border-light);
+    background: rgba(var(--ai-primary-rgb), 0.1);
+    color: var(--ai-primary);
   }
 
   .log-msg {
@@ -164,6 +165,9 @@
   .log-error {
     color: var(--ai-error-alt);
     border-left-color: var(--ai-error-alt);
+    border-left-width: 4px;
+    padding-left: 7px;
+    background: rgba(var(--ai-error-alt-rgb), 0.04);
     animation: logSlideIn 0.25s ease both, borderGlow 0.6s ease 0.25s 2;
   }
 
@@ -209,6 +213,12 @@
   .cat-text {
     font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
     letter-spacing: 0.03em;
+    transition: color 0.2s ease, letter-spacing 0.3s ease;
+  }
+
+  .log-cat:hover .cat-text {
+    color: var(--ai-gradient-accent, #9b59f6);
+    letter-spacing: 0.06em;
   }
   @keyframes catIdle {
     from { transform: translateY(0); }
@@ -253,5 +263,7 @@
     .log-entry:hover { border-left-width: 3px; padding-left: 8px; }
     .log-cat:not(.away) { animation: none; }
     .log-area { transition: none; }
+    .cat-text { transition: none; }
+    .log-cat:hover .cat-text { letter-spacing: 0.03em; }
   }
 </style>

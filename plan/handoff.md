@@ -1,6 +1,63 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-04, 第四十次)
+## 最近一次会话 (2026-04-04, 第四十一次)
+
+### 本次完成内容
+
+**Sentient Surface — 感知表面: 用户意图感知 + 动态排版 + 状态可视化增强**
+
+#### 视觉增强 — 6 个文件
+
+| 组件/文件 | 新增动画 | 说明 |
+|-----------|----------|------|
+| `Toast.svelte` | 悬浮暂停计时器 (animation-play-state: paused) + 悬浮微扩 (scale 1.02 + transition) + 暂停图标渐显 (::before ⏸ + scale 弹入) + timer bar 渐变色 (linear-gradient 从亮到暗) | 鼠标悬浮时计时暂停+微放大暗示"抓住了"；暂停图标从角落弹出；计时条渐变暗示时间方向 |
+| `FloatButton.svelte` | 空闲 tooltip 3s 延迟渐显 (::after "点击打开" + tooltipFadeIn + hover 时隐藏) + Bot icon 悬浮旋转 (rotate 12deg + scale 1.1) + 悬浮背景位移 (background-position 100% 100%) | 新用户引导文字3秒后渐显；机器人图标悬浮时微旋转增趣味；悬浮时渐变流动 |
+| `Header.svelte` | 标题 letter-spacing 悬浮展开 (0→0.06em transition) + 活跃按钮底部 dot 指示器 (::after 4px 圆点 + dotPop scale 弹入) + 关闭按钮悬浮 error 色 (rgba(239,68,68,0.3)) | 标题悬浮有高级排版感；设置按钮激活时底部出现品牌色指示点；关闭按钮悬浮变红暗示"关闭" |
+| `ActionButtons.svelte` | btn-primary 背景渐变流动 (gradientFlow 8s 循环 background-position) + running 态 kbd 脉冲 (kbdPulse 2s opacity+background) + disabled 行整体退化 (.tool-row:has(:disabled) opacity 0.75) | 主按钮渐变缓慢流动增生命感；运行时 Esc 快捷键提示更醒目引导用户；禁用按钮所在行整体变暗 |
+| `LogArea.svelte` | 错误日志加粗 (border-left 4px + 微红背景) + 时间戳悬浮主题色高亮 (background+color 变主题色) + 猫咪文字悬浮响应 (color+letter-spacing 过渡) | 错误日志比其他类型更醒目；悬浮时间戳有主题色反馈；猫咪文字可交互有排版响应 |
+| `forms.css` | input/select 悬浮微提升 (translateY -0.5px + border-color 变淡) + label 聚焦字重过渡 (500→600 + transition) + icon-btn 悬浮旋转 (svg rotate 8deg) | 所有表单控件悬浮有一致触感；聚焦时标签变粗引导视线；图标按钮悬浮微旋增灵动 |
+
+#### 代码质量 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `Toast.svelte` | `::before` 暂停图标定位在 `top: -6px; left: -6px`，但 `.toast` 有 `overflow: hidden`，图标会被裁剪不可见 | HIGH | 改为 `top: 2px; left: 2px` (overflow:hidden 安全定位) |
+| `Toast.svelte` | `.toast:hover` 设置 `transform: scale(1.02)` 但 transition 仅含 `box-shadow`，scale 变化无过渡 | MEDIUM | 添加 `transform 0.2s ease` 到 transition |
+| `ActionButtons.svelte` | `gradientFlow` keyframe 使用 `background-position: auto` 但 `auto` 不是合法的 background-position 值 | MEDIUM | 改为 `0% 0%` |
+| `forms.css` | `.bfao-label` transition 仅含 `color`，新增的 `font-weight: 600` 聚焦过渡不平滑 | LOW | 添加 `font-weight 0.25s ease` 到 transition |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `ActionButtons.svelte` | `.tool-row:has(.btn-tool:disabled)` 使用 `:has()` 伪类，旧浏览器不支持 | 可接受：Tampermonkey 用户使用现代浏览器 (Chrome 105+, Firefox 121+) |
+| `Toast.svelte` | hover scale(1.02) 可能与 GSAP 退场动画的 transform 冲突 | 可接受：GSAP 用 inline style 设置 transform，优先级高于 CSS hover；且退场时鼠标已离开 |
+| `FloatButton.svelte` | 空闲 tooltip 每次面板关闭后重新显示 (3s 延迟重置) | 可接受：tooltip 在悬浮时隐藏，不影响已熟悉的用户；且为新用户提供持续引导 |
+| `LogArea.svelte` | `.log-error` 的 `border-left-width: 4px` 与 `.log-entry:hover` 的 `border-left-width: 4px` 重复 | 可接受：错误条目始终 4px (比默认 3px 更粗)，悬浮不额外变化，视觉正确 |
+
+### 关键设计决策
+
+1. **Toast 悬浮暂停**: 使用纯 CSS `animation-play-state: paused` 而非 JS clearTimeout，保持计时逻辑不变。暂停图标用 `::before` 伪元素实现零额外 DOM。
+2. **FloatButton 空闲 tooltip**: 3s 延迟 + hover 时隐藏的策略平衡了新用户引导和老用户体验。不使用 localStorage 记录"已看过"状态，避免增加持久化复杂度。
+3. **Header active dot 指示器**: `::after` 在 `.header-btn.active` 上，与 Svelte `class:active={settingsOpen}` 绑定联动。dotPop 动画包含 `translateX(-50%)` 以保持居中。
+4. **ActionButtons gradientFlow**: 仅在非 running 状态播放（.running 覆盖 animation 属性）。8s 周期足够缓慢不分散注意力。
+5. **forms.css 微提升**: `:hover:not(:focus)` 确保聚焦时不叠加 hover 微提升（聚焦有更强的 box-shadow 反馈）。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: 6 文件感知表面增强)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 4 个 bug 修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 new errors (8 pre-existing)。构建体积 577 kB (较 573 kB 增长 +4 kB)。**
+
+---
+
+## 上一次会话 (2026-04-04, 第四十次)
 
 ### 本次完成内容
 
