@@ -156,10 +156,10 @@
     background: linear-gradient(135deg, var(--ai-primary), var(--ai-gradient-accent));
     color: #fff;
     border-color: transparent;
-    transform: scale(1.05);
+    transform: scale(1);
     box-shadow: 0 2px 8px var(--ai-primary-shadow);
     position: relative;
-    animation: filterActivate 0.35s cubic-bezier(0.2, 1.04, 0.42, 1);
+    animation: filterActivateBounce 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   /* Merge button icon rotation when active */
@@ -195,6 +195,11 @@
     font-size: 11px;
     color: var(--ai-text-muted);
     animation: countPop 0.4s cubic-bezier(0.2, 1.2, 0.4, 1) both;
+    transition: color 0.2s ease, transform 0.2s cubic-bezier(0.2, 0.98, 0.28, 1);
+  }
+  .filter-count:hover {
+    color: var(--ai-primary);
+    transform: scale(1.08);
   }
 
   @keyframes tabUnderline {
@@ -208,10 +213,10 @@
     100% { transform: scale(1); opacity: 1; }
   }
 
-  @keyframes filterActivate {
-    0% { box-shadow: 0 0 0 0 rgba(var(--ai-primary-rgb), 0.4); }
-    50% { box-shadow: 0 0 0 6px rgba(var(--ai-primary-rgb), 0.1); }
-    100% { box-shadow: 0 2px 8px var(--ai-primary-shadow); }
+  @keyframes filterActivateBounce {
+    0% { transform: scale(0.92); box-shadow: 0 0 0 0 rgba(var(--ai-primary-rgb), 0.4); }
+    60% { transform: scale(1.06); box-shadow: 0 0 0 6px rgba(var(--ai-primary-rgb), 0.1); }
+    100% { transform: scale(1); box-shadow: 0 2px 8px var(--ai-primary-shadow); }
   }
 
   @keyframes filterSlideIn {
@@ -221,8 +226,9 @@
 
   @media (prefers-reduced-motion: reduce) {
     .filter-btn.active::after { animation: none; }
-    .filter-btn.active { animation: none; }
-    .filter-count { animation: none; }
+    .filter-btn.active { animation: none; transform: none; }
+    .filter-count { animation: none; transition: none; }
+    .filter-count:hover { transform: none; }
     .filter-row .filter-btn { animation: none; }
   }
 </style>

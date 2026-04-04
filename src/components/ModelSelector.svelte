@@ -172,6 +172,30 @@
   }
 
   /* Test connectivity button status */
+  .bfao-icon-btn.test-success,
+  .bfao-icon-btn.test-error {
+    position: relative;
+    overflow: visible;
+  }
+  .bfao-icon-btn.test-success::after,
+  .bfao-icon-btn.test-error::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 10px;
+    pointer-events: none;
+    animation: testRadialPulse 0.6s cubic-bezier(0.2, 0.98, 0.28, 1) both;
+  }
+  .bfao-icon-btn.test-success::after {
+    border: 2px solid var(--ai-success);
+  }
+  .bfao-icon-btn.test-error::after {
+    border: 2px solid var(--ai-error);
+  }
+  @keyframes testRadialPulse {
+    0% { transform: scale(1); opacity: 0.6; }
+    100% { transform: scale(1.6); opacity: 0; }
+  }
   .bfao-icon-btn.test-success {
     color: var(--ai-success-dark);
     background: var(--ai-success-bg);
@@ -282,13 +306,16 @@
     background: var(--ai-primary-bg);
     color: var(--ai-primary);
     font-weight: 600;
-    box-shadow: inset 3px 0 0 var(--ai-primary);
+    box-shadow: inset 4px 0 0 var(--ai-primary);
     animation: activePulse 2.5s ease-in-out infinite;
+  }
+  .model-item.active:hover {
+    box-shadow: inset 4px 0 0 var(--ai-primary), inset 0 0 16px rgba(var(--ai-primary-rgb), 0.1);
   }
 
   @keyframes activePulse {
-    0%, 100% { box-shadow: inset 3px 0 0 var(--ai-primary); }
-    50% { box-shadow: inset 3px 0 8px rgba(var(--ai-primary-rgb), 0.2), inset 3px 0 0 var(--ai-primary); }
+    0%, 100% { box-shadow: inset 4px 0 0 var(--ai-primary); }
+    50% { box-shadow: inset 4px 0 8px rgba(var(--ai-primary-rgb), 0.2), inset 4px 0 0 var(--ai-primary); }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -297,5 +324,7 @@
     .model-item.active { animation: none; }
     .model-empty { animation: none; }
     .model-search:focus { box-shadow: none; }
+    .bfao-icon-btn.test-success::after,
+    .bfao-icon-btn.test-error::after { animation: none; opacity: 0; }
   }
 </style>

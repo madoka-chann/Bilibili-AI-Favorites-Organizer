@@ -50,6 +50,23 @@
   line-height: 1.3;
   display: inline-block;
   animation: hintFadeUp 0.4s ease 0.3s both;
+  position: relative;
+}
+.bfao-modal-hint::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--ai-divider-gradient);
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: hintLineExpand 0.5s cubic-bezier(0.2, 0.98, 0.28, 1) 0.6s both;
+}
+@keyframes hintLineExpand {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
 }
 
 @keyframes hintFadeUp {
@@ -134,7 +151,11 @@
   color: var(--ai-text-muted);
   font-size: 12px;
 }
-.bfao-btn-muted:hover { background: var(--ai-bg-tertiary); }
+.bfao-btn-muted:hover {
+  background: var(--ai-bg-tertiary);
+  color: var(--ai-text-secondary);
+  box-shadow: 0 2px 8px rgba(var(--ai-primary-rgb), 0.06);
+}
 
 /* Selectable item (radio/checkbox list) */
 .bfao-selectable-item {
@@ -152,6 +173,12 @@
 .bfao-selectable-item.selected {
   border-color: var(--ai-primary);
   background: var(--ai-bg-tertiary);
+  box-shadow: var(--ai-glow-selected);
+  animation: selectedGlow 2.5s ease-in-out infinite;
+}
+@keyframes selectedGlow {
+  0%, 100% { box-shadow: var(--ai-glow-selected); }
+  50% { box-shadow: inset 0 0 18px rgba(var(--ai-primary-rgb), 0.12); }
 }
 
 /* ==================== Reduced Motion ==================== */
@@ -160,7 +187,9 @@
   .bfao-modal-summary strong { animation: none; opacity: 1; transform: none; }
   .bfao-btn:disabled { transition: none; filter: none; animation: none; }
   .bfao-modal-hint { animation: none; opacity: 1; }
+  .bfao-modal-hint::after { animation: none; transform: scaleX(1); }
   .bfao-modal-more { animation: none; opacity: 0.6; }
   .bfao-btn svg { transition: none; }
   .bfao-action-bar::before { animation: none; transform: scaleX(1); }
+  .bfao-selectable-item.selected { animation: none; }
 }

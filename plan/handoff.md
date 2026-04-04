@@ -1,6 +1,63 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-04, 第四十二次)
+## 最近一次会话 (2026-04-04, 第四十三次)
+
+### 本次完成内容
+
+**Tactile Resonance — 触感共振: 交互反馈物理感 + 状态切换流动性 + 结构化微细节**
+
+#### 视觉增强 — 7 个文件
+
+| 组件/文件 | 新增动画 | 说明 |
+|-----------|----------|------|
+| `ProviderConfig.svelte` | Eye 图标 rotateY 翻转 (active 时 scale(0.8) rotateY(90deg)) + link-btn 脉冲环 (::after linkPulseRing scale 1→1.35 + opacity 0.5→0) + field-slide-in 弹性回弹 (cubic-bezier overshoot + 70% translateY(2px)) | 切换 API Key 可见性时有翻转质感；外链按钮悬浮时有能量扩散环；自定义 URL 字段入场有弹性回弹 |
+| `ModelSelector.svelte` | 测试成功/失败扩散脉冲 (::after testRadialPulse scale 1→1.6 + opacity 0.6→0, 成功绿色/失败红色) + active 模型左条加粗 (3px→4px + hover 双重内发光) | 测试连通性成功/失败时按钮有向外扩散的彩色脉冲环；选中模型的左侧色条更粗，悬浮时增加内发光 |
+| `modal.css` | 选中项持续内发光脉冲 (selectedGlow 2.5s infinite, box-shadow 在 glow-selected 和更强之间循环) + btn-muted 悬浮品牌色偏移 (color + box-shadow) + hint 下划线渐展 (::after hintLineExpand scaleX 0→1) | 选中的单选/复选项有持续品牌色呼吸；次要按钮悬浮更显眼；提示文字有渐展下划线 |
+| `DeadVideosResult.svelte` | 文件夹组间渐变分隔线 (::before divider-gradient) + folder-header 悬浮 letter-spacing 展开 (0→0.02em) | 不同收藏夹组之间有品牌色渐变分隔线增强结构感；文件夹头悬浮有高级排版展开感 |
+| `UndoDialog.svelte` | 选中项左侧主题色条 (inset 3px box-shadow + glow-selected) + hint 渐展下划线 (::after hintLineExpand) + selectPulse 结束帧对齐 | 选中的撤销操作有左侧品牌色指示条+内发光；提示文字有下划线引导；动画结束平滑无跳变 |
+| `PreviewToolbar.svelte` | filter-btn 弹性激活动画 (filterActivateBounce scale 0.92→1.06→1) + 计数徽章悬浮放大变色 (scale 1.08 + color primary) | 切换筛选 tab 时有弹性缩放反馈；分类计数悬浮时放大并变品牌色 |
+| `variables.css` | `--ai-pulse-spread-color` 扩散脉冲基础色令牌 (light/dark 各一) + `--ai-glow-selected` 选中项内发光令牌 (light/dark 各一) | 统一扩散脉冲和选中内发光，供 ModelSelector/modal.css/UndoDialog 复用 |
+
+#### 代码质量 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `ProviderConfig.svelte` | `.link-btn` CSS 选择器重复定义两次 (原始块 + 新增 position/overflow 块) | LOW | 合并 `position: relative; overflow: visible` 到已有 `.link-btn` 块 |
+| `PreviewToolbar.svelte` | `filterActivateBounce` 使用 `animation-fill-mode: both`，animation fill 值覆盖静态 CSS，导致 `.filter-btn:hover` 的 `transform: translateY(-1px)` 在 active 按钮上不生效 | HIGH | 移除 `both` fill mode，让动画完成后静态 CSS 接管，hover transform 正常工作 |
+| `UndoDialog.svelte` | `selectPulse` 结束帧 `box-shadow: inset 0 0 0 1px rgba(...)` 与静态规则 `box-shadow: inset 3px 0 0 var(--ai-primary), var(--ai-glow-selected)` 不匹配，动画结束时有视觉跳变 | MEDIUM | 更新 100% 关键帧的 box-shadow 值与静态规则一致 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `ModelSelector.svelte` | `testRadialPulse` 的 `::after` 使用 `scale(1.6)` 可能溢出 `.bfao-input-row` 容器 | 可接受：`.bfao-input-row` 无 `overflow: hidden`，且脉冲仅持续 0.6s 并消失 (opacity→0) |
+| `modal.css` | `selectedGlow` 动画被 UndoDialog 的 `:global()` 选择器覆盖，UndoDialog 内不会播放 | 可接受：UndoDialog 有自己的 `selectPulse` + 左侧色条视觉，不需要 `selectedGlow` |
+| `DeadVideosResult.svelte` | `folder-group + folder-group::before` 分隔线在只有一个文件夹时不显示 | 可接受：这是预期行为，单文件夹不需要分隔 |
+| `ProviderConfig.svelte` | `rotateY(90deg)` 在 `:active` 上需要 `perspective` 才有3D效果 | 可接受：无 perspective 时 rotateY 表现为水平压缩，依然提供视觉翻转暗示 |
+
+### 关键设计决策
+
+1. **扩散脉冲令牌化**: 新增 `--ai-pulse-spread-color` 和 `--ai-glow-selected` 令牌，确保脉冲和选中发光在 light/dark 主题下一致。
+2. **Animation fill-mode 策略**: 不使用 `both` 填充的一次性动画，确保动画完成后不阻塞 `:hover` 等静态 CSS 规则。
+3. **弹性缓动曲线**: `cubic-bezier(0.34, 1.56, 0.64, 1)` 用于 fieldSlideDown 和 filterActivateBounce，overshoot 系数 1.56 提供自然的弹性回弹而不过度夸张。
+4. **组间分隔而非组内分隔**: DeadVideosResult 使用 `+ .folder-group::before` 选择器，只在相邻组之间添加分隔线，第一组上方不显示。
+5. **selectPulse 帧对齐**: 动画结束帧必须与静态 CSS 值完全匹配，否则无 fill-mode 时动画结束瞬间会有视觉跳变。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: 7 文件触感共振增强)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 3 个 bug 修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 new errors (8 pre-existing), 10 warnings (pre-existing)。构建体积 585 kB (较 581 kB 增长 +4 kB)。**
+
+---
+
+## 上一次会话 (2026-04-04, 第四十二次)
 
 ### 本次完成内容
 

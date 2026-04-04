@@ -140,6 +140,8 @@
     transition: all 0.2s ease;
     text-decoration: none;
     flex-shrink: 0;
+    position: relative;
+    overflow: visible;
   }
 
   .link-btn:hover {
@@ -148,25 +150,46 @@
     box-shadow: 0 0 8px rgba(var(--ai-primary-rgb), 0.25);
   }
 
-  /* Eye icon toggle transition */
+  /* Eye icon toggle — rotateY flip for tactile feedback */
   .bfao-icon-btn :global(svg) {
-    transition: transform 0.2s cubic-bezier(0.2, 0.98, 0.28, 1);
+    transition: transform 0.3s cubic-bezier(0.2, 0.98, 0.28, 1);
   }
 
   .bfao-icon-btn:active :global(svg) {
-    transform: scale(0.8);
+    transform: scale(0.8) rotateY(90deg);
+  }
+  .link-btn::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 10px;
+    border: 1.5px solid var(--ai-primary);
+    opacity: 0;
+    transform: scale(1);
+    pointer-events: none;
+    transition: none;
+  }
+  .link-btn:hover::after {
+    animation: linkPulseRing 0.6s cubic-bezier(0.2, 0.98, 0.28, 1) both;
+  }
+  @keyframes linkPulseRing {
+    0% { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(1.35); opacity: 0; }
   }
 
   .field-slide-in {
-    animation: fieldSlideDown 0.3s cubic-bezier(0.2, 0.98, 0.28, 1) both;
+    animation: fieldSlideDown 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
   }
 
   @keyframes fieldSlideDown {
-    from { opacity: 0; transform: translateY(-8px); max-height: 0; }
-    to { opacity: 1; transform: translateY(0); max-height: 80px; }
+    0% { opacity: 0; transform: translateY(-10px); max-height: 0; }
+    70% { transform: translateY(2px); }
+    100% { opacity: 1; transform: translateY(0); max-height: 80px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .bfao-icon-btn :global(svg) { transition: none; }
+    .link-btn:hover::after { animation: none; }
+    .field-slide-in { animation: none; opacity: 1; transform: none; }
   }
 </style>

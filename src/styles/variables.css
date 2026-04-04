@@ -73,6 +73,12 @@
 
   /* Divider — gradient separator line */
   --ai-divider-gradient: linear-gradient(90deg, transparent, var(--ai-primary-light), transparent);
+
+  /* Radial pulse — expanding ring for interaction feedback */
+  --ai-pulse-spread-color: rgba(115, 100, 255, 0.35);
+
+  /* Selected item inner glow */
+  --ai-glow-selected: inset 0 0 12px rgba(115, 100, 255, 0.08);
 }
 
 /* ==================== Dark Theme ==================== */
@@ -144,6 +150,12 @@
 
   /* Divider */
   --ai-divider-gradient: linear-gradient(90deg, transparent, var(--ai-primary-light), transparent);
+
+  /* Radial pulse */
+  --ai-pulse-spread-color: rgba(139, 127, 255, 0.4);
+
+  /* Selected item inner glow */
+  --ai-glow-selected: inset 0 0 12px rgba(139, 127, 255, 0.12);
 }
 
 /* ==================== Hidden Scrollbar — scroll still works, bar hidden ==================== */

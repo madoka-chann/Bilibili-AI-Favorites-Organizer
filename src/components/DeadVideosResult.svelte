@@ -83,16 +83,29 @@
     padding-bottom: 4px;
   }
 
-  .folder-group { margin-bottom: 8px; }
+  .folder-group {
+    margin-bottom: 8px;
+    position: relative;
+  }
+  /* Gradient separator between folder groups */
+  .folder-group + .folder-group::before {
+    content: '';
+    display: block;
+    height: 1px;
+    margin: 4px 8px 8px;
+    background: var(--ai-divider-gradient);
+    opacity: 0.5;
+  }
   .folder-header {
     font-size: 12px;
     font-weight: bold;
     color: var(--ai-text-secondary);
     padding: 4px 0;
-    transition: color 0.2s ease;
+    transition: color 0.2s ease, letter-spacing 0.2s ease;
   }
   .folder-header:hover {
     color: var(--ai-text);
+    letter-spacing: 0.02em;
   }
   .video-item {
     font-size: 11px;
@@ -116,5 +129,7 @@
   @media (prefers-reduced-motion: reduce) {
     .video-item { transition: none; }
     .video-item:hover { transform: none; }
+    .folder-header { transition: none; }
+    .folder-header:hover { letter-spacing: normal; }
   }
 </style>

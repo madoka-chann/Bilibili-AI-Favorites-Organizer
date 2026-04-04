@@ -54,6 +54,24 @@
     color: var(--ai-text-secondary);
     margin-bottom: 12px;
     animation: hintSlideIn 0.3s cubic-bezier(0.2, 0.98, 0.28, 1) both;
+    position: relative;
+    display: inline-block;
+  }
+  .hint::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--ai-divider-gradient);
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: hintLineExpand 0.4s cubic-bezier(0.2, 0.98, 0.28, 1) 0.4s both;
+  }
+  @keyframes hintLineExpand {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
   }
 
   .history-list {
@@ -87,13 +105,13 @@
   :global(.bfao-selectable-item.selected) {
     transform: translateX(2px);
     animation: selectPulse 0.4s ease;
-    box-shadow: inset 0 0 0 1px rgba(var(--ai-primary-rgb), 0.15);
+    box-shadow: inset 3px 0 0 var(--ai-primary), var(--ai-glow-selected);
   }
 
   @keyframes selectPulse {
     0% { box-shadow: 0 0 0 0 rgba(var(--ai-primary-rgb), 0.3); }
     50% { box-shadow: 0 0 0 4px rgba(var(--ai-primary-rgb), 0.15); }
-    100% { box-shadow: inset 0 0 0 1px rgba(var(--ai-primary-rgb), 0.15); }
+    100% { box-shadow: inset 3px 0 0 var(--ai-primary), var(--ai-glow-selected); }
   }
 
   @keyframes hintSlideIn {
@@ -104,5 +122,6 @@
   @media (prefers-reduced-motion: reduce) {
     :global(.bfao-selectable-item.selected) { animation: none; }
     .hint { animation: none; }
+    .hint::after { animation: none; transform: scaleX(1); }
   }
 </style>
