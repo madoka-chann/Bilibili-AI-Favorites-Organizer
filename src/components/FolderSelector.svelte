@@ -102,10 +102,28 @@
     border-color: var(--ai-primary-light);
     background: var(--ai-bg-tertiary);
   }
+  .toggle-all:active {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 3px rgba(var(--ai-primary-rgb), 0.15);
+  }
+  .toggle-all :global(svg) {
+    transition: transform 0.25s cubic-bezier(0.2, 0.98, 0.28, 1);
+  }
+  .toggle-all:active :global(svg) {
+    transform: rotate(15deg);
+  }
 
   .count {
     font-size: 12px;
     color: var(--ai-text-muted);
+    display: inline-block;
+    animation: countPop 0.4s cubic-bezier(0.22, 1.42, 0.29, 1) 0.2s both;
+  }
+
+  @keyframes countPop {
+    0% { transform: scale(0); opacity: 0; }
+    70% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
   }
 
   .folder-list {
@@ -149,6 +167,10 @@
     font-size: 13px;
     font-weight: 600;
     color: var(--ai-text);
+    transition: color 0.2s ease;
+  }
+  :global(.bfao-selectable-item.selected) .folder-title {
+    color: var(--ai-primary);
   }
   .folder-count {
     font-size: 11px;

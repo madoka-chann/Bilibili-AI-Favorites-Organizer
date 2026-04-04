@@ -36,12 +36,25 @@
   font-size: 10px;
   color: var(--ai-text-muted);
   padding: 4px 0;
+  animation: morePulse 2.5s ease-in-out infinite;
+}
+
+@keyframes morePulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
 }
 
 .bfao-modal-hint {
   font-size: 10px;
   color: var(--ai-text-muted);
   line-height: 1.3;
+  display: inline-block;
+  animation: hintFadeUp 0.4s ease 0.3s both;
+}
+
+@keyframes hintFadeUp {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Action bar with buttons + hint */
@@ -64,6 +77,12 @@
   align-items: center;
   gap: 4px;
   transition: all 0.2s ease;
+}
+.bfao-btn svg {
+  transition: transform 0.2s cubic-bezier(0.2, 0.98, 0.28, 1);
+}
+.bfao-btn:hover:not(:disabled) svg {
+  transform: translateY(-1px);
 }
 .bfao-btn:disabled {
   opacity: 0.5;
@@ -115,4 +134,7 @@
   .bfao-modal-empty { animation: none; }
   .bfao-modal-summary strong { animation: none; opacity: 1; transform: none; }
   .bfao-btn:disabled { transition: none; filter: none; }
+  .bfao-modal-hint { animation: none; opacity: 1; }
+  .bfao-modal-more { animation: none; opacity: 0.6; }
+  .bfao-btn svg { transition: none; }
 }

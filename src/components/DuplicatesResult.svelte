@@ -51,6 +51,22 @@
     max-height: 300px;
     overflow-y: auto;
     margin-bottom: 14px;
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0px,
+      black 12px,
+      black calc(100% - 12px),
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0px,
+      black 12px,
+      black calc(100% - 12px),
+      transparent 100%
+    );
+    padding-top: 4px;
+    padding-bottom: 4px;
   }
 
   .dup-item {
@@ -58,16 +74,38 @@
     padding: 5px 4px;
     border-bottom: 1px solid var(--ai-border-lighter);
     border-radius: 4px;
-    transition: background 0.2s ease, padding-left 0.2s ease;
+    transition: background 0.2s ease, padding-left 0.2s ease,
+                box-shadow 0.2s ease, transform 0.2s ease;
   }
   .dup-item:hover {
     background: var(--ai-bg-hover);
     padding-left: 8px;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(var(--ai-primary-rgb), 0.08);
   }
-  .dup-title { color: var(--ai-text); }
+  .dup-title {
+    color: var(--ai-text);
+    transition: color 0.2s ease;
+  }
+  .dup-item:hover .dup-title {
+    color: var(--ai-primary);
+  }
   .dup-folders {
     color: var(--ai-text-muted);
     padding-left: 12px;
     font-size: 10px;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    opacity: 0.7;
+  }
+  .dup-item:hover .dup-folders {
+    opacity: 1;
+    transform: translateX(2px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dup-item { transition: none; }
+    .dup-item:hover { transform: none; }
+    .dup-folders { transition: none; }
+    .dup-item:hover .dup-folders { transform: none; }
   }
 </style>

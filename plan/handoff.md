@@ -1,6 +1,61 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-04, 第三十七次)
+## 最近一次会话 (2026-04-04, 第三十八次)
+
+### 本次完成内容
+
+**Tactile Depth — 触觉深度: 数据展示 Modal 列表/卡片深度提升 + 共享 CSS 微交互补齐**
+
+#### 视觉增强 — 7 个文件
+
+| 组件/文件 | 新增动画 | 说明 |
+|-----------|----------|------|
+| `DeadVideosResult.svelte` | folder-list 滚动渐隐 (mask-image 12px) + video-item 悬浮阴影提升 (translateY -1px + box-shadow) + 悬浮主题色左边框 (border-left 2px) | 列表项悬浮时"浮起"，左侧出现主题色标识线；滚动区边缘渐隐暗示可滚动 |
+| `DuplicatesResult.svelte` | dup-list 滚动渐隐 (mask-image 12px) + dup-item 悬浮阴影提升 + dup-title 悬浮变主题色 + dup-folders 悬浮展开 (opacity 0.7→1 + translateX 2px) | 列表项有完整悬浮反馈链：标题变色→子文件夹更醒目→整体浮起 |
+| `StatsDialog.svelte` | health-ring 外发光 (drop-shadow currentColor) + stat-card 错位弹入入场 (`cardPop` scale 0.85→1 + nth-child 延迟) + folder-breakdown 滚动渐隐 + section-title 下划线渐展 (`titleLineExpand` scaleX 0→1) + folder-row 悬浮内发光 (inset box-shadow) | 统计卡片依次弹入而非整块出现；健康环有对应颜色光晕；分布列表悬浮有内发光深度 |
+| `HistoryTimeline.svelte` | timeline 轴线绘入 (`lineGrow` scaleY 0→1) + timeline-card 悬浮内发光 (inset box-shadow) + timeline-cats 标签化 (background + border-radius + 悬浮变色) + clear-btn 危险光晕 (error-rgb box-shadow) | 时间线从上到下"画出"配合 item slideIn 形成入场序列；分类文字变为标签样式 |
+| `FolderSelector.svelte` | toggle-all 点击脉冲 (scale 0.95 + box-shadow) + toggle-all icon 切换旋转 (rotate 15deg) + selected folder-title 主题色 + count 数字弹入 (`countPop`) | 全选按钮有按压回弹感；选中项文件夹名变主题色增强可见性 |
+| `modal.css` | bfao-btn svg 悬浮微移 (translateY -1px) + bfao-modal-hint 渐显 (`hintFadeUp` opacity+translateY) + bfao-modal-more 呼吸脉冲 (`morePulse` opacity) | 按钮图标悬浮上浮；提示文字渐显不争夺注意力；"更多"文字呼吸暗示有更多内容 |
+| `forms.css` | checkbox 悬浮光环 (box-shadow 主题色) | 复选框悬浮时有主题色光环反馈 |
+
+#### 代码质量 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `modal.css` | 新增的 `.bfao-btn svg` 规则使用纯 CSS 选择器（非 `:global()` Svelte 语法），确保在全局 CSS 文件中正确生效 | HIGH (预防) | 直接使用 `.bfao-btn svg` 而非 `:global(svg)` |
+| `modal.css` | `.bfao-modal-hint` 应用在 `<span>` 元素上，`transform: translateY(4px)` 对 inline 元素无效 | MEDIUM | 添加 `display: inline-block` 使 transform 生效 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `StatsDialog.svelte` | `cardPop` 使用 `animation-fill-mode: both` 可能阻止后续 CSS transform hover | 可接受：stat-card 的悬浮效果仅用 border-color/box-shadow (非 transform)，tilt action 用 JS 内联 style 覆盖，不受影响 |
+| `FolderSelector.svelte` | 本地 `countPop` keyframe 与 modal.css 同名 | 可接受：Svelte `<style>` 块中的 keyframes 会被 scoped，不与全局 CSS 冲突 |
+| `DeadVideosResult.svelte` | `border-left: 2px` 与 `border-bottom: 1px` 混合在 `border-radius: 4px` 下 | 可接受：4px 圆角很小，混合边框宽度在视觉上不可感知 |
+
+### 关键设计决策
+
+1. **统一滚动渐隐策略**: 所有可滚动列表 (folder-list, dup-list, folder-breakdown) 统一使用 `mask-image: linear-gradient()` 上下 12px 渐隐，与 FolderSelector/Modal/LogArea 已有策略保持一致。
+2. **列表项悬浮用 translateY(-1px) 而非 scale**: scale 会影响文字清晰度和布局计算，translateY 仅做位移不影响渲染质量，配合 box-shadow 给出"浮起"深度感。
+3. **StatsDialog stat-card 用 CSS animation 而非 GSAP**: 四个卡片的错位弹入是纯入场效果，不需要 GSAP 的交互能力。CSS `@keyframes` + `:nth-child` 延迟足够且零 JS 开销。
+4. **HistoryTimeline 轴线 scaleY 从 top origin**: `transform-origin: top` 确保时间线从顶部向下"画出"，与 timeline-item 的 slideIn 动画方向一致（从上到下依次出现）。
+5. **modal.css 纯 CSS vs Svelte 语法**: 全局 CSS 文件不经过 Svelte 编译器处理，`:global()` 不是有效的 CSS 伪类。在全局样式表中直接使用元素选择器（`svg`）即可。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: 7 文件数据展示 Modal 触觉深度增强)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 2 个 CSS 语法/布局 bug 修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 new errors。构建体积 564 kB (较 559 kB 增长 +5 kB, 新增 CSS keyframes/transitions/mask-image)。**
+
+---
+
+## 上一次会话 (2026-04-04, 第三十七次)
 
 ### 本次完成内容
 

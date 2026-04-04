@@ -125,6 +125,11 @@
   width: 15px;
   height: 15px;
   cursor: pointer;
+  transition: box-shadow 0.2s ease;
+  border-radius: 3px;
+}
+.bfao-checkbox-label input[type='checkbox']:hover {
+  box-shadow: 0 0 0 3px rgba(var(--ai-primary-rgb), 0.15);
 }
 
 /* ==================== Reduced Motion ==================== */
@@ -133,4 +138,5 @@
   .bfao-input-row::after { transition: none; }
   .bfao-icon-btn:hover { transform: none; }
   .bfao-icon-btn:disabled { transition: none; filter: none; }
+  .bfao-checkbox-label input[type='checkbox'] { transition: none; }
 }

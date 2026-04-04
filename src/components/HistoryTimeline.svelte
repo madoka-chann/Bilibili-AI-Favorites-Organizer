@@ -64,6 +64,13 @@
     bottom: 0;
     width: 2px;
     background: linear-gradient(to bottom, var(--ai-primary), var(--ai-border) 70%, transparent);
+    transform-origin: top;
+    animation: lineGrow 0.6s cubic-bezier(0.2, 0.98, 0.28, 1) both;
+  }
+
+  @keyframes lineGrow {
+    from { transform: scaleY(0); }
+    to { transform: scaleY(1); }
   }
 
   .timeline-item {
@@ -100,7 +107,8 @@
 
   .timeline-item:hover .timeline-card {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(var(--ai-primary-rgb), 0.1);
+    box-shadow: inset 0 0 0 1px rgba(var(--ai-primary-rgb), 0.12),
+                0 4px 12px rgba(var(--ai-primary-rgb), 0.1);
   }
 
   .timeline-time {
@@ -118,11 +126,20 @@
     color: var(--ai-text-muted);
     margin-top: 4px;
     line-height: 1.4;
+    background: var(--ai-bg-hover);
+    border-radius: 4px;
+    padding: 3px 6px;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .timeline-item:hover .timeline-cats {
+    background: var(--ai-primary-bg);
+    color: var(--ai-text-secondary);
   }
 
   .clear-btn:hover {
     color: var(--ai-error);
     animation: clearShake 0.4s ease;
+    box-shadow: 0 0 12px rgba(var(--ai-error-rgb), 0.2);
   }
 
   .timeline-item:first-child .timeline-card {
@@ -157,5 +174,6 @@
     .clear-btn:hover { animation: none; }
     .timeline-dot { animation: none; }
     .timeline-item { animation: none; opacity: 1; }
+    .timeline::before { animation: none; transform: scaleY(1); }
   }
 </style>
