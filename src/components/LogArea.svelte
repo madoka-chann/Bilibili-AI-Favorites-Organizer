@@ -96,6 +96,13 @@
     flex-direction: column;
     gap: 2px;
     position: relative;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 100%);
+    transition: border-color 0.3s ease;
+  }
+
+  .log-area:hover {
+    border-color: var(--ai-border);
   }
 
   .log-entry {
@@ -109,6 +116,10 @@
     line-height: 1.5;
     animation: logSlideIn 0.25s ease both;
     transition: background 0.2s ease;
+  }
+
+  .log-entry:last-child {
+    animation: logSlideIn 0.25s ease both, newEntryGlow 0.8s ease 0.25s 1;
   }
 
   .log-entry:hover {
@@ -183,6 +194,9 @@
     transition: opacity 0.4s ease, transform 0.4s ease;
     pointer-events: none;
   }
+  .log-cat:not(.away) {
+    animation: catReturn 0.5s cubic-bezier(0.2, 0.98, 0.28, 1) both;
+  }
   .log-cat.away {
     opacity: 0;
     transform: translateY(-20px) scale(0.5);
@@ -221,9 +235,23 @@
     50% { opacity: 0.6; }
   }
 
+  @keyframes newEntryGlow {
+    0%, 100% { box-shadow: none; }
+    40% { box-shadow: 0 0 6px rgba(var(--ai-primary-rgb), 0.2), inset 0 0 4px rgba(var(--ai-primary-rgb), 0.06); }
+  }
+
+  @keyframes catReturn {
+    0% { opacity: 0; transform: translateY(-16px) scale(0.5); }
+    60% { opacity: 1; transform: translateY(3px) scale(1.05); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .log-entry:first-child.log-success { animation: none; }
+    .log-entry:last-child { animation: none; }
     .log-time { transition: none; }
     .log-entry:hover { border-left-width: 3px; padding-left: 8px; }
+    .log-cat:not(.away) { animation: none; }
+    .log-area { transition: none; }
   }
 </style>

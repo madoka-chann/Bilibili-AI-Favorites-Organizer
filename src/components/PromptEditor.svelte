@@ -4,6 +4,7 @@
   import { BUILTIN_PRESETS } from '$utils/constants';
   import { debounce } from '$utils/timing';
   import { focusGlow, pressEffect } from '$animations/micro';
+  import { gsap, EASINGS, shouldAnimate } from '$animations/gsap-config';
   import { gmGetValue, gmSetValue } from '$utils/gm';
   import { Save, Trash2, Star, Settings2 } from 'lucide-svelte';
   import type { PromptPreset } from '$types/ai';
@@ -21,6 +22,8 @@
     gmGetValue<string[]>('bfao_hiddenPresets', [])
   );
   let showManager = $state(false);
+  let managerEl = $state<HTMLDivElement>(undefined!);
+  let saveFlash = $state(false);
 
   let visibleBuiltins = $derived(
     BUILTIN_PRESETS.filter(p => !hiddenBuiltins.includes(p.label))
@@ -52,6 +55,38 @@
     const preset: PromptPreset = { label: name, value: promptValue, isCustom: true, id };
     customPresets = [...customPresets, preset];
     gmSetValue('bfao_customPromptPresets', customPresets);
+    // Save success flash
+    saveFlash = true;
+    setTimeout(() => { saveFlash = false; }, 600);
+  }
+
+  function toggleManager() {
+    if (showManager) {
+      // Collapse with animation
+      if (managerEl && shouldAnimate()) {
+        managerEl.style.overflow = 'hidden';
+        gsap.to(managerEl, {
+          height: 0, opacity: 0, duration: 0.22, ease: EASINGS.silkOut,
+          onComplete: () => { showManager = false; }
+        });
+      } else {
+        showManager = false;
+      }
+    } else {
+      showManager = true;
+    }
+  }
+
+  /** GSAP expand animation for preset manager */
+  function managerExpand(node: HTMLDivElement) {
+    managerEl = node;
+    if (!shouldAnimate()) return;
+    node.style.overflow = 'hidden';
+    gsap.fromTo(node,
+      { height: 0, opacity: 0 },
+      { height: 'auto', opacity: 1, duration: 0.3, ease: EASINGS.velvetSpring,
+        onComplete: () => { node.style.overflow = ''; } }
+    );
   }
 
   function hideBuiltin(label: string) {
@@ -109,10 +144,10 @@
         {/each}
       </optgroup>
     </select>
-    <button class="prompt-action-btn" title="保存为自定义预设" onclick={saveAsCustom} disabled={!promptValue.trim()} use:pressEffect>
+    <button class="prompt-action-btn" class:save-flash={saveFlash} title="保存为自定义预设" onclick={saveAsCustom} disabled={!promptValue.trim()} use:pressEffect>
       <Save size={12} />
     </button>
-    <button class="prompt-action-btn" title="管理预设" onclick={() => showManager = !showManager} use:pressEffect>
+    <button class="prompt-action-btn" title="管理预设" onclick={toggleManager} use:pressEffect>
       <Settings2 size={12} />
     </button>
   </div>
@@ -126,7 +161,7 @@
   ></textarea>
 
   {#if showManager}
-    <div class="preset-manager">
+    <div class="preset-manager" use:managerExpand>
       <div class="manager-title">预设管理</div>
       {#if customPresets.length > 0}
         <div class="manager-section">自定义</div>
@@ -196,6 +231,18 @@
   }
   .prompt-action-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
+  .prompt-action-btn.save-flash {
+    color: var(--ai-success-dark);
+    border-color: var(--ai-success);
+    animation: saveFlash 0.6s ease both;
+  }
+
+  @keyframes saveFlash {
+    0% { background: var(--ai-bg-secondary); }
+    30% { background: var(--ai-success-bg); box-shadow: 0 0 8px rgba(var(--ai-success-rgb), 0.3); }
+    100% { background: var(--ai-bg-secondary); box-shadow: none; }
+  }
+
   .prompt-textarea {
     width: 100%;
     height: 65px;
@@ -210,12 +257,13 @@
     resize: none;
     font-family: inherit;
     line-height: 1.5;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, height 0.3s cubic-bezier(0.2, 0.98, 0.28, 1);
   }
 
   .prompt-textarea:focus {
     border-color: var(--ai-primary);
     box-shadow: 0 0 0 3px var(--ai-primary-shadow);
+    height: 72px;
   }
 
   .custom-presets {
@@ -311,6 +359,23 @@
     font-weight: 600;
     color: var(--ai-text);
     margin-bottom: 6px;
+    position: relative;
+    padding-bottom: 4px;
+  }
+  .manager-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1.5px;
+    background: linear-gradient(90deg, var(--ai-primary), var(--ai-gradient-accent), transparent);
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: titleLineExpand 0.4s cubic-bezier(0.2, 0.98, 0.28, 1) 0.15s both;
+  }
+  @keyframes titleLineExpand {
+    to { transform: scaleX(1); }
   }
   .manager-section {
     font-size: 10px;
@@ -323,5 +388,12 @@
   .hidden-preset {
     opacity: 0.4;
     text-decoration: line-through;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .prompt-textarea { transition: border-color 0.3s ease, box-shadow 0.3s ease; height: 65px !important; }
+    .prompt-action-btn.save-flash { animation: none; }
+    .manager-title::after { animation: none; transform: scaleX(1); }
+    .custom-preset-row { animation: none; }
   }
 </style>

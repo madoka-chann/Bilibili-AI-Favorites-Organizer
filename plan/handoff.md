@@ -1,6 +1,62 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-04, 第三十六次)
+## 最近一次会话 (2026-04-04, 第三十七次)
+
+### 本次完成内容
+
+**Fluid Depth — 流体深度: 次级组件微交互补齐 + 全局焦点环动画 + 运行态反馈增强**
+
+#### 视觉增强 — 6 个文件
+
+| 组件/文件 | 新增动画 | 说明 |
+|-----------|----------|------|
+| `PromptEditor.svelte` | 预设管理器 GSAP 展开/折叠高度过渡 + textarea 聚焦微扩展 (65→72px) + 保存按钮成功闪烁 (`saveFlash` 绿色脉冲) + 管理器标题下划线渐展 (`titleLineExpand`) | 管理器面板平滑滑出而非瞬间出现；编辑器聚焦时轻微扩展暗示编辑模式；保存后绿色反馈确认 |
+| `LogArea.svelte` | 上边缘滚动渐隐 (mask-image top 8%) + 新日志条目入场发光脉冲 (`newEntryGlow`) + 猫咪回场弹入 (`catReturn` scale+translateY) + 悬浮边框变色 | 滚动区顶部有渐隐暗示可滚动；最新条目有柔和发光引导视线；运行结束猫咪弹回增加趣味性 |
+| `ModelSelector.svelte` | model-item 悬浮内发光 (inset box-shadow) + active item 左边框呼吸脉冲 (`activePulse`) + model-search 聚焦下划线 (box-shadow) + model-list 滚动渐隐 (mask-image) + model-empty 浮动 (`floatIdle`) | 下拉项悬浮有内发光反馈；选中项脉冲增强选中感；长列表边缘渐隐；空结果浮动 |
+| `HelpDialog.svelte` | FAQ item 悬浮缩进 (padding-left 20→24px) + 展开项左侧主题色条 (border-left) + 问号图标悬浮旋转 (rotate 15deg + scale 1.1) | 悬浮时问题向右微移增加可操作感；展开项有彩色侧边标识；问号图标旋转增添趣味性 |
+| `variables.css` | 主题切换背景平滑过渡 (`[data-theme]` transition) + 焦点环扩展动画 (`focusRingIn` outline-offset 0→2px) | 主题切换时面板背景色平滑过渡；键盘焦点环从紧贴到展开的优雅入场 |
+| `ActionButtons.svelte` | running 按钮边框呼吸脉冲 (border-color 0.3→0.6 opacity 变化) + 停止图标持续微颤 (`runningTremor` ±2deg 旋转) + 基础状态改透明边框 (防布局偏移) | 运行态按钮边框也参与呼吸动画；方块图标微颤暗示运行中 |
+
+#### 代码质量 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `variables.css` | 全局 `*` 通配 transition 规则 (`color 0.3s, background-color 0.3s, border-color 0.3s`) 会覆盖组件级别的特定 transition 属性，导致 transform/box-shadow 等过渡丢失 | HIGH | 缩窄为 `.bfao-app[data-theme]` 选择器，仅在主题切换时生效，不干扰组件自有 transition |
+| `LogArea.svelte` | `mask-image` 底部 92%→100% 渐隐会裁剪绝对定位的猫咪元素 (`.log-cat` position:absolute bottom:4px 在 mask 渐隐区内) | MEDIUM | 移除底部渐隐，仅保留顶部 8% 渐隐 (0%→8% transparent→black，8%→100% black) |
+| `HelpDialog.svelte` | `.faq-item.open` 选择器出现两次 (一次在 :hover 附近，一次在 .iconPulse 后)，第二个覆盖第一个 | LOW | 合并为单一规则，包含 border-left-color + background + padding-left |
+| `ActionButtons.svelte` | `.btn-primary` 基础状态 `border: none`，`.running` 添加 `border: 1.5px solid` 导致 3px (上下各 1.5px) 布局偏移 | MEDIUM | 基础状态改为 `border: 1.5px solid transparent`，确保 box-sizing 始终包含边框空间 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `PromptEditor.svelte` | `.custom-presets` 选择器未使用 (svelte-check warning) | 可接受：pre-existing issue，该类名在旧版布局中使用，当前由 `.custom-preset-row` 替代，可在未来清理 |
+| `LogArea.svelte` | `catReturn` 动画在首次挂载时也会触发 (`:not(.away)` 匹配初始非 running 状态) | 可接受：初始挂载时猫咪弹入是合理的视觉效果，等同于"欢迎"入场动画 |
+| `ModelSelector.svelte` | `activePulse` 动画对只有一项的短列表也生效 | 可接受：脉冲很柔和 (仅 box-shadow 变化)，单项选中时也需要选中感反馈 |
+
+### 关键设计决策
+
+1. **variables.css 全局过渡用 `[data-theme]` 而非 `*` 通配**: 通配符 transition 会导致灾难性的级联覆盖——组件 `transition: all 0.35s` 被替换为仅 color/background-color/border-color，丢失 transform/box-shadow/opacity 等动画。缩窄到 `[data-theme]` 属性选择器只在最外层容器添加背景色过渡，子元素通过继承获得背景色变化，不干扰各自的 transition 声明。
+2. **LogArea mask-image 仅上方渐隐**: 底部有绝对定位的猫咪元素，如果底部也渐隐会导致猫咪被裁剪。顶部渐隐足以暗示"内容可向上滚动"。底部由猫咪的 gradient background 自然过渡。
+3. **PromptEditor 管理器用 GSAP height 而非 CSS max-height**: CSS `max-height` 从 0 到 auto 无法过渡，必须设具体像素值。GSAP 支持 `height: 'auto'` 作为目标值，自动计算实际高度。与 HelpDialog FAQ 展开使用相同的 GSAP 策略保持一致。
+4. **ActionButtons 透明边框而非 border:none**: 使用 `border: 1.5px solid transparent` 确保 `.running` 状态添加 `border-color` 时不产生布局偏移，因为 box-sizing 已包含边框空间。
+5. **HelpDialog padding-left 过渡**: 悬浮时 padding-left 从 20→24px 微移 4px，配合 border-left 3px 的出现，给予"向右展开"的视觉暗示。open 状态保持 24px padding 与悬浮状态一致，避免展开时跳回。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: 6 文件次级组件交互补齐)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 4 个动画/布局 bug 修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 new errors。构建体积 559 kB (较 554 kB 增长 +5 kB, 新增 GSAP 管理器展开/CSS keyframes/transitions)。**
+
+---
+
+## 上一次会话 (2026-04-04, 第三十六次)
 
 ### 本次完成内容
 

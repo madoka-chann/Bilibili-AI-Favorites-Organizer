@@ -1,7 +1,7 @@
 {
   "project": "Bilibili AI Favorites Organizer - Svelte Refactoring",
-  "plan": "visual-plan-session36.md",
-  "lastUpdated": "2026-04-04-session36",
+  "plan": "visual-plan-session37.md",
+  "lastUpdated": "2026-04-04-session37",
   "phases": {
     "phase0_buildSystem": {
       "status": "completed",
@@ -23,7 +23,7 @@
     },
     "phase2_animations": {
       "status": "completed",
-      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; I1-I5 粒子系统全部完成; Session 27: 6 个 Modal 子组件动画增强; Session 28: 4 个面板主界面组件视觉增强; Session 29: 5 个设置面板组件动画增强; Session 30: PreviewConfirm 深度视觉增强; Session 31: 未启用资产激活 (tilt/glowTrack) + Modal 统一增强 + FloatButton 回场弹入 + Panel 光追踪; Session 32: ripple 扩展至 ActionButtons/Modal + Header 文字流光/齿轮旋转/版本号弹入 + Toast 图标类型化动画 + LogArea 就绪脉冲; Session 33: UndoDialog radio 弹跳/选中脉冲/悬浮 + HistoryTimeline pressEffect/清空抖动/最新条目高亮/圆点脉冲 + DuplicatesResult/DeadVideosResult 列表项悬浮 + HelpDialog 展开指示线/footer 渐入 + modal.css 空状态浮动/摘要数字弹跳; Session 34: Modal 滚动边缘渐隐 + ProgressBar 入场动画 + SettingsPanel toggle-row 悬浮微滑/标签变色 + FolderSelector 滚动边缘渐��/悬浮内发光 + LiquidToggle 挂载入场 + Panel 滚动进度指示条; Session 35: forms.css label 聚焦高亮/下划线扩展/icon-btn 旋转 + SettingsGroup 分隔线渐现/icon 发光 + StatsDialog 卡片悬浮发光/folder-row 高亮 + ActionButtons 图标弹入/工具按钮图标放大/kbd 渐显 + LogArea 边框加粗/时间戳展开 + ProviderConfig spinning 发光/模型下拉渐隐; Session 36: PreviewToolbar tab 滑动下划线/搜索图标高亮/计数弹入 + CategoryGroup 展开高度过渡/悬浮主题发光 + VideoItem 悬浮提升/缩略图缩放/错位入场/低置信度发光脉冲 + Header 按钮错位入场/标题滑入 + SettingsPanel 群组错位入场 + disabled 按钮平滑退化"
+      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; I1-I5 粒子系统全部完成; Session 27: 6 个 Modal 子组件动画增强; Session 28: 4 个面板主界面组件视觉增强; Session 29: 5 个设置面板组件动画增强; Session 30: PreviewConfirm 深度视觉增强; Session 31: 未启用资产激活 (tilt/glowTrack) + Modal 统一增强 + FloatButton 回场弹入 + Panel 光追踪; Session 32: ripple 扩展至 ActionButtons/Modal + Header 文字流光/齿轮旋转/版本号弹入 + Toast 图标类型化动画 + LogArea 就绪脉冲; Session 33: UndoDialog radio 弹跳/选中脉冲/悬浮 + HistoryTimeline pressEffect/清空抖动/最新条目高亮/圆点脉冲 + DuplicatesResult/DeadVideosResult 列表项悬浮 + HelpDialog 展开指示线/footer 渐入 + modal.css 空状态浮动/摘要数字弹跳; Session 34: Modal 滚动边缘渐隐 + ProgressBar 入场动画 + SettingsPanel toggle-row 悬浮微滑/标签变色 + FolderSelector 滚动边缘渐隐/悬浮内发光 + LiquidToggle 挂载入场 + Panel 滚动进度指示条; Session 35: forms.css label 聚焦高亮/下划线扩展/icon-btn 旋转 + SettingsGroup 分隔线渐现/icon 发光 + StatsDialog 卡片悬浮发光/folder-row 高亮 + ActionButtons 图标弹入/工具按钮图标放大/kbd 渐显 + LogArea 边框加粗/时间戳展开 + ProviderConfig spinning 发光/模型下拉渐隐; Session 36: PreviewToolbar tab 滑动下划线/搜索图标高亮/计数弹入 + CategoryGroup 展开高度过渡/悬浮主题发光 + VideoItem 悬浮提升/缩略图缩放/错位入场/低置信度发光脉冲 + Header 按钮错位入场/标题滑入 + SettingsPanel 群组错位入场 + disabled 按钮平滑退化; Session 37: PromptEditor 预设管理器 GSAP 展开折叠/textarea 聚焦微扩展/保存成功闪烁/标题下划线渐展 + LogArea 上边缘滚动渐隐/新条目发光脉冲/猫咪回场弹入/悬浮边框变色 + ModelSelector 下拉项悬浮内发光/选中项脉冲/搜索聚焦下划线/列表滚动渐隐/空状态浮动 + HelpDialog FAQ 悬浮缩进/展开项左侧主题色条/问号图标悬浮旋转 + variables.css 主题切换背景过渡/焦点环扩展动画 + ActionButtons 运行态边框呼吸/停止图标微颤"
     },
     "phase3_cssCleanup": {
       "status": "completed",
@@ -31,7 +31,7 @@
     },
     "phase4_codeQuality": {
       "status": "completed",
-      "summary": "TypeScript strict 全开; 模块化重构完成; 多轮 Code Review; as any 类型断言清零; 错误处理一致性强化; 第36轮 Code Review: VideoItem stagger-reveal animation-fill-mode 阻塞 hover transform — animationend 移除 class 修复; CategoryGroup slideAction 缺少 reduced-motion 检测 — 添加 matchMedia 跳过; disabled 按钮 reduced-motion 规则补充"
+      "summary": "TypeScript strict 全开; 模块化重构完成; 多轮 Code Review; as any 类型断言清零; 错误处理一致性强化; 第37轮 Code Review: variables.css 全局 transition 通配规则会覆盖组件特定 transition — 缩窄为 [data-theme] 选择器仅影响主题切换; LogArea mask-image 底部渐隐会裁剪绝对定位的猫咪 — 移除底部渐隐仅保留顶部; HelpDialog 重复 .faq-item.open 规则 — 合并为单一规则; ActionButtons .btn-primary border:none 到 running 状态 1.5px border 导致布局偏移 — 基础状态改为 1.5px solid transparent"
     },
     "phase5_performance": {
       "status": "completed",
@@ -53,7 +53,7 @@
   },
   "buildStatus": {
     "builds": true,
-    "output": "dist/bilibili-ai-favorites-organizer.user.js (554 kB, GSAP ~95 kB CDN)",
+    "output": "dist/bilibili-ai-favorites-organizer.user.js (559 kB, GSAP ~95 kB CDN)",
     "svelteCheck": "0 errors (8 pre-existing), 10 warnings (pre-existing)",
     "preExistingIssues": []
   }

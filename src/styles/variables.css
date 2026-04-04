@@ -138,14 +138,36 @@
   scrollbar-width: none;
 }
 
+/* ==================== Smooth Theme Color Transitions ==================== */
+/* Scoped to theme-change only: [data-theme] change triggers transitions.
+   Applied via attribute selector so it doesn't override component transitions. */
+.bfao-app[data-theme] {
+  transition: background-color 0.3s ease;
+}
+
 /* ==================== Keyboard Focus Ring ==================== */
 .bfao-app button:focus-visible,
 .bfao-app [role="button"]:focus-visible {
   outline: 2px solid var(--ai-primary);
   outline-offset: 2px;
-  transition: outline-offset 0.15s ease;
+  animation: focusRingIn 0.2s cubic-bezier(0.2, 0.98, 0.28, 1) both;
 }
 .bfao-app button:focus:not(:focus-visible),
 .bfao-app [role="button"]:focus:not(:focus-visible) {
   outline: none;
+}
+
+@keyframes focusRingIn {
+  from { outline-offset: 0px; outline-color: transparent; }
+  to { outline-offset: 2px; outline-color: var(--ai-primary); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bfao-app[data-theme] {
+    transition: none;
+  }
+  .bfao-app button:focus-visible,
+  .bfao-app [role="button"]:focus-visible {
+    animation: none;
+  }
 }

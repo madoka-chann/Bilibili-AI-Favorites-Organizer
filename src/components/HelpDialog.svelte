@@ -136,12 +136,21 @@
     padding: 8px 20px;
     border: none;
     border-bottom: 1px solid var(--ai-border-light);
+    border-left: 3px solid transparent;
     background: none;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.2s, padding-left 0.2s ease, border-left-color 0.2s ease;
     text-align: left;
   }
-  .faq-item:hover { background: var(--ai-bg-tertiary); }
+  .faq-item:hover {
+    background: var(--ai-bg-tertiary);
+    padding-left: 24px;
+  }
+  .faq-item.open {
+    border-left-color: var(--ai-primary);
+    background: var(--ai-bg-secondary);
+    padding-left: 24px;
+  }
 
   .faq-q {
     display: flex;
@@ -164,6 +173,11 @@
     font-size: 12px;
     font-weight: 700;
     flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+
+  .faq-item:hover .faq-icon:not(.pulse) {
+    transform: rotate(15deg) scale(1.1);
   }
 
   .faq-item :global(.faq-chevron) {
@@ -191,10 +205,6 @@
     50% { box-shadow: 0 0 0 5px rgba(239, 68, 68, 0); }
   }
 
-  .faq-item.open {
-    background: var(--ai-bg-secondary);
-  }
-
   .help-footer {
     padding: 12px 20px;
     font-size: 11px;
@@ -211,5 +221,9 @@
   @media (prefers-reduced-motion: reduce) {
     .help-footer { animation: none; opacity: 1; }
     .faq-icon.pulse { animation: none; }
+    .faq-item { transition: background 0.2s; }
+    .faq-item:hover { padding-left: 20px; }
+    .faq-icon { transition: none; }
+    .faq-item:hover .faq-icon:not(.pulse) { transform: none; }
   }
 </style>

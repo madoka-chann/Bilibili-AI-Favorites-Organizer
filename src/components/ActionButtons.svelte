@@ -100,7 +100,7 @@
   .btn-primary {
     width: 100%;
     padding: 12px;
-    border: none;
+    border: 1.5px solid transparent;
     border-radius: 14px;
     font-size: 14px;
     font-weight: 700;
@@ -133,10 +133,22 @@
   .btn-primary.running {
     background: linear-gradient(135deg, var(--ai-error), var(--ai-error-hover), var(--ai-error));
     animation: runningPulse 2s ease-in-out infinite;
+    border: 1.5px solid rgba(var(--ai-error-rgb), 0.4);
+  }
+
+  .btn-primary.running :global(svg) {
+    animation: iconSwitch 0.35s cubic-bezier(0.22, 1.42, 0.29, 1) both,
+               runningTremor 0.8s ease-in-out 0.35s infinite;
+  }
+
+  @keyframes runningTremor {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    25% { transform: scale(1) rotate(-2deg); }
+    75% { transform: scale(1) rotate(2deg); }
   }
 
   /* Icon switch bounce on state change */
-  .btn-primary :global(svg) {
+  .btn-primary:not(.running) :global(svg) {
     animation: iconSwitch 0.35s cubic-bezier(0.22, 1.42, 0.29, 1) both;
   }
 
@@ -219,8 +231,14 @@
   }
 
   @keyframes runningPulse {
-    0%, 100% { box-shadow: 0 4px 16px rgba(var(--ai-primary-rgb), 0.15); }
-    50% { box-shadow: 0 8px 32px rgba(239, 68, 68, 0.35), 0 0 12px rgba(239, 68, 68, 0.2); }
+    0%, 100% {
+      box-shadow: 0 4px 16px rgba(var(--ai-primary-rgb), 0.15);
+      border-color: rgba(var(--ai-error-rgb), 0.3);
+    }
+    50% {
+      box-shadow: 0 8px 32px rgba(239, 68, 68, 0.35), 0 0 12px rgba(239, 68, 68, 0.2);
+      border-color: rgba(var(--ai-error-rgb), 0.6);
+    }
   }
 
   @keyframes toolRowSlideIn {
@@ -230,6 +248,8 @@
 
   @media (prefers-reduced-motion: reduce) {
     .btn-primary :global(svg) { animation: none; }
+    .btn-primary.running :global(svg) { animation: none; }
+    .btn-primary:not(.running) :global(svg) { animation: none; }
     .kbd { transition: none; }
     .btn-tool :global(svg) { transition: none; }
     .btn-tool:hover :global(svg) { transform: none; }
