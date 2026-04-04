@@ -136,6 +136,7 @@
   .filter-btn:hover {
     border-color: var(--ai-primary-light);
     transform: translateY(-1px);
+    box-shadow: inset 0 0 0 1px rgba(var(--ai-primary-rgb), 0.15), 0 2px 6px rgba(0, 0, 0, 0.06);
   }
   .filter-btn.active {
     background: linear-gradient(135deg, var(--ai-primary), var(--ai-gradient-accent));
@@ -143,10 +144,48 @@
     border-color: transparent;
     transform: scale(1.05);
     box-shadow: 0 2px 8px var(--ai-primary-shadow);
+    position: relative;
+  }
+  .filter-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 15%;
+    width: 70%;
+    height: 2px;
+    background: #fff;
+    border-radius: 1px;
+    animation: tabUnderline 0.3s cubic-bezier(0.2, 0.98, 0.28, 1) both;
+  }
+
+  /* Search icon highlight when input has value */
+  .search-wrap :global(.search-icon) {
+    transition: color 0.25s ease, opacity 0.25s ease;
+  }
+  .search-wrap:has(.search-input:not(:placeholder-shown)) :global(.search-icon) {
+    color: var(--ai-primary);
+    opacity: 1;
   }
 
   .filter-count {
     font-size: 11px;
     color: var(--ai-text-muted);
+    animation: countPop 0.4s cubic-bezier(0.2, 1.2, 0.4, 1) both;
+  }
+
+  @keyframes tabUnderline {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+
+  @keyframes countPop {
+    0% { transform: scale(0.8); opacity: 0; }
+    70% { transform: scale(1.08); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .filter-btn.active::after { animation: none; }
+    .filter-count { animation: none; }
   }
 </style>

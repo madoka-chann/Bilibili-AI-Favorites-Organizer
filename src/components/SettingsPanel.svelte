@@ -218,6 +218,20 @@
     border-bottom: 1px solid var(--ai-border-light);
   }
 
+  /* Stagger entrance for each SettingsGroup when panel mounts */
+  .settings-panel > :global(.group) {
+    animation: groupSlideIn 0.3s cubic-bezier(0.2, 0.98, 0.28, 1) both;
+  }
+  .settings-panel > :global(.group:nth-child(1)) { animation-delay: 0s; }
+  .settings-panel > :global(.group:nth-child(2)) { animation-delay: 0.06s; }
+  .settings-panel > :global(.group:nth-child(3)) { animation-delay: 0.12s; }
+  .settings-panel > :global(.group:nth-child(4)) { animation-delay: 0.18s; }
+
+  @keyframes groupSlideIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
   .field-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -312,5 +326,6 @@
     .toggle-row:hover { transform: none; }
     .sub-field-slide { animation: none; }
     .hint-fade-in { animation: none; }
+    .settings-panel > :global(.group) { animation: none; }
   }
 </style>

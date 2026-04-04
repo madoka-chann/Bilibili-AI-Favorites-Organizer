@@ -65,7 +65,13 @@
   gap: 4px;
   transition: all 0.2s ease;
 }
-.bfao-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.bfao-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(0.3);
+  box-shadow: none;
+  transition: opacity 0.3s ease, filter 0.3s ease, box-shadow 0.3s ease;
+}
 
 .bfao-btn-primary {
   background: linear-gradient(135deg, var(--ai-primary), var(--ai-gradient-accent));
@@ -108,4 +114,5 @@
 @media (prefers-reduced-motion: reduce) {
   .bfao-modal-empty { animation: none; }
   .bfao-modal-summary strong { animation: none; opacity: 1; transform: none; }
+  .bfao-btn:disabled { transition: none; filter: none; }
 }

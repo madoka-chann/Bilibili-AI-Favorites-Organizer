@@ -9,16 +9,20 @@
     info?: VideoResource;
     virtual?: boolean;
     top?: number;
+    staggerIndex?: number;
     onlightbox?: (src: string) => void;
   }
 
-  let { vid, info, virtual = false, top = 0, onlightbox }: Props = $props();
+  let { vid, info, virtual = false, top = 0, staggerIndex, onlightbox }: Props = $props();
 </script>
 
 <div
   class="video-item"
   class:virtual-item={virtual}
+  class:stagger-reveal={staggerIndex != null}
   style:top={virtual ? `${top}px` : undefined}
+  style:animation-delay={staggerIndex != null ? `${staggerIndex * 0.04}s` : undefined}
+  onanimationend={(e) => { if (e.animationName === 'itemReveal') e.currentTarget.classList.remove('stagger-reveal'); }}
 >
   <div class="video-thumb-wrap" use:thumbPreview>
     {#if info?.cover}
@@ -55,6 +59,12 @@
     background: var(--ai-bg-secondary);
     font-size: 12px;
     height: 60px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  }
+  .video-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    background: var(--ai-bg-tertiary);
   }
 
   .video-item.virtual-item {
@@ -78,10 +88,11 @@
     height: 100%;
     object-fit: cover;
     cursor: zoom-in;
-    transition: filter 0.15s;
+    transition: filter 0.2s ease, transform 0.25s cubic-bezier(0.2, 0.98, 0.28, 1);
   }
   .video-thumb-wrap:hover .video-thumb {
     filter: brightness(1.1);
+    transform: scale(1.05);
   }
 
   .video-thumb-placeholder {
@@ -142,8 +153,25 @@
     animation: confLowPulse 2s ease-in-out infinite;
   }
 
+  /* Stagger reveal for first N items when category expands */
+  .video-item.stagger-reveal {
+    animation: itemReveal 0.3s cubic-bezier(0.2, 0.98, 0.28, 1) both;
+  }
+
   @keyframes confLowPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.65; }
+    0%, 100% { opacity: 1; box-shadow: none; }
+    50% { opacity: 0.8; box-shadow: 0 0 0 2px var(--ai-warning-bg); }
+  }
+
+  @keyframes itemReveal {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .video-item { transition: none; }
+    .video-thumb { transition: filter 0.15s; }
+    .video-item.stagger-reveal { animation: none; }
+    .conf.low { animation: none; }
   }
 </style>

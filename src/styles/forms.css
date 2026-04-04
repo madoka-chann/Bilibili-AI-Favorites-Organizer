@@ -99,6 +99,9 @@
   opacity: 0.4;
   cursor: not-allowed;
   transform: none;
+  filter: grayscale(0.3);
+  box-shadow: none;
+  transition: opacity 0.3s ease, filter 0.3s ease, box-shadow 0.3s ease;
 }
 
 .bfao-icon-btn:disabled:hover {
@@ -129,4 +132,5 @@
   .bfao-label { transition: none; }
   .bfao-input-row::after { transition: none; }
   .bfao-icon-btn:hover { transform: none; }
+  .bfao-icon-btn:disabled { transition: none; filter: none; }
 }

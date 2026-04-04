@@ -8,7 +8,7 @@
   const headerMagnetic = { radius: 60, strength: 0.4 };
   import { gsap, EASINGS, shouldAnimate } from '$animations/gsap-config';
   import { Z_INDEX } from '$utils/constants';
-  import { onDestroy } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
 
   interface Props {
     settingsOpen?: boolean;
@@ -18,12 +18,37 @@
   let { settingsOpen = $bindable(false), onclose }: Props = $props();
 
   let themeIconEl = $state<HTMLButtonElement>(undefined!);
+  let headerTitleEl = $state<HTMLDivElement>(undefined!);
+  let headerActionsEl = $state<HTMLDivElement>(undefined!);
   let themeIconTween: gsap.core.Tween | null = null;
+  let entranceTweens: gsap.core.Tween[] = [];
   let transitionTimer: ReturnType<typeof setTimeout> | null = null;
+
+  onMount(() => {
+    if (!shouldAnimate()) return;
+    // Title slide-in from left
+    if (headerTitleEl) {
+      entranceTweens.push(gsap.fromTo(headerTitleEl,
+        { opacity: 0, x: -10 },
+        { opacity: 1, x: 0, duration: 0.35, ease: 'power2.out' }
+      ));
+    }
+    // Buttons stagger entrance
+    if (headerActionsEl) {
+      const btns = headerActionsEl.querySelectorAll('.header-btn');
+      if (btns.length) {
+        entranceTweens.push(gsap.fromTo(btns,
+          { opacity: 0, scale: 0.8, y: 4 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.3, stagger: 0.08, ease: EASINGS.prismBounce, delay: 0.15 }
+        ));
+      }
+    }
+  });
 
   onDestroy(() => {
     if (transitionTimer) clearTimeout(transitionTimer);
     themeIconTween?.kill();
+    entranceTweens.forEach(t => t.kill());
   });
 
   /** J1 圆形揭示 + J2 图标旋转 + J3 色彩插值 */
@@ -82,12 +107,12 @@
 </script>
 
 <div class="header">
-  <div class="header-title">
+  <div class="header-title" bind:this={headerTitleEl}>
     <span>AI 收藏夹整理器</span>
     <span class="version">v2.0</span>
   </div>
 
-  <div class="header-actions">
+  <div class="header-actions" bind:this={headerActionsEl}>
     <button
       class="header-btn"
       bind:this={themeIconEl}

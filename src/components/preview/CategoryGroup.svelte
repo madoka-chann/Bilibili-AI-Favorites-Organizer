@@ -42,6 +42,36 @@
       ? vids.reduce((s, v) => s + (v.conf ?? 1), 0) / vids.length
       : null
   );
+
+  /** Height transition for expand/collapse */
+  function slideAction(node: HTMLDivElement) {
+    // Skip animation if reduced motion is preferred
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const h = node.scrollHeight;
+    node.style.maxHeight = '0px';
+    node.style.overflow = 'hidden';
+    node.style.transition = 'max-height 0.35s cubic-bezier(0.2, 0.98, 0.28, 1), opacity 0.3s ease';
+    node.style.opacity = '0';
+    requestAnimationFrame(() => {
+      node.style.maxHeight = h + 'px';
+      node.style.opacity = '1';
+    });
+    // Clean up inline styles after transition so CSS takes over
+    const cleanup = () => {
+      node.style.maxHeight = '';
+      node.style.overflow = '';
+      node.style.transition = '';
+      node.style.opacity = '';
+    };
+    node.addEventListener('transitionend', cleanup, { once: true });
+
+    return {
+      destroy() {
+        node.removeEventListener('transitionend', cleanup);
+      }
+    };
+  }
 </script>
 
 <div class="category-group" class:merge-source={isMergeSource} data-category={name}>
@@ -79,32 +109,37 @@
 
   {#if isExpanded}
     {#if needsVirtual && visibleRange}
-      <div
-        class="video-list virtual-scroll"
-        style:height="{visibleRows * rowHeight}px"
-        onscroll={(e) => onvirtualscroll?.(e)}
-      >
-        <div class="virtual-spacer" style:height="{vids.length * rowHeight}px">
-          {#each vids.slice(visibleRange.start, visibleRange.end) as vid, i (vid.id)}
-            <VideoItem
-              {vid}
-              info={videoMap.get(vid.id)}
-              virtual={true}
-              top={(visibleRange.start + i) * rowHeight}
-              {onlightbox}
-            />
-          {/each}
+      <div class="video-list-wrap" use:slideAction>
+        <div
+          class="video-list virtual-scroll"
+          style:height="{visibleRows * rowHeight}px"
+          onscroll={(e) => onvirtualscroll?.(e)}
+        >
+          <div class="virtual-spacer" style:height="{vids.length * rowHeight}px">
+            {#each vids.slice(visibleRange.start, visibleRange.end) as vid, i (vid.id)}
+              <VideoItem
+                {vid}
+                info={videoMap.get(vid.id)}
+                virtual={true}
+                top={(visibleRange.start + i) * rowHeight}
+                {onlightbox}
+              />
+            {/each}
+          </div>
         </div>
       </div>
     {:else}
-      <div class="video-list">
-        {#each vids as vid (vid.id)}
-          <VideoItem
-            {vid}
-            info={videoMap.get(vid.id)}
-            {onlightbox}
-          />
-        {/each}
+      <div class="video-list-wrap" use:slideAction>
+        <div class="video-list">
+          {#each vids as vid, i (vid.id)}
+            <VideoItem
+              {vid}
+              info={videoMap.get(vid.id)}
+              {onlightbox}
+              staggerIndex={i < 5 ? i : undefined}
+            />
+          {/each}
+        </div>
       </div>
     {/if}
   {/if}
@@ -121,7 +156,7 @@
   .category-group:hover {
     transform: translateY(-1px);
     border-color: rgba(var(--ai-primary-rgb), 0.45);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 16px rgba(var(--ai-primary-rgb), 0.1), 0 4px 12px rgba(0, 0, 0, 0.08);
   }
   .category-group.merge-source {
     border-color: var(--ai-primary);
@@ -269,5 +304,10 @@
     40% { transform: translateX(2px); }
     60% { transform: translateX(-1.5px); }
     80% { transform: translateX(1px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .category-group { transition: none; }
+    .expand-btn { transition: none; }
   }
 </style>

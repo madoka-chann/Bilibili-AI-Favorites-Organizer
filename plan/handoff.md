@@ -1,6 +1,63 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-02, 第三十五次)
+## 最近一次会话 (2026-04-04, 第三十六次)
+
+### 本次完成内容
+
+**Preview Vitality — 预览活力: Preview 区域交互动画密度升级 + Header/SettingsPanel 入场序列 + disabled 按钮平滑退化**
+
+#### 视觉增强 — 7 个文件
+
+| 组件/文件 | 新增动画 | 说明 |
+|-----------|----------|------|
+| `PreviewToolbar.svelte` | filter-btn active 滑动下划线 (`tabUnderline` scaleX 0→1) + 悬浮内发光 (inset box-shadow) + 搜索图标激活高亮 (`:has(:not(:placeholder-shown))` color 变主题色) + filter-count 弹入 (`countPop`) | 活跃 Tab 底部白色指示线从中心展开；搜索输入内容时图标变主题色暗示"搜索中"；分类计数弹入显示 |
+| `CategoryGroup.svelte` | 展开/折叠高度过渡 (Svelte action `slideAction`，max-height 0→scrollHeight + opacity) + 悬浮主题色发光 (box-shadow 加入 primary-rgb) | 展开时视频列表从 0 高度滑出而非瞬间出现；分组悬浮时边框发出主题色柔光 |
+| `VideoItem.svelte` | 卡片悬浮提升 (translateY -1px + box-shadow + bg 变色) + 缩略图悬浮缩放 (scale 1.05) + 前 5 项错位入场 (`itemReveal` translateY 8→0 + opacity，stagger 0.04s) + 低置信度脉冲增强 (opacity→box-shadow) | 视频项有悬浮反馈；缩略图轻微放大配合已有 brightness；展开分组后前 5 项依次滑入；低置信度项脉冲更醒目 |
+| `Header.svelte` | 标题入场滑入 (GSAP fromTo x:-10→0 + opacity) + 按钮错位入场 (GSAP fromTo scale:0.8→1 + y:4→0，stagger 0.08s) | Panel 展开后 Header 标题从左滑入，随后按钮依次弹入，建立视觉层次顺序 |
+| `SettingsPanel.svelte` | SettingsGroup 错位入场 (`groupSlideIn` translateY:12→0 + opacity，delay 递增 0.06s) | 切换到设置视图时各设置组依次从下方浮入，避免整块瞬间出现 |
+| `forms.css` | disabled icon-btn 平滑退化 (transition opacity/filter/box-shadow 0.3s + grayscale 0.3) | 图标按钮变为 disabled 时平滑淡化+轻微去色，而非瞬间跳变 |
+| `modal.css` | disabled bfao-btn 平滑退化 (transition opacity/filter/box-shadow 0.3s + grayscale 0.3) | Modal 内按钮 disabled 状态同样平滑过渡 |
+
+#### 代码质量 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `VideoItem.svelte` | `stagger-reveal` 使用 `animation-fill-mode: both`，动画结束后保持对 `transform` 的控制，导致 `:hover translateY(-1px)` 被覆盖无法触发 | HIGH | 添加 `onanimationend` 事件，动画结束时移除 `.stagger-reveal` class，释放 transform 控制权给 CSS transitions |
+| `CategoryGroup.svelte` | `slideAction` 在 `prefers-reduced-motion` 下仍执行高度动画过渡 | MEDIUM | 函数开头添加 `matchMedia('(prefers-reduced-motion: reduce)')` 检测，匹配时直接 return 跳过动画 |
+| `modal.css` | `.bfao-btn:disabled` 新增 `filter: grayscale(0.3)` 在 reduced-motion 下不必要 | LOW | reduced-motion 媒体查询中添加 `filter: none` + `transition: none` |
+| `forms.css` | `.bfao-icon-btn:disabled` 同上 | LOW | 同上处理 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `PreviewToolbar.svelte` | `:has()` CSS 选择器在 Firefox 121 以下不支持 | 可接受：Bilibili 用户群主要使用 Chrome/Edge，`:has()` 仅影响搜索图标高亮这一增强特性，不影响功能 |
+| `PreviewToolbar.svelte` | `.filter-btn.active::after` 下划线在 `scale(1.05)` 父元素中会被等比缩放 | 可接受：缩放比例仅 5%，视觉差异不可感知 |
+| `CategoryGroup.svelte` | `slideAction` 读取 `scrollHeight` 在设置 `maxHeight: 0` 之前 | 正确：先读后改确保获取到正确的内容高度 |
+
+### 关键设计决策
+
+1. **CategoryGroup 用 Svelte action 而非 CSS `max-height` transition**: CSS 无法从 `0` 过渡到 `auto`（需要明确的像素值），因此用 JS action 在挂载时读取 `scrollHeight` 并设为目标值。`transitionend` 后清除内联样式，让 CSS 接管。
+2. **VideoItem `animationend` 移除 class 而非不用 fill-mode**: 不用 `both` 则动画延迟期间元素可见（opacity:1），会看到"先出现后又动画"的闪烁。`both` 确保延迟期间保持初始帧(opacity:0)，`animationend` 移除 class 释放控制权，两全其美。
+3. **Header 按钮入场用 GSAP 而非 CSS**: GSAP 的 stagger 可以一次性控制多个按钮的错位时间，CSS 需要为每个 `:nth-child` 写不同的 `animation-delay`。且 Header 已有 GSAP 导入，不增加新依赖。
+4. **SettingsPanel 群组入场用 CSS + `:global(.group:nth-child)`**: SettingsGroup 是子组件渲染的 `.group` class 元素，用 `:global()` 穿透选择器为每个设置分组指定递增延迟，无需 JS 逻辑。
+5. **disabled 按钮用 `grayscale(0.3)` 而非 `grayscale(0.5)`**: 0.5 去色过重会让按钮看起来"坏了"，0.3 只是轻微去饱和，配合 opacity:0.5 已足够暗示不可用状态。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: 7 文件预览区活力增强)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 4 个动画/可访问性 bug 修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 new errors。构建体积 554 kB (较 526 kB 增长 +28 kB, 新增 Svelte action/GSAP 入场/CSS keyframes/transitions)。**
+
+---
+
+## 上一次会话 (2026-04-02, 第三十五次)
 
 ### 本次完成内容
 
