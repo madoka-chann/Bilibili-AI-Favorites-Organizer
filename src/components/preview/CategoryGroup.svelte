@@ -240,6 +240,8 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
+    max-height: 408px;
+    overflow-y: auto;
   }
 
   .video-list.virtual-scroll {
