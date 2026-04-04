@@ -1,6 +1,7 @@
 <script lang="ts">
   import { ChevronRight, LogOut } from 'lucide-svelte';
   import VideoItem from './VideoItem.svelte';
+  import { checkBounce } from '$animations/micro';
   import type { VideoResource } from '$types/index';
   import type { ClassifiedVideoEntry } from '$types/ai';
 
@@ -80,6 +81,7 @@
       type="checkbox"
       checked={isSelected}
       onchange={() => ontoggleselect?.()}
+      use:checkBounce
     />
     <button class="expand-btn" class:expanded={isExpanded} onclick={() => ontoggleexpand?.()}>
       <ChevronRight size={14} />
@@ -195,7 +197,11 @@
     cursor: pointer;
     padding: 2px;
     flex-shrink: 0;
-    transition: transform 0.25s ease, color 0.2s;
+    border-radius: 4px;
+    transition: transform 0.25s ease, color 0.2s, box-shadow 0.25s ease;
+  }
+  .expand-btn:hover {
+    box-shadow: 0 0 0 3px rgba(var(--ai-primary-rgb), 0.12);
   }
   .expand-btn.expanded {
     transform: rotate(90deg);
@@ -212,6 +218,10 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    transition: color 0.25s ease;
+  }
+  .category-header:hover .category-name {
+    color: var(--ai-primary);
   }
 
   .badge {
@@ -237,7 +247,10 @@
     color: var(--ai-success-dark);
     flex-shrink: 0;
   }
-  .conf-avg.low { color: var(--ai-warning-dark); }
+  .conf-avg.low {
+    color: var(--ai-warning-dark);
+    animation: confAvgPulse 2s ease-in-out infinite;
+  }
 
   .category-count {
     font-size: 11px;
@@ -246,6 +259,12 @@
     padding: 2px 8px;
     border-radius: 8px;
     flex-shrink: 0;
+    transition: transform 0.25s cubic-bezier(0.2, 1.04, 0.42, 1), background 0.25s ease, color 0.25s ease;
+  }
+  .category-header:hover .category-count {
+    transform: scale(1.05);
+    background: rgba(var(--ai-primary-rgb), 0.1);
+    color: var(--ai-primary);
   }
 
   .remove-btn {
@@ -277,6 +296,8 @@
     gap: 4px;
     max-height: 408px;
     overflow-y: auto;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 12px, black calc(100% - 12px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 12px, black calc(100% - 12px), transparent 100%);
   }
 
   .video-list.virtual-scroll {
@@ -306,8 +327,14 @@
     80% { transform: translateX(1px); }
   }
 
+  @keyframes confAvgPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .category-group { transition: none; }
     .expand-btn { transition: none; }
+    .conf-avg.low { animation: none; }
   }
 </style>

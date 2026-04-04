@@ -166,6 +166,10 @@
     font-weight: 600;
     color: var(--ai-primary);
     display: inline-block;
+    transition: transform 0.25s cubic-bezier(0.2, 1.04, 0.42, 1);
+  }
+  .phase-label:hover {
+    transform: scale(1.05);
   }
 
   .progress-text {
@@ -219,6 +223,7 @@
     color: var(--ai-text-muted);
     margin-top: 4px;
     text-align: right;
+    animation: tokenFadeIn 0.4s cubic-bezier(0.2, 0.98, 0.28, 1) both;
   }
 
   .progress-cat {
@@ -229,8 +234,12 @@
     transform: translateX(-50%);
     animation: catBounce 0.5s ease-in-out infinite alternate;
     filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
-    pointer-events: none;
-    transition: left 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+    pointer-events: auto;
+    cursor: pointer;
+    transition: left 0.8s cubic-bezier(0.19, 1, 0.22, 1), filter 0.2s ease;
+  }
+  .progress-cat:hover {
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3)) brightness(1.2);
   }
   @keyframes catBounce {
     from { transform: translateX(-50%) translateY(0); }
@@ -253,10 +262,16 @@
     50% { box-shadow: 0 0 12px rgba(16, 185, 129, 0.35); }
   }
 
+  @keyframes tokenFadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .progress-container { animation: none; }
     .progress-bar { animation: none; }
     .progress-bar::after { animation: none; }
     .progress-bar.complete { animation: none; }
+    .token-stats { animation: none; }
   }
 </style>

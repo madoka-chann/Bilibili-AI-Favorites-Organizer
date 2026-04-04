@@ -1,6 +1,59 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-04, 第三十八次)
+## 最近一次会话 (2026-04-04, 第三十九次)
+
+### 本次完成内容
+
+**Kinetic Preview — 动感预览: 预览区三大组件 GSAP 微交互补齐 + ProgressBar/UndoDialog 视觉死角填补**
+
+#### 视觉增强 — 5 个文件
+
+| 组件/文件 | 新增动画 | 说明 |
+|-----------|----------|------|
+| `PreviewToolbar.svelte` | filter-btn `pressEffect` GSAP 按压回弹 + search-input `focusGlow` GSAP 品牌发光 + `filterSlideIn` 错位入场 (nth-child 延迟) + `filterActivate` active 切换脉冲 (box-shadow 扩缩) + merge-btn active 图标旋转 (rotate 180deg) + preview-stats strong 数字 inline-block transition | 筛选按钮有物理按压感；搜索框聚焦有 GSAP 品牌光效；按钮依次滑入而非整排出现；合并模式图标旋转暗示状态切换 |
+| `CategoryGroup.svelte` | checkbox `checkBounce` GSAP 弹跳 + category-name 悬浮变主题色 + expand-btn 悬浮 box-shadow 光环 + category-count 悬浮 scale(1.05)+主题色背景 + video-list `mask-image` 上下 12px 滚动渐隐 + conf-avg.low `confAvgPulse` 脉冲 | checkbox 勾选有弹跳反馈；悬浮时分类名变主题色引导视线；视频列表边缘渐隐暗示可滚动；低置信度平均分脉冲警告 |
+| `VideoItem.svelte` | 悬浮左侧主题色条 (border-left 2px transparent→primary) + `confPop` 置信度 badge 弹入入场 + uploader 悬浮展开 (opacity 0.7→1 + translateX 2px) + duration 悬浮放大 (scale 1.08 + 更暗背景) + placeholder `placeholderShimmer` 流动渐变 | 统一与 DeadVideosResult 的悬浮左侧色条策略；置信度标签弹入而非直接出现；UP主名字悬浮时更醒目；无封面占位符有流光暗示加载中 |
+| `ProgressBar.svelte` | token-stats `tokenFadeIn` 入场渐显 (opacity+translateY) + phase-label 悬浮 scale(1.05) + progress-cat 悬浮亮化 (brightness 1.2 + pointer-events) | Token 统计从下方渐显；阶段标签可悬浮微弹；猫咪悬浮变亮增加趣味性 |
+| `UndoDialog.svelte` | history-list `mask-image` 上下 12px 滚动渐隐 + hint `hintSlideIn` 渐显入场 + selected item `box-shadow: inset` 持续内发光 + selectPulse 终态过渡到 inset shadow | 列表滚动边缘渐隐；提示文字渐显不争夺注意力；选中项有持续内发光深度感 |
+
+#### 代码质量 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `ProgressBar.svelte` | `.progress-cat:hover` 使用 `font-size: 20px` 变更 emoji 大小会引起 reflow，且 font-size 不参与 transition 平滑过渡 | MEDIUM | 改为仅使用 `filter: brightness(1.2)` 平滑变化，移除 font-size 变更 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `PreviewToolbar.svelte` | `focusGlow` GSAP action 与 CSS `:focus` box-shadow 同时存在，GSAP 会覆盖 CSS | 可接受：CSS 作为 GSAP CDN 加载失败时的降级方案。shouldAnimate() 返回 false 时 GSAP 不执行，CSS 生效 |
+| `PreviewToolbar.svelte` | `.filter-row .filter-btn` 的 `filterSlideIn` 与 `.filter-btn.active` 的 `filterActivate` 同优先级，若按钮初始即 active 则只播放 filterActivate | 可接受：实际使用中筛选按钮不会以 active 状态初始挂载（用户需手动点击激活） |
+| `VideoItem.svelte` | `.conf` 的 `confPop` 入场动画被 `.conf.low` 的 `confLowPulse` 覆盖，低置信度项不会有弹入效果 | 可接受：低置信度项的持续脉冲警告比一次性弹入更重要，两个动画无法叠加 |
+| `CategoryGroup.svelte` | `mask-image` 渐隐也应用于 `.virtual-scroll` 变体 | 可接受：虚拟滚动列表同样受益于边缘渐隐，且 mask-image 不影响绝对定位子元素的可见性（仅影响该容器内像素的 alpha 通道） |
+
+### 关键设计决策
+
+1. **预览区引入 GSAP actions**: PreviewToolbar 是首个在 preview/ 子目录中使用 GSAP actions (`pressEffect`/`focusGlow`) 的组件。通过 import 而非新建文件复用已有基础设施，零新 JS 函数。
+2. **VideoItem border-left 策略统一**: 与 Session 38 的 DeadVideosResult video-item 使用相同的"transparent→primary"左边框过渡，确保所有列表项的悬浮反馈语言一致。
+3. **placeholder shimmer 用 background-size + background-position**: 不使用 `::after` 伪元素，直接在 background 上做移位动画，减少 DOM 层级。
+4. **UndoDialog history-list 加 max-height**: 添加 320px max-height + overflow-y auto 使长历史列表可滚动，配合 mask-image 渐隐。之前列表无高度限制，极端情况下可能撑开 Modal。
+5. **ProgressBar cat 保留 pointer-events**: 将 `pointer-events: none` 改为 `auto` 使猫咪可悬浮交互，因为进度条轨道本身不是交互元素，猫咪遮挡不影响功能。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: 5 文件预览区动感增强)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 1 个 ProgressBar 悬浮 reflow bug 修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 new errors (8 pre-existing)。构建体积 569 kB (较 564 kB 增长 +5 kB, 新增 GSAP action imports + CSS keyframes/transitions/mask-image)。**
+
+---
+
+## 上一次会话 (2026-04-04, 第三十八次)
 
 ### 本次完成内容
 

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Search, CheckSquare, Square, GitMerge } from 'lucide-svelte';
+  import { pressEffect, focusGlow } from '$animations/micro';
 
   type FilterMode = 'all' | 'existing' | 'new' | 'low-conf';
 
@@ -38,11 +39,12 @@
       placeholder="搜索分类名..."
       value={searchQuery}
       oninput={(e) => onsearchchange?.(e.currentTarget.value)}
+      use:focusGlow
     />
   </div>
 
   <div class="filter-row">
-    <button class="filter-btn" class:active={allSelected} onclick={() => ontoggleall?.()}>
+    <button class="filter-btn" class:active={allSelected} onclick={() => ontoggleall?.()} use:pressEffect>
       {#if allSelected}
         <CheckSquare size={12} />
       {:else}
@@ -50,16 +52,16 @@
       {/if}
       全选
     </button>
-    <button class="filter-btn" class:active={activeFilter === 'existing'} onclick={() => onfilter?.('existing')}>
+    <button class="filter-btn" class:active={activeFilter === 'existing'} onclick={() => onfilter?.('existing')} use:pressEffect>
       仅已有
     </button>
-    <button class="filter-btn" class:active={activeFilter === 'new'} onclick={() => onfilter?.('new')}>
+    <button class="filter-btn" class:active={activeFilter === 'new'} onclick={() => onfilter?.('new')} use:pressEffect>
       仅新建
     </button>
-    <button class="filter-btn" class:active={activeFilter === 'low-conf'} onclick={() => onfilter?.('low-conf')}>
+    <button class="filter-btn" class:active={activeFilter === 'low-conf'} onclick={() => onfilter?.('low-conf')} use:pressEffect>
       低置信度
     </button>
-    <button class="filter-btn" class:active={mergeMode} onclick={() => ontogglemerge?.()}>
+    <button class="filter-btn merge-btn" class:active={mergeMode} onclick={() => ontogglemerge?.()} use:pressEffect>
       <GitMerge size={12} />
       合并分类
     </button>
@@ -79,7 +81,11 @@
     font-weight: bold;
     margin-bottom: 8px;
   }
-  .preview-stats strong { color: var(--ai-primary); }
+  .preview-stats strong {
+    color: var(--ai-primary);
+    display: inline-block;
+    transition: transform 0.25s cubic-bezier(0.2, 1.04, 0.42, 1), color 0.2s;
+  }
 
   .search-wrap {
     position: relative;
@@ -118,6 +124,14 @@
     flex-wrap: wrap;
     margin-bottom: 6px;
   }
+  .filter-row .filter-btn {
+    animation: filterSlideIn 0.3s cubic-bezier(0.2, 0.98, 0.28, 1) both;
+  }
+  .filter-row .filter-btn:nth-child(1) { animation-delay: 0s; }
+  .filter-row .filter-btn:nth-child(2) { animation-delay: 0.04s; }
+  .filter-row .filter-btn:nth-child(3) { animation-delay: 0.08s; }
+  .filter-row .filter-btn:nth-child(4) { animation-delay: 0.12s; }
+  .filter-row .filter-btn:nth-child(5) { animation-delay: 0.16s; }
 
   .filter-btn {
     padding: 4px 10px;
@@ -145,6 +159,16 @@
     transform: scale(1.05);
     box-shadow: 0 2px 8px var(--ai-primary-shadow);
     position: relative;
+    animation: filterActivate 0.35s cubic-bezier(0.2, 1.04, 0.42, 1);
+  }
+
+  /* Merge button icon rotation when active */
+  .merge-btn.active :global(svg) {
+    transform: rotate(180deg);
+    transition: transform 0.35s cubic-bezier(0.2, 1.04, 0.42, 1);
+  }
+  .merge-btn :global(svg) {
+    transition: transform 0.35s cubic-bezier(0.2, 1.04, 0.42, 1);
   }
   .filter-btn.active::after {
     content: '';
@@ -184,8 +208,21 @@
     100% { transform: scale(1); opacity: 1; }
   }
 
+  @keyframes filterActivate {
+    0% { box-shadow: 0 0 0 0 rgba(var(--ai-primary-rgb), 0.4); }
+    50% { box-shadow: 0 0 0 6px rgba(var(--ai-primary-rgb), 0.1); }
+    100% { box-shadow: 0 2px 8px var(--ai-primary-shadow); }
+  }
+
+  @keyframes filterSlideIn {
+    from { opacity: 0; transform: translateY(6px) scale(0.92); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .filter-btn.active::after { animation: none; }
+    .filter-btn.active { animation: none; }
     .filter-count { animation: none; }
+    .filter-row .filter-btn { animation: none; }
   }
 </style>

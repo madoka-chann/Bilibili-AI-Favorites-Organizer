@@ -59,12 +59,14 @@
     background: var(--ai-bg-secondary);
     font-size: 12px;
     height: 60px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    border-left: 2px solid transparent;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.25s ease;
   }
   .video-item:hover {
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     background: var(--ai-bg-tertiary);
+    border-left-color: var(--ai-primary);
   }
 
   .video-item.virtual-item {
@@ -98,7 +100,9 @@
   .video-thumb-placeholder {
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, var(--ai-bg-tertiary), var(--ai-border-lighter));
+    background: linear-gradient(90deg, var(--ai-bg-tertiary) 25%, var(--ai-border-lighter) 50%, var(--ai-bg-tertiary) 75%);
+    background-size: 200% 100%;
+    animation: placeholderShimmer 1.8s ease-in-out infinite;
   }
 
   .video-duration {
@@ -111,6 +115,11 @@
     padding: 1px 4px;
     border-radius: 3px;
     line-height: 1.2;
+    transition: transform 0.2s cubic-bezier(0.2, 1.04, 0.42, 1), background 0.2s ease;
+  }
+  .video-item:hover .video-duration {
+    transform: scale(1.08);
+    background: rgba(0, 0, 0, 0.85);
   }
 
   .video-info {
@@ -135,6 +144,12 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    opacity: 0.7;
+  }
+  .video-item:hover .video-uploader {
+    opacity: 1;
+    transform: translateX(2px);
   }
 
   .conf {
@@ -146,6 +161,7 @@
     border-radius: 6px;
     white-space: nowrap;
     flex-shrink: 0;
+    animation: confPop 0.35s cubic-bezier(0.2, 1.2, 0.4, 1) both;
   }
   .conf.low {
     color: var(--ai-warning-dark);
@@ -168,10 +184,23 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
+  @keyframes confPop {
+    0% { transform: scale(0.5); opacity: 0; }
+    70% { transform: scale(1.12); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes placeholderShimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .video-item { transition: none; }
     .video-thumb { transition: filter 0.15s; }
     .video-item.stagger-reveal { animation: none; }
+    .conf { animation: none; }
     .conf.low { animation: none; }
+    .video-thumb-placeholder { animation: none; }
   }
 </style>

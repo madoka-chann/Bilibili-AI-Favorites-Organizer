@@ -53,12 +53,17 @@
     font-size: 12px;
     color: var(--ai-text-secondary);
     margin-bottom: 12px;
+    animation: hintSlideIn 0.3s cubic-bezier(0.2, 0.98, 0.28, 1) both;
   }
 
   .history-list {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    max-height: 320px;
+    overflow-y: auto;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 12px, black calc(100% - 12px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 12px, black calc(100% - 12px), transparent 100%);
   }
 
   .item-info { flex: 1; }
@@ -82,15 +87,22 @@
   :global(.bfao-selectable-item.selected) {
     transform: translateX(2px);
     animation: selectPulse 0.4s ease;
+    box-shadow: inset 0 0 0 1px rgba(var(--ai-primary-rgb), 0.15);
   }
 
   @keyframes selectPulse {
     0% { box-shadow: 0 0 0 0 rgba(var(--ai-primary-rgb), 0.3); }
     50% { box-shadow: 0 0 0 4px rgba(var(--ai-primary-rgb), 0.15); }
-    100% { box-shadow: 0 0 0 0 rgba(var(--ai-primary-rgb), 0); }
+    100% { box-shadow: inset 0 0 0 1px rgba(var(--ai-primary-rgb), 0.15); }
+  }
+
+  @keyframes hintSlideIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   @media (prefers-reduced-motion: reduce) {
     :global(.bfao-selectable-item.selected) { animation: none; }
+    .hint { animation: none; }
   }
 </style>
