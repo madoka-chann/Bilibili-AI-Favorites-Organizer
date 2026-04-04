@@ -67,19 +67,43 @@
     );
     padding-top: 4px;
     padding-bottom: 4px;
+    counter-reset: dup-counter;
   }
 
   .dup-item {
     font-size: 11px;
-    padding: 5px 4px;
+    padding: 5px 4px 5px 28px;
     border-bottom: 1px solid var(--ai-border-lighter);
     border-radius: 4px;
     transition: background 0.2s ease, padding-left 0.2s ease,
                 box-shadow 0.2s ease, transform 0.2s ease;
+    position: relative;
+    counter-increment: dup-counter;
+  }
+  .dup-item::before {
+    content: counter(dup-counter);
+    position: absolute;
+    left: 4px;
+    top: 6px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--ai-primary-bg);
+    color: var(--ai-primary);
+    font-size: 9px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .dup-item:hover::before {
+    background: var(--ai-primary);
+    color: #fff;
   }
   .dup-item:hover {
     background: var(--ai-bg-hover);
-    padding-left: 8px;
+    padding-left: 32px;
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(var(--ai-primary-rgb), 0.08);
   }
@@ -105,6 +129,7 @@
   @media (prefers-reduced-motion: reduce) {
     .dup-item { transition: none; }
     .dup-item:hover { transform: none; }
+    .dup-item::before { transition: none; }
     .dup-folders { transition: none; }
     .dup-item:hover .dup-folders { transform: none; }
   }

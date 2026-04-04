@@ -63,6 +63,24 @@
   gap: 8px;
   align-items: center;
   flex-wrap: wrap;
+  position: relative;
+  padding-top: 12px;
+}
+.bfao-action-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--ai-divider-gradient);
+  opacity: 0.5;
+  transform: scaleX(0);
+  animation: actionBarLine 0.4s cubic-bezier(0.2, 0.98, 0.28, 1) 0.2s both;
+}
+@keyframes actionBarLine {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
 }
 
 /* Primary action button (gradient) */
@@ -97,6 +115,13 @@
   color: #fff;
 }
 .bfao-btn-primary:hover:not(:disabled) { box-shadow: 0 4px 12px rgba(var(--ai-primary-rgb), 0.3); }
+.bfao-btn-primary:disabled {
+  animation: processingGlow 2s ease-in-out infinite;
+}
+@keyframes processingGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(var(--ai-primary-rgb), 0.1); }
+  50% { box-shadow: 0 0 12px 2px rgba(var(--ai-primary-rgb), 0.25); }
+}
 
 .bfao-btn-danger {
   background: var(--ai-error);
@@ -133,8 +158,9 @@
 @media (prefers-reduced-motion: reduce) {
   .bfao-modal-empty { animation: none; }
   .bfao-modal-summary strong { animation: none; opacity: 1; transform: none; }
-  .bfao-btn:disabled { transition: none; filter: none; }
+  .bfao-btn:disabled { transition: none; filter: none; animation: none; }
   .bfao-modal-hint { animation: none; opacity: 1; }
   .bfao-modal-more { animation: none; opacity: 0.6; }
   .bfao-btn svg { transition: none; }
+  .bfao-action-bar::before { animation: none; transform: scaleX(1); }
 }

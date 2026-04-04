@@ -165,8 +165,23 @@
     font-size: 11px;
     font-weight: 600;
     color: var(--ai-primary);
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     transition: transform 0.25s cubic-bezier(0.2, 1.04, 0.42, 1);
+  }
+  .phase-label::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ai-primary);
+    animation: phaseDot 1.5s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes phaseDot {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(var(--ai-primary-rgb), 0.4); }
+    50% { opacity: 0.6; box-shadow: 0 0 0 3px rgba(var(--ai-primary-rgb), 0); }
   }
   .phase-label:hover {
     transform: scale(1.05);
@@ -185,6 +200,7 @@
     border-radius: 3px;
     overflow: visible;
     position: relative;
+    box-shadow: var(--ai-shadow-inset);
   }
 
   .progress-bar {
@@ -236,10 +252,12 @@
     filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
     pointer-events: auto;
     cursor: pointer;
-    transition: left 0.8s cubic-bezier(0.19, 1, 0.22, 1), filter 0.2s ease;
+    transition: left 0.8s cubic-bezier(0.19, 1, 0.22, 1), filter 0.2s ease, transform 0.2s ease;
   }
   .progress-cat:hover {
     filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3)) brightness(1.2);
+    animation: none;
+    transform: translateX(-50%) scale(1.3);
   }
   @keyframes catBounce {
     from { transform: translateX(-50%) translateY(0); }
@@ -273,5 +291,7 @@
     .progress-bar::after { animation: none; }
     .progress-bar.complete { animation: none; }
     .token-stats { animation: none; }
+    .phase-label::before { animation: none; opacity: 1; }
+    .progress-cat { animation: none; }
   }
 </style>

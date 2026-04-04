@@ -67,6 +67,12 @@
   --ai-shadow-md: 0 8px 32px rgba(0, 0, 0, 0.12);
   --ai-shadow-lg: 0 24px 68px rgba(0, 0, 0, 0.11), 0 10px 28px rgba(0, 0, 0, 0.07);
   --ai-shadow-modal: 0 44px 110px rgba(0, 0, 0, 0.2), 0 18px 44px rgba(0, 0, 0, 0.11);
+
+  /* Depth — inset shadow for recessed areas */
+  --ai-shadow-inset: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+
+  /* Divider — gradient separator line */
+  --ai-divider-gradient: linear-gradient(90deg, transparent, var(--ai-primary-light), transparent);
 }
 
 /* ==================== Dark Theme ==================== */
@@ -132,6 +138,12 @@
   --ai-shadow-md: 0 8px 32px rgba(0, 0, 0, 0.3);
   --ai-shadow-lg: 0 24px 68px rgba(0, 0, 0, 0.35), 0 10px 28px rgba(0, 0, 0, 0.2);
   --ai-shadow-modal: 0 44px 110px rgba(0, 0, 0, 0.5), 0 18px 44px rgba(0, 0, 0, 0.3);
+
+  /* Depth — stronger inset for dark mode */
+  --ai-shadow-inset: inset 0 1px 3px rgba(0, 0, 0, 0.15);
+
+  /* Divider */
+  --ai-divider-gradient: linear-gradient(90deg, transparent, var(--ai-primary-light), transparent);
 }
 
 /* ==================== Hidden Scrollbar — scroll still works, bar hidden ==================== */

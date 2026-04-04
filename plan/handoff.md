@@ -1,6 +1,63 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-04, 第四十一次)
+## 最近一次会话 (2026-04-04, 第四十二次)
+
+### 本次完成内容
+
+**Velvet Depth — 丝绒纵深: 纵深层次感 + 结构化视觉引导 + 状态完成反馈**
+
+#### 视觉增强 — 7 个文件
+
+| 组件/文件 | 新增动画 | 说明 |
+|-----------|----------|------|
+| `SettingsGroup.svelte` | header 悬浮下划线渐展 (::before scaleX 0→1 + divider-gradient) + open body 凹陷阴影 (shadow-inset + border-radius) + chevron 悬浮主题色过渡 (color transition) | 手风琴悬浮时底部渐展品牌色下划线；展开内容区有凹陷层次感；chevron 与标题统一变色 |
+| `StatsDialog.svelte` | 健康环完成脉冲 (ringGlow 2.5s drop-shadow 脉冲) + score 数字文字发光 (text-shadow currentColor) + stats-grid 十字分隔线 (::before 左侧 + ::after 顶部渐变线) | 健康环持续发光增加生命感；分数数字有品牌色光晕；2×2 网格中间有十字渐变分隔 |
+| `ProgressBar.svelte` | track 凹陷深度 (shadow-inset) + phase-label 活跃点 (::before 6px 圆点 + phaseDot 脉冲) + cat 悬浮弹跳放大 (animation:none + scale 1.3) | 进度轨道有真实凹槽感；阶段名称前有跳动指示点；猫咪悬浮时停跳放大 |
+| `HelpDialog.svelte` | 滚动渐隐 (mask-image 上下 10px) + 答案左侧动画色条 (::before scaleY 0→1 渐变) + 展开项凹陷阴影 (shadow-inset) | 长 FAQ 列表上下渐隐暗示可滚动；答案展开时左侧品牌色条从上绘入；展开项有凹陷层次 |
+| `DuplicatesResult.svelte` | CSS 计数器序号 (counter-reset/increment + ::before 圆形徽章) + 悬浮序号反转色 (primary bg + 白色字) | 每个重复项前显示序号增强结构感；悬浮时序号变为实心品牌色 |
+| `modal.css` | action-bar 顶部渐展分隔线 (::before actionBarLine scaleX 0→1) + bfao-btn-primary:disabled 处理中光晕 (processingGlow box-shadow 脉冲) | 操作栏与内容区有视觉分隔；处理中按钮有呼吸光晕暗示进行中 |
+| `variables.css` | `--ai-shadow-inset` 凹陷阴影令牌 (light/dark 各一) + `--ai-divider-gradient` 渐变分隔线令牌 | 统一凹陷阴影和渐变分隔线，供多组件复用 |
+
+#### 代码质量 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `ProgressBar.svelte` | `.progress-cat:hover` 使用 `animation-play-state: paused` 但 CSS 动画即使暂停也优先于静态 transform，导致 `scale(1.3)` 不生效 | HIGH | 改为 `animation: none`，静态 transform 生效 |
+| `ProgressBar.svelte` | `.progress-cat` transition 仅含 `left, filter`，hover 的 `transform: scale(1.3)` 无过渡 | MEDIUM | 添加 `transform 0.2s ease` 到 transition |
+| `DuplicatesResult.svelte` | `.dup-list` CSS 规则被拆成两个独立块 (原始块 + counter-reset 块) | LOW | 合并 `counter-reset` 到已有 `.dup-list` 块 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `HelpDialog.svelte` | `answerBar` 动画在 mount 时对所有 23 个 `.faq-a::before` 触发（包括折叠的） | 可接受：折叠元素 `height:0; overflow:hidden` 裁剪不可见；动画为一次性 (fill:both)，开销可忽略 |
+| `StatsDialog.svelte` | `.health-ring` 同时有 `transition: filter` 和 `animation: ringGlow` (filter) | 可接受：CSS 动画优先级高于 transition，不冲突 |
+| `modal.css` | `.bfao-btn-primary:disabled` processingGlow 在 `opacity:0.4 + grayscale` 基础上动画 | 可接受：光晕透过半透明依然可见，提供"处理中"视觉暗示 |
+| `StatsDialog.svelte` | `.stat-card::before/::after` 伪元素定位在 grid gap 区域 (left:-6px / top:-6px) | 可接受：`stats-grid` 无 overflow:hidden，gap:10px 留出足够空间 |
+
+### 关键设计决策
+
+1. **深度令牌化**: 新增 `--ai-shadow-inset` 和 `--ai-divider-gradient` 两个设计令牌，确保凹陷阴影和分隔线在 SettingsGroup/ProgressBar/HelpDialog 等组件间视觉一致。
+2. **Grid 十字分隔**: StatsDialog 使用 `nth-child(even)::before` + `nth-child(n+3)::after` 实现十字分隔线，不依赖额外 DOM 元素。
+3. **CSS 计数器**: DuplicatesResult 使用 CSS `counter-reset/counter-increment` 实现序号，零 JS 开销。
+4. **Cat 悬浮策略**: 使用 `animation: none` 而非 `animation-play-state: paused`，因为暂停的动画仍占据 transform 优先级，阻止 hover scale 生效。
+5. **渐变分隔线统一**: `--ai-divider-gradient` 令牌被 SettingsGroup header、modal action-bar、StatsDialog grid 三处复用。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: 7 文件丝绒纵深增强)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 3 个 bug 修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 new errors (8 pre-existing)。构建体积 581 kB (较 577 kB 增长 +4 kB)。**
+
+---
+
+## 上一次会话 (2026-04-04, 第四十一次)
 
 ### 本次完成内容
 

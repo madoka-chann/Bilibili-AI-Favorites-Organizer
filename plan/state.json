@@ -1,7 +1,7 @@
 {
   "project": "Bilibili AI Favorites Organizer - Svelte Refactoring",
-  "plan": "visual-plan-session41.md",
-  "lastUpdated": "2026-04-04-session41",
+  "plan": "visual-plan-session42.md",
+  "lastUpdated": "2026-04-04-session42",
   "phases": {
     "phase0_buildSystem": {
       "status": "completed",
@@ -23,7 +23,7 @@
     },
     "phase2_animations": {
       "status": "completed",
-      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; I1-I5 粒子系统全部完成; Session 27: 6 个 Modal 子组件动画增强; Session 28: 4 个面板主界面组件视觉增强; Session 29: 5 个设置面板组件动画增强; Session 30: PreviewConfirm 深度视觉增强; Session 31: 未启用资产激活 (tilt/glowTrack) + Modal 统一增强 + FloatButton 回场弹入 + Panel 光追踪; Session 32: ripple 扩展至 ActionButtons/Modal + Header 文字流光/齿轮旋转/版本号弹入 + Toast 图标类型化动画 + LogArea 就绪脉冲; Session 33: UndoDialog radio 弹跳/选中脉冲/悬浮 + HistoryTimeline pressEffect/清空抖动/最新条目高亮/圆点脉冲 + DuplicatesResult/DeadVideosResult 列表项悬浮 + HelpDialog 展开指示线/footer 渐入 + modal.css 空状态浮动/摘要数字弹跳; Session 34: Modal 滚动边缘渐隐 + ProgressBar 入场动画 + SettingsPanel toggle-row 悬浮微滑/标签变色 + FolderSelector 滚动边缘渐隐/悬浮内发光 + LiquidToggle 挂载入场 + Panel 滚动进度指示条; Session 35: forms.css label 聚焦高亮/下划线扩展/icon-btn 旋转 + SettingsGroup 分隔线渐现/icon 发光 + StatsDialog 卡片悬浮发光/folder-row 高亮 + ActionButtons 图标弹入/工具按钮图标放大/kbd 渐显 + LogArea 边框加粗/时间戳展开 + ProviderConfig spinning 发光/模型下拉渐隐; Session 36: PreviewToolbar tab 滑动下划线/搜索图标高亮/计数弹入 + CategoryGroup 展开高度过渡/悬浮主题发光 + VideoItem 悬浮提升/缩略图缩放/错位入场/低置信度发光脉冲 + Header 按钮错位入场/标题滑入 + SettingsPanel 群组错位入场 + disabled 按钮平滑退化; Session 37: PromptEditor 预设管理器 GSAP 展开折叠/textarea 聚焦微扩展/保存成功闪烁/标题下划线渐展 + LogArea 上边缘滚动渐隐/新条目发光脉冲/猫咪回场弹入/悬浮边框变色 + ModelSelector 下拉项悬浮内发光/选中项脉冲/搜索聚焦下划线/列表滚动渐隐/空状态浮动 + HelpDialog FAQ 悬浮缩进/展开项左侧主题色条/问号图标悬浮旋转 + variables.css 主题切换背景过渡/焦点环扩展动画 + ActionButtons 运行态边框呼吸/停止图标微颤; Session 38: DeadVideosResult 滚动渐隐/video-item 阴影提升+主题色左边框 + DuplicatesResult 滚动渐隐/阴影提升/标题悬浮变色/子文件夹渐显 + StatsDialog 健康环发光/stat-card 弹入入场/folder-breakdown 滚动渐隐/section-title 下划线渐展/folder-row 内发光 + HistoryTimeline 时间线绘入/卡片内发光/分类标签化/清空危险光晕 + FolderSelector 全选按钮脉冲/选中文件夹主题色/计数弹入/图标旋转 + modal.css 按钮图标悬浮微移/hint 渐显/more 呼吸脉冲 + forms.css checkbox 悬浮光环; Session 39: PreviewToolbar pressEffect+focusGlow+filterSlideIn 错位入场+filterActivate 脉冲+merge 图标旋转 + CategoryGroup checkBounce+分类名悬浮变色+expand-btn 光环+category-count 悬浮弹色+video-list 滚动渐隐+confAvgPulse + VideoItem 悬浮左侧主题色条+confPop 弹入+uploader 悬浮展开+duration 悬浮放大+placeholder 流光 + ProgressBar tokenFadeIn+phase-label 悬浮+cat 悬浮亮化 + UndoDialog 滚动渐隐+hint 渐显+selected 内发光; Session 40: Panel main-area 子组件交错入场+底部滚动渐隐+overscroll-contain+nebula 主题色过渡 + Modal close-btn ripple+footer 入场渐显+header 光泽扫过 + PreviewConfirm lightbox 退场动画+icon-btn tooltip+empty 呼吸 + SettingsPanel 组间分隔线渐显 + App 全局选择色+字体平滑+cursor-spotlight 主题色过渡 + variables.css 选择色变量+主题过渡扩展; Session 41: Toast 悬浮暂停计时+暂停图标+渐变 timer bar + FloatButton 空闲 tooltip+icon 悬浮旋转 + Header 标题 letter-spacing 展开+active dot 指示器+关闭按钮 error 色 + ActionButtons 渐变流动+running kbd 脉冲+disabled 行整体退化 + LogArea 错误日志加粗+时间戳主题色+猫咪文字悬浮 + forms.css input 悬浮微提升+label 聚焦加粗+icon-btn 旋转"
+      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; I1-I5 粒子系统全部完成; Session 27: 6 个 Modal 子组件动画增强; Session 28: 4 个面板主界面组件视觉增强; Session 29: 5 个设置面板组件动画增强; Session 30: PreviewConfirm 深度视觉增强; Session 31: 未启用资产激活 (tilt/glowTrack) + Modal 统一增强 + FloatButton 回场弹入 + Panel 光追踪; Session 32: ripple 扩展至 ActionButtons/Modal + Header 文字流光/齿轮旋转/版本号弹入 + Toast 图标类型化动画 + LogArea 就绪脉冲; Session 33: UndoDialog radio 弹跳/选中脉冲/悬浮 + HistoryTimeline pressEffect/清空抖动/最新条目高亮/圆点脉冲 + DuplicatesResult/DeadVideosResult 列表项悬浮 + HelpDialog 展开指示线/footer 渐入 + modal.css 空状态浮动/摘要数字弹跳; Session 34: Modal 滚动边缘渐隐 + ProgressBar 入场动画 + SettingsPanel toggle-row 悬浮微滑/标签变色 + FolderSelector 滚动边缘渐隐/悬浮内发光 + LiquidToggle 挂载入场 + Panel 滚动进度指示条; Session 35: forms.css label 聚焦高亮/下划线扩展/icon-btn 旋转 + SettingsGroup 分隔线渐现/icon 发光 + StatsDialog 卡片悬浮发光/folder-row 高亮 + ActionButtons 图标弹入/工具按钮图标放大/kbd 渐显 + LogArea 边框加粗/时间戳展开 + ProviderConfig spinning 发光/模型下拉渐隐; Session 36: PreviewToolbar tab 滑动下划线/搜索图标高亮/计数弹入 + CategoryGroup 展开高度过渡/悬浮主题发光 + VideoItem 悬浮提升/缩略图缩放/错位入场/低置信度发光脉冲 + Header 按钮错位入场/标题滑入 + SettingsPanel 群组错位入场 + disabled 按钮平滑退化; Session 37: PromptEditor 预设管理器 GSAP 展开折叠/textarea 聚焦微扩展/保存成功闪烁/标题下划线渐展 + LogArea 上边缘滚动渐隐/新条目发光脉冲/猫咪回场弹入/悬浮边框变色 + ModelSelector 下拉项悬浮内发光/选中项脉冲/搜索聚焦下划线/列表滚动渐隐/空状态浮动 + HelpDialog FAQ 悬浮缩进/展开项左侧主题色条/问号图标悬浮旋转 + variables.css 主题切换背景过渡/焦点环扩展动画 + ActionButtons 运行态边框呼吸/停止图标微颤; Session 38: DeadVideosResult 滚动渐隐/video-item 阴影提升+主题色左边框 + DuplicatesResult 滚动渐隐/阴影提升/标题悬浮变色/子文件夹渐显 + StatsDialog 健康环发光/stat-card 弹入入场/folder-breakdown 滚动渐隐/section-title 下划线渐展/folder-row 内发光 + HistoryTimeline 时间线绘入/卡片内发光/分类标签化/清空危险光晕 + FolderSelector 全选按钮脉冲/选中文件夹主题色/计数弹入/图标旋转 + modal.css 按钮图标悬浮微移/hint 渐显/more 呼吸脉冲 + forms.css checkbox 悬浮光环; Session 39: PreviewToolbar pressEffect+focusGlow+filterSlideIn 错位入场+filterActivate 脉冲+merge 图标旋转 + CategoryGroup checkBounce+分类名悬浮变色+expand-btn 光环+category-count 悬浮弹色+video-list 滚动渐隐+confAvgPulse + VideoItem 悬浮左侧主题色条+confPop 弹入+uploader 悬浮展开+duration 悬浮放大+placeholder 流光 + ProgressBar tokenFadeIn+phase-label 悬浮+cat 悬浮亮化 + UndoDialog 滚动渐隐+hint 渐显+selected 内发光; Session 40: Panel main-area 子组件交错入场+底部滚动渐隐+overscroll-contain+nebula 主题色过渡 + Modal close-btn ripple+footer 入场渐显+header 光泽扫过 + PreviewConfirm lightbox 退场动画+icon-btn tooltip+empty 呼吸 + SettingsPanel 组间分隔线渐显 + App 全局选择色+字体平滑+cursor-spotlight 主题色过渡 + variables.css 选择色变量+主题过渡扩展; Session 41: Toast 悬浮暂停计时+暂停图标+渐变 timer bar + FloatButton 空闲 tooltip+icon 悬浮旋转 + Header 标题 letter-spacing 展开+active dot 指示器+关闭按钮 error 色 + ActionButtons 渐变流动+running kbd 脉冲+disabled 行整体退化 + LogArea 错误日志加粗+时间戳主题色+猫咪文字悬浮 + forms.css input 悬浮微提升+label 聚焦加粗+icon-btn 旋转; Session 42: SettingsGroup header 悬浮下划线渐展+open body 凹陷阴影+chevron 主题色过渡 + StatsDialog 健康环完成脉冲+score 文字发光+grid 十字分隔线 + ProgressBar track 凹陷深度+phase-label 活跃点+cat 悬浮弹跳放大 + HelpDialog 滚动渐隐+答案左侧动画色条+展开项凹陷阴影 + DuplicatesResult CSS 计数器序号+action-bar 渐展分隔线+processing 光晕 + variables.css 凹陷阴影+渐变分隔线令牌"
     },
     "phase3_cssCleanup": {
       "status": "completed",
@@ -31,7 +31,7 @@
     },
     "phase4_codeQuality": {
       "status": "completed",
-      "summary": "TypeScript strict 全开; 模块化重构完成; 多轮 Code Review; as any 类型断言清零; 错误处理一致性强化; 第40轮 Code Review: Panel mask-image 顶部改为不渐隐 (避免遮挡 scroll-indicator) + PreviewConfirm icon-btn tooltip 改用 data-tooltip 属性 (避免 native title 双重提示); 第41轮 Code Review: Toast ::before 暂停图标改为 overflow:hidden 安全定位 + Toast hover transform 补入 transition + forms.css label font-weight 补入 transition + ActionButtons gradientFlow background-position 修正 (auto→0% 0%)"
+      "summary": "TypeScript strict 全开; 模块化重构完成; 多轮 Code Review; as any 类型断言清零; 错误处理一致性强化; 第42轮 Code Review: ProgressBar cat hover 改 animation:none (修复 animation-play-state 无法覆盖 transform) + ProgressBar cat transition 补入 transform + DuplicatesResult 合并重复 .dup-list CSS 块"
     },
     "phase5_performance": {
       "status": "completed",
@@ -53,7 +53,7 @@
   },
   "buildStatus": {
     "builds": true,
-    "output": "dist/bilibili-ai-favorites-organizer.user.js (577 kB, GSAP ~95 kB CDN)",
+    "output": "dist/bilibili-ai-favorites-organizer.user.js (581 kB, GSAP ~95 kB CDN)",
     "svelteCheck": "0 errors (8 pre-existing), 10 warnings (pre-existing)",
     "preExistingIssues": []
   }

@@ -126,6 +126,20 @@
     padding: 0;
     max-height: 60vh;
     overflow-y: auto;
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0px,
+      black 10px,
+      black calc(100% - 10px),
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0px,
+      black 10px,
+      black calc(100% - 10px),
+      transparent 100%
+    );
   }
 
   .faq-item {
@@ -150,6 +164,7 @@
     border-left-color: var(--ai-primary);
     background: var(--ai-bg-secondary);
     padding-left: 24px;
+    box-shadow: var(--ai-shadow-inset);
   }
 
   .faq-q {
@@ -194,6 +209,24 @@
     color: var(--ai-text-secondary);
     background: var(--ai-bg-secondary);
     box-sizing: border-box;
+    position: relative;
+  }
+  .faq-a::before {
+    content: '';
+    position: absolute;
+    left: 28px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--ai-primary), transparent);
+    border-radius: 1px;
+    transform: scaleY(0);
+    transform-origin: top;
+    animation: answerBar 0.35s cubic-bezier(0.2, 0.98, 0.28, 1) 0.1s both;
+  }
+  @keyframes answerBar {
+    from { transform: scaleY(0); }
+    to { transform: scaleY(1); }
   }
 
   .faq-icon.pulse {
@@ -223,7 +256,9 @@
     .faq-icon.pulse { animation: none; }
     .faq-item { transition: background 0.2s; }
     .faq-item:hover { padding-left: 20px; }
+    .faq-item.open { box-shadow: none; }
     .faq-icon { transition: none; }
     .faq-item:hover .faq-icon:not(.pulse) { transform: none; }
+    .faq-a::before { animation: none; transform: scaleY(1); }
   }
 </style>

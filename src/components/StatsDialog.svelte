@@ -143,6 +143,12 @@
     margin: 0 auto;
     filter: drop-shadow(0 0 8px currentColor);
     transition: filter 0.3s ease;
+    animation: ringGlow 2.5s ease-in-out 1.5s infinite;
+  }
+
+  @keyframes ringGlow {
+    0%, 100% { filter: drop-shadow(0 0 8px currentColor); }
+    50% { filter: drop-shadow(0 0 16px currentColor) drop-shadow(0 0 4px currentColor); }
   }
   .score-overlay {
     position: absolute;
@@ -157,6 +163,7 @@
     font-size: 36px;
     font-weight: 800;
     line-height: 1;
+    text-shadow: 0 0 12px currentColor;
   }
   .score-label {
     font-size: 12px;
@@ -185,6 +192,29 @@
     border: 1px solid var(--ai-border-lighter);
     transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s cubic-bezier(0.2, 0.98, 0.28, 1);
     animation: cardPop 0.35s cubic-bezier(0.22, 1.42, 0.29, 1) both;
+    position: relative;
+  }
+  /* Grid cross separators: left line on even columns */
+  .stat-card:nth-child(even)::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 20%;
+    bottom: 20%;
+    width: 1px;
+    background: var(--ai-divider-gradient);
+    opacity: 0.5;
+  }
+  /* Grid cross separators: top line on bottom row */
+  .stat-card:nth-child(n+3)::after {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 20%;
+    right: 20%;
+    height: 1px;
+    background: var(--ai-divider-gradient);
+    opacity: 0.5;
   }
   .stats-grid .stat-card:nth-child(1) { animation-delay: 0.1s; }
   .stats-grid .stat-card:nth-child(2) { animation-delay: 0.16s; }
@@ -296,5 +326,6 @@
     .folder-row { transition: none; }
     .folder-row:hover { transform: none; }
     .section-title::after { animation: none; transform: scaleX(1); }
+    .health-ring { animation: none; }
   }
 </style>
