@@ -1,6 +1,60 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-04, 第三十九次)
+## 最近一次会话 (2026-04-04, 第四十次)
+
+### 本次完成内容
+
+**Ambient Polish — 环境精修: 跨组件视觉一致性 + 面板空闲态生命感 + 状态转换平滑度**
+
+#### 视觉增强 — 6 个文件
+
+| 组件/文件 | 新增动画 | 说明 |
+|-----------|----------|------|
+| `Panel.svelte` | main-area 子组件交错入场 (`mainContentFadeIn` opacity+translateY + nth-child 延迟) + panel-content 底部滚动渐隐 (mask-image 12px) + overscroll-behavior: contain + nebula-particle 主题色过渡 (transition background/box-shadow 0.5s) | PromptEditor/LogArea/ProgressBar/ActionButtons 依次渐显；底部渐隐暗示范围；星云粒子颜色随主题平滑过渡 |
+| `Modal.svelte` | close-btn ripple action + modal-footer 入场渐显 (`footerSlideUp` opacity+translateY) + modal-header 光泽扫过 (`headerSweep` 斜向渐变 ::after) | 关闭按钮有涟漪反馈；footer 从底部渐显形成层次；header 有周期性光泽扫过 |
+| `PreviewConfirm.svelte` | lightbox 退场动画 (`lightboxOut` + `lightboxZoomOut` 淡出+缩小) + icon-btn 悬浮 tooltip (data-tooltip ::after 伪元素渐显) + empty 状态呼吸 (`emptyBreathe` opacity) | 灯箱关闭有淡出缩小；图标按钮悬浮显示文字提示；空搜索结果有呼吸生命感 |
+| `SettingsPanel.svelte` | settings-group 间分隔线渐显 (`.group + .group::before` 渐变线 + `dividerFadeIn` scaleX 0→1) | 设置组之间有渐显的分隔线增强层次感 |
+| `App.svelte` | 全局选择文字主题色 (`::selection` 品牌紫色背景) + 字体平滑渲染 (-webkit-font-smoothing antialiased) + cursor-spotlight 主题色过渡 (transition background 0.5s) | 选中文字使用品牌色；文字渲染更清晰；聚光灯颜色随主题过渡 |
+| `variables.css` | `--ai-selection-bg` 选择文字高亮色 (light/dark 各一) + 主题切换过渡扩展 (新增 color, border-color) | 统一文字选择高亮；主题切换更平滑 |
+
+#### 代码质量 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `Panel.svelte` | `mask-image` 顶部也设为 transparent 会导致 `scroll-indicator` (sticky top: 0, height: 2px) 被渐隐遮挡不可见 | HIGH | 改为仅底部渐隐 `black 0%, black calc(100% - 12px), transparent 100%` |
+| `PreviewConfirm.svelte` | icon-btn tooltip 使用 `content: attr(title)` 会与浏览器原生 title tooltip 重叠显示 | MEDIUM | 新增 `data-tooltip` 属性，CSS `::after` 读取 `attr(data-tooltip)` |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `Modal.svelte` | `headerSweep` 8s 无限循环动画在 `::after` 伪元素上运行 | 可接受：GPU 合成，Modal 仅打开时存在 |
+| `PreviewConfirm.svelte` | lightbox 关闭用 `setTimeout(250)` 而非 `animationend` 事件 | 可接受：duration 匹配，事件监听增加复杂度 |
+| `SettingsPanel.svelte` | `.group + .group::before` 使用 `:global()` 包裹 | 可接受：`.settings-panel >` 前缀限制作用域 |
+
+### 关键设计决策
+
+1. **仅底部渐隐**: Panel.panel-content 仅底部 12px 渐隐，顶部保留给 scroll-indicator。
+2. **data-tooltip 双属性**: icon-btn 同时保留 `title` (降级) 和 `data-tooltip` (自定义样式)。
+3. **主题过渡一致性**: cursor-spotlight、nebula-particle、text selection 三个全局元素都参与主题切换过渡。
+4. **入场序列**: main-area 子组件 nth-child 延迟 (0.05s/0.1s/0.15s/0.2s) 与 SettingsPanel groupSlideIn 模式一致。
+5. **Modal header 光泽**: `::after` 独立层级，不干扰 aurora-flow 背景动画。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: 6 文件环境精修)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 2 个 bug 修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 new errors (8 pre-existing)。构建体积 573 kB (较 569 kB 增长 +4 kB)。**
+
+---
+
+## 上一次会话 (2026-04-04, 第三十九次)
 
 ### 本次完成内容
 

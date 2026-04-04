@@ -300,8 +300,11 @@
     max-height: 60vh;
     overflow-y: auto;
     overflow-x: hidden;
+    overscroll-behavior: contain;
     border-bottom-left-radius: 26px;
     border-bottom-right-radius: 26px;
+    mask-image: linear-gradient(to bottom, black 0%, black calc(100% - 12px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black calc(100% - 12px), transparent 100%);
     background:
       radial-gradient(
         circle at var(--glow-x, -100px) var(--glow-y, -100px),
@@ -342,6 +345,19 @@
     padding: 0 15px 15px;
   }
 
+  .main-area > :global(*) {
+    animation: mainContentFadeIn 0.35s ease both;
+  }
+  .main-area > :global(*:nth-child(1)) { animation-delay: 0.05s; }
+  .main-area > :global(*:nth-child(2)) { animation-delay: 0.1s; }
+  .main-area > :global(*:nth-child(3)) { animation-delay: 0.15s; }
+  .main-area > :global(*:nth-child(4)) { animation-delay: 0.2s; }
+
+  @keyframes mainContentFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
   /* I4: 星云漂移 — 8 个环境粒子缓慢漂浮 */
   .nebula-drift {
     position: absolute;
@@ -363,6 +379,7 @@
     top: calc(15% + var(--i) * 8%);
     animation: nebula-float calc(12s + var(--i) * 3s) ease-in-out calc(var(--i) * -2s) infinite alternate;
     opacity: 0.4;
+    transition: background 0.5s ease, box-shadow 0.5s ease;
   }
 
   @keyframes nebula-float {
@@ -378,6 +395,9 @@
     }
     .scroll-indicator {
       transition: none;
+    }
+    .main-area > :global(*) {
+      animation: none;
     }
   }
 </style>

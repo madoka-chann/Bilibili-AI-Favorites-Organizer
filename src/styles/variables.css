@@ -60,6 +60,9 @@
   /* Overlay */
   --ai-backdrop: rgba(24, 18, 51, 0.58);
 
+  /* Selection */
+  --ai-selection-bg: rgba(115, 100, 255, 0.2);
+
   /* Shadows */
   --ai-shadow-md: 0 8px 32px rgba(0, 0, 0, 0.12);
   --ai-shadow-lg: 0 24px 68px rgba(0, 0, 0, 0.11), 0 10px 28px rgba(0, 0, 0, 0.07);
@@ -122,6 +125,9 @@
   /* Overlay */
   --ai-backdrop: rgba(10, 6, 20, 0.72);
 
+  /* Selection */
+  --ai-selection-bg: rgba(139, 127, 255, 0.3);
+
   /* Shadows — darker for dark mode */
   --ai-shadow-md: 0 8px 32px rgba(0, 0, 0, 0.3);
   --ai-shadow-lg: 0 24px 68px rgba(0, 0, 0, 0.35), 0 10px 28px rgba(0, 0, 0, 0.2);
@@ -142,7 +148,7 @@
 /* Scoped to theme-change only: [data-theme] change triggers transitions.
    Applied via attribute selector so it doesn't override component transitions. */
 .bfao-app[data-theme] {
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 /* ==================== Keyboard Focus Ring ==================== */

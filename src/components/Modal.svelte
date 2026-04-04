@@ -128,7 +128,7 @@
         {#if icon}{@render icon()}{/if}
         {title}
       </h3>
-      <button class="close-btn" onclick={handleClose} aria-label="关闭">
+      <button class="close-btn" onclick={handleClose} aria-label="关闭" use:ripple={{ color: 'rgba(255,255,255,0.3)' }}>
         <X size={16} />
       </button>
     </div>
@@ -206,6 +206,21 @@
     color: #fff;
     position: relative;
     overflow: hidden;
+  }
+
+  .modal-header::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 40%,
+      rgba(255, 255, 255, 0.12) 50%,
+      transparent 60%
+    );
+    background-size: 200% 100%;
+    animation: headerSweep 8s ease-in-out infinite;
+    pointer-events: none;
   }
 
   .modal-header h3 {
@@ -290,6 +305,7 @@
     gap: 12px;
     background: var(--ai-bg-secondary);
     box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.04); /* intentionally static — upward shadow, minor */
+    animation: footerSlideUp 0.3s ease 0.15s both;
   }
 
   .modal-btn {
@@ -355,10 +371,22 @@
     75% { background-position: 0% 75%; }
   }
 
+  @keyframes headerSweep {
+    0%, 100% { background-position: 200% 0; }
+    50% { background-position: -200% 0; }
+  }
+
+  @keyframes footerSlideUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .modal-header { animation: none; }
+    .modal-header::after { animation: none; }
     .close-btn:hover { transform: none; }
     .modal-body::before,
     .modal-body::after { transition: none; }
+    .modal-footer { animation: none; }
   }
 </style>

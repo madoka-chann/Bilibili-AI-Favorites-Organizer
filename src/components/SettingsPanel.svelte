@@ -218,6 +218,26 @@
     border-bottom: 1px solid var(--ai-border-light);
   }
 
+  /* Divider line between settings groups */
+  .settings-panel > :global(.group + .group) {
+    position: relative;
+  }
+  .settings-panel > :global(.group + .group::before) {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10%;
+    width: 80%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--ai-border), transparent);
+    animation: dividerFadeIn 0.5s ease 0.3s both;
+  }
+
+  @keyframes dividerFadeIn {
+    from { opacity: 0; transform: scaleX(0); }
+    to { opacity: 1; transform: scaleX(1); }
+  }
+
   /* Stagger entrance for each SettingsGroup when panel mounts */
   .settings-panel > :global(.group) {
     animation: groupSlideIn 0.3s cubic-bezier(0.2, 0.98, 0.28, 1) both;
@@ -327,5 +347,6 @@
     .sub-field-slide { animation: none; }
     .hint-fade-in { animation: none; }
     .settings-panel > :global(.group) { animation: none; }
+    .settings-panel > :global(.group + .group::before) { animation: none; opacity: 1; transform: scaleX(1); }
   }
 </style>

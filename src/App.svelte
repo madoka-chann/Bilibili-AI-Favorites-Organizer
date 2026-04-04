@@ -71,10 +71,17 @@
   .bfao-app {
     all: initial;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 2147483640; /* Z_INDEX.FLOAT */
+  }
+
+  .bfao-app :global(::selection) {
+    background: var(--ai-selection-bg);
+    color: inherit;
   }
 
   .bfao-app :global(*) {
@@ -95,7 +102,7 @@
     pointer-events: none;
     transform: translate(-50%, -50%);
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease, background 0.5s ease;
     z-index: 2147483647;
     will-change: left, top;
   }

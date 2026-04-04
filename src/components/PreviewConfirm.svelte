@@ -48,8 +48,12 @@
 
   // Lightbox
   let lightboxSrc = $state<string | null>(null);
-  function openLightbox(src: string) { lightboxSrc = src; }
-  function closeLightbox() { lightboxSrc = null; }
+  let lightboxClosing = $state(false);
+  function openLightbox(src: string) { lightboxSrc = src; lightboxClosing = false; }
+  function closeLightbox() {
+    lightboxClosing = true;
+    setTimeout(() => { lightboxSrc = null; lightboxClosing = false; }, 250);
+  }
 
   // Virtual scrolling
   const ITEM_H = 64;
@@ -322,16 +326,16 @@
         执行已勾选 ({selectedCategories.size} 个)
       </button>
       <div class="footer-icons">
-        <button class="icon-btn" title="复制到剪贴板" onclick={copyToClipboard} use:pressEffect>
+        <button class="icon-btn" data-tooltip="复制到剪贴板" title="复制到剪贴板" onclick={copyToClipboard} use:pressEffect>
           <Clipboard size={14} />
         </button>
-        <button class="icon-btn" title="下载 JSON" onclick={downloadJSON} use:pressEffect>
+        <button class="icon-btn" data-tooltip="下载 JSON" title="下载 JSON" onclick={downloadJSON} use:pressEffect>
           <Download size={14} />
         </button>
-        <button class="icon-btn" title="导出 Markdown" onclick={exportMarkdown} use:pressEffect>
+        <button class="icon-btn" data-tooltip="导出 Markdown" title="导出 Markdown" onclick={exportMarkdown} use:pressEffect>
           <FileText size={14} />
         </button>
-        <button class="icon-btn" title="取消" onclick={() => onclose?.()} use:pressEffect>
+        <button class="icon-btn" data-tooltip="取消" title="取消" onclick={() => onclose?.()} use:pressEffect>
           <X size={14} />
         </button>
       </div>
@@ -341,7 +345,7 @@
 
 {#if lightboxSrc}
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div class="lightbox-overlay" onclick={closeLightbox} onkeydown={(e) => { if (e.key === 'Escape') closeLightbox(); }}>
+  <div class="lightbox-overlay" class:closing={lightboxClosing} onclick={closeLightbox} onkeydown={(e) => { if (e.key === 'Escape') closeLightbox(); }}>
     <img class="lightbox-img" src={lightboxSrc} alt="" />
   </div>
 {/if}
@@ -368,6 +372,10 @@
   }
   @keyframes lightboxIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes lightboxZoom { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .lightbox-overlay.closing { animation: lightboxOut 0.25s ease both; }
+  .lightbox-overlay.closing .lightbox-img { animation: lightboxZoomOut 0.25s ease both; }
+  @keyframes lightboxOut { from { opacity: 1; } to { opacity: 0; } }
+  @keyframes lightboxZoomOut { from { transform: scale(1); opacity: 1; } to { transform: scale(0.8); opacity: 0; } }
 
   .preview-content { padding: 8px 20px 12px; }
 
@@ -430,6 +438,7 @@
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
+    position: relative;
   }
   .icon-btn:hover {
     background: var(--ai-bg-tertiary);
@@ -437,13 +446,38 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
+  .icon-btn::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: var(--ai-text);
+    color: var(--ai-bg);
+    font-size: 10px;
+    white-space: nowrap;
+    padding: 3px 8px;
+    border-radius: 6px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .icon-btn:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 
   .bfao-modal-empty {
-    animation: emptyFloat 3s ease-in-out infinite;
+    animation: emptyFloat 3s ease-in-out infinite, emptyBreathe 4s ease-in-out infinite;
   }
 
   @keyframes emptyFloat {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-4px); }
+  }
+
+  @keyframes emptyBreathe {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
   }
 </style>
