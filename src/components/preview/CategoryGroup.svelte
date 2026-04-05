@@ -206,6 +206,7 @@
   .expand-btn.expanded {
     transform: rotate(90deg);
     color: var(--ai-primary);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s, box-shadow 0.25s ease;
   }
 
   .category-name {
@@ -239,6 +240,16 @@
   .badge-new {
     background: var(--ai-error-bg, rgba(239, 68, 68, 0.1));
     color: var(--ai-error, #ef4444);
+    position: relative;
+    overflow: hidden;
+  }
+  .badge-new::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, var(--ai-shimmer-color) 50%, transparent 100%);
+    animation: badgeShimmer 3s ease-in-out 0.5s infinite;
+    pointer-events: none;
   }
 
   .conf-avg {
@@ -281,6 +292,12 @@
     cursor: pointer;
     flex-shrink: 0;
     transition: all 0.2s;
+  }
+  .remove-btn :global(svg) {
+    transition: transform 0.25s cubic-bezier(0.2, 0.98, 0.28, 1);
+  }
+  .remove-btn:hover :global(svg) {
+    transform: rotate(-90deg);
   }
   .remove-btn:hover {
     border-color: var(--ai-error, #ef4444);
@@ -332,9 +349,18 @@
     50% { opacity: 0.6; }
   }
 
+  @keyframes badgeShimmer {
+    0%, 100% { transform: translateX(-100%); }
+    50% { transform: translateX(100%); }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .category-group { transition: none; }
     .expand-btn { transition: none; }
+    .expand-btn.expanded { transition: none; }
     .conf-avg.low { animation: none; }
+    .badge-new::after { animation: none; display: none; }
+    .remove-btn :global(svg) { transition: none; }
+    .remove-btn:hover :global(svg) { transform: none; }
   }
 </style>

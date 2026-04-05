@@ -79,6 +79,13 @@
 
   /* Selected item inner glow */
   --ai-glow-selected: inset 0 0 12px rgba(115, 100, 255, 0.08);
+
+  /* Breath glow — subtle breathing box-shadow for alive states */
+  --ai-glow-breath: 0 0 10px rgba(115, 100, 255, 0.12);
+  --ai-glow-breath-strong: 0 0 18px rgba(115, 100, 255, 0.2);
+
+  /* Shimmer sweep — translucent highlight for badge/label sweeps */
+  --ai-shimmer-color: rgba(255, 255, 255, 0.45);
 }
 
 /* ==================== Dark Theme ==================== */
@@ -156,6 +163,13 @@
 
   /* Selected item inner glow */
   --ai-glow-selected: inset 0 0 12px rgba(139, 127, 255, 0.12);
+
+  /* Breath glow */
+  --ai-glow-breath: 0 0 10px rgba(139, 127, 255, 0.18);
+  --ai-glow-breath-strong: 0 0 18px rgba(139, 127, 255, 0.28);
+
+  /* Shimmer sweep */
+  --ai-shimmer-color: rgba(255, 255, 255, 0.2);
 }
 
 /* ==================== Hidden Scrollbar — scroll still works, bar hidden ==================== */

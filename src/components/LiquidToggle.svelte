@@ -100,9 +100,16 @@
     flex-shrink: 0;
   }
 
+  .liquid-toggle:hover {
+    box-shadow: 0 0 16px rgba(var(--ai-primary-rgb), 0.15);
+  }
+
   .liquid-toggle.on {
     background: var(--ai-primary);
     box-shadow: 0 0 10px rgba(var(--ai-primary-rgb), 0.35);
+  }
+  .liquid-toggle.on:hover {
+    box-shadow: 0 0 18px rgba(var(--ai-primary-rgb), 0.45);
   }
 
   .thumb {
@@ -120,5 +127,15 @@
 
   .liquid-toggle.on .thumb {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 6px rgba(255, 255, 255, 0.5);
+    animation: thumbGlow 2.5s ease-in-out infinite;
+  }
+
+  @keyframes thumbGlow {
+    0%, 100% { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 6px rgba(255, 255, 255, 0.5); }
+    50% { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 10px rgba(255, 255, 255, 0.7), var(--ai-glow-breath); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .liquid-toggle.on .thumb { animation: none; }
   }
 </style>

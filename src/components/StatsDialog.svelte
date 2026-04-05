@@ -175,6 +175,12 @@
     font-size: 13px;
     color: var(--ai-text-secondary);
     margin-bottom: 16px;
+    animation: healthFadeUp 0.5s cubic-bezier(0.2, 0.98, 0.28, 1) 1.2s both;
+  }
+
+  @keyframes healthFadeUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .stats-grid {
@@ -233,10 +239,12 @@
     font-size: 22px;
     font-weight: 800;
     color: var(--ai-primary);
-    transition: filter 0.25s ease;
+    transition: filter 0.25s ease, transform 0.25s cubic-bezier(0.2, 0.98, 0.28, 1), text-shadow 0.25s ease;
   }
   .stat-card:hover .stat-value {
     filter: brightness(1.2);
+    transform: scale(1.08);
+    text-shadow: 0 0 16px currentColor;
   }
   .stat-value.danger { color: var(--ai-error); }
   .stat-label {
@@ -291,15 +299,41 @@
     );
     padding-top: 4px;
     padding-bottom: 4px;
+    counter-reset: folder-idx;
   }
   .folder-row {
     display: flex;
     justify-content: space-between;
     padding: 4px 4px;
+    padding-left: 24px;
     border-bottom: 1px solid var(--ai-border-lighter);
     font-size: 11px;
     border-radius: 4px;
     transition: background 0.2s ease, transform 0.2s ease;
+    counter-increment: folder-idx;
+    position: relative;
+  }
+  .folder-row::before {
+    content: counter(folder-idx);
+    position: absolute;
+    left: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--ai-bg-tertiary);
+    color: var(--ai-text-muted);
+    font-size: 9px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .folder-row:hover::before {
+    background: var(--ai-primary);
+    color: #fff;
   }
   .folder-row:hover {
     background: var(--ai-bg-hover);
@@ -323,9 +357,12 @@
   @media (prefers-reduced-motion: reduce) {
     .stat-card { transition: none; animation: none; opacity: 1; }
     .stat-value { transition: none; }
+    .stat-card:hover .stat-value { transform: none; }
     .folder-row { transition: none; }
     .folder-row:hover { transform: none; }
+    .folder-row::before { transition: none; }
     .section-title::after { animation: none; transform: scaleX(1); }
     .health-ring { animation: none; }
+    .health-detail { animation: none; opacity: 1; }
   }
 </style>

@@ -97,14 +97,28 @@
     color: var(--ai-text-secondary);
     cursor: pointer;
     transition: all 0.2s ease;
+    position: relative;
+    overflow: visible;
   }
   .toggle-all:hover {
     border-color: var(--ai-primary-light);
     background: var(--ai-bg-tertiary);
   }
+  .toggle-all::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    box-shadow: 0 0 0 0 var(--ai-pulse-spread-color);
+    opacity: 0;
+    pointer-events: none;
+  }
   .toggle-all:active {
     transform: scale(0.95);
     box-shadow: 0 0 0 3px rgba(var(--ai-primary-rgb), 0.15);
+  }
+  .toggle-all:active::after {
+    animation: togglePulse 0.5s ease-out;
   }
   .toggle-all :global(svg) {
     transition: transform 0.25s cubic-bezier(0.2, 0.98, 0.28, 1);
@@ -167,14 +181,30 @@
     font-size: 13px;
     font-weight: 600;
     color: var(--ai-text);
-    transition: color 0.2s ease;
+    transition: color 0.2s ease, font-weight 0.2s ease;
   }
   :global(.bfao-selectable-item.selected) .folder-title {
     color: var(--ai-primary);
+    font-weight: 700;
   }
   .folder-count {
     font-size: 11px;
     color: var(--ai-text-muted);
     margin-top: 2px;
+    transition: color 0.2s ease;
+  }
+  :global(.bfao-selectable-item:hover) .folder-count {
+    color: var(--ai-primary-light);
+  }
+
+  @keyframes togglePulse {
+    0% { box-shadow: 0 0 0 0 var(--ai-pulse-spread-color); opacity: 0.6; }
+    100% { box-shadow: 0 0 0 10px var(--ai-pulse-spread-color); opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .toggle-all:active::after { animation: none; }
+    .folder-title { transition: none; }
+    .folder-count { transition: none; }
   }
 </style>

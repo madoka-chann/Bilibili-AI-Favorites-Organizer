@@ -1,6 +1,63 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-04, 第四十三次)
+## 最近一次会话 (2026-04-05, 第四十四次)
+
+### 本次完成内容
+
+**Luminous Breath — 光韵呼吸: 静态元素呼吸感 + 状态过渡丝滑感 + 交互反馈完整闭环**
+
+#### 视觉增强 — 7 个文件
+
+| 组件/文件 | 新增动画 | 说明 |
+|-----------|----------|------|
+| `LiquidToggle.svelte` | ON 拇指呼吸内光 (thumbGlow 2.5s infinite, box-shadow 含 glow-breath 令牌) + 轨道悬浮外光 (hover 16px/18px 外光晕) | ON 状态拇指有微弱呼吸光暗示"活跃"；悬浮时轨道有柔和外发光 |
+| `CategoryGroup.svelte` | badge-new 流光扫过 (::after badgeShimmer 3s, 白色渐变 translateX 扫过) + expand-btn 弹簧旋转 (expanded 使用 cubic-bezier(0.34, 1.56, 0.64, 1) 过冲) + remove-btn 图标旋转 (:hover svg rotate(-90deg)) | "新建" 标签有流光吸引注意力；展开箭头有弹簧回弹感；移出按钮图标有旋转退场暗示 |
+| `HistoryTimeline.svelte` | 最新条目持续光晕 (latestGlow 3s, box-shadow 含 glow-breath-strong) + 时间戳悬浮 letter-spacing 展开 (0→0.03em + 变品牌色) + 分类标签悬浮提升 (translateY(-1px) + 品牌色边框显现) | 最新整理记录有持续微光暗示"刚刚发生"；悬浮时时间和分类有细腻反馈 |
+| `FolderSelector.svelte` | toggle-all 脉冲 (::after togglePulse 0.5s, scale 0→10px 扩散) + 选中标题加粗 (font-weight 600→700 过渡) + folder-count 悬浮变色 (color→primary-light) | 全选按钮有交互确认脉冲；选中文件夹标题微妙加粗；计数悬浮变品牌色 |
+| `StatsDialog.svelte` | stat-value 悬浮放大 (scale 1.08 + text-shadow 增强 16px) + folder-row 序号 (CSS counter + 圆形徽章, 悬浮反转色) + health-detail 渐显 (healthFadeUp 0.5s, translateY 6→0 + opacity) | 统计卡片数字悬浮放大发光；收藏夹列表有序号增强结构；健康说明有入场渐显 |
+| `forms.css` | textarea 聚焦渐变边框 (box-shadow inset 0.5px gradient-accent) + number 输入悬浮凹陷 (shadow-inset) + select 箭头悬浮位移 (background-position 过渡) | 文本域聚焦有品牌色渐变暗示；数字框悬浮有凹陷暗示可滚动；下拉箭头有微妙位移 |
+| `variables.css` | `--ai-glow-breath` + `--ai-glow-breath-strong` 呼吸光晕令牌 (light/dark 各一) + `--ai-shimmer-color` 流光扫过基色令牌 (light/dark 各一) | 统一呼吸光晕和流光颜色，供 LiquidToggle/HistoryTimeline/CategoryGroup 复用 |
+
+#### 代码质量 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `LiquidToggle.svelte` | `.liquid-toggle:hover .thumb` 设置 `transform: translateY(-0.5px)` 但 GSAP 通过内联 `transform` 管理拇指 x 位置，CSS transform 属性无法部分覆盖内联——此悬浮效果完全无效 | HIGH | 移除无效的 hover thumb translateY 规则及其 reduced-motion 退化 |
+| `StatsDialog.svelte` | `.folder-breakdown` CSS 规则被拆成两个独立块 (原始块 + counter-reset 块) | LOW | 合并 `counter-reset: folder-idx` 到已有 `.folder-breakdown` 块 |
+| `FolderSelector.svelte` | `.toggle-all` CSS 规则被拆成两个独立块 (原始块 + position/overflow 块) | LOW | 合并 `position: relative; overflow: visible` 到已有 `.toggle-all` 块 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `CategoryGroup.svelte` | `badgeShimmer` 在 `.badge-new` 上持续循环，即使 badge 不在视口内 | 可接受：badge 尺寸极小 (10px font)，CSS 动画在不可见元素上浏览器自动优化 |
+| `CategoryGroup.svelte` | `expand-btn.expanded` 的弹簧 transition 仅在展开时生效，折叠时回退到基础 ease | 可接受：展开弹簧→折叠平滑是有意设计，增加"展开=能量释放"的物理暗示 |
+| `HistoryTimeline.svelte` | `latestGlow` 使用 `var(--ai-glow-breath-strong)` 令牌，如果令牌未定义会 fallback 到无 box-shadow | 可接受：令牌在 variables.css 中 light/dark 主题都有定义，不会缺失 |
+| `StatsDialog.svelte` | `folder-row::before` 圆形序号使用 `display: flex` 但伪元素默认是 inline | 可接受：伪元素设置 `position: absolute` 后变为块级，`display: flex` 用于 align/justify 居中内容，合法 |
+
+### 关键设计决策
+
+1. **GSAP 内联 vs CSS transform 优先级**: GSAP 设置的内联 `transform` 优先级高于任何 CSS 选择器的 `transform`。对 GSAP 管理 transform 的元素，不应添加 CSS transform 动画（除非通过 GSAP 也来管理）。LiquidToggle thumb 的 hover translateY 被正确移除。
+2. **呼吸光晕令牌分级**: `--ai-glow-breath` (微弱，10px) 用于小型元素如 toggle，`--ai-glow-breath-strong` (强烈，18px) 用于大型元素如 timeline card。
+3. **流光扫过颜色适配**: `--ai-shimmer-color` 在 light 模式下使用 rgba(255,255,255,0.45)，dark 模式下使用 rgba(255,255,255,0.2)，确保在不同背景上都有可见但不刺眼的流光。
+4. **CSS Counter 序号**: StatsDialog folder-row 使用 CSS counter 实现纯 CSS 序号，零 JS 开销，悬浮时序号反转色提供交互反馈。
+5. **弹簧旋转方向性**: expand-btn 的弹簧 transition 仅在 `.expanded` 类上设置，确保展开有过冲弹簧，折叠回退到基础线性 ease，制造不对称物理感。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: 7 文件光韵呼吸增强)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 3 个 bug 修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 new errors (8 pre-existing), 10 warnings (pre-existing)。构建体积 590 kB (较 585 kB 增长 +5 kB)。**
+
+---
+
+## 上一次会话 (2026-04-04, 第四十三次)
 
 ### 本次完成内容
 

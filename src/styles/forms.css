@@ -44,6 +44,17 @@
   box-shadow: 0 0 0 3px var(--ai-primary-shadow);
 }
 
+/* Textarea focus: gradient border hint via box-shadow */
+textarea.bfao-input:focus {
+  border-color: var(--ai-primary);
+  box-shadow: 0 0 0 3px var(--ai-primary-shadow), inset 0 0 0 0.5px var(--ai-gradient-accent);
+}
+
+/* Number input hover: inset shadow hints scroll-adjust */
+.bfao-input[type="number"]:hover:not(:focus) {
+  box-shadow: var(--ai-shadow-inset);
+}
+
 .bfao-select {
   cursor: pointer;
   width: 100%;
@@ -142,6 +153,14 @@
 }
 .bfao-checkbox-label input[type='checkbox']:hover {
   box-shadow: 0 0 0 3px rgba(var(--ai-primary-rgb), 0.15);
+}
+
+/* Select hover: arrow indicator shift */
+.bfao-select:hover:not(:focus) {
+  background-position: right 8px center;
+}
+.bfao-select:focus {
+  background-position: right 6px center;
 }
 
 /* ==================== Reduced Motion ==================== */
