@@ -154,6 +154,33 @@ textarea.bfao-input:focus {
 .bfao-checkbox-label input[type='checkbox']:hover {
   box-shadow: 0 0 0 3px rgba(var(--ai-primary-rgb), 0.15);
 }
+.bfao-checkbox-label input[type='checkbox']:checked {
+  animation: checkPop 0.25s cubic-bezier(0.22, 1.42, 0.29, 1);
+}
+@keyframes checkPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* Disabled state — consistent visual for disabled form controls */
+.bfao-input:disabled,
+.bfao-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(0.3);
+  background: var(--ai-bg-tertiary);
+}
+
+/* Placeholder — fade out on focus to guide input */
+.bfao-input::placeholder {
+  color: var(--ai-text-muted);
+  opacity: 0.6;
+  transition: opacity 0.25s ease;
+}
+.bfao-input:focus::placeholder {
+  opacity: 0.3;
+}
 
 /* Select hover: arrow indicator shift */
 .bfao-select:hover:not(:focus) {
@@ -173,4 +200,7 @@ textarea.bfao-input:focus {
   .bfao-icon-btn:hover:not(:disabled) svg { transform: none; }
   .bfao-icon-btn:disabled { transition: none; filter: none; }
   .bfao-checkbox-label input[type='checkbox'] { transition: none; }
+  .bfao-checkbox-label input[type='checkbox']:checked { animation: none; }
+  .bfao-input::placeholder { transition: none; }
+  .bfao-input:disabled, .bfao-select:disabled { filter: none; }
 }

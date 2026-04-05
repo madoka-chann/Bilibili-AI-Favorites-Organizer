@@ -228,6 +228,17 @@
     transform: scale(1.2);
   }
 
+  /* Unique per-tool icon hover — personality over uniformity */
+  .tool-row:nth-child(2) .btn-tool:nth-child(1):hover :global(svg) { transform: translateY(-2px); }       /* Archive: lift up */
+  .tool-row:nth-child(2) .btn-tool:nth-child(2):hover :global(svg) { transform: scaleX(-1); }             /* Copy: mirror flip */
+  .tool-row:nth-child(2) .btn-tool:nth-child(3):hover :global(svg) { transform: rotate(-45deg); }         /* Undo: counter-rotate */
+  .tool-row:nth-child(3) .btn-tool:nth-child(1):hover :global(svg) { transform: translateY(2px); }        /* Download: push down */
+  .tool-row:nth-child(3) .btn-tool:nth-child(2):hover :global(svg) { transform: scaleY(1.25); }           /* Stats: stretch tall */
+  .tool-row:nth-child(3) .btn-tool:nth-child(3):hover :global(svg) { transform: scale(1.3); }             /* Heart: pulse bigger */
+  .tool-row:nth-child(4) .btn-tool:nth-child(1):hover :global(svg) { transform: rotate(-5deg) scale(1.1); }  /* Logs: slight tilt */
+  .tool-row:nth-child(4) .btn-tool:nth-child(2):hover :global(svg) { transform: rotate(15deg); }          /* Help: curious tilt */
+  .tool-row:nth-child(4) .btn-tool:nth-child(3):hover :global(svg) { transform: rotate(-120deg); }        /* History: rewind spin */
+
   .btn-tool:active {
     transform: scale(0.92);
     transition-duration: 0.08s;

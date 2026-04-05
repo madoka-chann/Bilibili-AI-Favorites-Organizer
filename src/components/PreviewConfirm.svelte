@@ -408,6 +408,21 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .footer-custom .modal-btn.confirm::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 40%, var(--ai-shimmer-color) 50%, transparent 60%);
+    transform: translateX(-100%);
+    animation: confirmShimmer 3s ease-in-out 1s infinite;
+    pointer-events: none;
+  }
+  @keyframes confirmShimmer {
+    0%, 75% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
   }
   .footer-custom .modal-btn.confirm:hover {
     transform: translateY(-2px) scale(1.015);
@@ -418,6 +433,9 @@
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
+  }
+  .footer-custom .modal-btn.confirm:disabled::after {
+    animation: none;
   }
 
   .footer-icons {
@@ -439,6 +457,15 @@
     justify-content: center;
     transition: all 0.2s ease;
     position: relative;
+    animation: iconBtnSlideIn 0.3s cubic-bezier(0.22, 1.42, 0.29, 1) backwards;
+  }
+  .icon-btn:nth-child(1) { animation-delay: 0.05s; }
+  .icon-btn:nth-child(2) { animation-delay: 0.1s; }
+  .icon-btn:nth-child(3) { animation-delay: 0.15s; }
+  .icon-btn:nth-child(4) { animation-delay: 0.2s; }
+  @keyframes iconBtnSlideIn {
+    from { opacity: 0; transform: translateY(6px) scale(0.8); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
   }
   .icon-btn:hover {
     background: var(--ai-bg-tertiary);
@@ -479,5 +506,10 @@
   @keyframes emptyBreathe {
     0%, 100% { opacity: 0.5; }
     50% { opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .footer-custom .modal-btn.confirm::after { animation: none; }
+    .icon-btn { animation: none; opacity: 1; }
   }
 </style>

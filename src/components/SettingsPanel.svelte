@@ -258,6 +258,16 @@
     gap: 8px;
   }
 
+  /* Active field glow — focused field container gets inset depth */
+  .field-grid .bfao-field:focus-within {
+    background: var(--ai-bg-hover);
+    border-radius: 8px;
+    padding: 6px;
+    margin: -6px;
+    box-shadow: var(--ai-field-active-glow);
+    transition: background 0.25s ease, box-shadow 0.25s ease;
+  }
+
   .full {
     grid-column: 1 / -1;
     flex-direction: row;
@@ -278,10 +288,12 @@
     gap: 8px;
     font-size: 12.5px;
     color: var(--ai-text-secondary);
-    transition: background 0.2s ease, transform 0.25s cubic-bezier(0.2, 0.98, 0.28, 1);
+    transition: background 0.2s ease, transform 0.25s cubic-bezier(0.2, 0.98, 0.28, 1), border-color 0.25s ease;
     border-radius: 6px;
     padding: 4px 6px;
     margin: -4px -6px;
+    border-left: 2px solid transparent;
+    padding-left: 4px;
   }
 
   .toggle-row > span:first-child {
@@ -295,6 +307,11 @@
 
   .toggle-row:hover > span:first-child {
     color: var(--ai-text);
+  }
+
+  /* Active indicator — enabled toggles show a brand-color left bar */
+  .toggle-row:has(:global(.on)) {
+    border-left-color: var(--ai-primary);
   }
 
   .sub-field {
@@ -348,5 +365,6 @@
     .hint-fade-in { animation: none; }
     .settings-panel > :global(.group) { animation: none; }
     .settings-panel > :global(.group + .group::before) { animation: none; opacity: 1; transform: scaleX(1); }
+    .field-grid .bfao-field:focus-within { transition: none; }
   }
 </style>

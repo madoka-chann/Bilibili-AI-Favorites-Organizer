@@ -1,6 +1,64 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-05, 第四十五次)
+## 最近一次会话 (2026-04-05, 第四十六次)
+
+### 本次完成内容
+
+**Elastic State — 弹性状态: 个性化图标动画 + 状态指示增强 + 表单纵深 + 危险警示 + 确认流光**
+
+#### 视觉增强 — 7 个文件
+
+| 组件/文件 | 新增动画 | 说明 |
+|-----------|----------|------|
+| `ActionButtons.svelte` | 9 种个性化工具图标悬浮动画 (Archive→translateY(-2px), Copy→scaleX(-1)镜像翻转, Undo→rotate(-45deg), Download→translateY(2px), Stats→scaleY(1.25), Heart→scale(1.3), Logs→rotate(-5deg)+scale(1.1), Help→rotate(15deg), History→rotate(-120deg)) | 替代统一 scale(1.2)，每个图标有独特物理暗示 |
+| `SettingsPanel.svelte` | 字段活跃发光 (`.bfao-field:focus-within` bg+box-shadow var(--ai-field-active-glow)) + 切换行活跃左指示线 (`.toggle-row:has(.on)` border-left-color 品牌色过渡) | 聚焦字段有凹陷发光增强纵深；已启用的切换行有品牌色左边条快速区分开/关 |
+| `forms.css` | 复选框选中弹跳 (`checkPop` scale 1→1.2→1, 0.25s) + 禁用态 (opacity 0.5 + grayscale + bg) + placeholder 聚焦渐隐 (opacity 0.6→0.3) | 勾选有弹跳触感；禁用态视觉一致；聚焦时 placeholder 淡出引导输入 |
+| `modal.css` | 危险按钮警示光晕 (`dangerGlow` 1.5s infinite, var(--ai-glow-danger) 红色脉冲) + 按钮活跃缩放 (`:active` scale(0.95) 0.08s) + 选项悬浮微提升 (scale(1.005) translateY(-1px)) | 悬浮危险按钮有红色光晕警告；所有按钮按下有弹性缩放；可选项悬浮有微弱提升 |
+| `PreviewConfirm.svelte` | 确认按钮流光扫过 (`confirmShimmer` 3s infinite, ::after 白色渐变 translateX 扫过) + footer 图标错位入场 (`iconBtnSlideIn` 0.3s backwards, 0.05s 间隔错位 delay) | 确认按钮持续流光吸引注意力；footer 工具图标依次弹入增强仪式感 |
+| `CategoryGroup.svelte` | 移除按钮危险光晕 (`:hover` box-shadow var(--ai-glow-danger)) | 悬浮移除分类按钮有红色危险光晕，与 modal danger btn 一致 |
+| `variables.css` | `--ai-glow-danger` 危险操作光晕令牌 (light: 红色 0.25α/dark: 0.3α) + `--ai-field-active-glow` 字段活跃发光令牌 (light: 品牌色 0.06α inset/dark: 0.1α inset) | 统一危险光晕和字段发光色，供 modal/CategoryGroup/SettingsPanel 复用 |
+
+#### 代码质量 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `ActionButtons.svelte` | 初始计划的 `enablePulse` 动画通过 `.tool-row:not(:has(.btn-tool:disabled))` 设置，其特异性高于 `.tool-row` 和 `.tool-row:nth-child(n)`——`animation` shorthand 完全覆盖 `toolRowSlideIn` 入场动画 + 错位 delay | HIGH | 移除 `enablePulse` 及其 `--ai-state-pulse` 令牌 |
+| `PreviewConfirm.svelte` | `.modal-btn.confirm` 选择器被拆成两个独立块 (原始块 + position/overflow 块) | LOW | 合并 `position: relative; overflow: hidden` 到已有 `.modal-btn.confirm` 块 |
+| `PreviewConfirm.svelte` | `iconBtnSlideIn` 使用 `animation-fill-mode: both`，fill-forward 锁住 `transform` 属性，覆盖 `.icon-btn:hover { transform: translateY(-2px) }` 导致悬浮上移失效 | MEDIUM | 改为 `backwards`——仅在 delay 期间填充 from 帧，完成后释放 transform |
+| `SettingsPanel.svelte` | `.toggle-row:has(:global(.on))` 添加 `border-left: 2px solid` 导致 2px 布局偏移 | MEDIUM | 基础 `.toggle-row` 预设 `border-left: 2px solid transparent` + `padding-left: 4px`，活跃态仅改 `border-left-color`，零布局偏移 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `ActionButtons.svelte` | 个性化图标 hover 使用 `:nth-child` 选择器，如果按钮顺序变化会错位 | 可接受：按钮顺序由静态模板定义，不会动态变化 |
+| `modal.css` | `dangerGlow` 在 hover 时启动 infinite 循环，mouseout 后动画中断可能造成 box-shadow 残留 | 可接受：`transition: all 0.2s ease` 在 `.bfao-btn` 上确保 mouseout 时 box-shadow 平滑过渡到 none |
+| `PreviewConfirm.svelte` | `confirmShimmer` 在 `.modal-btn.confirm` 上持续循环，即使按钮不在视口内 | 可接受：shimmer 使用 CSS transform (GPU 加速)，不在视口时浏览器自动优化 |
+| `forms.css` | `checkPop` 在每次 `:checked` 匹配时触发，包括页面加载时预选中的 checkbox | 可接受：首次加载时弹跳提供"已选中"的视觉确认，是正面用户体验 |
+
+### 关键设计决策
+
+1. **个性化 vs 统一图标动画**: 9 个工具按钮从统一的 `scale(1.2)` 升级为各自独特的 transform——Archive 上浮暗示"归档到上方"，Copy 镜像翻转暗示"复制"，Undo 逆时针旋转暗示"撤回"，Download 下沉暗示"下载到本地"，Heart 放大暗示"心跳"，History 大角度旋转暗示"时间倒流"。每个动画都有物理语义。
+2. **CSS animation fill-mode 选择**: `backwards` 仅在 delay 期间应用 from 帧 (元素隐藏等待入场)，完成后释放所有属性回到 computed style，不阻塞后续 hover/transition。而 `both` 会锁住 to 帧的 transform，阻止任何 CSS transition 修改该属性。
+3. **零布局偏移的状态指示**: toggle-row 通过预设透明 border-left 实现状态指示，活跃/非活跃状态仅变化 border-color，不产生任何宽度/内边距变化。
+4. **危险操作视觉一致性**: CategoryGroup 的移除按钮和 modal 的危险按钮共享 `--ai-glow-danger` 令牌，建立统一的"危险操作"视觉语言。
+5. **表单纵深层次**: 聚焦的字段容器获得 `--ai-field-active-glow` 内发光 + 品牌色微背景，创造"凹陷"的视觉深度，引导用户注意力到当前交互区域。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: 7 文件弹性状态增强)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 4 个 bug 修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 new errors (8 pre-existing), 10 warnings (pre-existing)。构建体积 597 kB (较 592 kB 增长 +5 kB)。**
+
+---
+
+## 上一次会话 (2026-04-05, 第四十五次)
 
 ### 本次完成内容
 

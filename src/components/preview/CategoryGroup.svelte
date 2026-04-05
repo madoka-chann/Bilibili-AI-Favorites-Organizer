@@ -303,6 +303,7 @@
     border-color: var(--ai-error, #ef4444);
     color: var(--ai-error, #ef4444);
     background: var(--ai-error-bg, rgba(239, 68, 68, 0.1));
+    box-shadow: var(--ai-glow-danger);
     animation: removeShake 0.4s ease-in-out;
   }
 

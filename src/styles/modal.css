@@ -144,7 +144,20 @@
   background: var(--ai-error);
   color: #fff;
 }
-.bfao-btn-danger:hover:not(:disabled) { box-shadow: 0 4px 12px rgba(var(--ai-error-rgb), 0.3); }
+.bfao-btn-danger:hover:not(:disabled) {
+  box-shadow: 0 4px 12px rgba(var(--ai-error-rgb), 0.3);
+  animation: dangerGlow 1.5s ease-in-out infinite;
+}
+@keyframes dangerGlow {
+  0%, 100% { box-shadow: 0 4px 12px rgba(var(--ai-error-rgb), 0.3); }
+  50% { box-shadow: var(--ai-glow-danger), 0 4px 12px rgba(var(--ai-error-rgb), 0.3); }
+}
+
+/* Active press — elastic scale feedback for all modal buttons */
+.bfao-btn:active:not(:disabled) {
+  transform: scale(0.95);
+  transition-duration: 0.08s;
+}
 
 .bfao-btn-muted {
   background: var(--ai-border-lighter);
@@ -169,7 +182,10 @@
   transition: all 0.2s ease;
   background: var(--ai-bg);
 }
-.bfao-selectable-item:hover { border-color: var(--ai-primary-light); }
+.bfao-selectable-item:hover {
+  border-color: var(--ai-primary-light);
+  transform: scale(1.005) translateY(-1px);
+}
 .bfao-selectable-item.selected {
   border-color: var(--ai-primary);
   background: var(--ai-bg-tertiary);
@@ -192,4 +208,7 @@
   .bfao-btn svg { transition: none; }
   .bfao-action-bar::before { animation: none; transform: scaleX(1); }
   .bfao-selectable-item.selected { animation: none; }
+  .bfao-selectable-item:hover { transform: none; }
+  .bfao-btn-danger:hover:not(:disabled) { animation: none; }
+  .bfao-btn:active:not(:disabled) { transform: none; }
 }

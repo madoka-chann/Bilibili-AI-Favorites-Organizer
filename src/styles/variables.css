@@ -92,6 +92,12 @@
 
   /* Timer shimmer — translucent sweep for countdown bars */
   --ai-timer-shimmer: rgba(255, 255, 255, 0.5);
+
+  /* Danger glow — warning halo for destructive actions */
+  --ai-glow-danger: 0 0 14px rgba(231, 76, 60, 0.25), 0 0 4px rgba(231, 76, 60, 0.15);
+
+  /* Field active glow — inset glow when input field is focused */
+  --ai-field-active-glow: inset 0 0 8px rgba(115, 100, 255, 0.06), 0 0 0 1px rgba(115, 100, 255, 0.08);
 }
 
 /* ==================== Dark Theme ==================== */
@@ -182,6 +188,12 @@
 
   /* Timer shimmer */
   --ai-timer-shimmer: rgba(255, 255, 255, 0.35);
+
+  /* Danger glow */
+  --ai-glow-danger: 0 0 14px rgba(248, 113, 113, 0.3), 0 0 4px rgba(248, 113, 113, 0.2);
+
+  /* Field active glow */
+  --ai-field-active-glow: inset 0 0 8px rgba(139, 127, 255, 0.1), 0 0 0 1px rgba(139, 127, 255, 0.12);
 }
 
 /* ==================== Hidden Scrollbar — scroll still works, bar hidden ==================== */
