@@ -17,6 +17,10 @@
 
   let { folders, totalVideos, deadCount, mode = 'stats', onclose }: Props = $props();
 
+  let maxFolderCount = $derived(
+    folders.length > 0 ? Math.max(...folders.map(f => f.media_count)) : 1
+  );
+
   let healthScore = $derived(totalVideos > 0
     ? Math.max(0, Math.round(100 - (deadCount / totalVideos) * 100))
     : 100);
@@ -99,18 +103,22 @@
 
     <div class="stats-grid">
       <div class="stat-card" use:tilt={{ maxDeg: 4, scale: 1.03 }}>
+        <span class="card-shimmer" aria-hidden="true"></span>
         <div class="stat-value" use:rollNumber={folders.length}>{folders.length}</div>
         <div class="stat-label">收藏夹</div>
       </div>
       <div class="stat-card" use:tilt={{ maxDeg: 4, scale: 1.03 }}>
+        <span class="card-shimmer" aria-hidden="true"></span>
         <div class="stat-value" data-locale="true" use:rollNumber={totalVideos}>{totalVideos.toLocaleString()}</div>
         <div class="stat-label">视频总数</div>
       </div>
       <div class="stat-card" use:tilt={{ maxDeg: 4, scale: 1.03 }}>
+        <span class="card-shimmer" aria-hidden="true"></span>
         <div class="stat-value" class:danger={deadCount > 0} use:rollNumber={deadCount}>{deadCount}</div>
         <div class="stat-label">失效视频</div>
       </div>
       <div class="stat-card" use:tilt={{ maxDeg: 4, scale: 1.03 }}>
+        <span class="card-shimmer" aria-hidden="true"></span>
         <div class="stat-value">{deadRate}%</div>
         <div class="stat-label">失效率</div>
       </div>
@@ -120,7 +128,7 @@
       <div class="folder-breakdown" use:contentStagger={{ delay: 0.25, stagger: 0.03 }}>
         <div class="section-title">收藏夹分布</div>
         {#each folders as f}
-          <div class="folder-row">
+          <div class="folder-row" style:--ratio="{f.media_count / maxFolderCount}">
             <span class="folder-name">{f.title}</span>
             <span class="folder-count">{f.media_count} 个视频</span>
           </div>
@@ -199,6 +207,32 @@
     transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s cubic-bezier(0.2, 0.98, 0.28, 1);
     animation: cardPop 0.35s cubic-bezier(0.22, 1.42, 0.29, 1) both;
     position: relative;
+  }
+  /* Diagonal shimmer sweep on hover — overflow:hidden on shimmer, NOT card (card ::before/::after separators extend outside bounds) */
+  .stat-card .card-shimmer {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .stat-card .card-shimmer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      120deg,
+      transparent 0%,
+      transparent 35%,
+      rgba(255, 255, 255, 0.15) 50%,
+      transparent 65%,
+      transparent 100%
+    );
+    transform: translateX(-100%);
+  }
+  .stat-card:hover .card-shimmer::before {
+    animation: cardShimmerSweep 0.6s ease forwards;
   }
   /* Grid cross separators: left line on even columns */
   .stat-card:nth-child(even)::before {
@@ -312,6 +346,26 @@
     transition: background 0.2s ease, transform 0.2s ease;
     counter-increment: folder-idx;
     position: relative;
+    overflow: hidden;
+  }
+  /* Inline proportional bar — visualizes video count ratio */
+  .folder-row::after {
+    content: '';
+    position: absolute;
+    left: 24px;
+    bottom: 0;
+    height: 2px;
+    width: calc(var(--ratio, 0) * (100% - 24px));
+    background: linear-gradient(90deg, var(--ai-primary), var(--ai-gradient-accent));
+    border-radius: 1px;
+    opacity: 0.35;
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: ratioBarGrow 0.5s cubic-bezier(0.2, 0.98, 0.28, 1) 0.4s both;
+    transition: opacity 0.2s ease;
+  }
+  .folder-row:hover::after {
+    opacity: 0.7;
   }
   .folder-row::before {
     content: counter(folder-idx);
@@ -354,6 +408,16 @@
     white-space: nowrap;
   }
 
+  @keyframes cardShimmerSweep {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(100%); }
+  }
+
+  @keyframes ratioBarGrow {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .stat-card { transition: none; animation: none; opacity: 1; }
     .stat-value { transition: none; }
@@ -361,6 +425,8 @@
     .folder-row { transition: none; }
     .folder-row:hover { transform: none; }
     .folder-row::before { transition: none; }
+    .folder-row::after { animation: none; transform: scaleX(1); }
+    .stat-card:hover .card-shimmer::before { animation: none; }
     .section-title::after { animation: none; transform: scaleX(1); }
     .health-ring { animation: none; }
     .health-detail { animation: none; opacity: 1; }

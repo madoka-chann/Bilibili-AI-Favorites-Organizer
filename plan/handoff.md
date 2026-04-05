@@ -1,6 +1,62 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-05, 第四十六次)
+## 最近一次会话 (2026-04-05, 第四十七次)
+
+### 本次完成内容
+
+**Fluid Depth — 流体纵深: 数据可视化增强 + 空状态生命化 + 时间线流动脉冲 + 摘要数字弹性 + 选中反馈**
+
+#### 视觉增强 — 7 个文件
+
+| 组件/文件 | 新增动画 | 说明 |
+|-----------|----------|------|
+| `modal.css` | 摘要数字弹性入场 (`summaryPop` scale 0.5→1.18→0.95→1 含 blur 过渡 + text-shadow 品牌色发光) + 空状态猫咪呼吸 (`::before` 猫咪 emoji 😺 + `emptyCatBreath` scale+translateY 2s infinite + drop-shadow) + 空状态渐显入场 (`emptyFadeIn` 0.5s) | 统一所有 modal 空状态生命化 + 摘要数字弹性强调 |
+| `StatsDialog.svelte` | 统计卡片悬浮光扫 (`.card-shimmer` 内层容器 overflow:hidden + `::before` 对角渐变 `cardShimmerSweep` translateX -100%→100% 0.6s) + 收藏夹行内联比例条 (`.folder-row::after` 品牌色渐变条, 宽度由 `--ratio` CSS 变量驱动, `ratioBarGrow` scaleX 0→1 入场, hover 提高 opacity) + `maxFolderCount` 派生计算 | 卡片悬浮有对角光扫玻璃质感; 收藏夹行有比例条直观可视化 |
+| `HistoryTimeline.svelte` | 时间线流动光脉冲 (`::after` 4px×12px 品牌色光点 + box-shadow 发光, `timelinePulseFlow` top 0→100% 3s infinite linear + `timelineDotFadeIn` opacity 入场) | 时间线竖线上有光点持续流动，暗示时间流逝 |
+| `DuplicatesResult.svelte` | 序号圆圈悬浮放大 (`:hover::before` scale(1.2) + box-shadow 品牌色发光) | 悬浮时序号更突出，增强交互感 |
+| `DeadVideosResult.svelte` | 文件夹标题下箭头指示 (`.folder-header::after` CSS 三角形 + hover translateY(2px) + 品牌色变化) | 标题悬浮时箭头下沉，暗示可展开 |
+| `FolderSelector.svelte` | 选中计数动态徽章 (`.count.has-selected` 品牌色+粗体 + `.bounce` class 由 `$effect` 在 selected.size 变化时触发 `countBounce` scale 1→1.15→1 + `void offsetWidth` 强制 reflow 重启动画) + 动态文案 (已选 N/M vs 共 M 个收藏夹) | 每次勾选/取消时计数有弹跳+变色反馈 |
+
+#### 代码质量 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `StatsDialog.svelte` | `overflow: hidden` 直接加在 `.stat-card` 上，裁剪了 grid 交叉分隔线伪元素 (`.stat-card:nth-child(even)::before` at `left: -6px`, `.stat-card:nth-child(n+3)::after` at `top: -6px`) | HIGH | 改为 `.card-shimmer` 内层容器独立 `overflow: hidden` + `border-radius: inherit`，光扫效果用 `::before` 伪元素 |
+| `HistoryTimeline.svelte` | `::after` 流动光点复用 `lineGrow` 动画 (scaleY 0→1)，对 12px 高的光点产生垂直挤压变形效果 | MEDIUM | 改为独立的 `timelineDotFadeIn` opacity 淡入动画，光点保持原始比例 |
+| `DeadVideosResult.svelte` | 无用的 `counter-increment: folder-group-idx` 声明——未定义 counter-reset，未使用 counter() | LOW | 移除死代码 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `FolderSelector.svelte` | `.bounce` class 在动画完成后不移除，依赖下次 toggle 时 remove→reflow→add 重启 | 可接受：`.countBounce` 终态为 `scale(1)` 与基础态一致，不影响后续交互 |
+| `StatsDialog.svelte` | `--ratio` 使用 `f.media_count / maxFolderCount`，当只有一个收藏夹时 ratio=1，比例条满宽 | 可接受：单收藏夹场景下满宽正确表达"占比 100%" |
+| `modal.css` | `summaryPop` 使用 `filter: blur(4px→0px)` 过渡，部分低端 GPU 可能有性能损失 | 可接受：动画仅 0.5s 一次性触发，非持续循环，性能影响可忽略 |
+| `HistoryTimeline.svelte` | `timelinePulseFlow` 光点到达底部后 opacity 渐隐到 0，然后瞬间回到顶部重新开始 | 可接受：由于 opacity 0 时的位置跳变不可见，视觉上表现为连续流动 |
+
+### 关键设计决策
+
+1. **card-shimmer 内层隔离**: 光扫效果通过独立的 `<span class="card-shimmer">` 内层容器实现 `overflow: hidden` 裁剪，避免影响 `.stat-card` 上已有的超出边界的 grid 分隔线伪元素。shimmer 容器继承父级 `border-radius` 确保裁剪圆角一致。
+2. **CSS 变量驱动数据可视化**: 收藏夹行的比例条宽度通过 `--ratio` CSS 变量实时计算，无需 JS 动画库，纯 CSS 实现数据到视觉的映射。`maxFolderCount` 作为归一化基准确保最大值满宽。
+3. **空状态统一生命化**: 所有 modal 的 `.bfao-modal-empty` 通过 `modal.css` 共享猫咪呼吸动画，无需各组件重复实现。猫咪 emoji 使用 Unicode `\1F63A` (😺) 确保跨平台一致。
+4. **时间线光点独立入场**: 光点使用独立的 `timelineDotFadeIn` 淡入而非复用竖线的 `lineGrow` scaleY，避免对非线性元素产生不自然的挤压变形。
+5. **选中计数 $effect 驱动**: FolderSelector 使用 Svelte 5 `$effect` 监听 `selected.size` 变化，通过 DOM class toggle + `void offsetWidth` 强制 reflow 实现 CSS 动画重启，比 GSAP 更轻量。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: 7 文件流体纵深增强)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 3 个 bug 修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 new errors (8 pre-existing), 12 warnings (pre-existing)。构建体积 602 kB (较 597 kB 增长 +5 kB)。**
+
+---
+
+## 上一次会话 (2026-04-05, 第四十六次)
 
 ### 本次完成内容
 

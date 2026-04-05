@@ -10,26 +10,42 @@
 .bfao-modal-summary strong {
   color: var(--ai-primary);
   display: inline-block;
-  animation: countPop 0.4s cubic-bezier(0.22, 1.42, 0.29, 1) 0.3s both;
+  animation: summaryPop 0.5s cubic-bezier(0.22, 1.42, 0.29, 1) 0.3s both;
+  text-shadow: 0 0 12px rgba(var(--ai-primary-rgb), 0.25);
 }
 
-@keyframes countPop {
-  0% { transform: scale(0); opacity: 0; }
-  70% { transform: scale(1.15); }
-  100% { transform: scale(1); opacity: 1; }
+@keyframes summaryPop {
+  0% { transform: scale(0.5); opacity: 0; filter: blur(4px); }
+  60% { transform: scale(1.18); filter: blur(0px); }
+  80% { transform: scale(0.95); }
+  100% { transform: scale(1); opacity: 1; filter: blur(0px); }
 }
 
 .bfao-modal-empty {
   text-align: center;
   color: var(--ai-text-muted);
-  padding: 24px 0;
+  padding: 32px 0 24px;
   font-size: 13px;
-  animation: emptyFloat 3s ease-in-out infinite;
+  animation: emptyFadeIn 0.5s cubic-bezier(0.2, 0.98, 0.28, 1) both;
 }
 
-@keyframes emptyFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+.bfao-modal-empty::before {
+  content: '\1F63A';
+  display: block;
+  font-size: 36px;
+  margin-bottom: 8px;
+  animation: emptyCatBreath 2s ease-in-out infinite;
+  filter: drop-shadow(0 2px 6px rgba(var(--ai-primary-rgb), 0.15));
+}
+
+@keyframes emptyFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes emptyCatBreath {
+  0%, 100% { transform: scale(1) translateY(0); }
+  50% { transform: scale(1.08) translateY(-4px); }
 }
 
 .bfao-modal-more {
@@ -199,8 +215,9 @@
 
 /* ==================== Reduced Motion ==================== */
 @media (prefers-reduced-motion: reduce) {
-  .bfao-modal-empty { animation: none; }
-  .bfao-modal-summary strong { animation: none; opacity: 1; transform: none; }
+  .bfao-modal-empty { animation: none; opacity: 1; }
+  .bfao-modal-empty::before { animation: none; }
+  .bfao-modal-summary strong { animation: none; opacity: 1; transform: none; filter: none; }
   .bfao-btn:disabled { transition: none; filter: none; animation: none; }
   .bfao-modal-hint { animation: none; opacity: 1; }
   .bfao-modal-hint::after { animation: none; transform: scaleX(1); }

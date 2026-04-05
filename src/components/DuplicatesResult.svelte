@@ -100,6 +100,8 @@
   .dup-item:hover::before {
     background: var(--ai-primary);
     color: #fff;
+    transform: scale(1.2);
+    box-shadow: 0 0 8px rgba(var(--ai-primary-rgb), 0.3);
   }
   .dup-item:hover {
     background: var(--ai-bg-hover);
@@ -130,6 +132,7 @@
     .dup-item { transition: none; }
     .dup-item:hover { transform: none; }
     .dup-item::before { transition: none; }
+    .dup-item:hover::before { transform: none; box-shadow: none; }
     .dup-folders { transition: none; }
     .dup-item:hover .dup-folders { transform: none; }
   }

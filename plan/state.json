@@ -1,7 +1,7 @@
 {
   "project": "Bilibili AI Favorites Organizer - Svelte Refactoring",
-  "plan": "visual-plan-session46.md",
-  "lastUpdated": "2026-04-05-session46",
+  "plan": "visual-plan-session47.md",
+  "lastUpdated": "2026-04-05-session47",
   "phases": {
     "phase0_buildSystem": {
       "status": "completed",
@@ -23,7 +23,7 @@
     },
     "phase2_animations": {
       "status": "completed",
-      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; I1-I5 粒子系统全部完成; Session 27-45 全组件覆盖; Session 46: ActionButtons 个性化工具图标悬浮 (9 种独特动画) + SettingsPanel 字段活跃发光+切换行活跃左指示线 + forms.css 复选框选中弹跳+禁用态+placeholder 渐隐 + modal.css 危险按钮警示光晕+按钮活跃缩放+选项悬浮微提升 + PreviewConfirm 确认按钮流光+footer 图标错位入场 + CategoryGroup 移除按钮危险光晕 + variables.css 危险光晕+字段活跃发光令牌"
+      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; I1-I5 粒子系统全部完成; Session 27-46 全组件覆盖; Session 47: StatsDialog 统计卡片悬浮对角光扫 (card-shimmer 内层 overflow:hidden 裁剪) + 收藏夹行内联比例条 (--ratio CSS 变量驱动宽度+scaleX 入场) + HistoryTimeline 时间线流动光脉冲 (::after 3s 循环 top 位移) + modal.css 空状态猫咪呼吸 (::before 猫咪 emoji + scale 呼吸 2s) + 摘要数字弹性入场 (summaryPop 含 blur 模糊过渡 + text-shadow) + DuplicatesResult 序号圆圈悬浮放大发光 + DeadVideosResult 文件夹标题下箭头指示 + FolderSelector 选中计数动态徽章 (bounce class + has-selected 品牌色)"
     },
     "phase3_cssCleanup": {
       "status": "completed",
@@ -31,7 +31,7 @@
     },
     "phase4_codeQuality": {
       "status": "completed",
-      "summary": "TypeScript strict 全开; 模块化重构完成; 多轮 Code Review; as any 类型断言清零; 错误处理一致性强化; 第46轮 Code Review: (1) enablePulse 动画与 toolRowSlideIn 入场动画冲突——移除 enablePulse; (2) PreviewConfirm 重复 .modal-btn.confirm 选择器块合并; (3) iconBtnSlideIn fill-mode:both 锁住 transform 导致 hover 失效——改为 backwards; (4) toggle-row border-left 导致布局偏移——改用透明边框+color 过渡"
+      "summary": "TypeScript strict 全开; 模块化重构完成; 多轮 Code Review; as any 类型断言清零; 错误处理一致性强化; 第47轮 Code Review: (1) overflow:hidden 在 stat-card 上会裁剪 grid 交叉分隔线 (::before left:-6px, ::after top:-6px)——改为 overflow:hidden 仅在 .card-shimmer 内层; (2) timeline::after 使用 lineGrow scaleY 动画不适合 12px 光点——改为 opacity fade-in; (3) DeadVideosResult 无用 counter-increment: folder-group-idx——移除"
     },
     "phase5_performance": {
       "status": "completed",
@@ -53,8 +53,8 @@
   },
   "buildStatus": {
     "builds": true,
-    "output": "dist/bilibili-ai-favorites-organizer.user.js (597 kB, GSAP ~95 kB CDN)",
-    "svelteCheck": "0 errors (8 pre-existing), 10 warnings (pre-existing)",
+    "output": "dist/bilibili-ai-favorites-organizer.user.js (602 kB, GSAP ~95 kB CDN)",
+    "svelteCheck": "0 errors (8 pre-existing), 12 warnings (pre-existing)",
     "preExistingIssues": []
   }
 }

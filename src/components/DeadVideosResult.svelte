@@ -102,10 +102,27 @@
     color: var(--ai-text-secondary);
     padding: 4px 0;
     transition: color 0.2s ease, letter-spacing 0.2s ease;
+    cursor: default;
   }
   .folder-header:hover {
     color: var(--ai-text);
     letter-spacing: 0.02em;
+  }
+  .folder-header::after {
+    content: '';
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 4px;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-top: 4px solid var(--ai-text-muted);
+    vertical-align: middle;
+    transition: transform 0.25s ease, border-top-color 0.2s ease;
+  }
+  .folder-header:hover::after {
+    transform: translateY(2px);
+    border-top-color: var(--ai-primary);
   }
   .video-item {
     font-size: 11px;
@@ -131,5 +148,7 @@
     .video-item:hover { transform: none; }
     .folder-header { transition: none; }
     .folder-header:hover { letter-spacing: normal; }
+    .folder-header::after { transition: none; }
+    .folder-header:hover::after { transform: none; }
   }
 </style>

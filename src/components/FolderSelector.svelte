@@ -33,6 +33,20 @@
   }
 
   let allSelected = $derived(selected.size === folders.length && folders.length > 0);
+
+  // Count badge bounce effect on selection change
+  let countEl = $state<HTMLSpanElement>(undefined!);
+  let prevSize = 0;
+  $effect(() => {
+    const size = selected.size;
+    if (countEl && size !== prevSize) {
+      countEl.classList.remove('bounce');
+      // Force reflow to restart animation
+      void countEl.offsetWidth;
+      countEl.classList.add('bounce');
+      prevSize = size;
+    }
+  });
 </script>
 
 <Modal
@@ -53,7 +67,13 @@
           <Square size={14} /> 全选
         {/if}
       </button>
-      <span class="count">共 {folders.length} 个收藏夹</span>
+      <span class="count" class:has-selected={selected.size > 0} bind:this={countEl}>
+        {#if selected.size > 0}
+          已选 {selected.size} / {folders.length}
+        {:else}
+          共 {folders.length} 个收藏夹
+        {/if}
+      </span>
     </div>
 
     <div class="folder-list" use:contentStagger={{ stagger: 0.025, delay: 0.15 }}>
@@ -132,12 +152,26 @@
     color: var(--ai-text-muted);
     display: inline-block;
     animation: countPop 0.4s cubic-bezier(0.22, 1.42, 0.29, 1) 0.2s both;
+    transition: color 0.25s ease;
+  }
+  .count.has-selected {
+    color: var(--ai-primary);
+    font-weight: 600;
+  }
+  .count.bounce {
+    animation: countBounce 0.3s cubic-bezier(0.22, 1.42, 0.29, 1);
   }
 
   @keyframes countPop {
     0% { transform: scale(0); opacity: 0; }
     70% { transform: scale(1.1); }
     100% { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes countBounce {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.15); }
+    100% { transform: scale(1); }
   }
 
   .folder-list {
@@ -206,5 +240,7 @@
     .toggle-all:active::after { animation: none; }
     .folder-title { transition: none; }
     .folder-count { transition: none; }
+    .count { transition: none; }
+    .count.bounce { animation: none; }
   }
 </style>

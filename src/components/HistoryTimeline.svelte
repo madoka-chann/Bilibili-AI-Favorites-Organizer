@@ -67,10 +67,38 @@
     transform-origin: top;
     animation: lineGrow 0.6s cubic-bezier(0.2, 0.98, 0.28, 1) both;
   }
+  /* Flowing light pulse along the timeline */
+  .timeline::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 0;
+    width: 4px;
+    height: 12px;
+    border-radius: 2px;
+    background: var(--ai-primary);
+    box-shadow: 0 0 8px rgba(var(--ai-primary-rgb), 0.5);
+    opacity: 0.6;
+    animation: timelineDotFadeIn 0.4s ease 0.6s both,
+               timelinePulseFlow 3s linear 1s infinite;
+    pointer-events: none;
+  }
 
   @keyframes lineGrow {
     from { transform: scaleY(0); }
     to { transform: scaleY(1); }
+  }
+
+  @keyframes timelineDotFadeIn {
+    from { opacity: 0; }
+    to { opacity: 0.6; }
+  }
+
+  @keyframes timelinePulseFlow {
+    0% { top: 0; opacity: 0; }
+    10% { opacity: 0.7; }
+    80% { opacity: 0.4; }
+    100% { top: calc(100% - 12px); opacity: 0; }
   }
 
   .timeline-item {
@@ -189,6 +217,7 @@
     .timeline-dot { animation: none; }
     .timeline-item { animation: none; opacity: 1; }
     .timeline::before { animation: none; transform: scaleY(1); }
+    .timeline::after { animation: none; display: none; }
     .timeline-item:first-child .timeline-card { animation: none; }
     .timeline-time { transition: none; }
     .timeline-cats { transition: none; }
