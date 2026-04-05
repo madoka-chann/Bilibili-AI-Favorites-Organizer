@@ -355,13 +355,17 @@
     height: 2px;
     background: linear-gradient(90deg, var(--ai-primary), var(--ai-gradient-accent));
     opacity: 0;
-    transition: opacity 0.3s ease, width 0.15s linear;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.2, 0.98, 0.28, 1), width 0.15s linear, box-shadow 0.3s ease;
     z-index: 3;
     border-radius: 1px;
     flex-shrink: 0;
   }
   .modal-scroll-indicator.visible {
     opacity: 1;
+    transform: scaleX(1);
+    box-shadow: var(--ai-indicator-glow);
   }
 
   @keyframes modal-aurora-flow {
@@ -388,5 +392,7 @@
     .modal-body::before,
     .modal-body::after { transition: none; }
     .modal-footer { animation: none; }
+    .modal-scroll-indicator { transition: none; transform: none; }
+    .modal-scroll-indicator.visible { transform: none; box-shadow: none; }
   }
 </style>

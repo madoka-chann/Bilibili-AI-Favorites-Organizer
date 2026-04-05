@@ -86,6 +86,12 @@
 
   /* Shimmer sweep — translucent highlight for badge/label sweeps */
   --ai-shimmer-color: rgba(255, 255, 255, 0.45);
+
+  /* Scroll indicator glow — subtle brand glow for progress bars */
+  --ai-indicator-glow: 0 0 8px rgba(115, 100, 255, 0.25), 0 0 3px rgba(115, 100, 255, 0.15);
+
+  /* Timer shimmer — translucent sweep for countdown bars */
+  --ai-timer-shimmer: rgba(255, 255, 255, 0.5);
 }
 
 /* ==================== Dark Theme ==================== */
@@ -170,6 +176,12 @@
 
   /* Shimmer sweep */
   --ai-shimmer-color: rgba(255, 255, 255, 0.2);
+
+  /* Scroll indicator glow */
+  --ai-indicator-glow: 0 0 8px rgba(139, 127, 255, 0.35), 0 0 3px rgba(139, 127, 255, 0.2);
+
+  /* Timer shimmer */
+  --ai-timer-shimmer: rgba(255, 255, 255, 0.35);
 }
 
 /* ==================== Hidden Scrollbar — scroll still works, bar hidden ==================== */

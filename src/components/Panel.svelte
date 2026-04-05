@@ -327,13 +327,17 @@
     border-radius: 0 1px 1px 0;
     z-index: 3;
     opacity: 0;
-    transition: opacity 0.3s ease, width 0.1s linear;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.2, 0.98, 0.28, 1), width 0.1s linear, box-shadow 0.3s ease;
     pointer-events: none;
     margin-bottom: -2px;
   }
 
   .scroll-indicator.visible {
     opacity: 1;
+    transform: scaleX(1);
+    box-shadow: var(--ai-indicator-glow);
   }
 
   .settings-wrapper {
@@ -395,6 +399,11 @@
     }
     .scroll-indicator {
       transition: none;
+      transform: none;
+    }
+    .scroll-indicator.visible {
+      transform: none;
+      box-shadow: none;
     }
     .main-area > :global(*) {
       animation: none;

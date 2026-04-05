@@ -1,6 +1,61 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-05, 第四十四次)
+## 最近一次会话 (2026-04-05, 第四十五次)
+
+### 本次完成内容
+
+**Harmonic Completeness — 和谐圆满: 图标动画完整闭环 + 交互一致性收口 + 滚动指示器精致化 + 微细节补完**
+
+#### 视觉增强 — 7 个文件
+
+| 组件/文件 | 新增动画 | 说明 |
+|-----------|----------|------|
+| `Toast.svelte` | Info 图标 `toastIconPulse` (scale 0.6→1.25→1, 0.5s) + Timer 流光扫过 (`::after timerShimmer` translateX -100%→100%, 白色渐变 2s infinite) | 补齐 info 类型——唯一没有图标动画的 toast 类型；计时条有流光暗示时间流逝 |
+| `Header.svelte` | 版本号悬浮态 (scale 1.08 + opacity 0.95 + letter-spacing 0.03em + box-shadow 白色外发光) | 补齐头部唯一没有 hover 的元素 |
+| `Panel.svelte` | 滚动指示条 scaleX 入场 (transform-origin: left, scaleX 0→1, cubic-bezier overshoot) + 品牌色发光 (var(--ai-indicator-glow)) | 指示条从左侧展开入场取代简单 opacity 渐显；可见时有品牌色微发光 |
+| `Modal.svelte` | 滚动指示条 scaleX 入场 (同 Panel 一致) + 品牌色发光 (var(--ai-indicator-glow)) | Modal 滚动指示条与 Panel 保持一致的入场动画和发光 |
+| `PromptEditor.svelte` | 动作按钮 `use:ripple` (Save + Settings2 按钮) + 预设行悬浮内发光 (box-shadow: var(--ai-glow-selected)) | 补齐按钮组 ripple 一致性；预设行悬浮有品牌色内发光 |
+| `VideoItem.svelte` | 时长悬浮阴影 (box-shadow 0 0 6px) + 上传者下划线渐展 (`::after` scaleX 0→1, 品牌色, transform-origin: left) | 时长标签悬浮更突出；上传者名有品牌色下划线引导 |
+| `variables.css` | `--ai-indicator-glow` 滚动指示条发光令牌 (light: 0.25α/dark: 0.35α) + `--ai-timer-shimmer` 计时流光色令牌 (light: 0.5/dark: 0.35) | 统一指示条发光和计时流光色，供 Panel/Modal/Toast 复用 |
+
+#### 代码质量 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `Modal.svelte` | 初始计划为 close-btn 添加 `use:magnetic`，但 magnetic action 通过 GSAP 内联 `transform` 设置 `x/y`，会覆盖 CSS `:hover { transform: rotate(90deg) scale(1.1) }` — 旋转效果丢失 | HIGH | 移除 `use:magnetic`，保留 close-btn 的独特旋转悬浮效果 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `Toast.svelte` | `timerShimmer` 在 timer 宽度接近 0 时视觉加速 (100% 基于缩小的宽度) | 可接受：创造"时间紧迫"的感知加速，是正面的用户体验 |
+| `Header.svelte` | `versionPop` 使用 `animation-fill-mode: both`，可能与新增 hover transition 冲突 | 可接受：CSS 规范中 transition 优先级高于 animation fill，hover 过渡正常工作 |
+| `VideoItem.svelte` | `video-uploader::after` 下划线在 `bottom: -1px` 微溢出 | 可接受：`.video-item` 无 `overflow: hidden`，1px 下划线不影响布局 |
+| `PromptEditor.svelte` | `use:ripple` 为 `.prompt-action-btn` 自动添加 `overflow: hidden` | 可接受：按钮无溢出内容，ripple 裁剪行为正确 |
+
+### 关键设计决策
+
+1. **GSAP 内联 transform vs CSS hover transform**: 再次确认 magnetic action 的 GSAP `x/y` 会生成完整内联 `transform` 矩阵，覆盖 CSS hover 的 `rotate/scale`。有独特 hover transform 的元素不应使用 magnetic。
+2. **滚动指示条统一体验**: Panel 和 Modal 的滚动指示条采用相同的 `scaleX` 入场 + `--ai-indicator-glow` 发光方案，确保一致的品牌视觉语言。
+3. **Toast 图标动画完整闭环**: `toastIconPulse` 的 scale 曲线 (0.6→1.25→1) 与 `toastIconBounce` (0→1.3→1) 风格一致，info 的动画比 success 稍温和 (0.6 起始 vs 0 起始) 以匹配 info 的低紧迫性。
+4. **Timer 流光作为时间感知增强**: 2s 周期的流光扫过让静态的计时条有"流动"感，比纯色条更直观地传达倒计时。
+5. **指示条发光令牌分级**: light 模式使用较低 alpha (0.25)，dark 模式使用较高 alpha (0.35)，确保在不同背景下都有可见但不刺眼的发光。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: 7 文件和谐圆满增强)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 1 个 bug 修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 new errors (8 pre-existing), 10 warnings (pre-existing)。构建体积 592 kB (较 590 kB 增长 +2 kB)。**
+
+---
+
+## 上一次会话 (2026-04-05, 第四十四次)
 
 ### 本次完成内容
 

@@ -342,6 +342,10 @@
     animation: toastIconWobble 0.5s ease 0.3s both;
   }
 
+  .toast-info .toast-icon {
+    animation: toastIconPulse 0.5s cubic-bezier(0.2, 1, 0.4, 1) 0.3s both;
+  }
+
   .toast-msg {
     flex: 1;
     min-width: 0;
@@ -358,6 +362,17 @@
     animation: toast-timer linear forwards;
     border-radius: 0 0 14px 14px;
     transition: opacity 0.2s ease;
+    overflow: hidden;
+  }
+
+  /* Timer bar shimmer sweep — "time flowing" visual cue */
+  .toast-timer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, var(--ai-timer-shimmer, rgba(255,255,255,0.5)) 50%, transparent 100%);
+    animation: timerShimmer 2s ease-in-out infinite;
+    pointer-events: none;
   }
 
   @keyframes toast-timer {
@@ -390,12 +405,25 @@
     75% { transform: rotate(-4deg); }
   }
 
+  @keyframes toastIconPulse {
+    0% { transform: scale(0.6); opacity: 0.4; }
+    50% { transform: scale(1.25); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes timerShimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .toast { transition: none; }
     .toast:hover { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06); transform: none; }
     .toast::before { display: none; }
     .toast-success .toast-icon,
     .toast-error .toast-icon,
-    .toast-warning .toast-icon { animation: none; }
+    .toast-warning .toast-icon,
+    .toast-info .toast-icon { animation: none; }
+    .toast-timer::after { animation: none; }
   }
 </style>

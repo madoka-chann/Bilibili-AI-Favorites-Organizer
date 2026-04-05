@@ -4,6 +4,7 @@
   import { BUILTIN_PRESETS } from '$utils/constants';
   import { debounce } from '$utils/timing';
   import { focusGlow, pressEffect } from '$animations/micro';
+  import { ripple } from '$actions/ripple';
   import { gsap, EASINGS, shouldAnimate } from '$animations/gsap-config';
   import { gmGetValue, gmSetValue } from '$utils/gm';
   import { Save, Trash2, Star, Settings2 } from 'lucide-svelte';
@@ -144,10 +145,10 @@
         {/each}
       </optgroup>
     </select>
-    <button class="prompt-action-btn" class:save-flash={saveFlash} title="保存为自定义预设" onclick={saveAsCustom} disabled={!promptValue.trim()} use:pressEffect>
+    <button class="prompt-action-btn" class:save-flash={saveFlash} title="保存为自定义预设" onclick={saveAsCustom} disabled={!promptValue.trim()} use:pressEffect use:ripple>
       <Save size={12} />
     </button>
-    <button class="prompt-action-btn" title="管理预设" onclick={toggleManager} use:pressEffect>
+    <button class="prompt-action-btn" title="管理预设" onclick={toggleManager} use:pressEffect use:ripple>
       <Settings2 size={12} />
     </button>
   </div>
@@ -298,6 +299,7 @@
   .custom-preset-row:hover {
     background: var(--ai-bg-hover);
     transform: translateX(2px);
+    box-shadow: var(--ai-glow-selected);
   }
 
   .preset-select {

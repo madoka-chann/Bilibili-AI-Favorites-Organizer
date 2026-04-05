@@ -209,6 +209,15 @@
     padding: 1px 6px;
     border-radius: 8px;
     animation: versionPop 0.4s cubic-bezier(0.2, 1, 0.4, 1) both;
+    transition: transform 0.25s ease, opacity 0.25s ease, letter-spacing 0.3s ease, box-shadow 0.25s ease;
+    cursor: default;
+  }
+
+  .version:hover {
+    transform: scale(1.08);
+    opacity: 0.95;
+    letter-spacing: 0.03em;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
   }
 
   .header-actions {
@@ -298,7 +307,8 @@
   @media (prefers-reduced-motion: reduce) {
     .header-title > span:first-child { animation: none; -webkit-text-fill-color: #fff; transition: none; }
     .header-title > span:first-child:hover { letter-spacing: 0; }
-    .version { animation: none; }
+    .version { animation: none; transition: none; }
+    .version:hover { transform: none; letter-spacing: 0; box-shadow: none; }
     .settings-icon { transition: none; }
     .header-btn.active::after { animation: none; }
   }

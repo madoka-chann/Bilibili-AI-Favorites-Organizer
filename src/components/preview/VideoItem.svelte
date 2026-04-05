@@ -120,6 +120,7 @@
   .video-item:hover .video-duration {
     transform: scale(1.08);
     background: rgba(0, 0, 0, 0.85);
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
   }
 
   .video-info {
@@ -146,10 +147,26 @@
     text-overflow: ellipsis;
     transition: opacity 0.2s ease, transform 0.2s ease;
     opacity: 0.7;
+    position: relative;
+  }
+  .video-uploader::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--ai-primary-light);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s cubic-bezier(0.2, 0.98, 0.28, 1);
   }
   .video-item:hover .video-uploader {
     opacity: 1;
     transform: translateX(2px);
+  }
+  .video-item:hover .video-uploader::after {
+    transform: scaleX(1);
   }
 
   .conf {
@@ -202,5 +219,6 @@
     .conf { animation: none; }
     .conf.low { animation: none; }
     .video-thumb-placeholder { animation: none; }
+    .video-uploader::after { transition: none; display: none; }
   }
 </style>
