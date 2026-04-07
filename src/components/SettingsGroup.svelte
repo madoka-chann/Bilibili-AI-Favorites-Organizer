@@ -196,6 +196,13 @@
     height: 1px;
     background: linear-gradient(90deg, transparent, var(--ai-primary-light), transparent);
     opacity: 0.4;
+    animation: headerRippleExpand 0.6s cubic-bezier(0.2, 0.98, 0.28, 1) both;
+  }
+
+  @keyframes headerRippleExpand {
+    0% { transform: scaleX(0); opacity: 0.6; }
+    70% { transform: scaleX(1.15); opacity: 0.4; }
+    100% { transform: scaleX(1); opacity: 0.4; }
   }
 
   .group-icon {
@@ -211,10 +218,20 @@
 
   .group.open .group-icon {
     box-shadow: 0 0 8px rgba(var(--ai-primary-rgb), 0.3);
+    animation: iconBreathGlow 3s ease-in-out infinite;
+  }
+
+  @keyframes iconBreathGlow {
+    0%, 100% { box-shadow: 0 0 8px rgba(var(--ai-primary-rgb), 0.3); }
+    50% { box-shadow: var(--ai-glow-icon-breath), 0 0 14px rgba(var(--ai-primary-rgb), 0.15); }
   }
 
   .group-title {
     flex: 1;
+    transition: transform 0.25s cubic-bezier(0.2, 0.98, 0.28, 1);
+  }
+  .group-header:hover .group-title {
+    transform: translateX(2px);
   }
 
   .chevron {
@@ -241,7 +258,9 @@
     .group.open .group-header::after { animation: none; opacity: 0.5; }
     .group-header::before { transition: none; }
     .group-icon { transition: none; }
-    .group.open .group-icon { transform: none; box-shadow: none; }
+    .group.open .group-icon { transform: none; box-shadow: none; animation: none; }
+    .group-title { transition: none; }
+    .group-header:hover .group-title { transform: none; }
     .chevron { transition: none; }
     .group-body { transition: none; }
     .group.open .group-body { box-shadow: none; }

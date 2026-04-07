@@ -26,8 +26,8 @@
     </div>
 
     <div class="dup-list" use:contentStagger={{ stagger: 0.03, delay: 0.2 }}>
-      {#each duplicates.slice(0, showCount) as d}
-        <div class="dup-item">
+      {#each duplicates.slice(0, showCount) as d, i}
+        <div class="dup-item" style="--idx: {i}">
           <div class="dup-title">• {d.title}</div>
           <div class="dup-folders">出现在：{d.folders.join('、')}</div>
         </div>
@@ -96,6 +96,14 @@
     align-items: center;
     justify-content: center;
     transition: background 0.2s ease, color 0.2s ease;
+    animation: counterPop 0.35s cubic-bezier(0.22, 1.42, 0.29, 1) backwards;
+    animation-delay: calc(var(--idx, 0) * 0.04s + 0.25s);
+  }
+
+  @keyframes counterPop {
+    0% { transform: scale(0); opacity: 0; }
+    70% { transform: scale(1.2); }
+    100% { transform: scale(1); opacity: 1; }
   }
   .dup-item:hover::before {
     background: var(--ai-primary);
@@ -122,6 +130,28 @@
     font-size: 10px;
     transition: opacity 0.2s ease, transform 0.2s ease;
     opacity: 0.7;
+    position: relative;
+  }
+  /* Underline gradient reveal on hover */
+  .dup-folders::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 12px;
+    right: 0;
+    height: 1px;
+    background: var(--ai-divider-gradient);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s cubic-bezier(0.2, 0.98, 0.28, 1);
+  }
+  .dup-item:hover .dup-folders::after {
+    transform: scaleX(1);
+  }
+
+  /* Connection line between adjacent items */
+  .dup-item + .dup-item::before {
+    box-shadow: 0 -4px 0 0 rgba(var(--ai-primary-rgb), 0.08);
   }
   .dup-item:hover .dup-folders {
     opacity: 1;
@@ -131,9 +161,10 @@
   @media (prefers-reduced-motion: reduce) {
     .dup-item { transition: none; }
     .dup-item:hover { transform: none; }
-    .dup-item::before { transition: none; }
+    .dup-item::before { transition: none; animation: none; opacity: 1; }
     .dup-item:hover::before { transform: none; box-shadow: none; }
     .dup-folders { transition: none; }
+    .dup-folders::after { transition: none; display: none; }
     .dup-item:hover .dup-folders { transform: none; }
   }
 </style>

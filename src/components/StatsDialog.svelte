@@ -152,6 +152,29 @@
     filter: drop-shadow(0 0 8px currentColor);
     transition: filter 0.3s ease;
     animation: ringGlow 2.5s ease-in-out 1.5s infinite;
+    position: relative;
+  }
+  /* Orbiting particle dot along health ring */
+  .health-score::after {
+    content: '';
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 6px currentColor, 0 0 12px currentColor;
+    top: calc(50% + 16px - 54px);
+    left: calc(50% - 2.5px);
+    transform-origin: 2.5px 54px;
+    animation: ringOrbitDot 4s linear 1.5s infinite;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  @keyframes ringOrbitDot {
+    0% { transform: rotate(0deg); opacity: 0.7; }
+    80% { opacity: 0.7; }
+    100% { transform: rotate(360deg); opacity: 0.7; }
   }
 
   @keyframes ringGlow {
@@ -294,6 +317,21 @@
     margin-bottom: 8px;
     position: relative;
     padding-bottom: 6px;
+    overflow: hidden;
+  }
+  .section-title::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 30%, var(--ai-shimmer-color) 50%, transparent 70%);
+    transform: translateX(-100%);
+    animation: sectionTitleSweep 4s ease 0.8s infinite;
+    pointer-events: none;
+  }
+
+  @keyframes sectionTitleSweep {
+    0%, 85% { transform: translateX(-100%); }
+    100% { transform: translateX(200%); }
   }
   .section-title::after {
     content: '';
@@ -366,6 +404,7 @@
   }
   .folder-row:hover::after {
     opacity: 0.7;
+    box-shadow: 0 0 4px rgba(var(--ai-primary-rgb), 0.3);
   }
   .folder-row::before {
     content: counter(folder-idx);
@@ -428,7 +467,9 @@
     .folder-row::after { animation: none; transform: scaleX(1); }
     .stat-card:hover .card-shimmer::before { animation: none; }
     .section-title::after { animation: none; transform: scaleX(1); }
+    .section-title::before { animation: none; display: none; }
     .health-ring { animation: none; }
+    .health-score::after { animation: none; display: none; }
     .health-detail { animation: none; opacity: 1; }
   }
 </style>

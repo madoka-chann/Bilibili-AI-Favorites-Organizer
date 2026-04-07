@@ -104,6 +104,12 @@
 
   /* Focus ripple — expanding ring color for input activation */
   --ai-focus-ripple: rgba(115, 100, 255, 0.2);
+
+  /* Icon breath glow — ambient glow for active accordion icons */
+  --ai-glow-icon-breath: 0 0 10px rgba(115, 100, 255, 0.2);
+
+  /* Danger ambient — subtle danger background for dead video groups */
+  --ai-danger-ambient: rgba(231, 76, 60, 0.08);
 }
 
 /* ==================== Dark Theme ==================== */
@@ -206,6 +212,12 @@
 
   /* Focus ripple */
   --ai-focus-ripple: rgba(139, 127, 255, 0.25);
+
+  /* Icon breath glow */
+  --ai-glow-icon-breath: 0 0 10px rgba(139, 127, 255, 0.3);
+
+  /* Danger ambient */
+  --ai-danger-ambient: rgba(248, 113, 113, 0.12);
 }
 
 /* ==================== Hidden Scrollbar — scroll still works, bar hidden ==================== */

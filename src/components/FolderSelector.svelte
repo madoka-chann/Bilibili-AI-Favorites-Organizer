@@ -124,6 +124,24 @@
     border-color: var(--ai-primary-light);
     background: var(--ai-bg-tertiary);
   }
+  /* Bottom light bar on hover */
+  .toggle-all::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 10%;
+    right: 10%;
+    height: 1.5px;
+    background: var(--ai-divider-gradient);
+    border-radius: 1px;
+    transform: scaleX(0);
+    transition: transform 0.3s cubic-bezier(0.2, 0.98, 0.28, 1);
+    pointer-events: none;
+  }
+  .toggle-all:hover::before {
+    transform: scaleX(1);
+  }
+
   .toggle-all::after {
     content: '';
     position: absolute;
@@ -210,12 +228,33 @@
   :global(.bfao-selectable-item.selected) {
     transform: translateX(2px);
     box-shadow: inset 3px 0 0 var(--ai-primary);
+    position: relative;
+  }
+  /* Selected light arc on right side */
+  :global(.bfao-selectable-item.selected)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 20%;
+    height: 60%;
+    width: 2px;
+    background: linear-gradient(to bottom, transparent, var(--ai-primary-light), transparent);
+    border-radius: 1px;
+    animation: selectedArc 0.3s cubic-bezier(0.2, 0.98, 0.28, 1) both;
+  }
+
+  @keyframes selectedArc {
+    from { transform: scaleY(0); opacity: 0; }
+    to { transform: scaleY(1); opacity: 0.7; }
   }
   .folder-title {
     font-size: 13px;
     font-weight: 600;
     color: var(--ai-text);
-    transition: color 0.2s ease, font-weight 0.2s ease;
+    transition: color 0.2s ease, font-weight 0.2s ease, letter-spacing 0.25s ease;
+  }
+  :global(.bfao-selectable-item:hover) .folder-title {
+    letter-spacing: 0.03em;
   }
   :global(.bfao-selectable-item.selected) .folder-title {
     color: var(--ai-primary);
@@ -238,7 +277,10 @@
 
   @media (prefers-reduced-motion: reduce) {
     .toggle-all:active::after { animation: none; }
+    .toggle-all::before { transition: none; display: none; }
     .folder-title { transition: none; }
+    :global(.bfao-selectable-item:hover) .folder-title { letter-spacing: normal; }
+    :global(.bfao-selectable-item.selected)::after { animation: none; display: none; }
     .folder-count { transition: none; }
     .count { transition: none; }
     .count.bounce { animation: none; }

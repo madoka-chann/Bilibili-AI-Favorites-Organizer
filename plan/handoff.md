@@ -1,6 +1,62 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-07, 第四十九次)
+## 最近一次会话 (2026-04-07, 第五十次)
+
+### 本次完成内容
+
+**Kinetic Micro-Physics — 微观动力学: 手风琴涟漪 + 统计卡片流光 + 时间线链式脉冲 + 失效视频危险脉冲 + 重复视频序号弹出 + 文件夹选中光弧**
+
+#### 视觉增强 — 7 个文件
+
+| 组件/文件 | 新增动画 | 说明 |
+|-----------|----------|------|
+| `SettingsGroup.svelte` | 手风琴展开涟漪 (`headerRippleExpand` scaleX 0→1.15→1 0.6s) + 图标呼吸光圈 (`iconBreathGlow` box-shadow 8px↔14px 3s infinite) + 标题悬浮微移 (translateX 2px) | 展开时底部涟漪扩散；展开状态图标持续微弱光圈呼吸；悬浮标题轻微右移 |
+| `StatsDialog.svelte` | 健康环轨道粒子 (`ringOrbitDot` rotate 0→360° 4s infinite, 5px 光点沿 r=54 圆弧) + 比例条悬浮发光 (box-shadow 4px glow) + 分区标题光扫 (`sectionTitleSweep` 4s infinite) | 健康环有轨道粒子暗示生命力；悬浮比例条发光脉冲；分区标题有微妙光泽 |
+| `HistoryTimeline.svelte` | 节点链式脉冲 (`dotChainPulse` box-shadow 扩散 1.5s, delay=var(--i)*0.3s) + 卡片悬浮顶光条 (`::before` scaleX 0→1 gradient) + 空状态呼吸 (`emptyBreath` opacity+translateY 3s infinite) + 分类标签悬浮色条 (border-left 2px accent) | 各节点按顺序亮起形成链式传导；悬浮卡片顶部光条亮起；空状态有浮动呼吸 |
+| `DeadVideosResult.svelte` | 危险渐变脉冲 (`dangerAmbient` border-left error-color 0.3↔0.6 4s infinite) + 悬浮删除线 (`::after` width 0→100% error-color 0.3s) + 摘要数字弹出 (`emphasisPop` scale 0.8→1.15→1 stagger) | 失效视频分组有红色左侧条呼吸；悬浮时删除线从左到右划过；摘要数字弹出强调 |
+| `DuplicatesResult.svelte` | 序号链式弹出 (`counterPop` scale 0→1.2→1, stagger via --idx var) + 文件夹下划线展开 (`::after` scaleX 0→1 gradient) + 项目间连接阴影 (box-shadow 0 -4px) | 序号圆点链式入场；悬浮时文件夹名有渐变下划线；相邻项有微弱连接暗示 |
+| `FolderSelector.svelte` | 选中光弧 (`selectedArc` scaleY 0→1, right 2px gradient) + 标题悬浮字间距 (letter-spacing 0.03em) + 全选底部光条 (`::before` scaleX 0→1 gradient) | 选中文件夹右侧光弧亮起；悬浮标题文字微展开；全选按钮有底部光条 |
+| `variables.css` | `--ai-glow-icon-breath` 图标呼吸光圈令牌 (light: 0.2α/dark: 0.3α) + `--ai-danger-ambient` 危险氛围色令牌 (light: 0.08α/dark: 0.12α) | 统一图标呼吸和危险氛围色，供 SettingsGroup/DeadVideosResult 复用 |
+
+#### 代码质量 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `DuplicatesResult.svelte` | `counterPop` 动画的 `animation-fill-mode: both` 在动画完成后锁死 `transform: scale(1)`，导致 `:hover` 的 `transform: scale(1.2)` 永远无法生效——animated values 在 CSS 层叠中优先级高于 normal cascade | HIGH | 改为 `animation-fill-mode: backwards`——仅在 delay 期间应用 0% 帧 (scale 0)，动画完成后释放 transform 控制权给 hover |
+| `HistoryTimeline.svelte` | `.timeline-card` 被重复定义添加 `overflow: hidden`，会裁剪 `.timeline-item:hover .timeline-card` 的 `box-shadow: 0 4px 12px` 外溢发光效果 | MEDIUM | 移除重复的 `.timeline-card` 块中的 `overflow: hidden`，`::before` 光条不需要它因为 `scaleX(0)→scaleX(1)` 在元素边界内 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `FolderSelector.svelte` | `:global(.bfao-selectable-item.selected)::after` 选中光弧也会影响 UndoDialog 的 selectable-item | 可接受：两个对话框不会同时显示，且光弧效果在 UndoDialog 中同样适用，增强一致性 |
+| `StatsDialog.svelte` | `.health-score::after` 轨道粒子在非 health 模式下不会渲染 (`.health-score` 仅在 `mode === 'health'` 时存在) | 可接受：CSS 选择器不匹配不会产生任何副作用 |
+| `DeadVideosResult.svelte` | `.folder-group` 添加 `padding-left: 6px` + `border-left: 2px` 会使内容右移 8px | 可接受：8px 偏移量在 modal 的 20px 左 padding 下比例合理，且危险色左侧条是重要的视觉层级指示 |
+| `HistoryTimeline.svelte` | `:global(.bfao-modal-empty)` 空状态呼吸动画是全局选择器 | 可接受：`.bfao-modal-empty` 是项目统一的空状态 class，所有 modal 的空状态都可受益于呼吸动画 |
+
+### 关键设计决策
+
+1. **链式脉冲理念**: HistoryTimeline 和 DuplicatesResult 的核心设计是"链式"——每个节点/序号按顺序依次动画 (delay = index * interval)，创造出信息沿时间线/列表"流动传导"的视觉隐喻。
+2. **危险语义色**: DeadVideosResult 的所有新增效果使用 `--ai-error` 系列色而非 `--ai-primary`——删除线、左侧条、border-left 都是红色系，与"失效/危险"语义一致。
+3. **fill-mode backwards vs both**: counterPop 选择 `backwards` 而非 `both`，因为 `both` 的 `forwards` 部分会永久锁定 animated properties (CSS 规范: animated values > cascaded values)，阻止后续 hover 交互。`backwards` 仅在 delay 期间应用初始帧，动画完成后完全释放控制权。
+4. **轨道粒子定位**: 健康环粒子使用 `transform-origin: 2.5px 54px` (2.5px = 粒子半径, 54px = SVG circle r)，使 `rotate()` 围绕环心旋转。粒子放置在 `.health-score::after` 而非 `.health-ring::after`，因为 SVG 元素的伪元素在某些浏览器中渲染不稳定。
+5. **设计令牌最小化**: 仅新增 2 个设计令牌 (`--ai-glow-icon-breath` + `--ai-danger-ambient`)，其余效果直接使用已有令牌组合，避免令牌膨胀。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: 7 文件微观动力学增强)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 2 个 bug 修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 new errors (8 pre-existing), 12 warnings (pre-existing)。构建体积 617 kB (较 610 kB 增长 +7 kB)。**
+
+---
+
+## 上一次会话 (2026-04-07, 第四十九次)
 
 ### 本次完成内容
 

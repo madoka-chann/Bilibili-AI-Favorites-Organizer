@@ -190,7 +190,46 @@
   }
 
   .timeline-dot {
-    animation: dotPulse 0.6s ease calc(var(--i) * 0.05s + 0.3s);
+    animation: dotPulse 0.6s ease calc(var(--i) * 0.05s + 0.3s),
+               dotChainPulse 1.5s ease-in-out calc(var(--i) * 0.3s + 1s) infinite;
+  }
+
+  @keyframes dotChainPulse {
+    0%, 100% { box-shadow: 0 0 0 2px var(--ai-primary-light); }
+    50% { box-shadow: 0 0 0 4px rgba(var(--ai-primary-rgb), 0.25), 0 0 8px rgba(var(--ai-primary-rgb), 0.15); }
+  }
+
+  /* Inner glow bar on card hover — no overflow:hidden on card to preserve hover box-shadow */
+  .timeline-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--ai-primary-light), transparent);
+    transform: scaleX(0);
+    transition: transform 0.3s cubic-bezier(0.2, 0.98, 0.28, 1);
+    pointer-events: none;
+  }
+  .timeline-item:hover .timeline-card::before {
+    transform: scaleX(1);
+  }
+
+  /* Empty state breathing */
+  :global(.bfao-modal-empty) {
+    animation: emptyBreath 3s ease-in-out infinite;
+  }
+
+  @keyframes emptyBreath {
+    0%, 100% { opacity: 0.5; transform: translateY(0); }
+    50% { opacity: 0.8; transform: translateY(-2px); }
+  }
+
+  /* Category tag hover accent */
+  .timeline-cats:hover {
+    border-left: 2px solid var(--ai-gradient-accent);
+    padding-left: 4px;
   }
 
   @keyframes slideIn {
@@ -221,6 +260,9 @@
     .timeline-item:first-child .timeline-card { animation: none; }
     .timeline-time { transition: none; }
     .timeline-cats { transition: none; }
+    .timeline-cats:hover { border-left: none; padding-left: 6px; }
     .timeline-item:hover .timeline-cats { transform: none; }
+    .timeline-card::before { transition: none; display: none; }
+    :global(.bfao-modal-empty) { animation: none; opacity: 0.5; }
   }
 </style>

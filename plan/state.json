@@ -1,7 +1,7 @@
 {
   "project": "Bilibili AI Favorites Organizer - Svelte Refactoring",
-  "plan": "visual-plan-session49.md",
-  "lastUpdated": "2026-04-07-session49",
+  "plan": "visual-plan-session50.md",
+  "lastUpdated": "2026-04-07-session50",
   "phases": {
     "phase0_buildSystem": {
       "status": "completed",
@@ -23,7 +23,7 @@
     },
     "phase2_animations": {
       "status": "completed",
-      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; I1-I5 粒子系统全部完成; Session 27-48 全组件覆盖; Session 49: Panel 边框呼吸光晕 (panelBorderBreathe 8s, border-color transparent↔primary 0.15α) + 星云滚动共振 (--scroll-alpha CSS var 驱动 nebula-particle opacity 0.3+scroll*0.4) + Modal 星辉微闪 (backdrop::before 5 个 radial-gradient 光点 + backdropStardust 4s 闪烁) + 标题悬浮字间距 (h3:hover letter-spacing 1px) + Toast 文字揭幕 (toastTextReveal clip-path inset 100%→0% 0.5s) + 类型色左侧条 (border-left 3px type color) + FloatButton 同心呼吸环 (::before breathRing scale 1→1.35 + opacity 0.4→0 3s) + 按压内凹 (active box-shadow inset) + LiquidToggle 轨道流光 (on::after toggleShimmer translateX 3s) + 滑块内光点 (thumb::before 4px glow dot) + PromptEditor 打字脉动 (typingPulse border-color primary↔accent 2s) + 保存爆发环 (saveBurst scale 1→1.6 opacity→0) + modal.css 主按钮光扫 (btnShimmerSweep translateX 0.6s) + 可选项深度悬浮 (hover translateY -2px + multi-layer shadow)"
+      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; I1-I5 粒子系统全部完成; Session 27-49 全组件覆盖; Session 50: SettingsGroup 手风琴展开涟漪 (headerRippleExpand scaleX 0→1.15→1 0.6s) + 图标呼吸光圈 (iconBreathGlow box-shadow 8px↔14px 3s infinite) + 标题悬浮微移 (translateX 2px) + StatsDialog 健康环轨道粒子 (ringOrbitDot rotate 0→360° 4s infinite) + 比例条悬浮发光 (box-shadow 4px glow) + 分区标题光扫 (sectionTitleSweep 4s) + HistoryTimeline 节点链式脉冲 (dotChainPulse stagger var(--i)*0.3s 1.5s infinite) + 卡片悬浮顶光条 (::before scaleX 0→1) + 空状态呼吸 (emptyBreath opacity+translateY 3s) + 分类标签悬浮色条 + DeadVideosResult 危险渐变脉冲 (dangerAmbient border-left error 0.3↔0.6 4s) + 悬浮删除线 (strikeReveal width 0→100% 0.3s) + 摘要数字弹出 (emphasisPop scale 0.8→1.15→1) + DuplicatesResult 序号链式弹出 (counterPop scale 0→1.2→1 stagger) + 文件夹下划线展开 + FolderSelector 选中光弧 (selectedArc scaleY 0→1) + 标题悬浮字间距 + 全选底部光条"
     },
     "phase3_cssCleanup": {
       "status": "completed",
@@ -31,7 +31,7 @@
     },
     "phase4_codeQuality": {
       "status": "completed",
-      "summary": "TypeScript strict 全开; 模块化重构完成; 多轮 Code Review; as any 类型断言清零; 错误处理一致性强化; 第49轮 Code Review: (1) FloatButton :active 的 transform !important 与 GSAP 内联样式竞争导致闪烁——移除 transform 改为仅 box-shadow inset 内凹效果"
+      "summary": "TypeScript strict 全开; 模块化重构完成; 多轮 Code Review; as any 类型断言清零; 错误处理一致性强化; 第50轮 Code Review: (1) DuplicatesResult counterPop fill-mode both 锁死 transform 导致 hover scale(1.2) 失效——改为 backwards 仅在 delay 期间应用初始帧 (2) HistoryTimeline .timeline-card 重复定义 overflow:hidden 裁剪 hover box-shadow——移除重复定义保留原始 card 样式"
     },
     "phase5_performance": {
       "status": "completed",
@@ -53,7 +53,7 @@
   },
   "buildStatus": {
     "builds": true,
-    "output": "dist/bilibili-ai-favorites-organizer.user.js (610 kB, GSAP ~95 kB CDN)",
+    "output": "dist/bilibili-ai-favorites-organizer.user.js (617 kB, GSAP ~95 kB CDN)",
     "svelteCheck": "0 errors (8 pre-existing), 12 warnings (pre-existing)",
     "preExistingIssues": []
   }
