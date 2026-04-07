@@ -1,6 +1,62 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-07, 第五十次)
+## 最近一次会话 (2026-04-07, 第五十一次)
+
+### 本次完成内容
+
+**Tactile Depth — 触觉纵深: 眼睛图标预热光圈 + 搜索聚焦渐变 + 关闭按钮 X 旋转 + 版本微光 + 开关激活条展开 + 日志边框发光 + 猫咪弹跳 + 表单控件触觉增强**
+
+#### 视觉增强 — 7 个文件
+
+| 组件/文件 | 新增动画 | 说明 |
+|-----------|----------|------|
+| `ProviderConfig.svelte` | 眼睛图标悬浮预热光圈 (rotate 15deg + scale 1.05 + `--ai-glow-control-hover`) + 链接按钮图标摆动 (rotate -12deg) | 悬浮时图标预热光圈暗示即将切换；外链图标倾斜暗示离开 |
+| `ModelSelector.svelte` | 搜索框聚焦渐变 (`searchFocusRipple` 0→6px→3px primary shadow) + 下拉框弹性增强 (scaleY overshoot 1.02) | 搜索框聚焦有品牌色光晕；下拉框入场有微弱回弹 |
+| `Header.svelte` | 关闭按钮 X 旋转 (rotate 90° → "+" 形态) + 版本徽章内部微光 (`versionShimmer` translateX 4s infinite) + 拖拽手柄悬浮展开 (18px→28px) | X 悬浮旋转暗示可关闭；版本徽章持续微光精致感；拖拽手柄展开暗示可拖拽 |
+| `SettingsPanel.svelte` | 开关行激活条展开 (`activeBarExpand` border-left-color 0.35s) + 标签悬浮下划线 (`::after` scaleX 0→1 gradient) + 子字段入场弹性回弹 (translateY -6→1→0) | 开关激活时左侧指示条有颜色渐变展开；悬浮标签有品牌色下划线；子字段入场有微弹 |
+| `LogArea.svelte` | 条目悬浮边框发光 (inset 3px 0 6px primary glow) + 猫咪悬浮弹跳 (`catBounce` scale 1→1.25→0.95→1 0.4s) + 日志区入场淡入 (`logAreaFadeIn` 0.35s) | 悬浮日志左侧有品牌色辉光；猫咪区悬浮弹跳增添趣味；日志区初始有淡入 |
+| `forms.css` | 标签聚焦微移 (translateX 2px) + 复选框悬浮光圈扩展 (4px spread + scale 1.05) + 图标按钮悬浮底部光条 (`::after` scaleX 0→1 gradient) | 聚焦时标签右移引导视线；复选框悬浮反馈更明显；图标按钮有底部光条 |
+| `variables.css` | `--ai-glow-control-hover` 表单控件悬浮光圈令牌 (light: 0.15α/dark: 0.22α) + `--ai-border-active-glow` 激活边框发光色令牌 (light: 0.35α/dark: 0.45α) | 统一表单控件悬浮和激活状态光效 |
+
+#### 代码质量 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `ModelSelector.svelte` | `focusRipple` keyframe 与 `forms.css` 同名全局 keyframe 冲突——CSS keyframes 不被 Svelte scoping，同名导致浏览器非确定性使用最后定义的版本 | MEDIUM | 改名为 `searchFocusRipple`——唯一名称避免全局 keyframe 命名冲突 |
+| `ModelSelector.svelte` | `forms.css` 新增的 `.bfao-icon-btn::after` 底部光条 (width: 60%, height: 1.5px, background) 泄漏到 `.test-success::after` / `.test-error::after` 脉冲环——test 状态选择器虽有更高 specificity 但未覆盖 width/height/background 属性 | MEDIUM | test 状态 `::after` 补充 `width: auto; height: auto; background: none; transform: scaleX(1)` 显式覆盖基类光条属性 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `ProviderConfig.svelte` | `.bfao-icon-btn:hover :global(svg)` 的 `rotate(15deg)` 与 `forms.css` 的 `:hover:not(:disabled) svg` 的 `rotate(12deg)` 共存 | 可接受：Svelte scoped 样式优先级更高，ProviderConfig 内的 15deg 生效；forms.css 的 12deg 作用于其他未覆盖的 icon-btn |
+| `Header.svelte` | `.version` 添加 `overflow: hidden` 裁剪 shimmer，但 `:hover` 的 `scale(1.08)` 也被裁剪内容 | 可接受：scale 缩放的是整个元素包括 overflow 边界，不会裁剪 scale 后的内容；overflow:hidden 仅裁剪子元素溢出 |
+| `LogArea.svelte` | `catBounce` 和 `catIdle` 同时应用时 transform 竞争 | 可接受：catBounce 列在 animation 末位优先级更高，0.4s 完成后自动释放控制权给 catIdle；短暂覆盖是设计意图 |
+| `SettingsPanel.svelte` | `activeBarExpand` 在组件挂载时如果 toggle 已为 ON 也会播放 | 可接受：0.35s 快速渐变在初始加载时也是有意义的视觉反馈，用户不会察觉异常 |
+
+### 关键设计决策
+
+1. **触觉纵深理念**: 本轮所有动画的核心设计原则是"每个可交互元素都应在触碰前传递深度暗示"——眼睛图标预热、X 旋转、标签微移、光条展开，都是在 hover 阶段给予"即将发生变化"的前置信号。
+2. **唯一 keyframe 命名**: `searchFocusRipple` 而非复用 `focusRipple`，因为 CSS keyframes 是全局作用域 (不被 Svelte scoping)，同名 keyframe 会导致浏览器非确定性使用最后解析的定义。
+3. **基类 ::after 与组件 ::after 共存**: `forms.css` `.bfao-icon-btn::after` 提供通用底部光条，组件内更高 specificity 的 `::after` 需显式覆盖基类属性 (width/height/background)，否则属性泄漏。
+4. **设计令牌最小化**: 仅新增 2 个令牌 (`--ai-glow-control-hover` + `--ai-border-active-glow`)，复用已有令牌组合。
+5. **拖拽手柄宽度展开**: 使用 CSS `width` transition 而非 `transform: scaleX()`，因为 `transform` 会模糊点状图案，`width` 变化保持清晰度。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: 7 文件触觉纵深增强)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 2 个 bug 修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 new errors (8 pre-existing), 12 warnings (pre-existing)。构建体积 621 kB (较 617 kB 增长 +4 kB)。**
+
+---
+
+## 上一次会话 (2026-04-07, 第五十次)
 
 ### 本次完成内容
 

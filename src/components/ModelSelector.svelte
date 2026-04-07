@@ -182,8 +182,12 @@
     content: '';
     position: absolute;
     inset: -2px;
+    width: auto;
+    height: auto;
+    background: none;
     border-radius: 10px;
     pointer-events: none;
+    transform: scaleX(1);
     animation: testRadialPulse 0.6s cubic-bezier(0.2, 0.98, 0.28, 1) both;
   }
   .bfao-icon-btn.test-success::after {
@@ -245,7 +249,16 @@
   }
   .model-search:focus {
     border-color: var(--ai-primary);
-    box-shadow: 0 1px 0 0 var(--ai-primary);
+    box-shadow: 0 0 0 3px var(--ai-primary-shadow), 0 1px 0 0 var(--ai-primary);
+    animation: searchFocusRipple 0.4s cubic-bezier(0.2, 0.98, 0.28, 1);
+  }
+  @keyframes searchFocusRipple {
+    0% { box-shadow: 0 0 0 0 var(--ai-focus-ripple); }
+    50% { box-shadow: 0 0 0 6px var(--ai-focus-ripple); }
+    100% { box-shadow: 0 0 0 3px var(--ai-primary-shadow), 0 1px 0 0 var(--ai-primary); }
+  }
+  .model-search {
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
   }
   .model-list {
     max-height: 180px;
@@ -266,8 +279,9 @@
   }
 
   @keyframes dropdownIn {
-    from { opacity: 0; transform: scaleY(0.92) scaleX(0.98); }
-    to { opacity: 1; transform: scaleY(1) scaleX(1); }
+    0% { opacity: 0; transform: scaleY(0.92) scaleX(0.98); }
+    75% { opacity: 1; transform: scaleY(1.02) scaleX(1); }
+    100% { opacity: 1; transform: scaleY(1) scaleX(1); }
   }
 
   .model-item {
@@ -323,7 +337,8 @@
     .bfao-icon-btn :global(.spinning) { filter: none; }
     .model-item.active { animation: none; }
     .model-empty { animation: none; }
-    .model-search:focus { box-shadow: none; }
+    .model-search { transition: none; }
+    .model-search:focus { box-shadow: 0 1px 0 0 var(--ai-primary); animation: none; }
     .bfao-icon-btn.test-success::after,
     .bfao-icon-btn.test-error::after { animation: none; opacity: 0; }
   }

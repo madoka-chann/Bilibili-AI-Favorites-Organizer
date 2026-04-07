@@ -150,9 +150,26 @@
     box-shadow: 0 0 8px rgba(var(--ai-primary-rgb), 0.25);
   }
 
+  .link-btn:hover :global(svg) {
+    transform: rotate(-12deg);
+    transition: transform 0.25s cubic-bezier(0.2, 0.98, 0.28, 1);
+  }
+
+  .link-btn :global(svg) {
+    transition: transform 0.25s cubic-bezier(0.2, 0.98, 0.28, 1);
+  }
+
   /* Eye icon toggle — rotateY flip for tactile feedback */
   .bfao-icon-btn :global(svg) {
     transition: transform 0.3s cubic-bezier(0.2, 0.98, 0.28, 1);
+  }
+
+  .bfao-icon-btn:hover :global(svg) {
+    transform: rotate(15deg) scale(1.05);
+  }
+
+  .bfao-icon-btn:hover {
+    box-shadow: var(--ai-glow-control-hover);
   }
 
   .bfao-icon-btn:active :global(svg) {
@@ -189,7 +206,11 @@
 
   @media (prefers-reduced-motion: reduce) {
     .bfao-icon-btn :global(svg) { transition: none; }
+    .bfao-icon-btn:hover :global(svg) { transform: none; }
+    .bfao-icon-btn:hover { box-shadow: none; }
     .link-btn:hover::after { animation: none; }
+    .link-btn :global(svg) { transition: none; }
+    .link-btn:hover :global(svg) { transform: none; }
     .field-slide-in { animation: none; opacity: 1; transform: none; }
   }
 </style>

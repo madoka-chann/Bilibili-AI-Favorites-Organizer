@@ -304,6 +304,26 @@
 
   .toggle-row > span:first-child {
     transition: color 0.2s ease;
+    position: relative;
+  }
+
+  .toggle-row > span:first-child::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, var(--ai-primary), var(--ai-gradient-accent));
+    border-radius: 0.5px;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s cubic-bezier(0.2, 0.98, 0.28, 1);
+    pointer-events: none;
+  }
+
+  .toggle-row:hover > span:first-child::after {
+    transform: scaleX(1);
   }
 
   .toggle-row:hover {
@@ -315,9 +335,16 @@
     color: var(--ai-text);
   }
 
-  /* Active indicator — enabled toggles show a brand-color left bar */
+  /* Active indicator — enabled toggles show a brand-color left bar with expand animation */
   .toggle-row:has(:global(.on)) {
     border-left-color: var(--ai-primary);
+    animation: activeBarExpand 0.35s cubic-bezier(0.2, 0.98, 0.28, 1) both;
+  }
+
+  @keyframes activeBarExpand {
+    0% { border-left-color: transparent; }
+    50% { border-left-color: var(--ai-border-active-glow); }
+    100% { border-left-color: var(--ai-primary); }
   }
 
   .sub-field {
@@ -339,8 +366,9 @@
   }
 
   @keyframes subFieldSlideIn {
-    from { opacity: 0; transform: translateY(-6px); }
-    to { opacity: 1; transform: translateY(0); }
+    0% { opacity: 0; transform: translateY(-6px); }
+    70% { opacity: 1; transform: translateY(1px); }
+    100% { opacity: 1; transform: translateY(0); }
   }
 
   .hint-fade-in {
@@ -374,6 +402,8 @@
 
   @media (prefers-reduced-motion: reduce) {
     .toggle-row:hover { transform: none; }
+    .toggle-row:has(:global(.on)) { animation: none; }
+    .toggle-row > span:first-child::after { display: none; }
     .sub-field-slide { animation: none; }
     .hint-fade-in { animation: none; }
     .settings-panel > :global(.group) { animation: none; }

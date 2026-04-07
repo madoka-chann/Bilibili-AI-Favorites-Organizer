@@ -110,6 +110,12 @@
 
   /* Danger ambient — subtle danger background for dead video groups */
   --ai-danger-ambient: rgba(231, 76, 60, 0.08);
+
+  /* Control hover glow — unified halo for form control hover states */
+  --ai-glow-control-hover: 0 0 12px rgba(115, 100, 255, 0.15);
+
+  /* Border active glow — bright border color for active/toggled states */
+  --ai-border-active-glow: rgba(115, 100, 255, 0.35);
 }
 
 /* ==================== Dark Theme ==================== */
@@ -218,6 +224,12 @@
 
   /* Danger ambient */
   --ai-danger-ambient: rgba(248, 113, 113, 0.12);
+
+  /* Control hover glow */
+  --ai-glow-control-hover: 0 0 12px rgba(139, 127, 255, 0.22);
+
+  /* Border active glow */
+  --ai-border-active-glow: rgba(139, 127, 255, 0.45);
 }
 
 /* ==================== Hidden Scrollbar — scroll still works, bar hidden ==================== */

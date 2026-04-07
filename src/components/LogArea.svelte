@@ -99,6 +99,12 @@
     mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 100%);
     -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 100%);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    animation: logAreaFadeIn 0.35s cubic-bezier(0.2, 0.98, 0.28, 1) both;
+  }
+
+  @keyframes logAreaFadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .log-area:hover {
@@ -131,6 +137,7 @@
     background: var(--ai-bg-tertiary);
     border-left-width: 4px;
     padding-left: 7px; /* compensate 1px border-left growth to prevent layout shift */
+    box-shadow: inset 3px 0 6px -2px rgba(var(--ai-primary-rgb), 0.15);
   }
 
   .log-time {
@@ -214,6 +221,18 @@
   .cat-emoji {
     font-size: 18px;
     animation: catIdle 1s ease-in-out infinite alternate;
+    transition: transform 0.3s cubic-bezier(0.2, 0.98, 0.28, 1);
+  }
+
+  .log-cat:hover .cat-emoji {
+    animation: catIdle 1s ease-in-out infinite alternate, catBounce 0.4s cubic-bezier(0.2, 0.98, 0.28, 1);
+  }
+
+  @keyframes catBounce {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.25) translateY(-4px); }
+    70% { transform: scale(0.95); }
+    100% { transform: scale(1); }
   }
   .cat-text {
     font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
@@ -265,9 +284,11 @@
     .log-entry:first-child.log-success { animation: none; }
     .log-entry:last-child { animation: none; }
     .log-time { transition: none; }
-    .log-entry:hover { border-left-width: 3px; padding-left: 8px; }
+    .log-entry:hover { border-left-width: 3px; padding-left: 8px; box-shadow: none; }
     .log-cat:not(.away) { animation: none; }
-    .log-area { transition: none; box-shadow: none; }
+    .log-cat:hover .cat-emoji { animation: none; }
+    .cat-emoji { transition: none; }
+    .log-area { transition: none; box-shadow: none; animation: none; }
     .log-area:focus-within { box-shadow: none; }
     .cat-text { transition: none; }
     .log-cat:hover .cat-text { letter-spacing: 0.03em; }

@@ -184,13 +184,14 @@
       radial-gradient(circle, rgba(255, 255, 255, 0.25) 1px, transparent 1px);
     background-size: 6px 4px;
     opacity: 0.4;
-    transition: opacity 0.25s ease;
+    transition: opacity 0.25s ease, width 0.3s cubic-bezier(0.2, 0.98, 0.28, 1);
     pointer-events: none;
     z-index: 1;
   }
 
   .header:hover::before {
     opacity: 0.7;
+    width: 28px;
   }
 
   .header:active {
@@ -236,6 +237,17 @@
     animation: versionPop 0.4s cubic-bezier(0.2, 1, 0.4, 1) both;
     transition: transform 0.25s ease, opacity 0.25s ease, letter-spacing 0.3s ease, box-shadow 0.25s ease;
     cursor: default;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .version::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.25) 50%, transparent 65%);
+    animation: versionShimmer 4s ease-in-out 1s infinite;
+    pointer-events: none;
   }
 
   .version:hover {
@@ -300,6 +312,14 @@
     background: rgba(239, 68, 68, 0.3);
   }
 
+  .header-btn:last-child :global(svg) {
+    transition: transform 0.3s cubic-bezier(0.2, 0.98, 0.28, 1);
+  }
+
+  .header-btn:last-child:hover :global(svg) {
+    transform: rotate(90deg);
+  }
+
   .settings-icon {
     display: flex;
     align-items: center;
@@ -334,13 +354,21 @@
     100% { transform: scale(1); opacity: 0.7; }
   }
 
+  @keyframes versionShimmer {
+    0%, 100% { transform: translateX(-100%); }
+    50% { transform: translateX(100%); }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .header-title > span:first-child { animation: none; -webkit-text-fill-color: #fff; transition: none; text-shadow: none; }
     .header-title > span:first-child:hover { letter-spacing: 0; }
     .header::before { display: none; }
     .version { animation: none; transition: none; }
+    .version::after { animation: none; display: none; }
     .version:hover { transform: none; letter-spacing: 0; box-shadow: none; }
     .settings-icon { transition: none; }
     .header-btn.active::after { animation: none; }
+    .header-btn:last-child :global(svg) { transition: none; }
+    .header-btn:last-child:hover :global(svg) { transform: none; }
   }
 </style>

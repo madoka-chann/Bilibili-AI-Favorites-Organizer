@@ -1,7 +1,7 @@
 {
   "project": "Bilibili AI Favorites Organizer - Svelte Refactoring",
-  "plan": "visual-plan-session50.md",
-  "lastUpdated": "2026-04-07-session50",
+  "plan": "visual-plan-session51.md",
+  "lastUpdated": "2026-04-07-session51",
   "phases": {
     "phase0_buildSystem": {
       "status": "completed",
@@ -23,7 +23,7 @@
     },
     "phase2_animations": {
       "status": "completed",
-      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; I1-I5 粒子系统全部完成; Session 27-49 全组件覆盖; Session 50: SettingsGroup 手风琴展开涟漪 (headerRippleExpand scaleX 0→1.15→1 0.6s) + 图标呼吸光圈 (iconBreathGlow box-shadow 8px↔14px 3s infinite) + 标题悬浮微移 (translateX 2px) + StatsDialog 健康环轨道粒子 (ringOrbitDot rotate 0→360° 4s infinite) + 比例条悬浮发光 (box-shadow 4px glow) + 分区标题光扫 (sectionTitleSweep 4s) + HistoryTimeline 节点链式脉冲 (dotChainPulse stagger var(--i)*0.3s 1.5s infinite) + 卡片悬浮顶光条 (::before scaleX 0→1) + 空状态呼吸 (emptyBreath opacity+translateY 3s) + 分类标签悬浮色条 + DeadVideosResult 危险渐变脉冲 (dangerAmbient border-left error 0.3↔0.6 4s) + 悬浮删除线 (strikeReveal width 0→100% 0.3s) + 摘要数字弹出 (emphasisPop scale 0.8→1.15→1) + DuplicatesResult 序号链式弹出 (counterPop scale 0→1.2→1 stagger) + 文件夹下划线展开 + FolderSelector 选中光弧 (selectedArc scaleY 0→1) + 标题悬浮字间距 + 全选底部光条"
+      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; I1-I5 粒子系统全部完成; Session 27-50 全组件覆盖; Session 51: ProviderConfig 眼睛图标悬浮预热光圈 (rotate 15deg + scale 1.05 + control-hover glow) + 链接按钮图标摆动 (rotate -12deg) + ModelSelector 搜索聚焦渐变 (searchFocusRipple 0→6px→3px) + 下拉框弹性增强 (scaleY overshoot 1.02) + Header 关闭按钮 X 旋转 (rotate 90deg) + 版本徽章内部微光 (versionShimmer translateX 4s infinite) + 拖拽手柄展开 (18px→28px) + SettingsPanel 开关行激活条展开 (activeBarExpand border-left-color 0.35s) + 标签悬浮下划线 (::after scaleX 0→1 gradient) + 子字段弹性回弹 (translateY -6→1→0) + LogArea 条目悬浮边框发光 (inset box-shadow primary) + 猫咪悬浮弹跳 (catBounce scale 1→1.25→0.95→1) + 日志区入场淡入 (logAreaFadeIn 0.35s) + forms.css 标签聚焦微移 (translateX 2px) + 复选框悬浮光圈扩展 (4px spread + scale 1.05) + 图标按钮悬浮底部光条 (::after scaleX 0→1 gradient)"
     },
     "phase3_cssCleanup": {
       "status": "completed",
@@ -31,7 +31,7 @@
     },
     "phase4_codeQuality": {
       "status": "completed",
-      "summary": "TypeScript strict 全开; 模块化重构完成; 多轮 Code Review; as any 类型断言清零; 错误处理一致性强化; 第50轮 Code Review: (1) DuplicatesResult counterPop fill-mode both 锁死 transform 导致 hover scale(1.2) 失效——改为 backwards 仅在 delay 期间应用初始帧 (2) HistoryTimeline .timeline-card 重复定义 overflow:hidden 裁剪 hover box-shadow——移除重复定义保留原始 card 样式"
+      "summary": "TypeScript strict 全开; 模块化重构完成; 多轮 Code Review; as any 类型断言清零; 错误处理一致性强化; 第51轮 Code Review: (1) ModelSelector focusRipple 重名——与 forms.css 全局 keyframe 同名导致非确定性覆盖，改名为 searchFocusRipple (2) forms.css .bfao-icon-btn::after 底部光条泄漏到 ModelSelector test-success/test-error ::after 脉冲环——test 状态 ::after 补充 width:auto height:auto background:none 覆盖基类属性"
     },
     "phase5_performance": {
       "status": "completed",
@@ -53,7 +53,7 @@
   },
   "buildStatus": {
     "builds": true,
-    "output": "dist/bilibili-ai-favorites-organizer.user.js (617 kB, GSAP ~95 kB CDN)",
+    "output": "dist/bilibili-ai-favorites-organizer.user.js (621 kB, GSAP ~95 kB CDN)",
     "svelteCheck": "0 errors (8 pre-existing), 12 warnings (pre-existing)",
     "preExistingIssues": []
   }
