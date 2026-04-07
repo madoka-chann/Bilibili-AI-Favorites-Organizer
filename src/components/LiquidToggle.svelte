@@ -107,6 +107,18 @@
   .liquid-toggle.on {
     background: var(--ai-primary);
     box-shadow: 0 0 10px rgba(var(--ai-primary-rgb), 0.35);
+    overflow: hidden;
+  }
+
+  /* Track shimmer sweep when ON */
+  .liquid-toggle.on::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.25) 50%, transparent 60%);
+    animation: toggleShimmer 3s ease-in-out infinite;
+    pointer-events: none;
+    border-radius: inherit;
   }
   .liquid-toggle.on:hover {
     box-shadow: 0 0 18px rgba(var(--ai-primary-rgb), 0.45);
@@ -123,11 +135,34 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     will-change: transform;
     transition: box-shadow 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Thumb inner glow dot */
+  .thumb::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: transparent;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .liquid-toggle.on .thumb::before {
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.6);
   }
 
   .liquid-toggle.on .thumb {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 6px rgba(255, 255, 255, 0.5);
     animation: thumbGlow 2.5s ease-in-out infinite;
+  }
+
+  @keyframes toggleShimmer {
+    0%, 70% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
   }
 
   @keyframes thumbGlow {
@@ -137,5 +172,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     .liquid-toggle.on .thumb { animation: none; }
+    .liquid-toggle.on::after { animation: none; display: none; }
+    .thumb::before { transition: none; }
   }
 </style>

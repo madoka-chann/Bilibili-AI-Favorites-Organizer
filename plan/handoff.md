@@ -1,6 +1,62 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-07, 第四十八次)
+## 最近一次会话 (2026-04-07, 第四十九次)
+
+### 本次完成内容
+
+**Ambient Resonance — 环境共振: 面板呼吸边框 + 弹窗星辉 + Toast 文字揭幕 + 悬浮按钮呼吸环 + 液态开关流光 + 打字脉动 + 操作按钮光扫**
+
+#### 视觉增强 — 7 个文件
+
+| 组件/文件 | 新增动画 | 说明 |
+|-----------|----------|------|
+| `Panel.svelte` | 面板边框呼吸光晕 (`panelBorderBreathe` border-color transparent↔rgba(primary, 0.15) 8s infinite) + 星云滚动共振 (`--scroll-alpha` CSS 变量驱动 `.nebula-particle` opacity `calc(0.3 + scroll * 0.4)`) | 面板有微弱品牌色边框呼吸暗示"活跃"；滚动越深星云粒子越亮形成环境联动 |
+| `Modal.svelte` | 弹窗星辉微闪 (`.backdrop::before` 5 个 radial-gradient 光点 + `backdropStardust` opacity 0.3↔0.8 4s infinite alternate) + 标题悬浮字间距 (`.modal-header:hover h3` letter-spacing 0→1px transition) | 弹窗背景有星辉闪烁增添梦幻纵深；标题悬浮时文字轻微展开增添精致感 |
+| `Toast.svelte` | 消息文字揭幕 (`.toast-msg` `toastTextReveal` clip-path inset(0 100% 0 0)→inset(0) 0.5s delay 0.15s) + 类型色左侧条 (`.toast-{type}` border-left 3px solid 对应颜色) | 消息文字从左到右逐步揭幕有打字机感；左侧彩色指示条让 toast 类型视觉层级更清晰 |
+| `FloatButton.svelte` | 同心呼吸环 (`.float-btn::before` border ring + `breathRing` scale 1→1.35 + opacity 0.4→0 3s infinite) + 按压内凹 (`:active` box-shadow inset 暗角效果) | 悬浮按钮外围有脉冲环扩散暗示可交互；按下时有物理内凹触感 |
+| `LiquidToggle.svelte` | 轨道流光扫射 (`.on::after` `toggleShimmer` translateX -100%→100% 3s, 仅最后 30% 可见) + 滑块内发光点 (`.thumb::before` 4px 圆点, ON 时白色+box-shadow 发光) | 开启状态轨道有流光暗示"能量流动"；滑块中心光点亮起确认状态 |
+| `PromptEditor.svelte` | 打字脉动 (`.prompt-textarea:focus:not(:placeholder-shown)` `typingPulse` border-color primary↔accent 2s infinite) + 保存爆发环 (`.save-flash::after` `saveBurst` scale 1→1.6 + opacity→0 0.5s) | 有内容且聚焦时边框颜色脉动暗示"正在编辑"；保存成功时有向外扩散光环 |
+| `modal.css` | 主按钮悬浮光扫 (`.bfao-btn-primary:hover::after` `btnShimmerSweep` translateX -100%→100% 0.6s) + 可选项深度悬浮 (`.bfao-selectable-item:hover` translateY(-2px) + 多层 box-shadow 深度) | 主按钮悬浮有对角光扫玻璃质感；可选项悬浮有更明显的浮起效果 |
+
+#### 代码质量 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `FloatButton.svelte` | `:active` 的 `transform: scale(0.92) !important` 与 GSAP 内联 transform 竞争——GSAP 每帧写入 inline transform 用于 borderRadius 变形动画，CSS `!important` 与之交替覆盖导致视觉闪烁 | HIGH | 移除 `:active` 的 transform，改为仅使用 `box-shadow: inset` 内凹效果——GSAP 不管理 box-shadow，避免冲突 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `Toast.svelte` | `border-left: 3px solid` 与基础 `border: 1px solid` 共存导致左侧 2px 额外宽度 | 可接受：左侧条是刻意设计的视觉指示器，2px 差异在 16px padding 下不影响文本对齐 |
+| `LiquidToggle.svelte` | `overflow: hidden` 仅在 `.on` 状态设置，OFF→ON 过渡期间 GSAP thumb scaleX(1.3) 可能被裁剪 | 可接受：thumb 在 track 宽度 38px 内，scaleX(1.3) 后视觉宽度~21px，在 x=18 位置仍在边界内 |
+| `Panel.svelte` | `panelBorderBreathe` 动画在 GSAP 拖拽缩放 (scale 0.98) 时仍在运行 | 可接受：border-color 动画与 transform 动画属性不冲突，二者独立运行 |
+| `Modal.svelte` | `.backdrop::before` 星辉在暗色主题下白色光点对比度较高 | 可接受：最高 opacity 0.4，且 `backdropStardust` 在 0.3~0.8 间交替，暗色主题下增强星空效果是设计意图 |
+| `PromptEditor.svelte` | `.save-flash::after` 爆发环无 `overflow: hidden` 可扩展到相邻元素上方 | 可接受：动画仅 0.5s 且 opacity→0，视觉冲击力大于布局干扰 |
+
+### 关键设计决策
+
+1. **环境共振理念**: 本轮所有动画的核心设计原则是"无需用户主动操作也能散发存在感"——面板边框呼吸、星云亮度随滚动变化、悬浮按钮呼吸环、液态开关流光。这些都是持续循环的环境级动画，创造"UI 是活的"感知。
+2. **星云滚动联动**: 通过 `--scroll-alpha` CSS 变量将 JS 滚动进度传递给 CSS，避免 GSAP/requestAnimationFrame 额外开销。CSS `calc()` 实时计算 opacity，性能优于 JS 逐帧更新。
+3. **Toast 文字揭幕 vs 淡入**: 选择 `clip-path: inset()` 而非 `opacity` 淡入，因为 clip-path 揭幕提供了更强的"逐步展示"方向感，与 toast 从右侧滑入的方向一致 (从左到右揭幕)。
+4. **呼吸环 vs 脉冲点**: FloatButton 选择外围同心环而非脉冲点，因为同心环的"雷达扫描"效果在视觉上更显眼，能更有效地引导新用户注意悬浮按钮的存在。
+5. **打字脉动仅在非空时**: `:focus:not(:placeholder-shown)` 确保空文本区聚焦时不会出现脉动 (此时用户可能在阅读 placeholder)，只有开始输入后才触发。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: 7 文件环境共振增强)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 1 个 bug 修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 new errors (8 pre-existing), 12 warnings (pre-existing)。构建体积 610 kB (较 606 kB 增长 +4 kB)。**
+
+---
+
+## 上一次会话 (2026-04-07, 第四十八次)
 
 ### 本次完成内容
 

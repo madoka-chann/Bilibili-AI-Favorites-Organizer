@@ -49,6 +49,10 @@
     const maxScroll = scrollHeight - clientHeight;
     showScrollIndicator = maxScroll > 10;
     scrollProgress = maxScroll > 0 ? scrollTop / maxScroll : 0;
+    // Scroll-reactive nebula opacity
+    if (panelEl) {
+      panelEl.style.setProperty('--scroll-alpha', String(scrollProgress));
+    }
   }
 
   /** 调试: 用假数据打开预览界面 */
@@ -276,6 +280,8 @@
     overflow: visible;
     will-change: transform, opacity;
     backdrop-filter: blur(20px) saturate(1.2);
+    border: 1px solid transparent;
+    animation: panelBorderBreathe 8s ease-in-out infinite;
   }
 
   /* B5: 深度视差 — 面板背景层随滚动偏移 */
@@ -382,8 +388,13 @@
     left: calc(10% + var(--i) * 10%);
     top: calc(15% + var(--i) * 8%);
     animation: nebula-float calc(12s + var(--i) * 3s) ease-in-out calc(var(--i) * -2s) infinite alternate;
-    opacity: 0.4;
-    transition: background 0.5s ease, box-shadow 0.5s ease;
+    opacity: calc(0.3 + var(--scroll-alpha, 0) * 0.4);
+    transition: background 0.5s ease, box-shadow 0.5s ease, opacity 0.5s ease;
+  }
+
+  @keyframes panelBorderBreathe {
+    0%, 100% { border-color: transparent; }
+    50% { border-color: rgba(var(--ai-primary-rgb, 115, 100, 255), 0.15); }
   }
 
   @keyframes nebula-float {
@@ -394,6 +405,10 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .panel {
+      animation: none;
+      border-color: transparent;
+    }
     .nebula-particle {
       animation: none;
     }

@@ -307,21 +307,25 @@
   .toast-success {
     background: rgba(var(--ai-success-rgb), 0.9);
     color: #fff;
+    border-left: 3px solid var(--ai-success-light, #6ee7b7);
   }
 
   .toast-error {
     background: rgba(var(--ai-error-alt-rgb), 0.9);
     color: #fff;
+    border-left: 3px solid var(--ai-error-hover, #fca5a5);
   }
 
   .toast-warning {
     background: rgba(var(--ai-warning-rgb), 0.9);
     color: #fff;
+    border-left: 3px solid var(--ai-warning, #fbbf24);
   }
 
   .toast-info {
     background: rgba(var(--ai-primary-rgb), 0.9);
     color: #fff;
+    border-left: 3px solid var(--ai-primary-light, #b0a8ff);
   }
 
   .toast-icon {
@@ -350,6 +354,8 @@
     flex: 1;
     min-width: 0;
     line-height: 1.4;
+    clip-path: inset(0 100% 0 0);
+    animation: toastTextReveal 0.5s cubic-bezier(0.2, 0.98, 0.28, 1) 0.15s both;
   }
 
   /* G2: 计时环 (保留的3个 @keyframes 之一) */
@@ -411,6 +417,11 @@
     100% { transform: scale(1); opacity: 1; }
   }
 
+  @keyframes toastTextReveal {
+    from { clip-path: inset(0 100% 0 0); }
+    to { clip-path: inset(0 0 0 0); }
+  }
+
   @keyframes timerShimmer {
     0% { transform: translateX(-100%); }
     100% { transform: translateX(100%); }
@@ -425,5 +436,6 @@
     .toast-warning .toast-icon,
     .toast-info .toast-icon { animation: none; }
     .toast-timer::after { animation: none; }
+    .toast-msg { animation: none; clip-path: none; }
   }
 </style>

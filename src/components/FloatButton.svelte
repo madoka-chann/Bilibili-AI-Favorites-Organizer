@@ -164,6 +164,23 @@
     touch-action: none;
   }
 
+  /* Concentric breath ring — ambient pulse */
+  .float-btn::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(var(--ai-primary-rgb, 115, 100, 255), 0.3);
+    animation: breathRing 3s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  /* Active press — inset shadow for tactile depth (no transform — GSAP manages transform inline) */
+  .float-btn:active {
+    box-shadow: 0 0 8px rgba(var(--ai-primary-rgb), 0.1), inset 0 2px 6px rgba(0,0,0,0.2) !important;
+    transition: box-shadow 0.08s ease;
+  }
+
   /* Idle tooltip — fades in after 3s to guide new users */
   .float-btn::after {
     content: '点击打开';
@@ -203,15 +220,22 @@
     background-position: 100% 100%;
   }
 
+  @keyframes breathRing {
+    0%, 100% { transform: scale(1); opacity: 0.4; }
+    50% { transform: scale(1.35); opacity: 0; }
+  }
+
   @keyframes tooltipFadeIn {
     from { opacity: 0; transform: translateX(-50%) translateY(4px); }
     to { opacity: 1; transform: translateX(-50%) translateY(0); }
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .float-btn::before { animation: none; display: none; }
     .float-btn::after { animation: none; display: none; }
     .float-btn :global(svg) { transition: none; }
     .float-btn:hover :global(svg) { transform: none; }
+    .float-btn:active { box-shadow: none !important; }
   }
 
   .float-btn.hidden {

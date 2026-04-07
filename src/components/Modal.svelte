@@ -181,6 +181,21 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
       'Helvetica Neue', Arial, sans-serif;
     backdrop-filter: blur(16px) saturate(1.4);
+    overflow: hidden;
+  }
+
+  .backdrop::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(1px 1px at 15% 25%, rgba(255,255,255,0.4) 50%, transparent 50%),
+      radial-gradient(1px 1px at 45% 65%, rgba(255,255,255,0.3) 50%, transparent 50%),
+      radial-gradient(1.5px 1.5px at 72% 18%, rgba(255,255,255,0.35) 50%, transparent 50%),
+      radial-gradient(1px 1px at 88% 72%, rgba(255,255,255,0.3) 50%, transparent 50%),
+      radial-gradient(1.5px 1.5px at 30% 85%, rgba(255,255,255,0.25) 50%, transparent 50%);
+    animation: backdropStardust 4s ease-in-out infinite alternate;
+    pointer-events: none;
   }
 
   .modal {
@@ -232,6 +247,12 @@
     gap: 8px;
     position: relative;
     z-index: 1;
+    letter-spacing: 0;
+    transition: letter-spacing 0.35s cubic-bezier(0.2, 0.98, 0.28, 1);
+  }
+
+  .modal-header:hover h3 {
+    letter-spacing: 1px;
   }
 
   .close-btn {
@@ -380,6 +401,11 @@
     50% { background-position: -200% 0; }
   }
 
+  @keyframes backdropStardust {
+    0% { opacity: 0.3; }
+    100% { opacity: 0.8; }
+  }
+
   @keyframes footerSlideUp {
     from { opacity: 0; transform: translateY(6px); }
     to { opacity: 1; transform: translateY(0); }
@@ -388,6 +414,9 @@
   @media (prefers-reduced-motion: reduce) {
     .modal-header { animation: none; }
     .modal-header::after { animation: none; }
+    .backdrop::before { animation: none; opacity: 0.5; }
+    .modal-header h3 { transition: none; }
+    .modal-header:hover h3 { letter-spacing: 0; }
     .close-btn:hover { transform: none; }
     .modal-body::before,
     .modal-body::after { transition: none; }
