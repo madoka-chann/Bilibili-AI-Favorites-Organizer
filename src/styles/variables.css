@@ -98,6 +98,12 @@
 
   /* Field active glow — inset glow when input field is focused */
   --ai-field-active-glow: inset 0 0 8px rgba(115, 100, 255, 0.06), 0 0 0 1px rgba(115, 100, 255, 0.08);
+
+  /* Title glow — synchronized with shimmer sweep */
+  --ai-glow-title: 0 0 20px rgba(255, 255, 255, 0.15);
+
+  /* Focus ripple — expanding ring color for input activation */
+  --ai-focus-ripple: rgba(115, 100, 255, 0.2);
 }
 
 /* ==================== Dark Theme ==================== */
@@ -194,6 +200,12 @@
 
   /* Field active glow */
   --ai-field-active-glow: inset 0 0 8px rgba(139, 127, 255, 0.1), 0 0 0 1px rgba(139, 127, 255, 0.12);
+
+  /* Title glow */
+  --ai-glow-title: 0 0 20px rgba(255, 255, 255, 0.2);
+
+  /* Focus ripple */
+  --ai-focus-ripple: rgba(139, 127, 255, 0.25);
 }
 
 /* ==================== Hidden Scrollbar — scroll still works, bar hidden ==================== */

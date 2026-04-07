@@ -1,6 +1,63 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-05, 第四十七次)
+## 最近一次会话 (2026-04-07, 第四十八次)
+
+### 本次完成内容
+
+**Kinetic Depth — 动感纵深: 日志模糊消散 + 猫咪投影 + 分割线流光 + 标题光晕 + 聚焦涟漪 + 渐变反转 + 工具底线**
+
+#### 视觉增强 — 7 个文件
+
+| 组件/文件 | 新增动画 | 说明 |
+|-----------|----------|------|
+| `LogArea.svelte` | 日志条目模糊消散入场 (`logSlideIn` 增加 `filter: blur(3px)→blur(0)`) + 猫咪闲置旋摆 (`catIdle` 增加 `rotate(-3deg)→rotate(3deg)`) + 日志区域聚焦发光 (`.log-area:focus-within` box-shadow + border-color 品牌色) | 日志从模糊渐清晰滑入有物理消散感；猫咪有左右摇摆更活泼；聚焦区域有品牌色内发光 |
+| `ProgressBar.svelte` | 猫咪弹跳投影 (`.progress-cat::after` 椭圆投影 + `catShadow` 动画与 `catBounce` 同步: 静止=scaleX(1.2)+opacity(0.25), 跳起=scaleX(0.7)+opacity(0.12)) + 完成态轨道发光 (`.progress-track:has(.complete)` border-color+box-shadow 成功色) | 猫咪跳起时投影缩小变淡暗示远离地面；进度100%时轨道有发光闭合效果 |
+| `SettingsPanel.svelte` | 分割线流光滑行 (`dividerSlide` background-position 0%→100%→0% 6s infinite 循环) + 子字段背景过渡 (`.sub-field.sub-field-slide` bg-hover + border-radius) | 分割线有光芒滑行暗示内容流动；子字段展开有柔和背景色增强层次 |
+| `Header.svelte` | 标题光晕脉冲 (`titleGlow` text-shadow 白色发光与 `titleShimmer` 同步 6s, 35%~65% 时段发光) + 拖拽抓手指示 (`::before` radial-gradient 3×2 点阵 + hover/active opacity 递进) | shimmer 经过时文字同步微发光增强光影一体感；头部有微弱点阵暗示可拖拽 |
+| `forms.css` | 输入聚焦涟漪环 (`focusRipple` box-shadow 0→6px→3px 0.4s) + 图标按钮悬浮增强 (`rotate(12deg) scale(1.05)` 替代单纯 `rotate(8deg)`) | 聚焦时有向外扩散涟漪暗示激活；图标按钮旋转+缩放组合更明显 |
+| `ActionButtons.svelte` | 主按钮悬浮渐变反转 (`.btn-primary:not(.running):hover` animation-direction: reverse) + 工具按钮悬浮底线 (`.btn-tool::after` 品牌色渐变线 scaleX 0→1, transform-origin: left) | hover 时渐变流动方向反转产生动感；工具按钮底部有品牌色线条指示 |
+| `variables.css` | `--ai-glow-title` 标题光晕令牌 (light: 0.15α/dark: 0.2α) + `--ai-focus-ripple` 聚焦涟漪色令牌 (light: 0.2α/dark: 0.25α) | 统一标题光晕和聚焦涟漪色，供 Header/forms.css 复用 |
+
+#### 代码质量 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `ProgressBar.svelte` | `catShadow` 动画方向反转——`from` (猫咪静止=近地面) 应有较大+较深投影，`to` (猫咪跳起=远地面) 应有较小+较浅投影，初始实现 opacity 值反了 | HIGH | 交换 `from`/`to` 的 opacity 值: from=0.25 (近地面大投影), to=0.12 (远地面小投影) |
+| `SettingsPanel.svelte` | `.sub-field-slide` 的 background/padding/margin 样式同时应用到 `<input class="bfao-input sub-field-slide">` 元素，与 `.bfao-input` 的 padding 冲突导致表单控件变形 | MEDIUM | 改为 `.sub-field.sub-field-slide` 选择器，仅匹配 `<div class="sub-field sub-field-slide">` 容器 |
+| `ActionButtons.svelte` | `animation-direction: reverse` 在 `.btn-primary:hover` 上——当按钮处于 `.running` 状态时动画变为 `runningPulse`，反转该动画会导致脉冲效果异常 | MEDIUM | 改为 `.btn-primary:not(.running):hover` 选择器，仅在非运行状态下反转渐变流动 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `LogArea.svelte` | `logSlideIn` 增加 `filter: blur()` 后 `animation-fill-mode: both` 会锁住 `filter: blur(0px)` | 可接受：`.log-entry` 无 hover filter 效果，锁住 `blur(0px)` 等同于无 filter，不影响任何交互 |
+| `Header.svelte` | `titleGlow` 使用 `text-shadow` 在 `-webkit-text-fill-color: transparent` 元素上 | 可接受：CSS 规范中 text-shadow 独立于 text fill 绘制，transparent fill 不影响 shadow 可见性 |
+| `ActionButtons.svelte` | `.btn-tool` 添加 `overflow: hidden` 可能裁剪 glow-track radial-gradient | 可接受：glow-track 使用 background gradient (非溢出内容)，overflow:hidden 不影响 CSS background |
+| `ProgressBar.svelte` | `.progress-track:has(.complete)` 使用 `:has()` 选择器，部分旧浏览器不支持 | 可接受：项目已在其他组件使用 `:has()` (SettingsPanel, ActionButtons)，目标用户群浏览器支持率 >95% |
+
+### 关键设计决策
+
+1. **物理投影同步**: 猫咪弹跳投影通过与 `catBounce` 相同的 `0.5s ease-in-out infinite alternate` 参数实现严格同步——猫咪在地面时投影大而深 (scaleX 1.2, opacity 0.25)，跳到最高点时投影小而浅 (scaleX 0.7, opacity 0.12)，模拟真实光照物理。
+2. **分割线流光 vs 静态渐变**: `dividerSlide` 使用 `background-position` 动画而非修改 `background` 本身，避免重绘整个渐变。6s 循环速度慢于组件动画 (3s) 但快于全局流 (18s)，在视觉层次中处于"环境级"。
+3. **标题光晕窄窗口**: `titleGlow` 仅在 35%~65% 时段 (即 shimmer 经过时) 显示 text-shadow，其余时间 `text-shadow: none`，确保光晕与光扫严格同步而非独立循环。
+4. **聚焦涟漪一次性**: `focusRipple` 是 0.4s 一次性动画 (无 infinite)，focus 时触发一次向外扩散的涟漪环，然后停留在最终 `box-shadow` 状态。避免持续动画干扰用户输入。
+5. **渐变反转仅限非运行**: `.btn-primary:not(.running):hover` 确保渐变方向反转只在"开始整理"按钮上生效，"停止整理"状态保持原有 `runningPulse` 不受影响。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: 7 文件动感纵深增强)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 3 个 bug 修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 new errors (8 pre-existing), 12 warnings (pre-existing)。构建体积 606 kB (较 602 kB 增长 +4 kB)。**
+
+---
+
+## 上一次会话 (2026-04-05, 第四十七次)
 
 ### 本次完成内容
 

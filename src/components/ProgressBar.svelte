@@ -201,6 +201,13 @@
     overflow: visible;
     position: relative;
     box-shadow: var(--ai-shadow-inset);
+    border: 1px solid transparent;
+    transition: border-color 0.5s ease, box-shadow 0.5s ease;
+  }
+
+  .progress-track:has(.complete) {
+    border-color: rgba(var(--ai-success-rgb), 0.3);
+    box-shadow: var(--ai-shadow-inset), 0 0 8px rgba(var(--ai-success-rgb), 0.2);
   }
 
   .progress-bar {
@@ -254,14 +261,36 @@
     cursor: pointer;
     transition: left 0.8s cubic-bezier(0.19, 1, 0.22, 1), filter 0.2s ease, transform 0.2s ease;
   }
+  .progress-cat::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 50%;
+    width: 10px;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 50%;
+    transform: translateX(-50%);
+    animation: catShadow 0.5s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
   .progress-cat:hover {
     filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3)) brightness(1.2);
     animation: none;
     transform: translateX(-50%) scale(1.3);
   }
+  .progress-cat:hover::after {
+    animation: none;
+    opacity: 0.3;
+    transform: translateX(-50%) scaleX(1.4);
+  }
   @keyframes catBounce {
     from { transform: translateX(-50%) translateY(0); }
     to { transform: translateX(-50%) translateY(-6px); }
+  }
+  @keyframes catShadow {
+    from { transform: translateX(-50%) scaleX(1.2); opacity: 0.25; }
+    to { transform: translateX(-50%) scaleX(0.7); opacity: 0.12; }
   }
 
   @keyframes shimmer {
@@ -293,5 +322,7 @@
     .token-stats { animation: none; }
     .phase-label::before { animation: none; opacity: 1; }
     .progress-cat { animation: none; }
+    .progress-cat::after { animation: none; opacity: 0.15; }
+    .progress-track:has(.complete) { box-shadow: var(--ai-shadow-inset); border-color: transparent; }
   }
 </style>

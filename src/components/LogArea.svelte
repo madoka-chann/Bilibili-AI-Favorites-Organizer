@@ -98,11 +98,16 @@
     position: relative;
     mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 100%);
     -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 100%);
-    transition: border-color 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
   }
 
   .log-area:hover {
     border-color: var(--ai-border);
+  }
+
+  .log-area:focus-within {
+    box-shadow: var(--ai-field-active-glow);
+    border-color: var(--ai-primary-light);
   }
 
   .log-entry {
@@ -221,13 +226,13 @@
     letter-spacing: 0.06em;
   }
   @keyframes catIdle {
-    from { transform: translateY(0); }
-    to { transform: translateY(-3px); }
+    from { transform: translateY(0) rotate(-3deg); }
+    to { transform: translateY(-3px) rotate(3deg); }
   }
 
   @keyframes logSlideIn {
-    from { opacity: 0; transform: translateX(-8px); }
-    to { opacity: 1; transform: translateX(0); }
+    from { opacity: 0; transform: translateX(-8px); filter: blur(3px); }
+    to { opacity: 1; transform: translateX(0); filter: blur(0px); }
   }
 
   @keyframes borderGlow {
@@ -262,7 +267,8 @@
     .log-time { transition: none; }
     .log-entry:hover { border-left-width: 3px; padding-left: 8px; }
     .log-cat:not(.away) { animation: none; }
-    .log-area { transition: none; }
+    .log-area { transition: none; box-shadow: none; }
+    .log-area:focus-within { box-shadow: none; }
     .cat-text { transition: none; }
     .log-cat:hover .cat-text { letter-spacing: 0.03em; }
   }

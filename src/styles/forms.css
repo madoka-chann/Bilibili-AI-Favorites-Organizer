@@ -42,6 +42,13 @@
 .bfao-select:focus {
   border-color: var(--ai-primary);
   box-shadow: 0 0 0 3px var(--ai-primary-shadow);
+  animation: focusRipple 0.4s cubic-bezier(0.2, 0.98, 0.28, 1);
+}
+
+@keyframes focusRipple {
+  0% { box-shadow: 0 0 0 0 var(--ai-focus-ripple); }
+  50% { box-shadow: 0 0 0 6px var(--ai-focus-ripple); }
+  100% { box-shadow: 0 0 0 3px var(--ai-primary-shadow); }
 }
 
 /* Textarea focus: gradient border hint via box-shadow */
@@ -115,7 +122,7 @@ textarea.bfao-input:focus {
 }
 
 .bfao-icon-btn:hover:not(:disabled) svg {
-  transform: rotate(8deg);
+  transform: rotate(12deg) scale(1.05);
 }
 
 .bfao-icon-btn:disabled {
@@ -196,6 +203,7 @@ textarea.bfao-input:focus {
   .bfao-input:hover:not(:focus),
   .bfao-select:hover:not(:focus) { transform: none; }
   .bfao-input-row::after { transition: none; }
+  .bfao-input:focus, .bfao-select:focus { animation: none; }
   .bfao-icon-btn:hover { transform: none; }
   .bfao-icon-btn:hover:not(:disabled) svg { transform: none; }
   .bfao-icon-btn:disabled { transition: none; filter: none; }

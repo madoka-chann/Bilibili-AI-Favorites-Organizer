@@ -126,6 +126,10 @@
     transform: translateY(-1px);
   }
 
+  .btn-primary:not(.running):hover {
+    animation-direction: reverse;
+  }
+
   .btn-primary:active {
     transform: scale(0.97);
     transition-duration: 0.08s;
@@ -212,10 +216,31 @@
     justify-content: center;
     gap: 4px;
     transition: all 0.35s cubic-bezier(0.22, 1.42, 0.29, 1);
+    position: relative;
+    overflow: hidden;
   }
 
   .btn-tool :global(svg) {
     transition: transform 0.25s cubic-bezier(0.22, 1.42, 0.29, 1);
+  }
+
+  .btn-tool::after {
+    content: '';
+    position: absolute;
+    bottom: 3px;
+    left: 20%;
+    width: 60%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--ai-primary), var(--ai-gradient-accent));
+    border-radius: 1px;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s cubic-bezier(0.2, 0.98, 0.28, 1);
+    pointer-events: none;
+  }
+
+  .btn-tool:hover::after {
+    transform: scaleX(1);
   }
 
   .btn-tool:hover {
@@ -290,5 +315,7 @@
     .kbd { transition: none; }
     .btn-tool :global(svg) { transition: none; }
     .btn-tool:hover :global(svg) { transform: none; }
+    .btn-tool::after { display: none; }
+    .btn-primary:hover { animation-direction: normal; }
   }
 </style>

@@ -1,7 +1,7 @@
 {
   "project": "Bilibili AI Favorites Organizer - Svelte Refactoring",
-  "plan": "visual-plan-session47.md",
-  "lastUpdated": "2026-04-05-session47",
+  "plan": "visual-plan-session48.md",
+  "lastUpdated": "2026-04-07-session48",
   "phases": {
     "phase0_buildSystem": {
       "status": "completed",
@@ -23,7 +23,7 @@
     },
     "phase2_animations": {
       "status": "completed",
-      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; I1-I5 粒子系统全部完成; Session 27-46 全组件覆盖; Session 47: StatsDialog 统计卡片悬浮对角光扫 (card-shimmer 内层 overflow:hidden 裁剪) + 收藏夹行内联比例条 (--ratio CSS 变量驱动宽度+scaleX 入场) + HistoryTimeline 时间线流动光脉冲 (::after 3s 循环 top 位移) + modal.css 空状态猫咪呼吸 (::before 猫咪 emoji + scale 呼吸 2s) + 摘要数字弹性入场 (summaryPop 含 blur 模糊过渡 + text-shadow) + DuplicatesResult 序号圆圈悬浮放大发光 + DeadVideosResult 文件夹标题下箭头指示 + FolderSelector 选中计数动态徽章 (bounce class + has-selected 品牌色)"
+      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; I1-I5 粒子系统全部完成; Session 27-47 全组件覆盖; Session 48: LogArea 日志条目模糊消散入场 (logSlideIn 增加 blur(3px)→0 过渡) + 猫咪闲置旋摆 (catIdle 增加 rotate ±3deg) + 日志区域聚焦发光 (focus-within box-shadow) + ProgressBar 猫咪弹跳投影 (::after 椭圆投影 catShadow 与 catBounce 同步 scaleX+opacity) + 完成态轨道发光边框 (:has(.complete) border+box-shadow) + SettingsPanel 分割线流光滑行 (dividerSlide background-position 6s 循环) + 子字段背景过渡 (.sub-field 展开时 bg-hover) + Header 标题光晕脉冲 (titleGlow text-shadow 与 titleShimmer 同步 6s) + 拖拽抓手指示 (::before radial-gradient 点阵 + hover/active opacity) + forms.css 输入聚焦涟漪环 (focusRipple box-shadow 0→6px→3px) + 图标按钮悬浮增强 (rotate 12deg + scale 1.05) + ActionButtons 主按钮悬浮渐变反转 (animation-direction: reverse) + 工具按钮悬浮底线 (::after scaleX 0→1 品牌色渐变线)"
     },
     "phase3_cssCleanup": {
       "status": "completed",
@@ -31,7 +31,7 @@
     },
     "phase4_codeQuality": {
       "status": "completed",
-      "summary": "TypeScript strict 全开; 模块化重构完成; 多轮 Code Review; as any 类型断言清零; 错误处理一致性强化; 第47轮 Code Review: (1) overflow:hidden 在 stat-card 上会裁剪 grid 交叉分隔线 (::before left:-6px, ::after top:-6px)——改为 overflow:hidden 仅在 .card-shimmer 内层; (2) timeline::after 使用 lineGrow scaleY 动画不适合 12px 光点——改为 opacity fade-in; (3) DeadVideosResult 无用 counter-increment: folder-group-idx——移除"
+      "summary": "TypeScript strict 全开; 模块化重构完成; 多轮 Code Review; as any 类型断言清零; 错误处理一致性强化; 第48轮 Code Review: (1) catShadow 动画方向反转——from 应为猫咪静止时(近地面=大+深投影), to 为猫咪跳起时(远地面=小+浅投影); (2) .sub-field-slide 背景样式误应用到 input 元素——改为 .sub-field.sub-field-slide 选择器限定; (3) animation-direction:reverse 在 .running hover 时影响 runningPulse——改为 :not(.running):hover"
     },
     "phase5_performance": {
       "status": "completed",
@@ -53,7 +53,7 @@
   },
   "buildStatus": {
     "builds": true,
-    "output": "dist/bilibili-ai-favorites-organizer.user.js (602 kB, GSAP ~95 kB CDN)",
+    "output": "dist/bilibili-ai-favorites-organizer.user.js (606 kB, GSAP ~95 kB CDN)",
     "svelteCheck": "0 errors (8 pre-existing), 12 warnings (pre-existing)",
     "preExistingIssues": []
   }

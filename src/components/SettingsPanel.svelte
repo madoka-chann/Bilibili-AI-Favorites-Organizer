@@ -229,13 +229,19 @@
     left: 10%;
     width: 80%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, var(--ai-border), transparent);
-    animation: dividerFadeIn 0.5s ease 0.3s both;
+    background: linear-gradient(90deg, transparent 0%, var(--ai-primary-light) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: dividerFadeIn 0.5s ease 0.3s both, dividerSlide 6s ease-in-out 0.8s infinite;
   }
 
   @keyframes dividerFadeIn {
     from { opacity: 0; transform: scaleX(0); }
     to { opacity: 1; transform: scaleX(1); }
+  }
+
+  @keyframes dividerSlide {
+    0%, 100% { background-position: 100% 0; }
+    50% { background-position: 0% 0; }
   }
 
   /* Stagger entrance for each SettingsGroup when panel mounts */
@@ -325,6 +331,13 @@
     animation: subFieldSlideIn 0.3s cubic-bezier(0.2, 0.98, 0.28, 1) both;
   }
 
+  .sub-field.sub-field-slide {
+    background: var(--ai-bg-hover);
+    border-radius: 8px;
+    padding: 6px 8px 6px 23px;
+    margin: -2px -8px;
+  }
+
   @keyframes subFieldSlideIn {
     from { opacity: 0; transform: translateY(-6px); }
     to { opacity: 1; transform: translateY(0); }
@@ -364,7 +377,7 @@
     .sub-field-slide { animation: none; }
     .hint-fade-in { animation: none; }
     .settings-panel > :global(.group) { animation: none; }
-    .settings-panel > :global(.group + .group::before) { animation: none; opacity: 1; transform: scaleX(1); }
+    .settings-panel > :global(.group + .group::before) { animation: none; opacity: 1; transform: scaleX(1); background-position: 50% 0; }
     .field-grid .bfao-field:focus-within { transition: none; }
   }
 </style>
