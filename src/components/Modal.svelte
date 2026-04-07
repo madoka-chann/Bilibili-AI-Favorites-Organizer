@@ -52,6 +52,10 @@
     const maxScroll = scrollHeight - clientHeight;
     showScrollBar = maxScroll > 10;
     scrollProgress = maxScroll > 0 ? scrollTop / maxScroll : 0;
+    // Scroll-reactive depth shadow
+    if (modalEl) {
+      modalEl.style.setProperty('--modal-scroll-depth', String(scrollProgress));
+    }
   }
 
   onMount(() => {
@@ -198,15 +202,19 @@
     pointer-events: none;
   }
 
+  /* Scroll-responsive depth shadow — deepens as user scrolls */
   .modal {
     background: var(--ai-bg);
     color: var(--ai-text);
     border-radius: 28px;
-    box-shadow: var(--ai-shadow-modal);
+    box-shadow:
+      var(--ai-shadow-modal),
+      0 0 calc(var(--modal-scroll-depth, 0) * 40px) rgba(0, 0, 0, calc(var(--modal-scroll-depth, 0) * 0.1));
     max-height: 85vh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    transition: box-shadow 0.5s ease;
   }
 
   .modal-header {
@@ -251,6 +259,16 @@
     transition: letter-spacing 0.35s cubic-bezier(0.2, 0.98, 0.28, 1);
   }
 
+  /* Header icon entrance bounce */
+  .modal-header h3 :global(svg) {
+    animation: modalIconBounce 0.4s cubic-bezier(0.2, 1.2, 0.4, 1) 0.15s both;
+  }
+  @keyframes modalIconBounce {
+    0% { transform: scale(0); opacity: 0; }
+    70% { transform: scale(1.2); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
   .modal-header:hover h3 {
     letter-spacing: 1px;
   }
@@ -268,12 +286,13 @@
     justify-content: center;
     position: relative;
     z-index: 1;
-    transition: background 0.2s ease, transform 0.25s cubic-bezier(0.2, 1, 0.4, 1);
+    transition: background 0.2s ease, transform 0.25s cubic-bezier(0.2, 1, 0.4, 1), box-shadow 0.25s ease;
   }
 
   .close-btn:hover {
     background: rgba(255, 255, 255, 0.35);
     transform: rotate(90deg) scale(1.1);
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
   }
 
   .modal-body {
@@ -462,6 +481,7 @@
     .modal-header::after { animation: none; }
     .backdrop::before { animation: none; opacity: 0.5; }
     .modal-header h3 { transition: none; }
+    .modal-header h3 :global(svg) { animation: none; }
     .modal-header:hover h3 { letter-spacing: 0; }
     .close-btn:hover { transform: none; }
     .modal-body::before,

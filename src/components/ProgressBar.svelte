@@ -249,6 +249,17 @@
     animation: tokenFadeIn 0.4s cubic-bezier(0.2, 0.98, 0.28, 1) both;
   }
 
+  .token-stats span {
+    transition: color 0.2s ease, transform 0.2s ease;
+    display: inline-block;
+    cursor: default;
+  }
+
+  .token-stats span:hover {
+    color: var(--ai-primary);
+    transform: scale(1.1);
+  }
+
   .progress-cat {
     position: absolute;
     top: -18px;
@@ -285,8 +296,8 @@
     transform: translateX(-50%) scaleX(1.4);
   }
   @keyframes catBounce {
-    from { transform: translateX(-50%) translateY(0); }
-    to { transform: translateX(-50%) translateY(-6px); }
+    from { transform: translateX(-50%) translateY(0) rotate(-3deg); }
+    to { transform: translateX(-50%) translateY(-6px) rotate(3deg); }
   }
   @keyframes catShadow {
     from { transform: translateX(-50%) scaleX(1.2); opacity: 0.25; }

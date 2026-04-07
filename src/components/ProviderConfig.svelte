@@ -128,6 +128,20 @@
     gap: 10px;
   }
 
+  /* Provider select hover glow — ambient focus guidance */
+  .provider-config :global(.bfao-select:hover) {
+    box-shadow: var(--ai-glow-control-hover);
+  }
+
+  /* API Key security indicator — left border color based on value presence */
+  .provider-config :global(.bfao-input-flex) {
+    border-left: 2px solid var(--ai-warning);
+    transition: border-color 0.3s ease, border-left-color 0.3s ease, box-shadow 0.25s ease;
+  }
+  .provider-config :global(.bfao-input-flex:not(:placeholder-shown)) {
+    border-left-color: var(--ai-success);
+  }
+
   .link-btn {
     padding: 6px;
     border: 1.5px solid var(--ai-border);
@@ -172,6 +186,13 @@
     box-shadow: var(--ai-glow-control-hover);
   }
 
+  /* Eye icon toggle outline pulse */
+  .bfao-icon-btn:active {
+    outline: 2px solid rgba(var(--ai-primary-rgb), 0.3);
+    outline-offset: 2px;
+    transition: outline 0.15s ease;
+  }
+
   .bfao-icon-btn:active :global(svg) {
     transform: scale(0.8) rotateY(90deg);
   }
@@ -208,6 +229,9 @@
     .bfao-icon-btn :global(svg) { transition: none; }
     .bfao-icon-btn:hover :global(svg) { transform: none; }
     .bfao-icon-btn:hover { box-shadow: none; }
+    .bfao-icon-btn:active { outline: none; }
+    .provider-config :global(.bfao-select:hover) { box-shadow: none; }
+    .provider-config :global(.bfao-input-flex) { border-left: none; }
     .link-btn:hover::after { animation: none; }
     .link-btn :global(svg) { transition: none; }
     .link-btn:hover :global(svg) { transform: none; }

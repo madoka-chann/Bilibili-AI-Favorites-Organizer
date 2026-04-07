@@ -200,6 +200,7 @@
 
   .header:active::before {
     opacity: 1;
+    width: 36px;
   }
 
   .header-title {
@@ -265,6 +266,24 @@
     z-index: 1;
   }
 
+  /* Button group hover connector line */
+  .header-actions::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 4px;
+    right: 4px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+    transform: scaleX(0);
+    transition: transform 0.3s cubic-bezier(0.2, 0.98, 0.28, 1);
+    pointer-events: none;
+  }
+
+  .header-actions:hover::before {
+    transform: scaleX(1);
+  }
+
   .header-btn {
     padding: 5px;
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -284,6 +303,7 @@
 
   .header-btn.active {
     background: rgba(255, 255, 255, 0.35);
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.15);
     position: relative;
   }
 
@@ -367,7 +387,9 @@
     .version::after { animation: none; display: none; }
     .version:hover { transform: none; letter-spacing: 0; box-shadow: none; }
     .settings-icon { transition: none; }
+    .header-btn.active { box-shadow: none; }
     .header-btn.active::after { animation: none; }
+    .header-actions::before { display: none; }
     .header-btn:last-child :global(svg) { transition: none; }
     .header-btn:last-child:hover :global(svg) { transform: none; }
   }

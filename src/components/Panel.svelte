@@ -49,9 +49,10 @@
     const maxScroll = scrollHeight - clientHeight;
     showScrollIndicator = maxScroll > 10;
     scrollProgress = maxScroll > 0 ? scrollTop / maxScroll : 0;
-    // Scroll-reactive nebula opacity
+    // Scroll-reactive nebula opacity + depth shadow
     if (panelEl) {
       panelEl.style.setProperty('--scroll-alpha', String(scrollProgress));
+      panelEl.style.setProperty('--scroll-depth', String(scrollProgress));
     }
   }
 
@@ -276,6 +277,7 @@
     background: var(--ai-bg);
     color: var(--ai-text);
     box-shadow: var(--ai-shadow-lg);
+    transition: box-shadow 0.5s ease;
     border-radius: 28px;
     overflow: visible;
     will-change: transform, opacity;
@@ -389,7 +391,8 @@
     top: calc(15% + var(--i) * 8%);
     animation: nebula-float calc(12s + var(--i) * 3s) ease-in-out calc(var(--i) * -2s) infinite alternate;
     opacity: calc(0.3 + var(--scroll-alpha, 0) * 0.4);
-    transition: background 0.5s ease, box-shadow 0.5s ease, opacity 0.5s ease;
+    filter: blur(calc(var(--scroll-depth, 0) * 2px));
+    transition: background 0.5s ease, box-shadow 0.5s ease, opacity 0.5s ease, filter 0.5s ease;
   }
 
   @keyframes panelBorderBreathe {
@@ -411,6 +414,7 @@
     }
     .nebula-particle {
       animation: none;
+      filter: none;
     }
     .scroll-indicator {
       transition: none;

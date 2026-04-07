@@ -1,7 +1,7 @@
 {
   "project": "Bilibili AI Favorites Organizer - Svelte Refactoring",
-  "plan": "visual-plan-session53.md",
-  "lastUpdated": "2026-04-07-session53",
+  "plan": "visual-plan-session54.md",
+  "lastUpdated": "2026-04-07-session54",
   "phases": {
     "phase0_buildSystem": {
       "status": "completed",
@@ -23,7 +23,7 @@
     },
     "phase2_animations": {
       "status": "completed",
-      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; I1-I5 粒子系统全部完成; Session 27-52 全组件覆盖; Session 53: Kinetic Cadence — StatsDialog 卡片悬浮标签联动 (letter-spacing 0.06em) + 文件夹行条形图过冲回弹 (ratioBarGrow scaleX 0→1.04→1) + 分区标题脉冲指示点 (sectionPulseDot 1.5s infinite) + 危险值悬浮光晕 (--ai-glow-danger-text) + ActionButtons 运行条纹叠加 (runningStripes 45deg 0.8s loop) + 工具行悬浮层级递进 (~ .tool-row opacity 0.55) + 按钮弹簧压缩 (active scale 0.90 + inset shadow) + HistoryTimeline 卡片内容分层揭示 (timelineContentReveal stagger 0.05/0.12/0.2s) + 首条目\"最新\"徽章 (latestBadgePop scale) + 清空图标旋转 (rotate 180deg) + LogArea 成功弹跳 (successBounce translateY -2px) + 错误震动 (errorShake ±2px) + 最新条目边框脉冲 (lastEntryBorderPulse primary↔accent 2s) + 猫咪文字悬浮光晕 + DuplicatesResult 处理条纹 (dupProcessingStripes) + 重复数量红色脉冲强调 + 更多提示渐显 + Toast 成功背景微脉冲 (toastSuccessPulse brightness) + 悬浮关闭提示 × + 图标类型色环"
+      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; I1-I5 粒子系统全部完成; Session 27-53 全组件覆盖; Session 54: Ambient Depth — Panel 滚动深度阴影 (--scroll-depth CSS var → box-shadow 加深) + 星云粒子景深模糊 (filter: blur(scroll-depth*2px)) + Modal 滚动响应式阴影 (--modal-scroll-depth → 动态 box-shadow) + Modal header 图标入场弹跳 (modalIconBounce scale 0→1.2→1) + 关闭按钮悬浮红色光晕 (box-shadow danger) + SettingsPanel 激活 toggle 行呼吸微光 (--ai-glow-active-row) + 字段网格交错入场 (fieldGridFadeIn odd/even stagger) + ProviderConfig 选择器悬浮光晕 (glow-control-hover) + API Key 安全状态指示 (border-left warning→success) + 眼睛图标切换脉冲 (outline pulse) + ProgressBar 猫咪行走摇摆 (catBounce rotate ±3deg) + Token 数字悬浮放大高亮 (scale 1.1 + primary color) + Header 拖拽手柄力反馈 (active width 36px) + 按钮组悬浮连接线 (::before scaleX 0→1) + 设置按钮激活态内发光 (inset shadow)"
     },
     "phase3_cssCleanup": {
       "status": "completed",
@@ -31,7 +31,7 @@
     },
     "phase4_codeQuality": {
       "status": "completed",
-      "summary": "TypeScript strict 全开; 模块化重构完成; 多轮 Code Review; as any 类型断言清零; 错误处理一致性强化; 第53轮 Code Review: (1) LogArea lastEntryBorderPulse specificity 冲突——.log-entry:last-child (0,2,0) 覆盖 .log-success (0,1,0) 导致 success 条目边框被 primary 脉冲替换——修复: :not(.log-success):not(.log-error):not(.log-warning):not(.log-info) 限定脉冲范围 (2) DuplicatesResult :global(.bfao-btn-primary:disabled)::after 全局泄漏——修复: 改为 .bfao-action-bar :global(.bfao-btn-primary:disabled)::after 通过 Svelte scoped 父类约束 (3) HistoryTimeline .timeline-card 缺少 position:relative——最新徽章 ::after absolute 定位偏移——修复: 添加 position:relative (4) Toast .toast::after 关闭提示 × 与消息文本重叠——修复: hover 时 padding-right:28px 腾出空间"
+      "summary": "TypeScript strict 全开; 模块化重构完成; 多轮 Code Review; as any 类型断言清零; 错误处理一致性强化; 第54轮 Code Review: (1) ProgressBar catBounce+catWalk 双动画 transform 冲突——CSS 无法合成两个动画的 transform，catWalk 覆盖 catBounce 导致抖动——修复: 移除 catWalk，将 rotate ±3deg 合并入 catBounce (2) Modal 重复 .modal 选择器——第二个 box-shadow 覆盖第一个，transition 在第一个块中但静态值在第二个导致 transition 无效——修复: 合并为单一 .modal 规则 (3) Panel .panel-content 顶部 mask fade (transparent 0%, black 8px) 裁剪 2px scroll indicator——修复: 恢复仅底部 mask (4) Modal .close-btn 缺少 box-shadow transition——新增 box-shadow 的 hover 光晕无过渡直接跳变——修复: transition 添加 box-shadow 0.25s"
     },
     "phase5_performance": {
       "status": "completed",
@@ -53,7 +53,7 @@
   },
   "buildStatus": {
     "builds": true,
-    "output": "dist/bilibili-ai-favorites-organizer.user.js (634 kB, GSAP ~95 kB CDN)",
+    "output": "dist/bilibili-ai-favorites-organizer.user.js (638 kB, GSAP ~95 kB CDN)",
     "svelteCheck": "0 errors (8 pre-existing), 12 warnings (pre-existing)",
     "preExistingIssues": []
   }

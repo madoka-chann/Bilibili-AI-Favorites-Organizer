@@ -264,6 +264,20 @@
     gap: 8px;
   }
 
+  /* Field grid stagger entrance — odd/even with different delays */
+  .field-grid > :global(.bfao-field) {
+    animation: fieldGridFadeIn 0.3s cubic-bezier(0.2, 0.98, 0.28, 1) both;
+  }
+  .field-grid > :global(.bfao-field:nth-child(odd)) { animation-delay: 0.03s; }
+  .field-grid > :global(.bfao-field:nth-child(even)) { animation-delay: 0.08s; }
+  .field-grid > :global(.bfao-field:nth-child(n+3)) { animation-delay: 0.13s; }
+  .field-grid > :global(.bfao-field:nth-child(n+5)) { animation-delay: 0.18s; }
+  .field-grid > :global(.bfao-field:nth-child(n+7)) { animation-delay: 0.23s; }
+  @keyframes fieldGridFadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
   /* Active field glow — focused field container gets inset depth */
   .field-grid .bfao-field:focus-within {
     background: var(--ai-bg-hover);
@@ -335,9 +349,10 @@
     color: var(--ai-text);
   }
 
-  /* Active indicator — enabled toggles show a brand-color left bar with expand animation */
+  /* Active indicator — enabled toggles show a brand-color left bar with expand animation + ambient glow */
   .toggle-row:has(:global(.on)) {
     border-left-color: var(--ai-primary);
+    box-shadow: var(--ai-glow-active-row);
     animation: activeBarExpand 0.35s cubic-bezier(0.2, 0.98, 0.28, 1) both;
   }
 
@@ -402,7 +417,8 @@
 
   @media (prefers-reduced-motion: reduce) {
     .toggle-row:hover { transform: none; }
-    .toggle-row:has(:global(.on)) { animation: none; }
+    .toggle-row:has(:global(.on)) { animation: none; box-shadow: none; }
+    .field-grid > :global(.bfao-field) { animation: none; }
     .toggle-row > span:first-child::after { display: none; }
     .sub-field-slide { animation: none; }
     .hint-fade-in { animation: none; }

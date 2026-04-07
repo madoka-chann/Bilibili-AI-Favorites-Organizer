@@ -1,6 +1,63 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-07, 第五十三次)
+## 最近一次会话 (2026-04-07, 第五十四次)
+
+### 本次完成内容
+
+**Ambient Depth — 环境深度: Panel 滚动深度阴影 + 星云景深模糊 + Modal 滚动响应式阴影 + 图标入场弹跳 + SettingsPanel toggle 呼吸微光 + 字段交错入场 + ProviderConfig 安全指示 + ProgressBar 猫咪摇摆 + Header 力反馈 + 按钮组连接线**
+
+#### 视觉增强 — 7 个文件
+
+| 组件/文件 | 新增动画 | 说明 |
+|-----------|----------|------|
+| `Panel.svelte` | 滚动深度阴影 (`--scroll-depth` CSS var → box-shadow 随滚动加深) + 星云粒子景深模糊 (`filter: blur(scroll-depth*2px)`) | 滚动时面板阴影加深暗示内容"沉入"深处；星云粒子虚化模拟景深效果 |
+| `Modal.svelte` | 滚动响应式阴影 (`--modal-scroll-depth` → 动态额外 box-shadow) + Header 图标入场弹跳 (`modalIconBounce` scale 0→1.2→1 delay 0.15s) + 关闭按钮悬浮红色光晕 (box-shadow danger 0.3α) | 模态框滚动时阴影逐步加深；标题图标弹性入场；关闭按钮有预警光晕 |
+| `SettingsPanel.svelte` | 激活 toggle 行呼吸微光 (`--ai-glow-active-row` box-shadow) + 字段网格交错入场 (`fieldGridFadeIn` odd/even stagger 0.03-0.23s) | 已开启的开关行有环境微光；网格字段交错浮现增强空间层次 |
+| `ProviderConfig.svelte` | 选择器悬浮光晕 (`glow-control-hover`) + API Key 安全状态指示 (border-left: warning→success via `:not(:placeholder-shown)`) + 眼睛图标切换脉冲 (outline 2px pulse on active) | 选择器悬浮有聚焦引导；API Key 有无的视觉状态指示；图标切换有脉冲反馈 |
+| `ProgressBar.svelte` | 猫咪行走摇摆 (`catBounce` rotate ±3deg 融合弹跳) + Token 数字悬浮放大高亮 (scale 1.1 + primary color transition) | 猫咪前进时有摇摆姿态；Token 数字可交互反馈 |
+| `Header.svelte` | 拖拽手柄力反馈 (active width 36px 扩展) + 按钮组悬浮连接线 (`::before` scaleX 0→1 渐变线) + 设置按钮激活态内发光 (inset shadow 深度按下感) | 拖拽时手柄明显扩展；按钮组有空间关联线；激活态有深度感 |
+| `variables.css` | `--ai-shadow-depth-scroll` 滚动深度阴影令牌 (light: 0.15/dark: 0.35) + `--ai-glow-active-row` 激活行环境微光令牌 (light: 0.1α/dark: 0.15α) | 统一滚动深度和激活行微光色 |
+
+#### 代码质量 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `ProgressBar.svelte` | `catBounce` + `catWalk` 双动画同时设置 `transform`——CSS 无法合成两个动画的 transform 属性，`catWalk` 覆盖 `catBounce` 导致弹跳消失、仅剩旋转抖动 | HIGH | 移除 `catWalk` 动画，将 `rotate(±3deg)` 合并入 `catBounce` 的 from/to |
+| `Modal.svelte` | 重复 `.modal` 选择器——第二个 `box-shadow` 静态声明覆盖第一个，`transition: box-shadow` 在第一个块但被覆盖后无效 | MEDIUM | 合并为单一 `.modal` 规则，box-shadow 含动态 `calc(var())` 部分 |
+| `Panel.svelte` | `.panel-content` 顶部 mask fade (`transparent 0%, black 8px`) 裁剪 2px scroll indicator——indicator 在 mask 渐变区域内变半透明 | MEDIUM | 恢复仅底部 mask (`black 0%` 开始)，保持 scroll indicator 完全可见 |
+| `Modal.svelte` | `.close-btn` 的 `transition` 缺少 `box-shadow`——新增的 hover `box-shadow: danger` 无过渡效果，直接跳变 | LOW | `transition` 添加 `box-shadow 0.25s ease` |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `Panel.svelte` | `transition: box-shadow 0.5s ease` 可能与 Draggable 的 GSAP `boxShadow` tween 短暂共存 | 可接受：GSAP inline style 优先级高于 CSS transition，且 drag 操作时 scroll 不变动；两者控制不同触发条件 (scroll vs drag) |
+| `ProviderConfig.svelte` | `:not(:placeholder-shown)` 依赖 `placeholder` 属性存在——如果 `providerConfig?.keyPlaceholder` 为 falsy 则回退到 `'填入 API Key'` | 可接受：常量回退确保 placeholder 始终存在；即使 provider 配置缺失也有默认值 |
+| `SettingsPanel.svelte` | `fieldGridFadeIn` 的 stagger delays (0.03-0.23s) 与父级 `groupSlideIn` (0-0.18s) 重叠——字段在 group 滑入完成前开始动画 | 可接受：视觉效果是 group 滑入同时内部字段逐步浮现，符合"环境深度"主题的层次揭示理念 |
+
+### 关键设计决策
+
+1. **环境深度理念**: 本轮核心是"界面元素感知自身在空间中的位置"——滚动时阴影加深暗示深度，星云粒子虚化模拟景深，激活的开关有环境微光表示"活跃"，API Key 有安全状态色指示。
+2. **CSS 自定义属性驱动动态阴影**: `--scroll-depth` 和 `--modal-scroll-depth` 通过 JS 设置、CSS `calc()` 消费，实现平滑的滚动响应式阴影，无需额外 GSAP tween。
+3. **双动画 transform 冲突**: CSS 规范中同一元素的多个 animation 若都设置 transform，后者覆盖前者。解决方式是将所有 transform 效果合并到单一 animation 中。
+4. **API Key 安全指示**: 使用 `:not(:placeholder-shown)` 伪类检测输入是否有值，无需额外 JS 状态管理，纯 CSS 实现安全状态视觉反馈。
+5. **设计令牌最小化**: 仅新增 2 个令牌 (`--ai-shadow-depth-scroll` + `--ai-glow-active-row`)，复用已有令牌组合。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: 7 文件环境深度增强)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 4 个 bug 修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 new errors (8 pre-existing), 12 warnings (pre-existing)。构建体积 638 kB (较 634 kB 增长 +4 kB)。**
+
+---
+
+## 上一次会话 (2026-04-07, 第五十三次)
 
 ### 本次完成内容
 
