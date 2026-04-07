@@ -122,6 +122,12 @@
 
   /* Shimmer overlay — translucent sweep for processing states */
   --ai-shimmer-overlay: rgba(255, 255, 255, 0.08);
+
+  /* Danger text glow — text shadow for danger values on hover */
+  --ai-glow-danger-text: 0 0 10px rgba(231, 76, 60, 0.25);
+
+  /* Stripe overlay — translucent stripe color for processing states */
+  --ai-stripe-overlay: rgba(255, 255, 255, 0.12);
 }
 
 /* ==================== Dark Theme ==================== */
@@ -242,6 +248,12 @@
 
   /* Shimmer overlay */
   --ai-shimmer-overlay: rgba(255, 255, 255, 0.05);
+
+  /* Danger text glow */
+  --ai-glow-danger-text: 0 0 10px rgba(248, 113, 113, 0.35);
+
+  /* Stripe overlay */
+  --ai-stripe-overlay: rgba(255, 255, 255, 0.08);
 }
 
 /* ==================== Hidden Scrollbar — scroll still works, bar hidden ==================== */

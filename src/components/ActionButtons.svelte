@@ -141,6 +141,28 @@
     border: 1.5px solid rgba(var(--ai-error-rgb), 0.4);
   }
 
+  /* Running stripes overlay — "in progress" cadence */
+  .btn-primary.running::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      var(--ai-stripe-overlay) 0px,
+      var(--ai-stripe-overlay) 6px,
+      transparent 6px,
+      transparent 12px
+    );
+    animation: runningStripes 0.8s linear infinite;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  @keyframes runningStripes {
+    from { background-position: 0 0; }
+    to { background-position: 17px 0; }
+  }
+
   /* Running state: Esc shortcut becomes more prominent to guide user */
   .btn-primary.running .kbd {
     opacity: 0.8;
@@ -265,8 +287,9 @@
   .tool-row:nth-child(4) .btn-tool:nth-child(3):hover :global(svg) { transform: rotate(-120deg); }        /* History: rewind spin */
 
   .btn-tool:active {
-    transform: scale(0.92);
+    transform: scale(0.90);
     transition-duration: 0.08s;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.1);
   }
 
   .btn-tool:disabled {
@@ -282,6 +305,12 @@
   .tool-row:has(.btn-tool:disabled) {
     opacity: 0.75;
     transition: opacity 0.3s ease;
+  }
+
+  /* Tool row hover precedence — subsequent rows dim when one row is hovered */
+  .tool-row:hover ~ .tool-row:not(:hover) {
+    opacity: 0.55;
+    transition: opacity 0.25s ease;
   }
 
   @keyframes runningPulse {
@@ -316,6 +345,8 @@
     .btn-tool :global(svg) { transition: none; }
     .btn-tool:hover :global(svg) { transform: none; }
     .btn-tool::after { display: none; }
+    .btn-primary.running::before { animation: none; display: none; }
+    .tool-row:hover ~ .tool-row:not(:hover) { opacity: 1; }
     .btn-primary:hover { animation-direction: normal; }
   }
 </style>

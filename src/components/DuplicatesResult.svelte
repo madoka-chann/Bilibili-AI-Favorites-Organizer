@@ -158,6 +158,50 @@
     transform: translateX(2px);
   }
 
+  /* Processing state striped overlay on dedup button — scoped to .bfao-action-bar to avoid global leak */
+  .bfao-action-bar :global(.bfao-btn-primary:disabled)::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      var(--ai-stripe-overlay) 0px,
+      var(--ai-stripe-overlay) 6px,
+      transparent 6px,
+      transparent 12px
+    );
+    animation: dupProcessingStripes 0.8s linear infinite;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  @keyframes dupProcessingStripes {
+    from { background-position: 0 0; }
+    to { background-position: 17px 0; }
+  }
+
+  /* Duplicate count emphasis — strong is Svelte-scoped, no leak */
+  :global(.bfao-modal-summary) strong {
+    color: var(--ai-error);
+    font-size: 1.15em;
+    animation: dupCountPulse 2s ease-in-out 0.5s infinite;
+  }
+
+  @keyframes dupCountPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; text-shadow: var(--ai-glow-danger-text); }
+  }
+
+  /* "...及其他 N 个" fade-in reveal */
+  :global(.bfao-modal-more) {
+    animation: moreReveal 0.4s ease 0.5s both;
+  }
+
+  @keyframes moreReveal {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 0.7; transform: translateY(0); }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .dup-item { transition: none; }
     .dup-item:hover { transform: none; }
@@ -166,5 +210,8 @@
     .dup-folders { transition: none; }
     .dup-folders::after { transition: none; display: none; }
     .dup-item:hover .dup-folders { transform: none; }
+    .bfao-action-bar :global(.bfao-btn-primary:disabled)::after { animation: none; display: none; }
+    :global(.bfao-modal-summary) strong { animation: none; opacity: 1; }
+    :global(.bfao-modal-more) { animation: none; opacity: 0.7; }
   }
 </style>

@@ -271,6 +271,7 @@
       0 12px 40px rgba(0, 0, 0, 0.18),
       0 4px 12px rgba(0, 0, 0, 0.1);
     transform: scale(1.02);
+    padding-right: 28px;
   }
 
   /* Hover pauses the timer — user can read the toast without it vanishing */
@@ -308,6 +309,12 @@
     background: rgba(var(--ai-success-rgb), 0.9);
     color: #fff;
     border-left: 3px solid var(--ai-success-light, #6ee7b7);
+    animation: toastSuccessPulse 2s ease-in-out 1s infinite;
+  }
+
+  @keyframes toastSuccessPulse {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.06); }
   }
 
   .toast-error {
@@ -328,10 +335,35 @@
     border-left: 3px solid var(--ai-primary-light, #b0a8ff);
   }
 
+  /* Close hint "×" on right side on hover */
+  .toast::after {
+    content: '×';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%) scale(0.8);
+    font-size: 14px;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .toast:hover::after {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+
   .toast-icon {
     font-size: 14px;
     flex-shrink: 0;
     display: inline-block;
+    transition: outline-offset 0.2s ease, outline-color 0.2s ease;
+    border-radius: 50%;
+  }
+  .toast:hover .toast-icon {
+    outline: 2px solid rgba(255, 255, 255, 0.15);
+    outline-offset: 3px;
   }
 
   .toast-success .toast-icon {
@@ -437,5 +469,8 @@
     .toast-info .toast-icon { animation: none; }
     .toast-timer::after { animation: none; }
     .toast-msg { animation: none; clip-path: none; }
+    .toast-success { animation: none; filter: none; }
+    .toast::after { display: none; }
+    .toast:hover .toast-icon { outline: none; }
   }
 </style>

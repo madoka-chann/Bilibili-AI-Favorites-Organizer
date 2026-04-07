@@ -1,6 +1,64 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-07, 第五十二次)
+## 最近一次会话 (2026-04-07, 第五十三次)
+
+### 本次完成内容
+
+**Kinetic Cadence — 律动节拍: 统计卡片悬浮联动 + 条形图过冲 + 分区脉冲点 + 运行条纹 + 行级递进 + 内容分层揭示 + 最新徽章 + 类型化日志节奏 + 处理条纹 + Toast 脉冲**
+
+#### 视觉增强 — 7 个文件
+
+| 组件/文件 | 新增动画 | 说明 |
+|-----------|----------|------|
+| `StatsDialog.svelte` | 卡片悬浮标签联动 (letter-spacing 0.06em + opacity 1 + color secondary) + 文件夹行条形图过冲 (ratioBarGrow scaleX 0→1.04→1) + 分区标题脉冲指示点 (`sectionPulseDot` 6px 1.5s infinite) + 危险值悬浮光晕 (`--ai-glow-danger-text`) | 悬浮卡片时值与标签联动放大；条形图有弹性过冲着陆；分区标题有心跳指示点 |
+| `ActionButtons.svelte` | 主按钮运行条纹叠加 (`runningStripes` 45deg repeating-gradient 0.8s loop) + 工具行悬浮层级递进 (`.tool-row:hover ~ .tool-row` opacity 0.55) + 按钮弹簧压缩 (active scale 0.90 + inset shadow) | 运行中有斜条纹流动节拍；悬浮某行时后续行变暗聚焦；按下有弹簧压缩感 |
+| `HistoryTimeline.svelte` | 卡片内容分层揭示 (`timelineContentReveal` time→detail→cats stagger 0.05/0.12/0.2s) + 首条目"最新"徽章 (`latestBadgePop` scale 0→1.15→1) + 清空按钮图标旋转 (rotate 180deg on hover) | 时间线卡片内容逐层揭示；最新记录有小标签；清空按钮图标翻转 |
+| `LogArea.svelte` | 成功日志微弹 (`successBounce` translateY -2px) + 错误日志震动 (`errorShake` ±2px 0.3s) + 最新条目边框脉冲 (`lastEntryBorderPulse` primary↔accent 2s, 仅无类型条目) + 猫咪文字悬浮光晕 (`--ai-glow-text-hover`) | 不同类型日志有独特入场节奏；最新条目边框品牌色脉冲 |
+| `DuplicatesResult.svelte` | 处理中按钮条纹叠加 (`dupProcessingStripes` 45deg 0.8s loop) + 重复数量红色脉冲强调 (`dupCountPulse` 2s + `--ai-error` color) + "...及其他"渐显 (`moreReveal` 0.4s delay 0.5s) | 去重处理中有条纹节拍；重复数量醒目红色 |
+| `Toast.svelte` | 成功 Toast 背景微脉冲 (`toastSuccessPulse` brightness 1→1.06 2s) + 悬浮关闭提示 "×" (`::after` opacity 0→1 right 10px) + 图标悬浮类型色环 (outline 2px 0.15α on hover) | 成功通知有心跳节拍；悬浮显示关闭提示 |
+| `variables.css` | `--ai-glow-danger-text` 危险文字光晕令牌 (light: 0.25α/dark: 0.35α) + `--ai-stripe-overlay` 处理条纹色令牌 (light: 0.12/dark: 0.08) | 统一危险文字光效和处理条纹色 |
+
+#### 代码质量 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `LogArea.svelte` | `.log-entry:last-child` (specificity 0,2,0) 的 `lastEntryBorderPulse` 覆盖 `.log-success` (0,1,0) 的 border-left-color——成功条目的绿色边框被 primary↔accent 脉冲替换 | HIGH | `lastEntryBorderPulse` 限定为 `:not(.log-success):not(.log-error):not(.log-warning):not(.log-info)`，仅对无类型条目生效 |
+| `DuplicatesResult.svelte` | `:global(.bfao-btn-primary:disabled)::after` 全局泄漏——`::after` 伪元素不受 Svelte scoping，会影响所有 disabled 的 `.bfao-btn-primary` | MEDIUM | 改为 `.bfao-action-bar :global(.bfao-btn-primary:disabled)::after`，通过 Svelte scoped 父类 `.bfao-action-bar` 约束 |
+| `HistoryTimeline.svelte` | `.timeline-card` 缺少 `position: relative`——新增 "最新" `::after` 徽章的 `absolute` 定位相对于 `.timeline-item` 而非卡片本身 | MEDIUM | 添加 `position: relative` 到 `.timeline-card` |
+| `Toast.svelte` | `.toast::after` 关闭提示 "×" (right: 10px) 与长消息文本重叠 | LOW | `.toast:hover` 添加 `padding-right: 28px` 为关闭提示腾出空间 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `ActionButtons.svelte` | `.btn-primary.running::before` 条纹叠加与 `.btn-primary` 的 `overflow: hidden` 共存——条纹被裁剪在按钮内 | 可接受：条纹应在按钮边界内，`overflow: hidden` 是正确的行为；`border-radius: inherit` 确保圆角一致 |
+| `StatsDialog.svelte` | `.stat-value.danger` 新增 `transition` 属性与父级 `.stat-value` 的 `transition` 部分重复 | 可接受：`.stat-value.danger` 显式列出所有需要的 transition 属性，虽然与父级重复但保持独立控制；specificity 确保 danger 状态使用自己的 transition 列表 |
+| `Toast.svelte` | `toastSuccessPulse` CSS animation 与 GSAP `animateIn()` 同时作用于成功 Toast | 可接受：CSS 仅控制 `filter: brightness()`，GSAP 控制 `x/scale/opacity/rotation`，属性不冲突；CSS animation delay 1s 确保在 GSAP 入场完成后才开始 |
+| `HistoryTimeline.svelte` | `timelineContentReveal` 与父级 `.timeline-item` 的 `slideIn` 动画重叠——内容在卡片滑入完成前就开始揭示 | 可接受：延迟差仅 0.05s，视觉效果是"卡片滑入的同时内容逐层浮现"，符合律动节拍主题 |
+
+### 关键设计决策
+
+1. **律动节拍理念**: 本轮核心是"每类元素有自己的节拍"——统计数据用脉冲和过冲表达弹性，日志用类型化入场表达差异化节奏，按钮用条纹流动表达进行中，时间线用分层揭示表达序列感。
+2. **CSS specificity 分析**: `lastEntryBorderPulse` 必须用 `:not()` 排除有类型的条目，因为 `.log-entry:last-child` (0,2,0) 比 `.log-success` (0,1,0) specificity 高，会覆盖类型特定的 animation 属性。
+3. **`:global()` 泄漏防范**: Svelte 的 `:global()` 内伪元素 (`::after`) 不受 scoping 约束，必须通过 scoped 父类选择器限定作用域。
+4. **条纹背景移动距离**: `runningStripes` 和 `dupProcessingStripes` 的 `background-position: 17px` = 12px (条纹周期) × √2 ≈ 17px (45deg 对角线)，确保条纹无缝循环。
+5. **设计令牌最小化**: 仅新增 2 个令牌 (`--ai-glow-danger-text` + `--ai-stripe-overlay`)，复用已有令牌组合。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: 7 文件律动节拍增强)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 4 个 bug 修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 new errors (8 pre-existing), 12 warnings (pre-existing)。构建体积 634 kB (较 628 kB 增长 +6 kB)。**
+
+---
+
+## 上一次会话 (2026-04-07, 第五十二次)
 
 ### 本次完成内容
 

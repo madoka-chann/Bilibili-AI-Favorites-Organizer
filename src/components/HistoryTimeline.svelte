@@ -131,6 +131,7 @@
     border-radius: 10px;
     border: 1px solid var(--ai-border-lighter);
     transition: transform 0.25s ease, box-shadow 0.25s ease;
+    position: relative;
   }
 
   .timeline-item:hover .timeline-card {
@@ -144,6 +145,7 @@
     color: var(--ai-text-muted);
     margin-bottom: 4px;
     transition: letter-spacing 0.3s ease, color 0.25s ease;
+    animation: timelineContentReveal 0.3s ease calc(var(--i) * 0.05s + 0.05s) both;
   }
   .timeline-item:hover .timeline-time {
     letter-spacing: 0.03em;
@@ -152,6 +154,7 @@
   .timeline-detail {
     font-size: 12px;
     color: var(--ai-text);
+    animation: timelineContentReveal 0.3s ease calc(var(--i) * 0.05s + 0.12s) both;
   }
   .timeline-detail strong { color: var(--ai-primary); }
   .timeline-cats {
@@ -164,6 +167,7 @@
     padding: 3px 6px;
     border: 1px solid transparent;
     transition: background 0.2s ease, color 0.2s ease, transform 0.25s ease, border-color 0.25s ease;
+    animation: timelineContentReveal 0.3s ease calc(var(--i) * 0.05s + 0.2s) both;
   }
   .timeline-item:hover .timeline-cats {
     background: var(--ai-primary-bg);
@@ -177,11 +181,45 @@
     animation: clearShake 0.4s ease;
     box-shadow: 0 0 12px rgba(var(--ai-error-rgb), 0.2);
   }
+  .clear-btn :global(svg) {
+    transition: transform 0.3s cubic-bezier(0.2, 0.98, 0.28, 1);
+  }
+  .clear-btn:hover :global(svg) {
+    transform: rotate(180deg);
+  }
 
   .timeline-item:first-child .timeline-card {
     border-left: 2px solid var(--ai-primary);
     background: var(--ai-bg-hover);
     animation: latestGlow 3s ease-in-out 0.8s infinite;
+  }
+
+  /* "最新" badge on first timeline item */
+  .timeline-item:first-child .timeline-card::after {
+    content: '最新';
+    position: absolute;
+    top: -6px;
+    right: 8px;
+    font-size: 8px;
+    font-weight: 700;
+    color: #fff;
+    background: var(--ai-primary);
+    padding: 1px 6px;
+    border-radius: 6px;
+    letter-spacing: 0.05em;
+    animation: latestBadgePop 0.4s cubic-bezier(0.22, 1.42, 0.29, 1) 0.6s both;
+    pointer-events: none;
+  }
+
+  @keyframes latestBadgePop {
+    0% { transform: scale(0); opacity: 0; }
+    70% { transform: scale(1.15); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes timelineContentReveal {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   @keyframes latestGlow {
@@ -258,7 +296,12 @@
     .timeline::before { animation: none; transform: scaleY(1); }
     .timeline::after { animation: none; display: none; }
     .timeline-item:first-child .timeline-card { animation: none; }
-    .timeline-time { transition: none; }
+    .timeline-time { transition: none; animation: none; opacity: 1; }
+    .timeline-detail { animation: none; opacity: 1; }
+    .timeline-cats { animation: none; opacity: 1; }
+    .timeline-item:first-child .timeline-card::after { animation: none; opacity: 1; }
+    .clear-btn :global(svg) { transition: none; }
+    .clear-btn:hover :global(svg) { transform: none; }
     .timeline-cats { transition: none; }
     .timeline-cats:hover { border-left: none; padding-left: 6px; }
     .timeline-item:hover .timeline-cats { transform: none; }

@@ -1,7 +1,7 @@
 {
   "project": "Bilibili AI Favorites Organizer - Svelte Refactoring",
-  "plan": "visual-plan-session52.md",
-  "lastUpdated": "2026-04-07-session52",
+  "plan": "visual-plan-session53.md",
+  "lastUpdated": "2026-04-07-session53",
   "phases": {
     "phase0_buildSystem": {
       "status": "completed",
@@ -23,7 +23,7 @@
     },
     "phase2_animations": {
       "status": "completed",
-      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; I1-I5 粒子系统全部完成; Session 27-51 全组件覆盖; Session 52: Narrative Flow — HelpDialog FAQ 序号计数器 (CSS counter + rotateY 翻转) + 答案渐现光帘 (clip-path inset 0→0 0.45s) + 快捷键徽章弹出 (kbdPop scale stagger 0.08s) + PromptEditor 管理器章节光扫 (sectionSweep 6s infinite) + 预设行悬浮底部光条 (::after scaleX 0→1) + Textarea 滚动渐隐 (mask-image) + SettingsGroup 展开子项逐帧浮现 (GSAP stagger children 0.03s) + 折叠 chevron 弹性回弹 (overshoot -15deg→0) + UndoDialog 时间戳悬浮发光 (text-shadow glow) + 处理中微光叠加 (undoShimmer overlay) + FolderSelector 选中计数微弹 (countFlash translateY -2px) + 全选图标翻转 (scaleY -1) + Modal 确认按钮按压涟漪 (confirmRipple radial 0.5s) + 取消按钮悬浮退让 (translateX -2px) + Footer 分隔线渐变展开 (footerDividerExpand scaleX 0→1)"
+      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; I1-I5 粒子系统全部完成; Session 27-52 全组件覆盖; Session 53: Kinetic Cadence — StatsDialog 卡片悬浮标签联动 (letter-spacing 0.06em) + 文件夹行条形图过冲回弹 (ratioBarGrow scaleX 0→1.04→1) + 分区标题脉冲指示点 (sectionPulseDot 1.5s infinite) + 危险值悬浮光晕 (--ai-glow-danger-text) + ActionButtons 运行条纹叠加 (runningStripes 45deg 0.8s loop) + 工具行悬浮层级递进 (~ .tool-row opacity 0.55) + 按钮弹簧压缩 (active scale 0.90 + inset shadow) + HistoryTimeline 卡片内容分层揭示 (timelineContentReveal stagger 0.05/0.12/0.2s) + 首条目\"最新\"徽章 (latestBadgePop scale) + 清空图标旋转 (rotate 180deg) + LogArea 成功弹跳 (successBounce translateY -2px) + 错误震动 (errorShake ±2px) + 最新条目边框脉冲 (lastEntryBorderPulse primary↔accent 2s) + 猫咪文字悬浮光晕 + DuplicatesResult 处理条纹 (dupProcessingStripes) + 重复数量红色脉冲强调 + 更多提示渐显 + Toast 成功背景微脉冲 (toastSuccessPulse brightness) + 悬浮关闭提示 × + 图标类型色环"
     },
     "phase3_cssCleanup": {
       "status": "completed",
@@ -31,7 +31,7 @@
     },
     "phase4_codeQuality": {
       "status": "completed",
-      "summary": "TypeScript strict 全开; 模块化重构完成; 多轮 Code Review; as any 类型断言清零; 错误处理一致性强化; 第52轮 Code Review: (1) UndoDialog processing shimmer z-index:1 阻塞 radio 点击——移除 z-index，pointer-events:none 已足够 (2) HelpDialog clip-path 动画与 GSAP height:0 冲突——clip-path 作用域限定为 .faq-item.open + .faq-a 避免在折叠状态播放 (3) FolderSelector rotateX 无 perspective 上下文——改为 scaleY(-1) 实现 2D 翻转 (4) Modal footer 冗余 border-top:transparent——改为 border-top:none，::before 渐变线已处理分隔"
+      "summary": "TypeScript strict 全开; 模块化重构完成; 多轮 Code Review; as any 类型断言清零; 错误处理一致性强化; 第53轮 Code Review: (1) LogArea lastEntryBorderPulse specificity 冲突——.log-entry:last-child (0,2,0) 覆盖 .log-success (0,1,0) 导致 success 条目边框被 primary 脉冲替换——修复: :not(.log-success):not(.log-error):not(.log-warning):not(.log-info) 限定脉冲范围 (2) DuplicatesResult :global(.bfao-btn-primary:disabled)::after 全局泄漏——修复: 改为 .bfao-action-bar :global(.bfao-btn-primary:disabled)::after 通过 Svelte scoped 父类约束 (3) HistoryTimeline .timeline-card 缺少 position:relative——最新徽章 ::after absolute 定位偏移——修复: 添加 position:relative (4) Toast .toast::after 关闭提示 × 与消息文本重叠——修复: hover 时 padding-right:28px 腾出空间"
     },
     "phase5_performance": {
       "status": "completed",
@@ -53,7 +53,7 @@
   },
   "buildStatus": {
     "builds": true,
-    "output": "dist/bilibili-ai-favorites-organizer.user.js (628 kB, GSAP ~95 kB CDN)",
+    "output": "dist/bilibili-ai-favorites-organizer.user.js (634 kB, GSAP ~95 kB CDN)",
     "svelteCheck": "0 errors (8 pre-existing), 12 warnings (pre-existing)",
     "preExistingIssues": []
   }

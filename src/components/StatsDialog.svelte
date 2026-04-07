@@ -126,7 +126,7 @@
 
     {#if folders.length > 0}
       <div class="folder-breakdown" use:contentStagger={{ delay: 0.25, stagger: 0.03 }}>
-        <div class="section-title">收藏夹分布</div>
+        <div class="section-title"><span class="pulse-dot" aria-hidden="true"></span>收藏夹分布</div>
         {#each folders as f}
           <div class="folder-row" style:--ratio="{f.media_count / maxFolderCount}">
             <span class="folder-name">{f.title}</span>
@@ -303,11 +303,20 @@
     transform: scale(1.08);
     text-shadow: 0 0 16px currentColor;
   }
-  .stat-value.danger { color: var(--ai-error); }
+  .stat-value.danger { color: var(--ai-error); transition: text-shadow 0.3s ease, filter 0.25s ease, transform 0.25s cubic-bezier(0.2, 0.98, 0.28, 1); }
+  .stat-card:hover .stat-value.danger {
+    text-shadow: var(--ai-glow-danger-text);
+  }
   .stat-label {
     font-size: 11px;
     color: var(--ai-text-muted);
     margin-top: 2px;
+    transition: letter-spacing 0.3s ease, opacity 0.3s ease;
+  }
+  .stat-card:hover .stat-label {
+    letter-spacing: 0.06em;
+    opacity: 1;
+    color: var(--ai-text-secondary);
   }
 
   .section-title {
@@ -317,7 +326,26 @@
     margin-bottom: 8px;
     position: relative;
     padding-bottom: 6px;
+    padding-left: 14px;
     overflow: hidden;
+  }
+  /* Pulsing indicator dot — "chapter heartbeat" */
+  .section-title .pulse-dot {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ai-primary);
+    animation: sectionPulseDot 1.5s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes sectionPulseDot {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(var(--ai-primary-rgb), 0.4); }
+    50% { opacity: 0.6; box-shadow: 0 0 0 4px rgba(var(--ai-primary-rgb), 0); }
   }
   .section-title::before {
     content: '';
@@ -453,8 +481,9 @@
   }
 
   @keyframes ratioBarGrow {
-    from { transform: scaleX(0); }
-    to { transform: scaleX(1); }
+    0% { transform: scaleX(0); }
+    75% { transform: scaleX(1.04); }
+    100% { transform: scaleX(1); }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -468,6 +497,7 @@
     .stat-card:hover .card-shimmer::before { animation: none; }
     .section-title::after { animation: none; transform: scaleX(1); }
     .section-title::before { animation: none; display: none; }
+    .section-title .pulse-dot { animation: none; opacity: 1; }
     .health-ring { animation: none; }
     .health-score::after { animation: none; display: none; }
     .health-detail { animation: none; opacity: 1; }
