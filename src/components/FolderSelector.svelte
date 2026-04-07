@@ -159,10 +159,10 @@
     animation: togglePulse 0.5s ease-out;
   }
   .toggle-all :global(svg) {
-    transition: transform 0.25s cubic-bezier(0.2, 0.98, 0.28, 1);
+    transition: transform 0.35s cubic-bezier(0.2, 0.98, 0.28, 1);
   }
   .toggle-all:active :global(svg) {
-    transform: rotate(15deg);
+    transform: scaleY(-1) scale(0.9);
   }
 
   .count {
@@ -264,10 +264,20 @@
     font-size: 11px;
     color: var(--ai-text-muted);
     margin-top: 2px;
-    transition: color 0.2s ease;
+    transition: color 0.2s ease, transform 0.25s cubic-bezier(0.22, 1.42, 0.29, 1), font-weight 0.2s ease;
   }
   :global(.bfao-selectable-item:hover) .folder-count {
     color: var(--ai-primary-light);
+  }
+  :global(.bfao-selectable-item.selected) .folder-count {
+    color: var(--ai-primary);
+    font-weight: 600;
+    animation: countFlash 0.3s cubic-bezier(0.22, 1.42, 0.29, 1);
+  }
+  @keyframes countFlash {
+    0% { transform: translateY(0); }
+    40% { transform: translateY(-2px); color: var(--ai-primary-light); }
+    100% { transform: translateY(0); }
   }
 
   @keyframes togglePulse {
@@ -278,10 +288,12 @@
   @media (prefers-reduced-motion: reduce) {
     .toggle-all:active::after { animation: none; }
     .toggle-all::before { transition: none; display: none; }
+    .toggle-all :global(svg) { transition: none; }
     .folder-title { transition: none; }
     :global(.bfao-selectable-item:hover) .folder-title { letter-spacing: normal; }
     :global(.bfao-selectable-item.selected)::after { animation: none; display: none; }
     .folder-count { transition: none; }
+    :global(.bfao-selectable-item.selected) .folder-count { animation: none; }
     .count { transition: none; }
     .count.bounce { animation: none; }
   }

@@ -321,12 +321,29 @@
 
   .modal-footer {
     padding: 14px 20px;
-    border-top: 1px solid var(--ai-border-light);
+    border-top: none;
     display: flex;
     gap: 12px;
     background: var(--ai-bg-secondary);
     box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.04); /* intentionally static — upward shadow, minor */
     animation: footerSlideUp 0.3s ease 0.15s both;
+    position: relative;
+  }
+  .modal-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20px;
+    right: 20px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--ai-primary-light), var(--ai-border-light), transparent);
+    transform: scaleX(0);
+    animation: footerDividerExpand 0.4s cubic-bezier(0.2, 0.98, 0.28, 1) 0.25s both;
+    pointer-events: none;
+  }
+  @keyframes footerDividerExpand {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
   }
 
   .modal-btn {
@@ -354,11 +371,38 @@
     box-shadow: 0 10px 28px var(--ai-success-bg);
   }
 
+  .modal-btn.confirm {
+    position: relative;
+    overflow: hidden;
+  }
+  .modal-btn.confirm::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .modal-btn.confirm:active::after {
+    animation: confirmRipple 0.5s ease-out;
+  }
+  @keyframes confirmRipple {
+    0% { width: 0; height: 0; opacity: 0.5; }
+    100% { width: 300px; height: 300px; opacity: 0; }
+  }
+
   .modal-btn.confirm:disabled {
     opacity: 0.4;
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
+  }
+  .modal-btn.confirm:disabled::after {
+    display: none;
   }
 
   .modal-btn.cancel {
@@ -368,6 +412,8 @@
 
   .modal-btn.cancel:hover {
     background: var(--ai-bg-tertiary);
+    transform: translateX(-2px);
+    opacity: 0.85;
   }
 
   .modal-scroll-indicator {
@@ -421,6 +467,9 @@
     .modal-body::before,
     .modal-body::after { transition: none; }
     .modal-footer { animation: none; }
+    .modal-footer::before { animation: none; transform: scaleX(1); }
+    .modal-btn.confirm:active::after { animation: none; }
+    .modal-btn.cancel:hover { transform: none; opacity: 1; }
     .modal-scroll-indicator { transition: none; transform: none; }
     .modal-scroll-indicator.visible { transform: none; box-shadow: none; }
   }

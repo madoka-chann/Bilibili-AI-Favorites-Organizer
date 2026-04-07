@@ -1,7 +1,7 @@
 {
   "project": "Bilibili AI Favorites Organizer - Svelte Refactoring",
-  "plan": "visual-plan-session51.md",
-  "lastUpdated": "2026-04-07-session51",
+  "plan": "visual-plan-session52.md",
+  "lastUpdated": "2026-04-07-session52",
   "phases": {
     "phase0_buildSystem": {
       "status": "completed",
@@ -23,7 +23,7 @@
     },
     "phase2_animations": {
       "status": "completed",
-      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; I1-I5 粒子系统全部完成; Session 27-50 全组件覆盖; Session 51: ProviderConfig 眼睛图标悬浮预热光圈 (rotate 15deg + scale 1.05 + control-hover glow) + 链接按钮图标摆动 (rotate -12deg) + ModelSelector 搜索聚焦渐变 (searchFocusRipple 0→6px→3px) + 下拉框弹性增强 (scaleY overshoot 1.02) + Header 关闭按钮 X 旋转 (rotate 90deg) + 版本徽章内部微光 (versionShimmer translateX 4s infinite) + 拖拽手柄展开 (18px→28px) + SettingsPanel 开关行激活条展开 (activeBarExpand border-left-color 0.35s) + 标签悬浮下划线 (::after scaleX 0→1 gradient) + 子字段弹性回弹 (translateY -6→1→0) + LogArea 条目悬浮边框发光 (inset box-shadow primary) + 猫咪悬浮弹跳 (catBounce scale 1→1.25→0.95→1) + 日志区入场淡入 (logAreaFadeIn 0.35s) + forms.css 标签聚焦微移 (translateX 2px) + 复选框悬浮光圈扩展 (4px spread + scale 1.05) + 图标按钮悬浮底部光条 (::after scaleX 0→1 gradient)"
+      "summary": "GSAP 配置 + 品牌缓动完成; Svelte actions 和微交互系统已创建; 核心组件动画就位; I1-I5 粒子系统全部完成; Session 27-51 全组件覆盖; Session 52: Narrative Flow — HelpDialog FAQ 序号计数器 (CSS counter + rotateY 翻转) + 答案渐现光帘 (clip-path inset 0→0 0.45s) + 快捷键徽章弹出 (kbdPop scale stagger 0.08s) + PromptEditor 管理器章节光扫 (sectionSweep 6s infinite) + 预设行悬浮底部光条 (::after scaleX 0→1) + Textarea 滚动渐隐 (mask-image) + SettingsGroup 展开子项逐帧浮现 (GSAP stagger children 0.03s) + 折叠 chevron 弹性回弹 (overshoot -15deg→0) + UndoDialog 时间戳悬浮发光 (text-shadow glow) + 处理中微光叠加 (undoShimmer overlay) + FolderSelector 选中计数微弹 (countFlash translateY -2px) + 全选图标翻转 (scaleY -1) + Modal 确认按钮按压涟漪 (confirmRipple radial 0.5s) + 取消按钮悬浮退让 (translateX -2px) + Footer 分隔线渐变展开 (footerDividerExpand scaleX 0→1)"
     },
     "phase3_cssCleanup": {
       "status": "completed",
@@ -31,7 +31,7 @@
     },
     "phase4_codeQuality": {
       "status": "completed",
-      "summary": "TypeScript strict 全开; 模块化重构完成; 多轮 Code Review; as any 类型断言清零; 错误处理一致性强化; 第51轮 Code Review: (1) ModelSelector focusRipple 重名——与 forms.css 全局 keyframe 同名导致非确定性覆盖，改名为 searchFocusRipple (2) forms.css .bfao-icon-btn::after 底部光条泄漏到 ModelSelector test-success/test-error ::after 脉冲环——test 状态 ::after 补充 width:auto height:auto background:none 覆盖基类属性"
+      "summary": "TypeScript strict 全开; 模块化重构完成; 多轮 Code Review; as any 类型断言清零; 错误处理一致性强化; 第52轮 Code Review: (1) UndoDialog processing shimmer z-index:1 阻塞 radio 点击——移除 z-index，pointer-events:none 已足够 (2) HelpDialog clip-path 动画与 GSAP height:0 冲突——clip-path 作用域限定为 .faq-item.open + .faq-a 避免在折叠状态播放 (3) FolderSelector rotateX 无 perspective 上下文——改为 scaleY(-1) 实现 2D 翻转 (4) Modal footer 冗余 border-top:transparent——改为 border-top:none，::before 渐变线已处理分隔"
     },
     "phase5_performance": {
       "status": "completed",
@@ -53,7 +53,7 @@
   },
   "buildStatus": {
     "builds": true,
-    "output": "dist/bilibili-ai-favorites-organizer.user.js (621 kB, GSAP ~95 kB CDN)",
+    "output": "dist/bilibili-ai-favorites-organizer.user.js (628 kB, GSAP ~95 kB CDN)",
     "svelteCheck": "0 errors (8 pre-existing), 12 warnings (pre-existing)",
     "preExistingIssues": []
   }

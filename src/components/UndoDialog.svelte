@@ -30,7 +30,7 @@
       <div class="bfao-modal-empty">没有可撤销的操作记录</div>
     {:else}
       <div class="hint">选择要撤销的操作，撤销将把所有视频移回原收藏夹：</div>
-      <div class="history-list" use:contentStagger={{ stagger: 0.04, delay: 0.1 }}>
+      <div class="history-list" class:processing use:contentStagger={{ stagger: 0.04, delay: 0.1 }}>
         {#each history as record, i}
           <label class="bfao-selectable-item" class:selected={selectedIndex === i}>
             <input type="radio" bind:group={selectedIndex} value={i} disabled={processing} use:checkBounce />
@@ -82,6 +82,21 @@
     overflow-y: auto;
     mask-image: linear-gradient(to bottom, transparent 0%, black 12px, black calc(100% - 12px), transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 12px, black calc(100% - 12px), transparent 100%);
+    position: relative;
+  }
+  .history-list.processing::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, var(--ai-shimmer-overlay) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: undoShimmer 1.5s ease-in-out infinite;
+    pointer-events: none;
+    border-radius: 8px;
+  }
+  @keyframes undoShimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
   }
 
   .item-info { flex: 1; }
@@ -89,6 +104,16 @@
     font-size: 12px;
     font-weight: 600;
     color: var(--ai-text);
+    transition: text-shadow 0.25s ease, transform 0.25s ease, color 0.25s ease;
+  }
+  :global(.bfao-selectable-item:hover) .item-time {
+    text-shadow: var(--ai-glow-text-hover);
+    transform: translateX(1px);
+    color: var(--ai-primary);
+  }
+  :global(.bfao-selectable-item.selected) .item-time {
+    text-shadow: var(--ai-glow-text-hover);
+    color: var(--ai-primary);
   }
   .item-detail {
     font-size: 11px;
@@ -123,5 +148,8 @@
     :global(.bfao-selectable-item.selected) { animation: none; }
     .hint { animation: none; }
     .hint::after { animation: none; transform: scaleX(1); }
+    .item-time { transition: none; }
+    :global(.bfao-selectable-item:hover) .item-time { text-shadow: none; transform: none; }
+    .history-list.processing::after { animation: none; display: none; }
   }
 </style>

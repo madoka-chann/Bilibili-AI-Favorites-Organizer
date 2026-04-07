@@ -105,7 +105,7 @@
     {#each FAQ as item, idx (idx)}
       <button class="faq-item" class:open={expandedIdx === idx} onclick={() => toggle(idx)}>
         <span class="faq-q">
-          <span class="faq-icon" class:pulse={expandedIdx === idx}>?</span>
+          <span class="faq-icon" class:pulse={expandedIdx === idx}></span>
           {item.q}
         </span>
         <ChevronRight size={14} class="faq-chevron" />
@@ -116,7 +116,7 @@
     {/each}
 
     <div class="help-footer">
-      快捷键: Alt+B 开关面板 · ESC 关闭 · Ctrl+Enter 开始
+      快捷键: <kbd>Alt+B</kbd> 开关面板 · <kbd>ESC</kbd> 关闭 · <kbd>Ctrl+Enter</kbd> 开始
     </div>
   </div>
 </Modal>
@@ -140,6 +140,7 @@
       black calc(100% - 10px),
       transparent 100%
     );
+    counter-reset: faq-counter;
   }
 
   .faq-item {
@@ -176,6 +177,10 @@
     color: var(--ai-text);
   }
 
+  .faq-item {
+    counter-increment: faq-counter;
+  }
+
   .faq-icon {
     display: inline-flex;
     align-items: center;
@@ -185,10 +190,18 @@
     border-radius: 50%;
     background: var(--ai-error-bg, rgba(239, 68, 68, 0.1));
     color: var(--ai-error, #ef4444);
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     flex-shrink: 0;
-    transition: transform 0.2s ease;
+    transition: transform 0.3s cubic-bezier(0.2, 0.98, 0.28, 1);
+  }
+  .faq-icon::before {
+    content: counter(faq-counter);
+  }
+  .faq-item.open .faq-icon {
+    transform: rotateY(180deg);
+    background: var(--ai-primary-bg);
+    color: var(--ai-primary);
   }
 
   .faq-item:hover .faq-icon:not(.pulse) {
@@ -210,6 +223,15 @@
     background: var(--ai-bg-secondary);
     box-sizing: border-box;
     position: relative;
+  }
+  /* Reveal animation scoped to open state — avoids conflict with GSAP height:0 */
+  .faq-item.open + .faq-a {
+    clip-path: inset(0 100% 0 0);
+    animation: answerReveal 0.45s cubic-bezier(0.2, 0.98, 0.28, 1) 0.08s both;
+  }
+  @keyframes answerReveal {
+    from { clip-path: inset(0 100% 0 0); }
+    to { clip-path: inset(0 0 0 0); }
   }
   .faq-a::before {
     content: '';
@@ -245,6 +267,28 @@
     text-align: center;
     animation: footerFadeIn 0.4s ease 0.6s both;
   }
+  .help-footer kbd {
+    display: inline-block;
+    padding: 1px 5px;
+    font-size: 10px;
+    font-family: inherit;
+    font-weight: 600;
+    color: var(--ai-primary);
+    background: var(--ai-primary-bg);
+    border: 1px solid var(--ai-border-light);
+    border-radius: 4px;
+    margin: 0 1px;
+    animation: kbdPop 0.3s cubic-bezier(0.22, 1.42, 0.29, 1) both;
+  }
+  .help-footer kbd:nth-of-type(1) { animation-delay: 0.7s; }
+  .help-footer kbd:nth-of-type(2) { animation-delay: 0.78s; }
+  .help-footer kbd:nth-of-type(3) { animation-delay: 0.86s; }
+
+  @keyframes kbdPop {
+    0% { transform: scale(0); opacity: 0; }
+    70% { transform: scale(1.15); }
+    100% { transform: scale(1); opacity: 1; }
+  }
 
   @keyframes footerFadeIn {
     from { opacity: 0; transform: translateY(8px); }
@@ -253,12 +297,15 @@
 
   @media (prefers-reduced-motion: reduce) {
     .help-footer { animation: none; opacity: 1; }
+    .help-footer kbd { animation: none; opacity: 1; }
     .faq-icon.pulse { animation: none; }
     .faq-item { transition: background 0.2s; }
     .faq-item:hover { padding-left: 20px; }
     .faq-item.open { box-shadow: none; }
     .faq-icon { transition: none; }
+    .faq-item.open .faq-icon { transform: none; }
     .faq-item:hover .faq-icon:not(.pulse) { transform: none; }
+    .faq-a { clip-path: none; animation: none; }
     .faq-a::before { animation: none; transform: scaleY(1); }
   }
 </style>

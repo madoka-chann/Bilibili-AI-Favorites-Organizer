@@ -77,6 +77,14 @@
               bodyEl.style.height = 'auto';
               bodyEl.style.overflow = '';
               bodyEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              // Stagger child items into view
+              const children = bodyEl.querySelectorAll(':scope > *');
+              if (children.length > 0) {
+                gsap.fromTo(children,
+                  { opacity: 0, y: 8 },
+                  { opacity: 1, y: 0, duration: 0.25, stagger: 0.03, ease: EASINGS.velvetSpring }
+                );
+              }
             }
           });
         }
@@ -96,11 +104,16 @@
       }
 
       if (chevronEl) {
-        gsap.to(chevronEl, {
-          rotation: open ? 90 : 0,
-          duration: 0.3,
-          ease: EASINGS.velvetSpring,
-        });
+        if (open) {
+          gsap.to(chevronEl, { rotation: 90, duration: 0.3, ease: EASINGS.velvetSpring });
+        } else {
+          // Elastic collapse: overshoot back then settle to 0
+          gsap.to(chevronEl, { rotation: -15, duration: 0.15, ease: 'power2.in',
+            onComplete: () => {
+              gsap.to(chevronEl, { rotation: 0, duration: 0.25, ease: EASINGS.velvetSpring });
+            }
+          });
+        }
       }
     } else {
       // No animation — instant toggle

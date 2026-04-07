@@ -1,6 +1,62 @@
 # Handoff Notes — Bilibili AI Favorites Organizer Refactoring
 
-## 最近一次会话 (2026-04-07, 第五十一次)
+## 最近一次会话 (2026-04-07, 第五十二次)
+
+### 本次完成内容
+
+**Narrative Flow — 叙事流动: FAQ 序号翻转 + 答案光帘揭幕 + 快捷键徽章弹出 + 管理器章节光扫 + 子项逐帧浮现 + 时间戳悬浮发光 + 确认按钮涟漪 + Footer 分隔线展开**
+
+#### 视觉增强 — 7 个文件
+
+| 组件/文件 | 新增动画 | 说明 |
+|-----------|----------|------|
+| `HelpDialog.svelte` | FAQ 序号 CSS counter (替代静态 "?") + 展开时数字 rotateY(180deg) 翻转 + 答案渐现光帘 (`answerReveal` clip-path inset 0.45s) + 快捷键 `kbd` 徽章弹出 (`kbdPop` scale stagger 0.08s) | 用序号替代问号增强信息密度；展开时数字翻转暗示"翻到答案面"；答案从左到右揭幕 |
+| `PromptEditor.svelte` | 管理器分区标题光扫 (`sectionSweep` translateX 6s infinite) + 预设行悬浮底部光条 (`::after` scaleX 0→1 gradient) + Textarea 聚焦滚动渐隐 (mask-image 上下渐隐) | 分区标题持续微光区分章节；悬浮预设行底部光条聚光灯效果；长文本上下边缘渐隐 |
+| `SettingsGroup.svelte` | 展开子项逐帧浮现 (GSAP stagger children opacity+translateY 0.03s) + 折叠 chevron 弹性回弹 (overshoot rotate -15deg→0) | 手风琴展开后内容项逐步揭示；折叠时 chevron 有回弹收束感 |
+| `UndoDialog.svelte` | 时间戳悬浮发光 (text-shadow glow + translateX 1px + color primary) + 选中项时间戳常亮 + 处理中微光叠加 (`undoShimmer` overlay 1.5s infinite) | 悬浮时间聚焦效果；处理中列表有光帘扫过暗示"正在进行" |
+| `FolderSelector.svelte` | 选中文件夹计数微弹 (`countFlash` translateY -2px + color 变亮 0.3s) + 全选图标翻转 (scaleY -1 on active) | 选中时视频数微弹确认；全选/取消全选图标翻转暗示状态切换 |
+| `Modal.svelte` | 确认按钮按压涟漪 (`confirmRipple` radial 0→300px 0.5s) + 取消按钮悬浮退让 (translateX -2px + opacity 0.85) + Footer 分隔线渐变展开 (`footerDividerExpand` scaleX 0→1 0.4s) | 确认按压有决定扩散效果；取消悬浮后退暗示犹豫；分隔线帷幕式展开 |
+| `variables.css` | `--ai-glow-text-hover` 文字悬浮光晕令牌 (light: 0.2α/dark: 0.3α) + `--ai-shimmer-overlay` 处理中叠加微光色令牌 (light: 0.08/dark: 0.05) | 统一文字悬浮光效和处理中微光色 |
+
+#### 代码质量 (Code Review)
+
+| 文件 | 问题 | 严重性 | 修复 |
+|------|------|--------|------|
+| `UndoDialog.svelte` | `.history-list.processing::after` 的 `z-index: 1` 在某些浏览器下可能阻塞 radio input 点击，即使有 `pointer-events: none` | HIGH | 移除 `z-index: 1`——`pointer-events: none` 已足够，无需 stacking context 提升 |
+| `HelpDialog.svelte` | `.faq-a` 的 `clip-path` CSS 动画在所有状态下播放，与 GSAP `height:0/opacity:0` 折叠状态冲突——折叠时 clip-path 动画白跑 | MEDIUM | 将 clip-path 和 answerReveal 限定为 `.faq-item.open + .faq-a` 选择器，仅在展开时播放 |
+| `FolderSelector.svelte` | `.toggle-all:active :global(svg)` 的 `rotateX(180deg)` 缺少 `perspective` 上下文，3D 旋转在无透视时效果异常 | MEDIUM | 改为 `scaleY(-1) scale(0.9)` 实现 2D 翻转，无需 perspective |
+| `Modal.svelte` | `.modal-footer` 的 `border-top: 1px solid transparent` 与新增 `::before` 渐变分隔线冗余——透明 border 只占空间不显示 | LOW | 改为 `border-top: none`，渐变 `::before` 已完全处理分隔视觉 |
+
+#### Code Review 评估但不修复的项
+
+| 文件 | 观察 | 结论 |
+|------|------|------|
+| `PromptEditor.svelte` | `.custom-preset-row` 新增 `position: relative` + `::after` hover 光条与已有 `presetSlideIn` transform 动画短暂共存 | 可接受：slideIn 0.25s 在用户通常开始 hover 前已完成；即使重叠也只有微弱 2px 光条位置偏移 |
+| `HelpDialog.svelte` | CSS counter 在所有 `.faq-item` 上计数，包括不可见的（如果未来有过滤） | 可接受：当前无过滤功能，所有 FAQ 始终渲染；如果未来添加过滤需重新考虑 |
+
+### 关键设计决策
+
+1. **叙事流动理念**: 本轮所有动画的核心设计原则是"每个交互都是一个微叙事"——FAQ 展开是"翻书"(数字翻转→光帘揭幕→答案显现)，确认按钮是"决定"(涟漪扩散)，取消是"犹豫"(后退)，处理中是"进行"(光帘扫过)。
+2. **CSS Counter 替代静态文字**: 用 `counter-reset/counter-increment` 替代硬编码 "?"，为 FAQ 提供自动编号。数字在展开时 `rotateY(180deg)` 翻转——隐喻"翻到答案面"。
+3. **clip-path 作用域限定**: `answerReveal` clip-path 动画仅在 `.faq-item.open + .faq-a` 上生效，避免在折叠状态（GSAP height:0）下白跑动画浪费 GPU 资源。
+4. **取消按钮"肢体语言"**: `.modal-btn.cancel:hover` 向左退让 2px + 透明度降至 0.85——模拟人类犹豫时后退的肢体语言，与确认按钮前进（translateY -2px + glow）形成叙事对比。
+5. **设计令牌最小化**: 仅新增 2 个令牌 (`--ai-glow-text-hover` + `--ai-shimmer-overlay`)，复用已有令牌组合。
+
+### 项目总体进度
+
+- Phase 0 构建系统: **100%**
+- Phase 1 组件架构: **100%**
+- Phase 2 动画系统: **100%** (本次: 7 文件叙事流动增强)
+- Phase 3 CSS 清理: **100%**
+- Phase 4 代码质量: **100%** (本次: 4 个 bug 修复)
+- Phase 5 性能优化: **100%**
+- Phase 6 Svelte 5 Runes: **100%**
+
+**所有 Phase 均已 100% 完成。svelte-check 0 new errors (8 pre-existing), 12 warnings (pre-existing)。构建体积 628 kB (较 621 kB 增长 +7 kB)。**
+
+---
+
+## 上一次会话 (2026-04-07, 第五十一次)
 
 ### 本次完成内容
 

@@ -281,6 +281,8 @@
     border-color: var(--ai-primary);
     box-shadow: 0 0 0 3px var(--ai-primary-shadow);
     height: 72px;
+    mask-image: linear-gradient(to bottom, transparent 0px, black 6px, black calc(100% - 6px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0px, black 6px, black calc(100% - 6px), transparent 100%);
   }
 
   /* Typing pulse — border oscillates when actively editing */
@@ -322,6 +324,26 @@
     to { opacity: 1; transform: translateX(0); }
   }
 
+  .custom-preset-row {
+    position: relative;
+  }
+  .custom-preset-row::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 6px;
+    right: 6px;
+    height: 1.5px;
+    background: linear-gradient(90deg, var(--ai-primary), var(--ai-gradient-accent), transparent);
+    border-radius: 1px;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s cubic-bezier(0.2, 0.98, 0.28, 1);
+    pointer-events: none;
+  }
+  .custom-preset-row:hover::after {
+    transform: scaleX(1);
+  }
   .custom-preset-row:hover {
     background: var(--ai-bg-hover);
     transform: translateX(2px);
@@ -412,6 +434,23 @@
     margin: 6px 0 2px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    position: relative;
+    overflow: hidden;
+  }
+  .manager-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, var(--ai-shimmer-color), transparent);
+    animation: sectionSweep 6s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes sectionSweep {
+    0%, 100% { left: -50%; }
+    50% { left: 100%; }
   }
   .hidden-preset {
     opacity: 0.4;
@@ -420,10 +459,13 @@
 
   @media (prefers-reduced-motion: reduce) {
     .prompt-textarea { transition: border-color 0.3s ease, box-shadow 0.3s ease; height: 65px !important; }
+    .prompt-textarea:focus { mask-image: none; -webkit-mask-image: none; }
     .prompt-textarea:focus:not(:placeholder-shown) { animation: none; }
     .prompt-action-btn.save-flash { animation: none; }
     .prompt-action-btn.save-flash::after { animation: none; display: none; }
     .manager-title::after { animation: none; transform: scaleX(1); }
+    .manager-section::after { animation: none; display: none; }
     .custom-preset-row { animation: none; }
+    .custom-preset-row::after { transition: none; display: none; }
   }
 </style>
